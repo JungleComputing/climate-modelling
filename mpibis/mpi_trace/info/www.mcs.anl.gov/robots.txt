@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /css/
+Disallow: /scripts/
+Disallow: /resources/
+Disallow: /inc/
+Disallow: /research/fl/flinternal/
+
