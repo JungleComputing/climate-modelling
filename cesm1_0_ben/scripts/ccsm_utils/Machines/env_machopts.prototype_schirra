@@ -1,0 +1,53 @@
+#! /bin/csh -f
+
+# -------------------------------------------------------------------------
+# Schirra machine specific settings
+# -------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------
+# Modules
+# -------------------------------------------------------------------------
+
+if (-e /opt/Modules/default/init/csh) then
+  source /opt/Modules/default/init/csh
+
+#  module purge
+#  module load modules xlf/11.1.00 netcdf
+  module load netcdf dot
+#  module list
+endif
+
+# -------------------------------------------------------------------------
+# Build and runtime environment variables - edit before the initial build 
+# -------------------------------------------------------------------------
+
+limit datasize  unlimited    
+setenv OBJECT_MODE 64
+setenv MP_EUILIB us          
+setenv MP_EUIDEVICE sn_all
+setenv MP_STDINMODE 0
+setenv MP_LABELIO yes        
+setenv OMP_DYNAMIC FALSE     
+setenv AIXTHREAD_SCOPE S
+setenv MALLOCMULTIHEAP TRUE  
+if (${OBJECT_MODE} == 64) then
+  setenv XLSMPOPTS "stack=256000000"
+else
+  setenv XLSMPOPTS "stack=86000000"
+endif
+setenv MPI_TYPE_MAX 100000
+
+#--- need to be tested ---
+unsetenv MP_TASK_AFFINITY
+setenv MP_MSG_API MPI
+setenv MP_SINGLE_THREAD yes
+setenv MP_USE_BULK_XFER no
+setenv SPINLOOPTIME 500
+setenv YIELDLOOPTIME 500
+
+setenv AIXTHREAD_SCOPE S
+setenv TARGET_CPU_RANGE -1
+setenv MP_SHARED_MEMORY yes
+setenv MEMORY_AFFINITY MCM
+setenv MP_EUILIB us
+

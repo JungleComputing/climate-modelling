@@ -1,0 +1,178 @@
+#! /bin/tcsh -f
+
+set mach = prototype_schirra
+
+#################################################################################
+if ($PHASE == set_batch) then
+#################################################################################
+
+source ./Tools/ccsm_getenv || exit -1
+
+# Determine tasks and threads for batch queue 
+
+set max_tasks_per_node = $MAX_TASKS_PER_NODE
+
+#@ ntasks_tot =  (($NTASKS_ATM * $NTHRDS_ATM) + \
+#($NTASKS_LND * $NTHRDS_LND) + ($NTASKS_ICE * $NTHRDS_ICE) + \
+#($NTASKS_OCN * $NTHRDS_OCN) + ($NTASKS_CPL * $NTHRDS_CPL))
+
+#@ ntasks_tot_others =  \
+#(($NTASKS_LND * $NTHRDS_LND) + ($NTASKS_ICE * $NTHRDS_ICE) + \
+#($NTASKS_OCN * $NTHRDS_OCN) + ($NTASKS_CPL * $NTHRDS_CPL))
+
+#@ ntasks_tot_atm =  ($NTASKS_ATM * $NTHRDS_ATM)
+
+@ n = 0
+foreach model ($MODELS)
+  @ n = $n + 1
+  if ($NTHRDS[$n] > $max_tasks_per_node ) then
+     echo "ERROR, NTHRDS maximum is $max_tasks_per_node"
+     echo "you have set NTHRDS = ( $NTHRDS[$n] ) - must reset"
+     exit 1
+  endif   
+end
+
+set ntasks_tot = `${UTILROOT}/Tools/taskmaker.pl -sumonly`
+set task_geo   = `${UTILROOT}/Tools/taskmaker.pl`
+
+echo "task_geo = $task_geo"
+
+set ptile = 16
+if (($max_tasks_per_node) > 16) set ptile = 32
+if (($ntasks_tot) <= 16) set ptile = 16
+
+#@ ptile_atm = $max_tasks_per_node / $NTHRDS_ATM
+@ n_nodes = $ntasks_tot / $max_tasks_per_node
+#@ atm_nodes = $ntasks_tot_atm / $max_tasks_per_node
+#@ others_nodes = $ntasks_tot_others / $max_tasks_per_node
+
+set runlen = "08:00:00"
+set queue = "normal"
+#this needs to be updated based on the gcost,ccost, etc
+#if ($CCSM_RUNLEN =~ S*) then
+#  set runlen = "01:00:00"
+#  set queue = "normal"
+#endif
+#if ($CCSM_RUNLEN =~ M*) then
+#  set runlen = "08:00:00"
+#  set queue = "normal"
+#endif
+#if ($CCSM_RUNLEN =~ L*) then
+#  set runlen = "24:00:00"
+#  set queue = "long"
+#endif
+#if ($CCSM_RUNLEN =~ X*) then
+#  set runlen = "72:00:00"
+#  set queue = "long"
+#endif
+
+# Job name is first fifteen characters of case name
+set jobname = `echo ${CASE} | cut -c1-15`
+
+#set account_name = `grep -i "^${CCSMUSER}:" /etc/project.ncar | cut -f 1 -d "," | cut -f 2 -d ":" `
+#if (-e ~/.ccsm_proj) then
+#   set account_name = `head -1 ~/.ccsm_proj`
+#endif
+
+set account_name = s0819
+
+cat >! $CASEROOT/${CASE}.${mach}.run << EOF1
+#! /bin/csh -f
+#==============================================================================
+#  This is a CCSM coupled model Load Leveler batch job script for $mach
+#==============================================================================
+#PBS -S /bin/csh
+#PBS -N ${jobname}
+#PBS -l walltime=${runlen}
+#PBS -W group_list=${account_name}
+#PBS -q ${queue}
+#PBS -V
+#PBS -j oe
+###PBS -l select=${atm_nodes}:ncpus=16:mpiprocs=${ptile_atm}+${others_nodes}:ncpus=16:mpiprocs=${ptile}
+#PBS -l select=${n_nodes}:ncpus=16:mpiprocs=${ptile}
+#PBS -l place=excl
+#PBS -l smt=true
+
+EOF1
+
+
+#################################################################################
+else if ($PHASE == set_exe) then
+#################################################################################
+
+cat >> ${CASEROOT}/${CASE}.${MACH}.run << EOF1
+# -------------------------------------------------------------------------
+# Run the model
+# -------------------------------------------------------------------------
+
+cd \$RUNDIR
+echo "\`date\` -- CSM EXECUTION BEGINS HERE" 
+poe ./ccsm.exe >&! ccsm.log.\$LID
+wait
+echo "\`date\` -- CSM EXECUTION HAS FINISHED" 
+
+# -------------------------------------------------------------------------
+# For Postprocessing
+# -------------------------------------------------------------------------
+
+unsetenv LSB_PJL_TASK_GEOMETRY
+
+EOF1
+
+
+#################################################################################
+else if ($PHASE == set_larch) then
+#################################################################################
+
+set jobname = `echo ${CASE} | cut -c1-12`
+set jobname = ${jobname}_la
+#set account_name = `showproj | tail -1`
+#if (-e ~/.ccsm_proj) then
+#   set account_name = `head -1 ~/.ccsm_proj`
+#endif
+
+set account_name = s0819
+
+cat >! $CASEROOT/${CASE}.${mach}.l_archive << EOF1
+#! /bin/csh -f
+#===============================================================================
+#  This is a CCSM coupled model batch long term archiving script
+#===============================================================================
+
+#PBS -W group_list=${account_name}
+#PBS -N ${jobname}
+##PBS -q prod
+#PBS -l walltime=04:00:00
+#PBS -j oe
+#PBS -S /bin/csh -V
+
+#-----------------------------------------------------------------------
+# Determine necessary environment variables
+#-----------------------------------------------------------------------
+
+cd $CASEROOT 
+
+source ./Tools/ccsm_getenv || exit -1
+
+#----------------------------------------------
+# run the long term archiver
+#----------------------------------------------
+
+\$CASETOOLS/ccsm_l_archive.csh
+
+EOF1
+
+#################################################################################
+else
+#################################################################################
+
+    echo "mkscripts.$mach"
+    echo "  PHASE setting of $PHASE is not an accepted value"
+    echo "  accepted values are set_batch, set_exe and set_larch"
+    exit 1
+
+#################################################################################
+endif
+#################################################################################
+ 
+

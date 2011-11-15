@@ -1,0 +1,281 @@
+===============================================================
+
+Tag name: cesm1_0_rel_02_cam5_0_03
+Originator(s): mvr
+Date: 21 June 2010
+One-line Summary: updated to trunk tag cam5_0_03; updated external definitions 
+to the release tags of the other components 
+
+Purpose of changes:
+
+Bugs fixed (include bugzilla ID):
+
+Describe any changes made to build system:
+
+Describe any changes made to the namelist:
+
+List any changes to the defaults for the boundary datasets:
+
+Describe any substantial timing or memory changes:
+
+Code reviewed by: Brian Eaton
+
+List all subroutines eliminated:
+
+List all subroutines added and what they do:
+
+List all existing files that have been modified, and describe the changes:
+M      models/atm/cam/bld/namelist_files/namelist_defaults_cam.xml
+M      models/atm/cam/src/physics/cam/tropopause.F90
+M      SVN_EXTERNAL_DIRECTORIES
+ M     .
+	
+If there were any failures reported from running test_driver.sh on any test
+platform, and checkin with these failures has been OK'd by the gatekeeper,
+then copy the lines from the td.*.status files for the failed tests to the
+appropriate machine below.  All failed tests must be justified.
+
+bluefire:  to be done post-tag
+
+edinburgh/lf95: to be done post-tag
+
+edinburgh/pgi: to be done post-tag
+
+CAM tag used for the baseline comparison tests if different than previous
+tag:
+
+Summarize any changes to answers, i.e.,
+- what code configurations:
+- what platforms/compilers:
+- nature of change (roundoff; larger than roundoff but same climate; new
+  climate): tbd
+
+===============================================================
+===============================================================
+
+Tag name: cesm1_0_rel_02_cam5_0_01
+Originator(s): mvr,jedwards
+Date: 17 June 2010
+One-line Summary: cleanup of log file output; bug fix for pnetcdf
+
+Purpose of changes:
+
+Bugs fixed (include bugzilla ID):
+
+Describe any changes made to build system:
+
+Describe any changes made to the namelist:
+
+List any changes to the defaults for the boundary datasets:
+
+Describe any substantial timing or memory changes:
+
+Code reviewed by: Brian Eaton
+
+List all subroutines eliminated:
+
+List all subroutines added and what they do:
+
+List all existing files that have been modified, and describe the changes:
+M      models/atm/cam/src/utils/cam_pio_utils.F90
+- bug fix for pnetcdf (from jedwards)
+
+M      models/atm/cam/src/utils/time_manager.F90
+M      models/atm/cam/src/utils/cam_csim4/ice_filenames.F90
+M      models/atm/cam/src/utils/cam_csim4/cpl_mct/ice_comp_mct.F90
+M      models/atm/cam/src/utils/cam_csim4/ice_data.F90
+M      models/atm/cam/src/utils/cam_csim4/ice_time_manager.F90
+M      models/atm/cam/src/utils/cam_csim4/ice_srf.F90
+M      models/atm/cam/src/utils/cam_csim4/ice_comp.F90
+M      models/atm/cam/src/physics/cam/rayleigh_friction.F90
+M      models/atm/cam/src/physics/cam/phys_gmean.F90
+M      models/atm/cam/src/physics/cam/modal_aer_opt.F90
+M      models/atm/cam/src/physics/cam/ndrop.F90
+M      models/atm/cam/src/physics/cam/convect_shallow.F90
+M      models/atm/cam/src/physics/cam/cldwat2m_macro.F90
+M      models/atm/cam/src/physics/cam/uwshcu.F90
+M      models/atm/cam/src/physics/cam/vertical_diffusion.F90
+M      models/atm/cam/src/physics/rrtmg/cloud_rad_props.F90
+M      models/atm/cam/src/chemistry/modal_aero/modal_aero_wateruptake.F90
+M      models/atm/cam/src/chemistry/bulk_aero/progseasalts_intr.F90
+M      models/atm/cam/src/chemistry/mozart/lin_strat_chem.F90
+M      models/atm/cam/src/chemistry/mozart/wei96.F90
+M      models/atm/cam/src/dynamics/sld/restart_dynamics.F90
+M      models/atm/cam/src/dynamics/eul/restart_dynamics.F90
+M      models/atm/cam/src/dynamics/fv/dyn_comp.F90
+M      models/atm/cam/src/dynamics/fv/restart_dynamics.F90
+- cleanup of log file output
+	
+If there were any failures reported from running test_driver.sh on any test
+platform, and checkin with these failures has been OK'd by the gatekeeper,
+then copy the lines from the td.*.status files for the failed tests to the
+appropriate machine below.  All failed tests must be justified.
+
+bluefire:  all PASS
+
+edinburgh/lf95: all PASS
+
+edinburgh/pgi: all PASS
+
+CAM tag used for the baseline comparison tests if different than previous
+tag:
+
+Summarize any changes to answers, i.e.,
+- what code configurations:
+- what platforms/compilers:
+- nature of change (roundoff; larger than roundoff but same climate; new
+  climate): b4b
+
+===============================================================
+===============================================================
+
+Tag name: cesm1_0_rel_01_cam5_0_01
+Originator(s): mvr
+Date: 15 June 2010
+One-line Summary: updated to trunk tag cam5_0_01
+
+Purpose of changes:
+
+Bugs fixed (include bugzilla ID):
+
+Describe any changes made to build system:
+
+Describe any changes made to the namelist:
+
+List any changes to the defaults for the boundary datasets:
+
+Describe any substantial timing or memory changes:
+
+Code reviewed by: Brian Eaton
+
+List all subroutines eliminated:
+
+List all subroutines added and what they do:
+
+List all existing files that have been modified, and describe the changes:
+M      models/atm/cam/src/utils/time_manager.F90
+
+If there were any failures reported from running test_driver.sh on any test
+platform, and checkin with these failures has been OK'd by the gatekeeper,
+then copy the lines from the td.*.status files for the failed tests to the
+appropriate machine below.  All failed tests must be justified.
+
+bluefire:  not tested
+
+edinburgh/lf95: not tested
+
+edinburgh/pgi: not tested
+
+===============================================================
+===============================================================
+
+Tag name: cesm1_0_rel_01_cam5_0_00
+Originator(s): aconley, fvitt
+Date: 14 June 2010
+One-line Summary: Include offline radiation driver and rrtmg clean up.
+
+Purpose of changes:
+ This provides the capability to preform offline radiation calculations.
+
+Bugs fixed (include bugzilla ID):
+
+Describe any changes made to build system:
+
+ -rad_driver configure option added
+
+Describe any changes made to the namelist:
+
+ rrtmg liqcloudoptics method "conley" changed to "gammadist"
+
+ rad_drv namelist added :
+   rad_drv_case - case name used in the offline radiation driver
+   rad_drv_infile - input filepath used in the offline radiation driver
+
+List any changes to the defaults for the boundary datasets:
+
+Describe any substantial timing or memory changes:
+
+Code reviewed by: Brian Eaton
+
+List all subroutines eliminated:
+
+List all subroutines added and what they do:
+
+A    models/atm/cam/tools/rad_driver/rad_driver_routines.F90
+A    models/atm/cam/tools/rad_driver/rad_data_input.F90
+A    models/atm/cam/tools/rad_driver/ccsm_driver.F90
+ - source code files needed for the offline radation driver
+
+List all existing files that have been modified, and describe the changes:
+
+U    models/atm/cam/bld/configure
+U    models/atm/cam/bld/config_files/definition.xml
+ - rad_driver configure option added
+
+U    models/atm/cam/bld/namelist_files/namelist_defaults_cam.xml
+ - changed "conley" liquid cloud optics method to "gammadist"
+
+U    models/atm/cam/bld/namelist_files/namelist_definition.xml
+ - rad_drv namelist added :
+   . rad_drv_case - case name used in the offline radiation driver
+   . rad_drv_infile - input filepath used in the offline radiation driver
+
+U    models/atm/cam/src/control/cam_history.F90
+ - calendar can be set as 'NOLEAP' as well as 'NO_LEAP'
+
+U    models/atm/cam/src/utils/time_manager.F90
+ - method added which allows the user to (re)set the date and time after the 
+   time_manager has been initialized
+
+U    models/atm/cam/src/physics/cam/radiation_data.F90
+ - cloud snow parameters added which are needed for rrtmg and MG microphysics
+
+U    models/atm/cam/src/physics/rrtmg/ebert_curry.F90
+U    models/atm/cam/src/physics/rrtmg/radiation.F90
+U    models/atm/cam/src/physics/rrtmg/slingo.F90
+ - code clean up: changed "conley" liquid cloud optics method to "gammadist"
+	
+If there were any failures reported from running test_driver.sh on any test
+platform, and checkin with these failures has been OK'd by the gatekeeper,
+then copy the lines from the td.*.status files for the failed tests to the
+appropriate machine below.  All failed tests must be justified.
+
+bluefire:  all PASS
+
+edinburgh/lf95: all PASS
+
+edinburgh/pgi: all PASS
+
+CAM tag used for the baseline comparison tests if different than previous
+tag:
+
+Summarize any changes to answers, i.e.,
+- what code configurations:
+- what platforms/compilers:
+- nature of change (roundoff; larger than roundoff but same climate; new
+  climate): 
+
+If bitwise differences were observed, how did you show they were no worse
+than roundoff?
+
+If this tag changes climate describe the run(s) done to evaluate the new
+climate in enough detail that it(they) could be reproduced, i.e.,
+- source tag (all code used must be in the repository):
+- platform/compilers:
+- configure commandline:
+- build-namelist command (or complete namelist):
+- MSS location of output:
+
+MSS location of control simulations used to validate new climate:
+
+URL for AMWG diagnostics output used to validate new climate:
+
+===============================================================
+===============================================================
+
+Tag name: cesm1_0_rel_00_cam5_0_00
+Originator(s): eaton
+Date: Sun Jun 13 10:37:44 MDT 2010
+One-line Summary: initial CAM5 release tag
+
+===============================================================
