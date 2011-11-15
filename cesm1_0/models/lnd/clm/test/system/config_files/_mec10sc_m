@@ -1,4 +1,0 @@
--mode ccsm_seq
--glc_nec 10
--spmd -nosmp
--s

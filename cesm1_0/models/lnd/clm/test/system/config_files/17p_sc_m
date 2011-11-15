@@ -1,4 +1,0 @@
--mode ccsm_seq
--spmd -nosmp
--maxpft 17
--s

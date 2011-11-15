@@ -1,7 +1,0 @@
--mode ccsm_seq
--nospmd -smp
--debug
--maxpft numpft+1
--bgc cn
--c13 on
--s

@@ -1,3 +1,0 @@
--mode ccsm_seq
--spmd -smp
--s
