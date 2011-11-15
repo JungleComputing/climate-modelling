@@ -1,0 +1,38 @@
+MPI_ABORT              -> partly done (messy exit)
+MPI_ERROR_STRING       -> done
+MPI_FINALIZE           -> partly done (messy exit)
+MPI_GET_PROCESSOR_NAME -> done
+
+MPI_INIT             -> done
+MPI_INITIALIZED      -> done
+
+MPI_GATHER           -> local only
+MPI_GATHERV          -> local only
+MPI_ALLGATHER        -> local only
+MPI_ALLREDUCE        -> local only
+MPI_ALLTOALLV        -> local only  
+MPI_BARRIER          -> local only
+MPI_BCAST            -> local only
+MPI_REDUCE           -> local only 
+MPI_SCATTERV         -> local only 
+
+MPI_COMM_CREATE      -> done
+MPI_COMM_DUP   
+MPI_COMM_GROUP       -> done 
+MPI_COMM_RANK        -> done 
+MPI_COMM_SIZE        -> done 
+MPI_COMM_SPLIT       -> done 
+MPI_GROUP_RANGE_INCL -> done 
+
+MPI_IRECV            -> done 
+MPI_IRSEND           -> done 
+MPI_ISEND            -> done
+MPI_RECV             -> done 
+MPI_RSEND            -> done
+MPI_SEND             -> done
+MPI_WAIT             -> done
+MPI_WAITALL
+MPI_WAITANY
+
+MPI_INTERCOMM_CREATE -> used in specific part of CAM (unsure if really used)
+MPI_BUFFER_ATTACH    -> used in specific part of CAM (unsure if really used, no bsend ?)
