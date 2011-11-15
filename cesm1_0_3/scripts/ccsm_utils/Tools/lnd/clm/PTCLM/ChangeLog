@@ -1,0 +1,35 @@
+================================================================================
+This file describes changes made to the PTCLM tool
+================================================================================        
+Originator: erik
+Date: May/04/2011
+Tag: cesm1_0_3
+Initial version of PTCLM for use with cesm1_0_3
+Known Bugs: (See KnownBugs file for details)
+    1251 (Test case aborts on Macintosh with seq-fault in US-Ha1 I_QIAN case)
+Testing:
+  bluefire testing: All PASS
+  jaguar testing: All PASS
+  edinburgh testing: All PASS except
+4 PTCLM.8696_US-UMB_I_1850.PTCLM      FAIL 0
+5 PTCLM.8696_US-UMB_I20TR.PTCLM	    FAIL 0
+6 PTCLM.8696_US-UMB_I20TRCN.PTCLM     FAIL 0
+7 PTCLM.8696_US-UMB_ICN.PTCLM	  FAIL 0
+8 PTCLM.8696_US-UMB_I1850CN.PTCLM     FAIL 0
+9 PTCLM.8696_US-UMB_IRCP85CN.PTCLM	FAIL 0
+10 PTCLM.8696_US-UMB_I.PTCLM	  FAIL 0
+11 PTCLM.8696_US-UMB_I_QIAN.PTCLM     FAIL 0
+12 PTCLM.8696_US-UMB_I.PTCLM	  FAIL 0
+14 PTCLM.8696_US-UMB_ICN_exit_spinup.PTCLM	FAIL 0
+15 PTCLM.8696_US-UMB_ICN_final_spinup.PTCLM	FAIL 0
+  yong/intel testing: All PASS
+
+Initial version of PTCLM python script for use with cesm1_0_3.
+
+PTCLM is a python tool built on top of CESM1.0 for running CLM "I" cases
+for supported single-point grids, and for data from Ameriflux Tower-sites,
+or other user-supplied single-point datasets.
+
+Data for the US-UMB Fluxtower site are available in the CESM inputdata repository.
+
+================================================================================        
