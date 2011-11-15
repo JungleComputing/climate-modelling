@@ -1,0 +1,23 @@
+This directory contains: 
+
+ cesm1_0  - The Community Earth System Model version 1.0 (CESM1.0)
+            See http://www.cesm.ucar.edu for details.
+
+ mpibis   - An MPI wrapper that employs Ibis for wide area communication. 
+
+ openmpi-1.4.2-src-fixed - A version version of open MPI with several fixes 
+                           in the C - Fortran layer. 
+
+NOTE: Up to SVN version 13684 mpibis works OK for C but not for Fortran due to 
+      bug in the openmpi fortran wrappers. These are fixed in the openmpi 
+      found in openmpi-1.4.2-src-fixed.
+
+---
+
+To create an experiment do a:
+
+      ./create_newcase -case <NAME> -compset B -res f09_g16 -mach DAS4
+
+This will create a directory <NAME> and fill it with the appropriate, script, 
+code, etc. 
+
