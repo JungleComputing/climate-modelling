@@ -536,7 +536,7 @@
 !-----------------------------------------------------------------------
 
 !BEN
-IMPLICIT (INTEGER) nx_blocks, ny_blocks
+IMPLICIT (INTEGER);blocks;
 
 write (*,*) 'BEN nx_blocks= ', nx_blocks, ' ny_blocks=', ny_blocks
 
