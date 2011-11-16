@@ -135,6 +135,9 @@ echo  Copy the necessary files into \$source_dir
 echo -----------------------------------------------------------------
 cd \$source_dir
 cp -fp \$srcdir/source/*.F90                .
+cp -fp \$srcdir/source/*.cc                 .
+cp -fp \$srcdir/source/*.cu                 .
+cp -fp \$srcdir/source/*.h                  .
 cp -fp \$srcdir/mpi/*.F90                   .
 cp -fp \$srcdir/drivers/cpl_share/*.F90     .
 if (\$COMP_INTERFACE == 'MCT') then

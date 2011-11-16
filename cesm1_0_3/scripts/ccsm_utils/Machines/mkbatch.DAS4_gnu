@@ -36,6 +36,7 @@ module purge
 module load openmpi/gcc/64/1.4.2
 module load netcdf/gcc/64/4.1.1
 module load sge/6.2u5p2
+module load cuda40
 module list 
 
 # Make new hostfile specifying the cores per node wanted

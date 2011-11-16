@@ -243,6 +243,12 @@ $(COMPLIB): $(OBJS)
 .c.o:
 	$(CC) -c $(INCLDIR) $(INCS) $(CFLAGS)  $<
 
+.cu.o:
+	nvcc -O3 -Xptxas=-v -c  $<
+
+.cc.o:
+	$(CC) -c $(INCLDIR) $(INCS) $(CFLAGS)  $<
+
 .F.o:
 	$(FC) -c $(INCLDIR) $(INCS) $(FFLAGS) $(FIXEDFLAGS) $<
 
