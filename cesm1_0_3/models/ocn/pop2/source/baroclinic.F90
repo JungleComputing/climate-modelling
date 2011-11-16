@@ -536,7 +536,7 @@
 !-----------------------------------------------------------------------
 
 !BEN
-write (*,"(A,I,A,I)") 'BEN nx_blocks= ', nx_blocks, ' ny_blocks= ', ny_blocks
+write (*,"(A,I3,A,I3)") 'BEN nx_blocks= ', nx_blocks, ' ny_blocks= ', ny_blocks
 
    !$OMP PARALLEL DO PRIVATE(iblock,this_block,k,kp1,km1,WTK,WORK1,factor)
 
