@@ -535,7 +535,10 @@
 !
 !-----------------------------------------------------------------------
 
- write (*,*) 'BEN nx_blocks= ', nx_blocks, ' ny_blocks=', ny_blocks
+!BEN
+IMPLICIT (INTEGER) nx_blocks, ny_blocks
+
+write (*,*) 'BEN nx_blocks= ', nx_blocks, ' ny_blocks=', ny_blocks
 
    !$OMP PARALLEL DO PRIVATE(iblock,this_block,k,kp1,km1,WTK,WORK1,factor)
 
