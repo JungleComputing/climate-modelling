@@ -536,10 +536,7 @@
 !-----------------------------------------------------------------------
 
 !BEN
-write (*,String) 'BEN nx_blocks= '
-write (*,String) nx_blocks
-write (*,String) ' ny_blocks= '
-write (*,String) ny_blocks
+write (*,"A,I,A,I") 'BEN nx_blocks= ', nx_blocks, ' ny_blocks= ', ny_blocks
 
    !$OMP PARALLEL DO PRIVATE(iblock,this_block,k,kp1,km1,WTK,WORK1,factor)
 
