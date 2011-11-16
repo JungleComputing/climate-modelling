@@ -9,7 +9,7 @@ interface
 	subroutine gpu_init ( n ) bind ( c )
 		use iso_c_binding
 		integer ( c_int ), VALUE :: n
-	end subroutine ben_init
+	end subroutine gpu_init
 
 	subroutine ben_timer_start ( ) bind ( c )
 	  use iso_c_binding
