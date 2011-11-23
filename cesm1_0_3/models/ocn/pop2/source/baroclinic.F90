@@ -22,9 +22,9 @@
 
    use kinds_mod, only: int_kind, r8, log_kind, r4, rtavg
    use blocks, only: nx_block, ny_block, block, get_block
-!   use distribution, only: 
+   use distribution, only: nprocs
    use domain_size
-   use domain, only: nblocks_clinic, blocks_clinic, POP_haloClinic
+   use domain, only: nblocks_clinic, blocks_clinic, POP_haloClinic, distrb_clinic
    use constants, only: delim_fmt, blank_fmt, p5, field_loc_center,          &
        field_type_scalar, c0, c1, c2, grav, ndelim_fmt,                      &
        hflux_factor, salinity_factor, salt_to_ppt
@@ -439,13 +439,13 @@
 
 !BEN
 !init timers
-call get_timer(timer_clinic,'BEN CLINIC',1,1)
-call get_timer(ben_timer_advection,'BEN CLINIC advection',1,1)
-call get_timer(ben_timer_coriolis,'BEN CLINIC coriolis',1,1)
-call get_timer(ben_timer_gradients,'BEN CLINIC gradients',1,1)
-call get_timer(ben_timer_hdiff,'BEN CLINIC hdiff',1,1)
-call get_timer(ben_timer_vdiff,'BEN CLINIC vdiff',1,1)
-call get_timer(ben_timer_zero,'BEN CLINIC zero',1,1)
+call get_timer(timer_clinic,'BEN CLINIC',1,distrb_clinic%nprocs)
+call get_timer(ben_timer_advection,'BEN CLINIC advection',1,distrb_clinic%nprocs)
+call get_timer(ben_timer_coriolis,'BEN CLINIC coriolis',1,distrb_clinic%nprocs)
+call get_timer(ben_timer_gradients,'BEN CLINIC gradients',1,distrb_clinic%nprocs)
+call get_timer(ben_timer_hdiff,'BEN CLINIC hdiff',1,distrb_clinic%nprocs)
+call get_timer(ben_timer_vdiff,'BEN CLINIC vdiff',1,distrb_clinic%nprocs)
+call get_timer(ben_timer_zero,'BEN CLINIC zero',1,distrb_clinic%nprocs)
 
 
  call flushm (stdout)
