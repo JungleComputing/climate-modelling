@@ -124,7 +124,13 @@
 
 !BEN
    integer (POP_i4), private :: &
-      timer_clinic              ! timer number for clinic subroutine
+      timer_clinic,             &! timer number for clinic subroutine
+      ben_timer_advection,      &! timer number for clinic subroutine
+      ben_timer_coriolis,       &! timer number for clinic subroutine
+      ben_timer_gradients,      &! timer number for clinic subroutine
+      ben_timer_hdiff,          &! timer number for clinic subroutine
+      ben_timer_vdiff,          &! timer number for clinic subroutine
+      ben_timer_zero            &! timer number for clinic subroutine
 
 
 
@@ -432,10 +438,14 @@
 
 
 !BEN
-!init timer
- call get_timer(timer_clinic,'CLINIC',1,8)
-
-
+!init timers
+call get_timer(timer_clinic,'BEN CLINIC',1,1)
+call get_timer(ben_timer_advection,'BEN CLINIC advection',1,1)
+call get_timer(ben_timer_coriolis,'BEN CLINIC coriolis',1,1)
+call get_timer(ben_timer_gradients,'BEN CLINIC gradients',1,1)
+call get_timer(ben_timer_hdiff,'BEN CLINIC hdiff',1,1)
+call get_timer(ben_timer_vdiff,'BEN CLINIC vdiff',1,1)
+call get_timer(ben_timer_zero,'BEN CLINIC zero',1,1)
 
 
  call flushm (stdout)
@@ -866,6 +876,9 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 !
 !-----------------------------------------------------------------------
 
+write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
+
+
    !$OMP PARALLEL DO PRIVATE(iblock,this_block,k,km1,kp1,n, &
    !$OMP                     WUK,FX,FY,WORK1,WORK2)
 
@@ -908,9 +921,8 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 !
 !-----------------------------------------------------------------------
 
-write (stdout,*) 'BEN clinic'
-write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
-write (stdout,*) 'BEN k= ', k, ' iblock= ', iblock ! ' this_block= ', this_block
+!write (stdout,*) 'BEN clinic'
+!write (stdout,*) 'BEN k= ', k, ' iblock= ', iblock ! ' this_block= ', this_block
 
 
 call timer_start(timer_clinic)
@@ -1481,7 +1493,7 @@ call timer_stop(timer_clinic)
 !  set vertical velocity at surface
 !
 !-----------------------------------------------------------------------
-
+call timer_start(ben_timer_advection)
    bid = this_block%local_id
  
    if (k == 1) WUK = DHU_BLOCK  ! free surface
@@ -1502,38 +1514,40 @@ call timer_stop(timer_clinic)
                                           VCUR(:,:,k)*WORKY)
       endif
    endif
-
+call timer_stop(ben_timer_advection)
 !-----------------------------------------------------------------------
 !
 !  coriolis terms
 !
 !-----------------------------------------------------------------------
-
+call timer_start(ben_timer_coriolis)
    if (impcor .and. leapfrogts) then          ! implicit, leapfrog
-
+write (stdout,*) 'BEN in clinic: implicit, leapfrog'
       FX = FX + FCOR(:,:,bid)*(      gamma* VCUR(:,:,k) + &
                                (c1 - gamma)*VOLD(:,:,k))
       FY = FY - FCOR(:,:,bid)*(      gamma* UCUR(:,:,k) + & 
                                (c1 - gamma)*UOLD(:,:,k))
 
    elseif(.not.impcor .and. leapfrogts) then  ! explicit, leapfrog
+write (stdout,*) 'BEN in clinic: explicit, leapfrog'
 
       FX = FX + FCOR(:,:,bid)*VCUR(:,:,k)
       FY = FY - FCOR(:,:,bid)*UCUR(:,:,k)
 
    else                                  ! matsuno or foward euler
+write (stdout,*) 'BEN in clinic: matsuno or forward euler'
 
       FX = FX + FCOR(:,:,bid)*VOLD(:,:,k)
       FY = FY - FCOR(:,:,bid)*UOLD(:,:,k)
 
    endif
-
+call timer_stop(ben_timer_coriolis)
 !-----------------------------------------------------------------------
 !
 !  hydrostatic pressure gradients
 !
 !-----------------------------------------------------------------------
-
+call timer_start(ben_timer_gradients)
    call gradp(k,WORKX, WORKY, RHOKOLD, RHOKCUR, RHOKNEW, this_block)
 
    FX = FX - WORKX   ! gradp returns WORKX as +Gradx(p)
@@ -1552,13 +1566,13 @@ call timer_stop(timer_clinic)
    if (ldiag_global) then
       DIAG_KE_PRESS_2D(:,:,bid) = DIAG_KE_PRESS_2D(:,:,bid) + WORKX
    endif
-
+call timer_stop(ben_timer_gradients)
 !-----------------------------------------------------------------------
 !
 !  horizontal diffusion HDiff(Ub),HDiff(Vb)
 !
 !-----------------------------------------------------------------------
-
+call timer_start(ben_timer_hdiff)
    call hdiffu(k, WORKX, WORKY, UMIXK, VMIXK, this_block)
 
    FX = FX + WORKX
@@ -1575,13 +1589,13 @@ call timer_stop(timer_clinic)
                                            VCUR(:,:,k)*WORKY)
       endif
    endif
-
+call timer_stop(ben_timer_hdiff)
 !-----------------------------------------------------------------------
 !
 !  vertical diffusion VDiff(Ub),VDiff(Vb)
 !
 !-----------------------------------------------------------------------
-
+call timer_start(ben_timer_vdiff)
    call vdiffu(k, WORKX, WORKY, UOLD, VOLD, SMF_BLOCK, this_block)
 
    FX = FX + WORKX
@@ -1599,18 +1613,18 @@ call timer_stop(timer_clinic)
                                            VCUR(:,:,k)*WORKY)
       endif
    endif
-
+call timer_end(ben_timer_vdiff)
 !-----------------------------------------------------------------------
 !
 !  zero forces (and hence velocities) at land points
 !
 !-----------------------------------------------------------------------
-
+call timer_start(ben_timer_zero)
    where (k > KMU(:,:,bid))
       FX = c0
       FY = c0
    endwhere
-
+call timer_end(ben_timer_zero)
 !-----------------------------------------------------------------------
 !EOC
 

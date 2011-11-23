@@ -727,6 +727,7 @@
       stats_fmt1 = "('  Timer stats (node): min = ',f11.2,' seconds')",&
       stats_fmt2 = "('                      max = ',f11.2,' seconds')",&
       stats_fmt3 = "('                      mean= ',f11.2,' seconds')",&
+      stats_fmt5 = "('                      sum = ',f11.2,' seconds')",&
       stats_fmt4 = "('  Timer stats(block): min = ',f11.2,' seconds')"
 
 !-----------------------------------------------------------------------
@@ -771,6 +772,7 @@
             write (stdout,stats_fmt1) min_time
             write (stdout,stats_fmt2) max_time
             write (stdout,stats_fmt3) mean_time
+            write (stdout,stats_fmt5) global_sum(local_time,distrb_clinic)
          endif
 
          !*** compute and print statistics for block timers
