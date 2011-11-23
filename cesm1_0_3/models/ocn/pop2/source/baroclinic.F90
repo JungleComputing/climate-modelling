@@ -909,7 +909,7 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 
 write (stdout,*) 'BEN clinic'
 write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
-write (stdout,*) 'BEN k= ', k, ' iblock= ', iblock, ' this_block= ', this_block
+write (stdout,*) 'BEN k= ', k, ' iblock= ', iblock ! ' this_block= ', this_block
 
 
 call timer_start(timer_clinic)
