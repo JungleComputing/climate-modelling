@@ -121,6 +121,12 @@
       tavg_RESID_T,      &! free-surface residual flux (T)
       tavg_RESID_S        ! free-surface residual flux (S)
 
+!BEN
+   integer (POP_i4), private :: &
+      timer_clinic              ! timer number for clinic subroutine
+
+
+
 !-----------------------------------------------------------------------
 !
 !  ids for movie diagnostics computed from baroclinic
@@ -421,6 +427,12 @@
 
 !-----------------------------------------------------------------------
 !EOC
+
+
+
+!BEN
+!init timer
+ call get_timer(timer_clinic,'CLINIC',1,distrb_clinic%nprocs)
 
 
 
@@ -895,6 +907,12 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 !
 !-----------------------------------------------------------------------
 
+write (stdout,*) 'BEN clinic'
+write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
+write (stdout,*) 'BEN k= ', k, ' iblock= ', iblock, ' this_block= ', this_block
+
+
+call timer_start(timer_clinic)
          call clinic(k, FX, FY, WUK,                &
                         UVEL(:,:,:,curtime,iblock), &
                         VVEL(:,:,:,curtime,iblock), &
@@ -908,6 +926,7 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
                         SMF (:,:,:,iblock),         &
                         DHU (:,:,iblock),           &
                         this_block)
+call timer_stop(timer_clinic)
 
 !-----------------------------------------------------------------------
 !
