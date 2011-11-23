@@ -130,7 +130,7 @@
       ben_timer_gradients,      &! timer number for clinic subroutine
       ben_timer_hdiff,          &! timer number for clinic subroutine
       ben_timer_vdiff,          &! timer number for clinic subroutine
-      ben_timer_zero            &! timer number for clinic subroutine
+      ben_timer_zero             ! timer number for clinic subroutine
 
 
 
