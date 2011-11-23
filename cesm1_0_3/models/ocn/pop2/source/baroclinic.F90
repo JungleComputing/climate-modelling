@@ -432,7 +432,7 @@
 
 !BEN
 !init timer
- call get_timer(timer_clinic,'CLINIC',1,distrb_clinic%nprocs)
+ call get_timer(timer_clinic,'CLINIC',1,8)
 
 
 
