@@ -1613,7 +1613,7 @@ call timer_start(ben_timer_vdiff)
                                            VCUR(:,:,k)*WORKY)
       endif
    endif
-call timer_end(ben_timer_vdiff)
+call timer_stop(ben_timer_vdiff)
 !-----------------------------------------------------------------------
 !
 !  zero forces (and hence velocities) at land points
@@ -1624,7 +1624,7 @@ call timer_start(ben_timer_zero)
       FX = c0
       FY = c0
    endwhere
-call timer_end(ben_timer_zero)
+call timer_stop(ben_timer_zero)
 !-----------------------------------------------------------------------
 !EOC
 
