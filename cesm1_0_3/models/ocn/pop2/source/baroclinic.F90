@@ -22,7 +22,7 @@
 
    use kinds_mod, only: int_kind, r8, log_kind, r4, rtavg
    use blocks, only: nx_block, ny_block, block, get_block
-   use distribution, only: nprocs
+   !use distribution
    use domain_size
    use domain, only: nblocks_clinic, blocks_clinic, POP_haloClinic, distrb_clinic
    use constants, only: delim_fmt, blank_fmt, p5, field_loc_center,          &
