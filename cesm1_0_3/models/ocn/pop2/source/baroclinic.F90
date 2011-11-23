@@ -63,6 +63,7 @@
        tavg_passive_tracers_baroclinic_correct
    use exit_mod, only: sigAbort, exit_pop, flushm
    use overflows
+   use timers
 
    implicit none
    private
