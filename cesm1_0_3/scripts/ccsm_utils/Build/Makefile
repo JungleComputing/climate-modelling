@@ -234,8 +234,19 @@ ifeq ($(strip $(ULIBDEP)),)
    endif
 endif
 
+#
+# JASON -- changed the link order from:
+#
+#     $(LD) -o $(EXEC_SE) $(OBJS) $(CLIBS) $(ULIBS) $(SLIBS) $(MLIBS) $(LDFLAGS)
+#
+# to:
+#
+#     $(LD) -o $(EXEC_SE) $(OBJS) $(CLIBS) $(ULIBS) $(LDFLAGS) $(SLIBS) $(MLIBS)
+#
+# This ensure that any mpi wrappers preceed the 'real' mpi library
+#
 $(EXEC_SE): $(OBJS) $(ULIBDEP)
-	$(LD) -o $(EXEC_SE) $(OBJS) $(CLIBS) $(ULIBS) $(SLIBS) $(MLIBS) $(LDFLAGS)
+	$(LD) -o $(EXEC_SE) $(OBJS) $(CLIBS) $(ULIBS) $(LDFLAGS) $(SLIBS) $(MLIBS) 
 
 $(COMPLIB): $(OBJS)
 	$(AR) -r $(COMPLIB) $(OBJS)
