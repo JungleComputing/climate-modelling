@@ -127,7 +127,7 @@
       timer_clinic,             &! timer number for clinic subroutine
       ben_timer_advection,      &! timer number for clinic subroutine
       ben_timer_coriolis,       &! timer number for clinic subroutine
-      ben_timer_gradients,      ! timer number for clinic subroutine
+      ben_timer_gradients      ! timer number for clinic subroutine
       !ben_timer_hdiff,          &! timer number for clinic subroutine
       !ben_timer_vdiff,          &! timer number for clinic subroutine
       !ben_timer_zero             ! timer number for clinic subroutine
