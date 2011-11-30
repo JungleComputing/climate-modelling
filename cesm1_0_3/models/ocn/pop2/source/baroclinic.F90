@@ -24,7 +24,7 @@
    use blocks, only: nx_block, ny_block, block, get_block
    !use distribution
    use domain_size
-   use domain, only: nblocks_clinic, blocks_clinic, POP_haloClinic, distrb_clinic
+   use domain, only: nblocks_clinic, blocks_clinic, POP_haloClinic
    use constants, only: delim_fmt, blank_fmt, p5, field_loc_center,          &
        field_type_scalar, c0, c1, c2, grav, ndelim_fmt,                      &
        hflux_factor, salinity_factor, salt_to_ppt
@@ -127,10 +127,10 @@
       timer_clinic,             &! timer number for clinic subroutine
       ben_timer_advection,      &! timer number for clinic subroutine
       ben_timer_coriolis,       &! timer number for clinic subroutine
-      ben_timer_gradients,      &! timer number for clinic subroutine
-      ben_timer_hdiff,          &! timer number for clinic subroutine
-      ben_timer_vdiff,          &! timer number for clinic subroutine
-      ben_timer_zero             ! timer number for clinic subroutine
+      ben_timer_gradients,      ! timer number for clinic subroutine
+      !ben_timer_hdiff,          &! timer number for clinic subroutine
+      !ben_timer_vdiff,          &! timer number for clinic subroutine
+      !ben_timer_zero             ! timer number for clinic subroutine
 
 
 
@@ -447,13 +447,13 @@
 !call get_timer(ben_timer_vdiff,'BEN CLINIC vdiff',1,distrb_clinic%nprocs)
 !call get_timer(ben_timer_zero,'BEN CLINIC zero',1,distrb_clinic%nprocs)
 
-call get_timer(timer_clinic,'BEN CLINIC',1,0)
-call get_timer(ben_timer_advection,'BEN CLINIC advection',1,0)
-call get_timer(ben_timer_coriolis,'BEN CLINIC coriolis',1,0)
-call get_timer(ben_timer_gradients,'BEN CLINIC gradients',1,0)
-call get_timer(ben_timer_hdiff,'BEN CLINIC hdiff',1,0)
-call get_timer(ben_timer_vdiff,'BEN CLINIC vdiff',1,0)
-call get_timer(ben_timer_zero,'BEN CLINIC zero',1,0)
+call get_timer(timer_clinic,'BEN CLINIC',1,1)
+call get_timer(ben_timer_advection,'BEN CLINIC advection',1,1)
+call get_timer(ben_timer_coriolis,'BEN CLINIC coriolis',1,1)
+call get_timer(ben_timer_gradients,'BEN CLINIC gradients',1,1)
+!call get_timer(ben_timer_hdiff,'BEN CLINIC hdiff',1,1)
+!call get_timer(ben_timer_vdiff,'BEN CLINIC vdiff',1,1)
+!call get_timer(ben_timer_zero,'BEN CLINIC zero',1,1)
 
 
  call flushm (stdout)
@@ -1580,7 +1580,7 @@ call timer_stop(ben_timer_gradients)
 !  horizontal diffusion HDiff(Ub),HDiff(Vb)
 !
 !-----------------------------------------------------------------------
-call timer_start(ben_timer_hdiff)
+!call timer_start(ben_timer_hdiff)
    call hdiffu(k, WORKX, WORKY, UMIXK, VMIXK, this_block)
 
    FX = FX + WORKX
@@ -1597,13 +1597,13 @@ call timer_start(ben_timer_hdiff)
                                            VCUR(:,:,k)*WORKY)
       endif
    endif
-call timer_stop(ben_timer_hdiff)
+!call timer_stop(ben_timer_hdiff)
 !-----------------------------------------------------------------------
 !
 !  vertical diffusion VDiff(Ub),VDiff(Vb)
 !
 !-----------------------------------------------------------------------
-call timer_start(ben_timer_vdiff)
+!call timer_start(ben_timer_vdiff)
    call vdiffu(k, WORKX, WORKY, UOLD, VOLD, SMF_BLOCK, this_block)
 
    FX = FX + WORKX
@@ -1621,18 +1621,18 @@ call timer_start(ben_timer_vdiff)
                                            VCUR(:,:,k)*WORKY)
       endif
    endif
-call timer_stop(ben_timer_vdiff)
+!call timer_stop(ben_timer_vdiff)
 !-----------------------------------------------------------------------
 !
 !  zero forces (and hence velocities) at land points
 !
 !-----------------------------------------------------------------------
-call timer_start(ben_timer_zero)
+!call timer_start(ben_timer_zero)
    where (k > KMU(:,:,bid))
       FX = c0
       FY = c0
    endwhere
-call timer_stop(ben_timer_zero)
+!call timer_stop(ben_timer_zero)
 !-----------------------------------------------------------------------
 !EOC
 
