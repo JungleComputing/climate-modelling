@@ -1522,20 +1522,20 @@ call timer_stop(ben_timer_advection)
 !-----------------------------------------------------------------------
 call timer_start(ben_timer_coriolis)
    if (impcor .and. leapfrogts) then          ! implicit, leapfrog
-write (stdout,*) 'BEN in clinic: implicit, leapfrog'
+!write (stdout,*) 'BEN in clinic: implicit, leapfrog'
       FX = FX + FCOR(:,:,bid)*(      gamma* VCUR(:,:,k) + &
                                (c1 - gamma)*VOLD(:,:,k))
       FY = FY - FCOR(:,:,bid)*(      gamma* UCUR(:,:,k) + & 
                                (c1 - gamma)*UOLD(:,:,k))
 
    elseif(.not.impcor .and. leapfrogts) then  ! explicit, leapfrog
-write (stdout,*) 'BEN in clinic: explicit, leapfrog'
+!write (stdout,*) 'BEN in clinic: explicit, leapfrog'
 
       FX = FX + FCOR(:,:,bid)*VCUR(:,:,k)
       FY = FY - FCOR(:,:,bid)*UCUR(:,:,k)
 
    else                                  ! matsuno or foward euler
-write (stdout,*) 'BEN in clinic: matsuno or forward euler'
+!write (stdout,*) 'BEN in clinic: matsuno or forward euler'
 
       FX = FX + FCOR(:,:,bid)*VOLD(:,:,k)
       FY = FY - FCOR(:,:,bid)*UOLD(:,:,k)
