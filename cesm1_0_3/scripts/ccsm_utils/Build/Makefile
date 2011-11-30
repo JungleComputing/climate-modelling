@@ -216,7 +216,7 @@ test_esmf: test_esmf.o
 #-------------------------------------------------------------------------------
 
 .SUFFIXES:
-.SUFFIXES: .F90 .F .f90 .c .o
+.SUFFIXES: .F90 .F .f90 .c .cc .o
 
 ifeq ($(strip $(ULIBDEP)),)
    ifneq ($(strip $(LIBROOT)),)
