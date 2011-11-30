@@ -439,13 +439,21 @@
 
 !BEN
 !init timers
-call get_timer(timer_clinic,'BEN CLINIC',1,distrb_clinic%nprocs)
-call get_timer(ben_timer_advection,'BEN CLINIC advection',1,distrb_clinic%nprocs)
-call get_timer(ben_timer_coriolis,'BEN CLINIC coriolis',1,distrb_clinic%nprocs)
-call get_timer(ben_timer_gradients,'BEN CLINIC gradients',1,distrb_clinic%nprocs)
-call get_timer(ben_timer_hdiff,'BEN CLINIC hdiff',1,distrb_clinic%nprocs)
-call get_timer(ben_timer_vdiff,'BEN CLINIC vdiff',1,distrb_clinic%nprocs)
-call get_timer(ben_timer_zero,'BEN CLINIC zero',1,distrb_clinic%nprocs)
+!call get_timer(timer_clinic,'BEN CLINIC',1,distrb_clinic%nprocs)
+!call get_timer(ben_timer_advection,'BEN CLINIC advection',1,distrb_clinic%nprocs)
+!call get_timer(ben_timer_coriolis,'BEN CLINIC coriolis',1,distrb_clinic%nprocs)
+!call get_timer(ben_timer_gradients,'BEN CLINIC gradients',1,distrb_clinic%nprocs)
+!call get_timer(ben_timer_hdiff,'BEN CLINIC hdiff',1,distrb_clinic%nprocs)
+!call get_timer(ben_timer_vdiff,'BEN CLINIC vdiff',1,distrb_clinic%nprocs)
+!call get_timer(ben_timer_zero,'BEN CLINIC zero',1,distrb_clinic%nprocs)
+
+call get_timer(timer_clinic,'BEN CLINIC',1,0)
+call get_timer(ben_timer_advection,'BEN CLINIC advection',1,0)
+call get_timer(ben_timer_coriolis,'BEN CLINIC coriolis',1,0)
+call get_timer(ben_timer_gradients,'BEN CLINIC gradients',1,0)
+call get_timer(ben_timer_hdiff,'BEN CLINIC hdiff',1,0)
+call get_timer(ben_timer_vdiff,'BEN CLINIC vdiff',1,0)
+call get_timer(ben_timer_zero,'BEN CLINIC zero',1,0)
 
 
  call flushm (stdout)
