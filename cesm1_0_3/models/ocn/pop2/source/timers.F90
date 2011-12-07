@@ -718,7 +718,7 @@
       local_time,       &! temp space for holding local timer results
       min_time,         &! minimum accumulated time
       max_time,         &! maximum accumulated time
-      mean_time         &! mean    accumulated time
+      mean_time,         &! mean    accumulated time
       total_time         ! total accumulated time
 
    character (60), parameter :: &
