@@ -718,7 +718,8 @@
       local_time,       &! temp space for holding local timer results
       min_time,         &! minimum accumulated time
       max_time,         &! maximum accumulated time
-      mean_time          ! mean    accumulated time
+      mean_time         &! mean    accumulated time
+      total_time         ! total accumulated time
 
    character (60), parameter :: &
       timer_format = "('Timer number',i3,' Time =',f11.2,' seconds',3x,a)"
@@ -768,11 +769,12 @@
          min_time = global_minval(local_time)
          mean_time = global_sum(local_time,distrb_clinic)/ &
                      real(all_timers(timer_id)%num_nodes)
+         total_time = global_sum(local_time,distrb_clinic)
          if (my_task == master_task) then
             write (stdout,stats_fmt1) min_time
             write (stdout,stats_fmt2) max_time
             write (stdout,stats_fmt3) mean_time
-            write (stdout,stats_fmt5) global_sum(local_time,distrb_clinic)
+            write (stdout,stats_fmt5) total_time
          endif
 
          !*** compute and print statistics for block timers

@@ -133,7 +133,6 @@
       !ben_timer_zero             ! timer number for clinic subroutine
 
 
-
 !-----------------------------------------------------------------------
 !
 !  ids for movie diagnostics computed from baroclinic
