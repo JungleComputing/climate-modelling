@@ -127,11 +127,14 @@
       timer_clinic,             &! timer number for clinic subroutine
       ben_timer_advection,      &! timer number for clinic subroutine
       ben_timer_coriolis,       &! timer number for clinic subroutine
-      ben_timer_gradients      ! timer number for clinic subroutine
-      !ben_timer_hdiff,          &! timer number for clinic subroutine
-      !ben_timer_vdiff,          &! timer number for clinic subroutine
-      !ben_timer_zero             ! timer number for clinic subroutine
-
+      ben_timer_gradients,      &! timer number for clinic subroutine
+      ben_timer_hdiff,          &! timer number for clinic subroutine
+      ben_timer_vdiff,          &! timer number for clinic subroutine
+      ben_timer_zero,           & ! timer number for clinic subroutine
+      timer_baro_state, &
+      timer_baro_rest, &
+      timer_baro_updatet, &
+      timer_baro_fluxvelocities
 
 !-----------------------------------------------------------------------
 !
@@ -450,9 +453,14 @@ call get_timer(timer_clinic,'BEN CLINIC',1,8)
 call get_timer(ben_timer_advection,'BEN CLINIC advection',1,8)
 call get_timer(ben_timer_coriolis,'BEN CLINIC coriolis',1,8)
 call get_timer(ben_timer_gradients,'BEN CLINIC gradients',1,8)
-!call get_timer(ben_timer_hdiff,'BEN CLINIC hdiff',1,1)
-!call get_timer(ben_timer_vdiff,'BEN CLINIC vdiff',1,1)
-!call get_timer(ben_timer_zero,'BEN CLINIC zero',1,1)
+call get_timer(ben_timer_hdiff,'BEN CLINIC hdiff',1,8)
+call get_timer(ben_timer_vdiff,'BEN CLINIC vdiff',1,8)
+call get_timer(ben_timer_zero,'BEN CLINIC zero',1,8)
+
+call get_timer(timer_baro_state,'BEN BARO state',1,8)
+call get_timer(timer_baro_rest, 'BEN BARO rest of baroclinic',1,8)
+call get_timer(timer_baro_updatet, 'BEN BARO update tracers',1,8)
+call get_timer(timer_baro_fluxvelocities, 'BEN BARO flux velocities',1,8)
 
 
  call flushm (stdout)
@@ -548,6 +556,8 @@ call get_timer(ben_timer_gradients,'BEN CLINIC gradients',1,8)
 !  compute flux velocities in ghost cells
 !
 !-----------------------------------------------------------------------
+!BEN_TIMER
+call timer_start(timer_baro_fluxvelocities)
 
    errorCode = POP_Success
 
@@ -558,12 +568,14 @@ call get_timer(ben_timer_gradients,'BEN CLINIC gradients',1,8)
          'baroclinic_driver: error in comp_flux_vel_ghost')
       return
    endif
-
+call timer_end(timer_baro_fluxvelocities)
 !-----------------------------------------------------------------------
 !
 !  first block loop to update tracers
 !
 !-----------------------------------------------------------------------
+
+
 
 !BEN
 !write (*,"(A,I3,A,I3)") 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
@@ -573,6 +585,10 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 
    do iblock = 1,nblocks_clinic
       this_block = get_block(blocks_clinic(iblock),iblock)  
+
+
+      !BEN_TIMER update_tracers
+    call timer_start(timer_baro_updatet)
 
       do k = 1,km 
 
@@ -797,7 +813,8 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 
       enddo  ! k loop
 
-
+      !BEN_TIMER STOP update_tracers
+    call timer_end(timer_baro_updatet)
 !-----------------------------------------------------------------------
 !
 !     if no implicit vertical mixing, we now have updated tracers
@@ -809,6 +826,8 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 !        occur after the barotropic solver
 !
 !-----------------------------------------------------------------------
+
+!BEN TIMER implicit vertical mixing of tracers is already timed
 
       if (implicit_vertical_mix) then
          if (sfc_layer_type /= sfc_layer_varthick) then
@@ -915,13 +934,13 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 !        we need the updated density for the pressure averaging
 !
 !-----------------------------------------------------------------------
-
+call timer_start(timer_baro_state)
          if (lpressure_avg .and. leapfrogts) then
             call state(k,k,TRACER(:,:,k,1,newtime,iblock), &
                            TRACER(:,:,k,2,newtime,iblock), &
                            this_block, RHOOUT=RHO(:,:,k,newtime,iblock))
          endif
-
+call timer_end(timer_baro_state)
 !-----------------------------------------------------------------------
 !
 !        calculate forcing terms (Fx,Fy) at level k.
@@ -953,6 +972,8 @@ call timer_stop(timer_clinic)
 !        store forces temporarily in UVEL(newtime),VVEL(newtime).
 !
 !-----------------------------------------------------------------------
+call timer_start(timer_baro_rest)
+
 
          if (impcor) then   ! implicit treatment
 
@@ -1083,6 +1104,7 @@ call timer_stop(timer_clinic)
 !-----------------------------------------------------------------------
 
    enddo ! second block loop
+call timer_end(timer_baro_rest)
 
    !$OMP END PARALLEL DO
 
