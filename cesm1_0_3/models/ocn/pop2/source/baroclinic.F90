@@ -883,7 +883,7 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 !
 !-----------------------------------------------------------------------
 
-write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
+!write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 
 
    !$OMP PARALLEL DO PRIVATE(iblock,this_block,k,km1,kp1,n, &
@@ -1579,7 +1579,7 @@ call timer_stop(ben_timer_gradients)
 !  horizontal diffusion HDiff(Ub),HDiff(Vb)
 !
 !-----------------------------------------------------------------------
-!call timer_start(ben_timer_hdiff)
+call timer_start(ben_timer_hdiff)
    call hdiffu(k, WORKX, WORKY, UMIXK, VMIXK, this_block)
 
    FX = FX + WORKX
@@ -1596,13 +1596,13 @@ call timer_stop(ben_timer_gradients)
                                            VCUR(:,:,k)*WORKY)
       endif
    endif
-!call timer_stop(ben_timer_hdiff)
+call timer_stop(ben_timer_hdiff)
 !-----------------------------------------------------------------------
 !
 !  vertical diffusion VDiff(Ub),VDiff(Vb)
 !
 !-----------------------------------------------------------------------
-!call timer_start(ben_timer_vdiff)
+call timer_start(ben_timer_vdiff)
    call vdiffu(k, WORKX, WORKY, UOLD, VOLD, SMF_BLOCK, this_block)
 
    FX = FX + WORKX
@@ -1620,18 +1620,18 @@ call timer_stop(ben_timer_gradients)
                                            VCUR(:,:,k)*WORKY)
       endif
    endif
-!call timer_stop(ben_timer_vdiff)
+call timer_stop(ben_timer_vdiff)
 !-----------------------------------------------------------------------
 !
 !  zero forces (and hence velocities) at land points
 !
 !-----------------------------------------------------------------------
-!call timer_start(ben_timer_zero)
+call timer_start(ben_timer_zero)
    where (k > KMU(:,:,bid))
       FX = c0
       FY = c0
    endwhere
-!call timer_stop(ben_timer_zero)
+call timer_stop(ben_timer_zero)
 !-----------------------------------------------------------------------
 !EOC
 
