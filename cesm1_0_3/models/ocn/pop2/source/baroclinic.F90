@@ -568,7 +568,7 @@ call timer_start(timer_baro_fluxvelocities)
          'baroclinic_driver: error in comp_flux_vel_ghost')
       return
    endif
-call timer_end(timer_baro_fluxvelocities)
+call timer_stop(timer_baro_fluxvelocities)
 !-----------------------------------------------------------------------
 !
 !  first block loop to update tracers
@@ -814,7 +814,7 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
       enddo  ! k loop
 
       !BEN_TIMER STOP update_tracers
-    call timer_end(timer_baro_updatet)
+    call timer_stop(timer_baro_updatet)
 !-----------------------------------------------------------------------
 !
 !     if no implicit vertical mixing, we now have updated tracers
@@ -940,7 +940,7 @@ call timer_start(timer_baro_state)
                            TRACER(:,:,k,2,newtime,iblock), &
                            this_block, RHOOUT=RHO(:,:,k,newtime,iblock))
          endif
-call timer_end(timer_baro_state)
+call timer_stop(timer_baro_state)
 !-----------------------------------------------------------------------
 !
 !        calculate forcing terms (Fx,Fy) at level k.
@@ -1104,7 +1104,7 @@ call timer_start(timer_baro_rest)
 !-----------------------------------------------------------------------
 
    enddo ! second block loop
-call timer_end(timer_baro_rest)
+call timer_stop(timer_baro_rest)
 
    !$OMP END PARALLEL DO
 
