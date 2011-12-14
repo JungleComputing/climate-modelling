@@ -13,10 +13,6 @@ public class Connection implements Protocol {
     class SenderThread extends Thread {
         public void run() {
             try {
-                connectionSetup();
-
-                receiver.start();
-
                 boolean done = false;
 
                 while (!done) {
@@ -52,30 +48,71 @@ public class Connection implements Protocol {
     private final DataInputStream in;
     private final DataOutputStream out;
 
-    private String clusterName;
-    private int clusterRank;
-    private int clusterSize;
-    private int localRank;
-    private int localSize;
+    public final String clusterName;
+    public final int clusterRank;
+    public final int clusterSize;
+    public final int localRank;
+    public final int localSize;
 
-    private LinkedList<Message> incoming = new LinkedList<Message>();
+    public final int pid;
+    
+    private final LinkedList<Message> incoming = new LinkedList<Message>();
     private boolean done = false;
 
-    Connection(Server parent, Socket s) throws IOException {
+    Connection(Server parent, Socket s) throws Exception {
         this.parent = parent;
         this.s = s;
 
         //in = new DataInputStream(new NoisyInputStream(s.getInputStream()));
-        // FIXME: Add buffering here when everything runs OK.
         in = new DataInputStream(new BufferedInputStream(s.getInputStream()));
         out = new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
 
+        // Read the incoming handshake.
+        int opcode = in.readInt();
+
+        if (opcode != OPCODE_HANDSHAKE) {
+            throw new Exception("Illegal opcode " + opcode);
+        }
+
+        localRank = in.readInt();
+        localSize = in.readInt();
+        clusterRank = in.readInt();
+        clusterSize = in.readInt();
+
+        pid = ((clusterRank & 0xFF) << 24) | (localRank & 0x00FFFFFF);   
+        
+        int len = in.readInt();
+
+        byte [] tmp = new byte[len];
+
+        in.readFully(tmp);
+
+        clusterName = new String(tmp);
+
+        // Register ourselves at our cluster.
+        Cluster c = parent.getCluster(clusterRank, localSize, clusterSize, clusterName);
+        c.addConnection(localRank, localSize, clusterName, this);
+
+        // Wait until everyone has registered.
+        int [] clusterSizes = parent.waitUntilSignupComplete();
+        
+        // Write the output handshake.
+        out.write(OPCODE_HANDSHAKE_ACCEPTED);
+
+        for (int i=0;i<clusterSizes.length;i++) {
+            out.writeInt(clusterSizes[i]);
+        }
+
+        out.flush();
+                
+        // Start the sender and receiver threads.
         sender = new SenderThread();
         receiver = new ReceiverThread();
-
+   
         sender.start();
+        receiver.start();
     }
-
+    
     void done() {
         synchronized (incoming) {
             done = true;
@@ -115,39 +152,7 @@ public class Connection implements Protocol {
         }
     }
 
-    private void readHandshake() throws Exception {
-
-        int opcode = in.readInt();
-
-        if (opcode != OPCODE_HANDSHAKE) {
-            throw new Exception("Illegal opcode " + opcode);
-        }
-
-        localRank = in.readInt();
-        localSize = in.readInt();
-        clusterRank = in.readInt();
-        clusterSize = in.readInt();
-
-        int len = in.readInt();
-
-        byte [] tmp = new byte[len];
-
-        in.readFully(tmp);
-
-        clusterName = new String(tmp);
-    }
-
-    private void writeHandshake(int [] clusterSizes) throws Exception {
-
-        out.write(OPCODE_HANDSHAKE_ACCEPTED);
-
-        for (int i=0;i<clusterSizes.length;i++) {
-            out.writeInt(clusterSizes[i]);
-        }
-
-        out.flush();
-    }
-
+    
     private void close() {
         try {
             in.close();
@@ -166,17 +171,6 @@ public class Connection implements Protocol {
         } catch (Exception e) {
             // ignore
         }
-    }
-
-    private void connectionSetup() throws Exception {
-        readHandshake();
-
-        Cluster c = parent.getCluster(clusterRank, localSize, clusterSize, clusterName);
-
-        c.addConnection(localRank, localSize, clusterName, this);
-
-        int [] clusterSizes = parent.waitUntilSignupComplete();
-        writeHandshake(clusterSizes);
     }
 
     private boolean receiveMessage() throws Exception {

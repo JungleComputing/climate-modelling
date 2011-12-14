@@ -16,9 +16,9 @@ public class CommReply extends Message {
 
     // These contain info about the distribution of the virtual communicator.
     public final int flags;
-    public final byte [] bitmap;
+    public final int [] members;
 
-    CommReply(int comm, int newComm, int rank, int size, int color, int key, int flags, byte [] bitmap) {
+    CommReply(int comm, int newComm, int rank, int size, int color, int key, int flags, int [] members) {
 
         super(Protocol.OPCODE_COMM_REPLY, comm, -1);
 
@@ -29,7 +29,7 @@ public class CommReply extends Message {
         this.key = key;
 
         this.flags = flags;
-        this.bitmap = bitmap;
+        this.members = members;
     }
 
     void write(DataOutputStream out) throws IOException {
@@ -41,8 +41,9 @@ public class CommReply extends Message {
         out.writeInt(key);
         out.writeInt(flags);
 
-        if (size > 0) {
-            out.write(bitmap);
+        // NOTE: size may be 0!
+        for (int i=0;i<size;i++) { 
+            out.writeInt(members[i]);
         }
     }
 }

@@ -16,7 +16,7 @@ public class GroupReply extends Message {
 
     // These contain info about the distribution of the virtual communicator.
     public final int flags;
-    public final byte [] bitmap;
+    public final int [] members;
 
     // This field indicates if the
     public final int type;
@@ -29,7 +29,7 @@ public class GroupReply extends Message {
         this.rank = -1;
         this.size = -1;
         this.flags = -1;
-        this.bitmap = null;
+        this.members = null;
 
         if (overlap) {
             this.type = TYPE_SEPERATIST;
@@ -38,7 +38,7 @@ public class GroupReply extends Message {
         }
     }
 
-    GroupReply(int comm, int newComm, int rank, int size, int flags, byte [] bitmap) {
+    GroupReply(int comm, int newComm, int rank, int size, int flags, int [] members) {
 
         super(Protocol.OPCODE_GROUP_REPLY, comm, -1);
 
@@ -46,7 +46,7 @@ public class GroupReply extends Message {
         this.rank = rank;
         this.size = size;
         this.flags = flags;
-        this.bitmap = bitmap;
+        this.members = members;
         this.type = TYPE_ACTIVE;
     }
 
@@ -58,9 +58,11 @@ public class GroupReply extends Message {
         out.writeInt(size);
         out.writeInt(type);
         out.writeInt(flags);
-        
+
         if (type == TYPE_ACTIVE) {
-            out.write(bitmap);
+            for (int i=0;i<size;i++) { 
+                out.writeInt(members[i]);
+            }
         }
     }
 }

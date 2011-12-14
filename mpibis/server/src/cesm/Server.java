@@ -1,11 +1,32 @@
 package cesm;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 public class Server {
+
+    static class AcceptThread extends Thread { 
+
+        private final Server parent;
+        private final Socket s;
+        
+        AcceptThread(Server parent, Socket s) throws IOException { 
+            this.parent = parent;
+            this.s = s;
+        }
+            
+        public void run() {
+            try { 
+                new Connection(parent, s);
+            } catch (Exception e) {
+                System.err.println("Failed to initiate new connection!" + e);
+                e.printStackTrace(System.err);
+            }
+        }
+    }
 
     private final int clusterCount;
     private final int port;
@@ -34,32 +55,32 @@ public class Server {
     }
 
     protected void deliver(Message m) {
-    	
-    	Communicator c = null;
-    	
-    	// FIXME: potentially huge bottleneck!    
-    	synchronized (this) {
-    		if (m.comm >= communicators.size()) {
-    			System.err.println("Cannot deliver message, unknown communicator " + m.comm);
-    			return;
-    		}
 
-    		c = communicators.get(m.comm);
-    	}
+        Communicator c = null;
 
-		if (c == null) {
-			System.err.println("Cannot deliver message, unknown communicator " + m.comm);
-			return;
-		}
+        // FIXME: potentially huge bottleneck!    
+        synchronized (this) {
+            if (m.comm >= communicators.size()) {
+                System.err.println("Cannot deliver message, unknown communicator " + m.comm);
+                return;
+            }
+
+            c = communicators.get(m.comm);
+        }
+
+        if (c == null) {
+            System.err.println("Cannot deliver message, unknown communicator " + m.comm);
+            return;
+        }
 
         c.deliver(m);
     }
 
     protected int createCommunicator(Connection [] processes) {
-    	int c = -1;
-    	
+        int c = -1;
+
         synchronized (this) {
-        	c = communicators.size();
+            c = communicators.size();
             Communicator comm = new Communicator(this, c, processes);
             communicators.add(c, comm);
         }
@@ -158,7 +179,7 @@ public class Server {
 
             try {
                 Socket s = ss.accept();
-                new Connection(this, s);
+                new AcceptThread(this, s).start();
 
             } catch (SocketTimeoutException e) {
                 // ignored!

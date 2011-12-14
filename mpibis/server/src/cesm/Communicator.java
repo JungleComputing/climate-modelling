@@ -72,27 +72,20 @@ public class Communicator {
         return COMM_FLAG_LOCAL;
     }
 
-    private byte [] generateBitmap(String name, Connection [] procs) {
+    private int [] generateMembers(String name, Connection [] procs) {
 
         if (procs == null || procs.length == 0) {
-            System.err.println("INTERNAL ERROR: generateBitmap called for empty list!");
-            return new byte[0];
+            System.err.println("INTERNAL ERROR: generateMembers called for empty list!");
+            return new int[0];
         }
 
-        byte [] bitmap = new byte[procs.length];
+        int [] members = new int[procs.length];
 
         for (int i=0;i<procs.length;i++) {
-
-            if (name.equals(procs[i].getClusterName())) {
-                // local process
-                bitmap[i] = 1;
-            } else {
-                // remote process
-                bitmap[i] = 0;
-            }
+            members[i] = procs[i].pid;
         }
 
-        return bitmap;
+        return members;
     }
 
     // This implements the split operation. Note that dup and create are just
@@ -159,7 +152,7 @@ public class Communicator {
                     HashMap<String, Integer> realRanks = new HashMap<String, Integer>();
 
                     // Use a hash map to keep track of the bitmaps we need to generate.
-                    HashMap<String, byte []> bitmaps = new HashMap<String, byte []>();
+                    HashMap<String, int []> membersHash = new HashMap<String, int []>();
 
                     // Generate the flags needed by the virtual communicator.
                     int flags = generateFlags(procs);
@@ -181,15 +174,15 @@ public class Communicator {
                         realRanks.put(c.getClusterName(), key+1);
 
                         // Generate a correct bitmap for this cluster.
-                        byte [] bitmap = bitmaps.get(name);
+                        int [] members = membersHash.get(name);
 
-                        if (bitmap == null) {
-                            bitmap = generateBitmap(name, procs);
-                            bitmaps.put(name, bitmap);
+                        if (members == null) {
+                            members = generateMembers(name, procs);
+                            membersHash.put(name, members);
                         }
 
                         // Send the reply.
-                        c.enqueue(new CommReply(communicator, number, j, size, color, key, flags, bitmap), false);
+                        c.enqueue(new CommReply(communicator, number, j, size, color, key, flags, members), false);
                     }
 
                 } else {
@@ -249,7 +242,7 @@ public class Communicator {
         HashMap<String, Integer> realRanks = new HashMap<String, Integer>();
 
         // Use a hash map to keep track of the bitmaps we need to generate.
-        HashMap<String, byte []> bitmaps = new HashMap<String, byte []>();
+        HashMap<String, int []> membersHash = new HashMap<String, int []>();
 
         // Generate the flags needed by the virtual communicator.
         int flags = generateFlags(procs);
@@ -273,17 +266,17 @@ public class Communicator {
             realRanks.put(c.getClusterName(), key+1);
 
             // Generate a correct bitmap for this cluster.
-            byte [] bitmap = bitmaps.get(name);
+            int [] members = membersHash.get(name);
 
-            if (bitmap == null) {
-                bitmap = generateBitmap(name, procs);
-                bitmaps.put(name, bitmap);
+            if (members == null) {
+                members = generateMembers(name, procs);
+                membersHash.put(name, members);
             }
 
-            System.out.println("   reply(" + j + "): " + key + " " + name + " " + procs.length + " " + flags + " " + Arrays.toString(bitmap));
+            System.out.println("   reply(" + j + "): " + key + " " + name + " " + procs.length + " " + flags + " " + Arrays.toString(members));
 
             // Send the reply.
-            c.enqueue(new GroupReply(communicator, number, j, procs.length, flags, bitmap), false);
+            c.enqueue(new GroupReply(communicator, number, j, procs.length, flags, members), false);
         }
 
         // Send a reply to each process that does not participate, as they may still need to perform a some local collectives.
@@ -291,8 +284,8 @@ public class Communicator {
         // the size field of the GroupReply
         for (int j=0;j<copy.length;j++) {
             if (copy[j] != null) {
-                System.out.println("   reply(" + j + "): " + bitmaps.containsKey(copy[j].getClusterName()));
-                copy[j].enqueue(new GroupReply(communicator, bitmaps.containsKey(copy[j].getClusterName())), false);
+                System.out.println("   reply(" + j + "): " + membersHash.containsKey(copy[j].getClusterName()));
+                copy[j].enqueue(new GroupReply(communicator, membersHash.containsKey(copy[j].getClusterName())), false);
             }
         }
     }
