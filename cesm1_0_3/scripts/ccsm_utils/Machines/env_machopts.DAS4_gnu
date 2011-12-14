@@ -13,14 +13,14 @@
 source /etc/profile.d/modules.csh
 
 module purge
-module add openmpi/gcc/64/1.4.2
+module add openmpi/gcc/64/1.4.4
 module add netcdf/gcc/64/4.1.1
 module add cuda40
 module list
 
 #--- set paths
 if ($USE_MPISERIAL == "FALSE") then
-   setenv MPICH_PATH /cm/shared/apps/openmpi/gcc/64/1.4.2/
+   setenv MPICH_PATH /cm/shared/apps/openmpi/gcc/64/1.4.4/
 endif
 
 setenv PATH ${MPICH_PATH}/bin:${PATH}

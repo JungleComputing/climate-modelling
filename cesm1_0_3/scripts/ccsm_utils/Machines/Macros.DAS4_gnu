@@ -44,7 +44,7 @@ INC_NETCDF    := $(NETCDF_PATH)/include
 LIB_NETCDF    := $(NETCDF_PATH)/lib
 MOD_NETCDF    := $(NETCDF_PATH)/include
 ifeq ($(strip $(MPICH_PATH)),)
-    MPICH_PATH := /cm/shared/apps/openmpi/gcc/64/1.4.2
+    MPICH_PATH := /cm/shared/apps/openmpi/gcc/64/1.4.4
 endif
 ifeq ($(USE_MPISERIAL),TRUE)
    INC_MPI    := $(CODEROOT)/utils/mct/mpi-serial
