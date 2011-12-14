@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "shared.h"
+
 #include "mpi.h"
 
 #include "types.h"
@@ -31,16 +33,12 @@ static char *statistic_names[STATS_TOTAL] = {
 
 #endif
 
-static int FORTRAN_MPI_COMM_NULL;
-static int FORTRAN_MPI_COMM_WORLD;
-static int FORTRAN_MPI_COMM_SELF;
-
 static communicator *comms[MAX_COMMUNICATORS];
 
 static int add_communicator(MPI_Comm comm, int number, int initial,
                            int local_rank, int local_size,
                            int global_rank, int global_size,
-                           int flags, unsigned char *bitmap,
+                           int flags, uint32_t *members,
                            communicator **out)
 {
    int i; //, start, end, local, remote;
@@ -79,7 +77,7 @@ static int add_communicator(MPI_Comm comm, int number, int initial,
    c->global_size = global_size;
    c->queue_head = NULL;
    c->queue_tail = NULL;
-   c->bitmap = bitmap;
+   c->members = members;
 
    comms[number] = c;
 
@@ -99,41 +97,20 @@ static int add_communicator(MPI_Comm comm, int number, int initial,
 int init_communicators(int cluster_rank, int cluster_count,
                        int* cluster_sizes, int *cluster_offsets)
 {
-   // We create two special communicators here, one for
-   // MPI_COMM_WORLD, and one for MPI_COMM_SELF.
-   int local_rank, local_count;
-   int global_rank, global_count;
-   int start, end;
+   // We create three special communicators here for
+   // MPI_COMM_WORLD, MPI_COMM_SELF and MPI_COMM_NULL.
+   int global_rank, global_count, tmp_process_rank, tmp_cluster_rank;
    int i, error, flags;
-   unsigned char *bitmap;
 
-   // Init constants
-   FORTRAN_MPI_COMM_NULL = PMPI_Comm_c2f(MPI_COMM_NULL);
-   FORTRAN_MPI_COMM_WORLD = PMPI_Comm_c2f(MPI_COMM_WORLD);
-   FORTRAN_MPI_COMM_SELF = PMPI_Comm_c2f(MPI_COMM_SELF);
-
-   // Init rank and size
-   error = PMPI_Comm_rank(MPI_COMM_WORLD, &local_rank);
-
-   if (error != MPI_SUCCESS) {
-      fprintf(stderr, "   INTERNAL ERROR: Failed to retrieve MPI_COMM_WORLD rank!\n");
-      return error;
-   }
-
-   error = PMPI_Comm_size(MPI_COMM_WORLD, &local_count);
-
-   if (error != MPI_SUCCESS) {
-      fprintf(stderr, "   INTERNAL ERROR: Failed to retrieve MPI_COMM_WORLD size!\n");
-      return error;
-   }
+   uint32_t *members;
 
    // Create MPI_COMM_WORLD
    global_rank = cluster_offsets[cluster_rank]+local_rank;
    global_count = cluster_offsets[cluster_count];
 
-   bitmap = malloc(global_count);
+   members = malloc(global_count * sizeof(uint32_t));
 
-   if (bitmap == NULL) {
+   if (members == NULL) {
       fprintf(stderr, "   INTERNAL ERROR: Failed to allocate space for communicator!\n");
       return MPI_ERR_INTERN;
    }
@@ -142,26 +119,31 @@ int init_communicators(int cluster_rank, int cluster_count,
       comms[i] = NULL;
    }
 
-   start = global_rank - local_rank;
-   end = start + local_count;
+   tmp_process_rank = 0;
+   tmp_cluster_rank = 0;
 
-   flags = COMM_FLAG_WORLD;
+   for (i=0;i<global_count;i++) { 
 
-   for (i=0;i<global_count;i++) {
-      if (i >= start && i < end) {
-         bitmap[i] = 1;
-         flags |= COMM_FLAG_LOCAL;
-      } else {
-         bitmap[i] = 0;
-         flags |= COMM_FLAG_REMOTE;
-      }
+      if (i >= cluster_offsets[tmp_cluster_rank+1]) {
+         tmp_process_rank = 0;
+         tmp_cluster_rank++;
+      }      
+
+      members[i] = SET_PID(tmp_cluster_rank, tmp_process_rank);
+      tmp_process_rank++;
+   }  
+
+   flags = COMM_FLAG_WORLD | COMM_FLAG_LOCAL;
+
+   if (cluster_count > 1) { 
+      flags |= COMM_FLAG_REMOTE;
    }
 
    // FIXME: this will fail hopelessly if FORTRAN_MPI_COMM_WORLD has a weird value!
    error = add_communicator(MPI_COMM_WORLD, FORTRAN_MPI_COMM_WORLD, 1,
                             local_rank, local_count,
                             global_rank, global_count,
-                            flags, bitmap, NULL);
+                            flags, members, NULL);
 
    if (error != MPI_SUCCESS) {
       fprintf(stderr, "   INTERNAL ERROR: Failed to create MPI_COMM_WORLD!\n");
@@ -169,14 +151,14 @@ int init_communicators(int cluster_rank, int cluster_count,
    }
 
    // Create MPI_COMM_SELF
-   bitmap = malloc(1);
+   members = malloc(1 * sizeof(uint32_t));
 
-   if (bitmap == NULL) {
+   if (members == NULL) {
       fprintf(stderr, "   INTERNAL ERROR: Failed to allocate space for communicator!\n");
       return MPI_ERR_INTERN;
    }
 
-   bitmap[0] = 1;
+   members[0] = my_pid;
 
    flags = COMM_FLAG_SELF | COMM_FLAG_LOCAL;
 
@@ -184,7 +166,7 @@ int init_communicators(int cluster_rank, int cluster_count,
    error = add_communicator(MPI_COMM_SELF, FORTRAN_MPI_COMM_SELF, 1,
                             0, 1,
                             0, 1,
-                            flags, bitmap, NULL);
+                            flags, members, NULL);
 
    if (error != MPI_SUCCESS) {
       fprintf(stderr, "   INTERNAL ERROR: Failed to create MPI_COMM_SELF!\n");
@@ -205,11 +187,10 @@ int init_communicators(int cluster_rank, int cluster_count,
 }
 
 int create_communicator(MPI_Comm comm, int number, int local_rank, int local_size,
-         int global_rank, int global_size, int flags, unsigned char *bitmap,
-         communicator **out)
+         int global_rank, int global_size, int flags, uint32_t *members, communicator **out)
 {
    return add_communicator(comm, number, 0, local_rank, local_size,
-                            global_rank, global_size, flags, bitmap, out);
+                            global_rank, global_size, flags, members, out);
 }
 
 communicator* get_communicator(MPI_Comm comm)
@@ -251,7 +232,7 @@ int rank_is_local(communicator *c, int rank, int *result)
       return MPI_ERR_RANK;
    }
 
-   *result = (int) c->bitmap[rank];
+   *result = (GET_CLUSTER_RANK(c->members[rank]) == cluster_rank);
 
 fprintf(stderr, "   is_local %d = %d\n", rank, *result);
 

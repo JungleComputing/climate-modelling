@@ -17,14 +17,20 @@
 
 // These constants determine various maxima used in the MPIbis library.
 
-// Maximum number of MPI processes allowed.
-#define MAX_PROCESSES_PER_CLUSTER 1024 
+// Maximum number of MPI processes allowed (2^24).
+#define MAX_PROCESSES_PER_CLUSTER 16777216 
 
-// Maximum number of clusters allowed.
-#define MAX_CLUSTERS 64
+// Maximum number of clusters allowed (2^8).
+#define MAX_CLUSTERS 256
 
-// Maximum PID size required
-#define MAX_PID_SIZE (MAX_CLUSTERS*MAX_PROCESSES_PER_CLUSTER)
+// Macro to filter out cluster ID.
+#define GET_CLUSTER_RANK(X) ((X & 0xFF000000) >> 24)  
+
+// Macro to filter out process ID.
+#define GET_PROCESS_RANK(X) (X & 0x00FFFFFF)  
+
+// Macro to filter out process ID.
+#define SET_PID(X, Y) ((X & 0xFF) << 24 | (Y & 0xFFFFFF))  
 
 // Maximum number of communicators that can be created (in total, shared by all processes).
 #define MAX_COMMUNICATORS 256
@@ -33,6 +39,6 @@
 #define MAX_GROUPS 1024
 
 // Maximum number of requests that can be created (at once, for each individual process).
-#define MAX_REQUEST 1024
+#define MAX_REQUESTS 1024
 
 #endif

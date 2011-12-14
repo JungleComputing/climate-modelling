@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "shared.h"
+
 #include "mpi.h"
 #include "types.h"
 #include "group.h"
@@ -23,15 +25,9 @@ static int next_group   = 0;
 // There is a special pre-defined group: MPI_GROUP_EMPTY, which is a group with no members. The predefined constant
 // MPI_GROUP_NULL is the value used for invalid group handles.
 
-static int FORTRAN_MPI_GROUP_NULL;
-static int FORTRAN_MPI_GROUP_EMPTY;
-
 int init_groups()
 {
    int i;
-
-   FORTRAN_MPI_GROUP_NULL = PMPI_Group_c2f(MPI_GROUP_NULL);
-   FORTRAN_MPI_GROUP_EMPTY = PMPI_Group_c2f(MPI_GROUP_EMPTY);
 
    for (i=0;i<MAX_GROUPS;i++) {
       groups[i] = NULL;
@@ -179,18 +175,11 @@ int group_comm_group(communicator *in, group **out)
    }
 
    res->size = in->global_size;
-   res->pid = in->global_rank;
    res->rank = in->global_rank;
 
-// TODO: FIXME: BUG: WRONG!  
-//
-// The group should contain a list of pids (ie. contact addresses of some form).
-// In our care these are simple ranks of the underlying MPI implementation. 
-// In COMM_WORLD is this equal to [0 ..  n-1], but this is unlikely in other groups!
-
    for (i=0;i<in->global_size;i++) {
-      // THIS IS VERY-VERY WRONG!!!
-      res->members[i] = i;
+      // TODO: we should prevent this copy here...
+      res->members[i] = in->members[i];
    }
 
    *out = res;
@@ -205,7 +194,11 @@ int group_rank(group *g, int *rank)
       return MPI_ERR_GROUP;
    }
 
-   *rank = g->rank;
+   if (g->rank == -1) { 
+      *rank = MPI_UNDEFINED;
+   } else { 
+      *rank = g->rank;
+   }
 
    return MPI_SUCCESS;
 }
@@ -227,7 +220,7 @@ int group_union(group *in1, group *in2, group **out)
 {
    group *res;
    int *members;
-   int i, j, found, index, size, pid, rank, current;
+   int i, j, found, index, size, rank, current;
 
 //fprintf(stderr, "   JASON: Group union %p %p %p\n", in1, in2, out);
 
@@ -235,7 +228,7 @@ int group_union(group *in1, group *in2, group **out)
 
 //fprintf(stderr, "   JASON: Group union size %d %d %d\n", in1->size, in2->size, size);
 
-   members = malloc(size * sizeof(int));
+   members = malloc(size * sizeof(uint32_t));
 
    if (members == NULL) {
       fprintf(stderr, "   INTERNAL ERROR: Failed to allocate temporary group!\n");
@@ -249,10 +242,6 @@ int group_union(group *in1, group *in2, group **out)
    }
 
 //fprintf(stderr, "   JASON: Group union group 1 copied\n");
-
-   if (in2->pid != -1) {
-      pid = in2->pid;
-   }
 
    for (i=0;i<in2->size;i++) {
 
@@ -268,7 +257,7 @@ int group_union(group *in1, group *in2, group **out)
       }
 
       if (found == 0) {
-         if (current == in2->pid) {
+         if (current == my_pid) {
             rank = index;
          }
 
@@ -289,14 +278,11 @@ int group_union(group *in1, group *in2, group **out)
 
    res->size = index;
 
-   if (in1->pid != -1) {
-      res->pid = in1->pid;
+   if (in1->rank != -1) {
       res->rank = in1->rank;
-   } else if (in2->pid != -1) {
-      res->pid = pid;
+   } else if (in2->rank != -1) {
       res->rank = rank;
    } else {
-      res->pid = -1;
       res->rank = -1;
    }
 
@@ -305,6 +291,8 @@ int group_union(group *in1, group *in2, group **out)
    for (i=0;i<index;i++) {
       res->members[i] = members[i];
    }
+
+   free(members);
 
 //fprintf(stderr, "   JASON: Group union done %p %p!\n", out, res);
 
@@ -316,22 +304,23 @@ int group_union(group *in1, group *in2, group **out)
 // returns all elements of the first group that are also in the second group, ordered as in first group.
 int group_intersection(group *in1, group *in2, group **out)
 {
-   // TODO: no implemented
+   // TODO: not implemented
    return MPI_ERR_GROUP;
 }
 
 // returns all elements of the first group that are not in the second group, ordered as in the first group.
 int group_difference(group *in1, group *in2, group **out)
 {
-   // TODO: no implemented
+   // TODO: not implemented
    return MPI_ERR_GROUP;
 }
 
-// The function MPI_GROUP_INCL creates a group newgroup that consists of the n processes in group with ranks
-// rank[0], , rank[n-1]; the process with rank i in newgroup is the process with rank ranks[i] in group. Each
-// of the n elements of ranks must be a valid rank in group and all elements must be distinct, or else the
+// The function MPI_GROUP_INCL creates a group newgroup that consists of the n processes in group 'in' with 
+// ranks rank[0], , rank[n-1]; the process with rank i in newgroup is the process with rank ranks[i] in group. 
+// Each of the n elements of ranks must be a valid rank in group and all elements must be distinct, or else the
 // program is erroneous. If n~=~0, then newgroup is MPI_GROUP_EMPTY. This function can, for instance, be used
 // to reorder the elements of a group. See also MPI_GROUP_COMPARE.
+
 int group_incl(group *in, int n, int ranks[], group **out)
 {
    group *res;
@@ -350,7 +339,6 @@ int group_incl(group *in, int n, int ranks[], group **out)
    }
 
    res->size = n;
-   res->pid = in->pid;
    res->rank = -1;
 
    for (i=0;i<n;i++) {
@@ -365,13 +353,12 @@ int group_incl(group *in, int n, int ranks[], group **out)
 
       res->members[i] = in->members[next];
 
-      if (res->members[i] == in->pid) {
+      if (res->members[i] == my_pid) {
          res->rank = i;
       }
    }
 
    *out = res;
-
    return MPI_SUCCESS;
 }
 
@@ -381,7 +368,7 @@ int group_incl(group *in, int n, int ranks[], group **out)
 // be distinct; otherwise, the program is erroneous. If n~=~0, then newgroup is identical to group.
 int group_excl(group *in, int n, int ranks[], group **out)
 {
-   // TODO: no implemented
+   // TODO: not implemented
    return MPI_ERR_GROUP;
 }
 
@@ -474,13 +461,12 @@ int group_range_incl(group *in, int n, int ranges[][3], group **out)
    }
 
    res->size = next;
-   res->pid = in->pid;
    res->rank = -1;
 
    for (i=0;i<next;i++) {
       res->members[i] = tmp[i];
 
-      if (tmp[i] == in->pid) {
+      if (tmp[i] == my_pid) {
          res->rank = i;
       }
    }
@@ -498,7 +484,7 @@ int group_range_incl(group *in, int n, int ranges[][3], group **out)
 // triplet (i,i,1) in the argument ranges.
 int group_range_excl(group *in, int n, int ranges[][3], group **out)
 {
-   // TODO: no implemented
+   // TODO: not implemented
    return MPI_ERR_GROUP;
 }
 

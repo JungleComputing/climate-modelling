@@ -16,10 +16,9 @@ struct s_group {
    int index;
 
    int rank;
-   int pid;
    int size;
 
-   int *members;
+   uint32_t *members;
 };
 
 // A group is an ordered set of process identifiers (henceforth processes); processes are implementation-dependent

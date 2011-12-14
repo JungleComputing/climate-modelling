@@ -22,33 +22,36 @@
 #include "util.h"
 #include "debugging.h"
 
+// The number of clusters and the rank of our cluster in this set.
+uint32_t cluster_count;
+uint32_t cluster_rank;
+
+// The number of processes in our cluster and our process' rank in this set.
+int local_count;
+int local_rank;
+
+// The pid of my machine.
+uint32_t my_pid;
+
 // The location of the server (hostname/ip and port)
 static char *server;
 static unsigned short port;
 
-// The number of clusters and the rank of our cluster in this set.
-static int cluster_count;
-static int cluster_rank;
+// The name of this cluster (must be unique).
+static char *cluster_name;
 
 // The size of each cluster, and the offset of each cluster in the
 // total set of machines.
 static int *cluster_sizes;
 static int *cluster_offsets;
 
-// The name of this cluster (must be unique).
-static char *cluster_name;
-
-// The number of processes in our cluster and our process' rank in this set.
-static int local_count;
-static int local_rank;
-
 // Value of various Fortan MPI constants.
-static int FORTRAN_MPI_COMM_NULL;
-static int FORTRAN_MPI_GROUP_NULL;
-static int FORTRAN_MPI_REQUEST_NULL;
-static int FORTRAN_MPI_GROUP_EMPTY;
-static int FORTRAN_MPI_COMM_WORLD;
-static int FORTRAN_MPI_COMM_SELF;
+int FORTRAN_MPI_COMM_NULL;
+int FORTRAN_MPI_GROUP_NULL;
+int FORTRAN_MPI_REQUEST_NULL;
+int FORTRAN_MPI_GROUP_EMPTY;
+int FORTRAN_MPI_COMM_WORLD;
+int FORTRAN_MPI_COMM_SELF;
 
 /*****************************************************************************/
 /*                      Initialization / Finalization                        */
@@ -278,6 +281,8 @@ static int init_mpibis(int *argc, char ***argv)
 
    cluster_sizes = malloc(cluster_count * sizeof(int));
    cluster_offsets = malloc((cluster_count+1) * sizeof(int));
+
+   my_pid = SET_PID(cluster_rank, local_rank);
 
    return 1;
 }
@@ -1283,15 +1288,15 @@ int IMPI_Comm_rank(MPI_Comm comm, int *rank)
    return MPI_SUCCESS;
 }
 
-static unsigned char *copy_bitmap(unsigned char *bitmap, int size)
+static uint32_t *copy_members(uint32_t *members, int size)
 {
-   unsigned char *tmp = malloc(size);
+   uint32_t *tmp = malloc(size * sizeof(uint32_t));
 
    if (tmp == NULL) {
       return NULL;
    }
 
-   return memcpy(tmp, bitmap, size);
+   return memcpy(tmp, members, size * sizeof(uint32_t));
 }
 
 #define __IMPI_Comm_dup
@@ -1300,7 +1305,7 @@ int IMPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm)
    int error;
    dup_reply reply;
    MPI_Comm tmp_com;
-   unsigned char *bm;
+   uint32_t *members;
    communicator *dup;
 
    communicator *c = get_communicator(comm);
@@ -1331,17 +1336,17 @@ int IMPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm)
       return error;
    }
 
-   bm = copy_bitmap(c->bitmap, c->global_size);
+   members = copy_members(c->members, c->global_size);
 
-   if (bm == NULL) {
-      IERROR(1, "MPI_Comm_dup bitmap copy failed!");
+   if (members == NULL) {
+      IERROR(1, "MPI_Comm_dup member copy failed!");
       return error;
    }
 
    error = create_communicator(tmp_com, reply.newComm,
                  c->local_rank, c->local_size,
                  c->global_rank, c->global_size,
-                 c->flags, bm, &dup);
+                 c->flags, members, &dup);
 
    if (error != MPI_SUCCESS) {
       IERROR(1, "MPI_Comm_dup create communicator failed!");
@@ -1353,26 +1358,13 @@ int IMPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm)
    return MPI_SUCCESS;
 }
 
-static int translate_rank(communicator *c, int global_rank)
-{
-   int i;
-   int rank = 0;
-
-   for (i=0;i<global_rank;i++) {
-      if (c->bitmap[i] == 1) {
-         rank++;
-      }
-   }
-
-   return rank;
-}
-
 static int local_comm_create(communicator *c, group *g, MPI_Comm *newcomm)
 {
    int i, error, local_count;
    MPI_Group orig_group;
    MPI_Group new_group;
    int *local_members;
+   communicator *world;
 
    // We first need to split the local part of the group from our local communicator.
 
@@ -1386,20 +1378,25 @@ static int local_comm_create(communicator *c, group *g, MPI_Comm *newcomm)
    }
 
    for (i=0;i<g->size;i++) {
-      if (c->bitmap[g->members[i]] == 1) {
-         local_members[local_count++] = translate_rank(c, g->members[i]);
+      if (GET_CLUSTER_RANK(g->members[i]) == cluster_rank) {
+         local_members[local_count++] = (int) GET_PROCESS_RANK(g->members[i]);
       }
    }
 
-   // if local_count == 0 then we do not need to split the local communicator.
+   // If local_count == 0 then we do not need to split the local communicator.
    if (local_count == 0) {
       free(local_members);
       *newcomm = MPI_COMM_NULL;
       return MPI_SUCCESS;
    }
 
-   // if local_count > 0 we need to split our local communicator group.
-   error = PMPI_Comm_group(c->comm, &orig_group);
+   // If local_count > 0 we need to create a new (local) communicator.
+   // Since we known the local ranks relative to WORLD, we'll use that 
+   // communicator as a basis.
+ 
+   world = get_communicator_with_index(FORTRAN_MPI_COMM_WORLD);
+
+   error = PMPI_Comm_group(world->comm, &orig_group);
 
    if (error != MPI_SUCCESS) {
       IERROR(1, "Failed to split local group!");
@@ -1416,12 +1413,13 @@ static int local_comm_create(communicator *c, group *g, MPI_Comm *newcomm)
       return error;
    }
 
-   // Check is we are part of the new communicator.
+   // Check if we are part of the new communicator.
    if (new_group == MPI_GROUP_NULL) {
       *newcomm = MPI_COMM_NULL;
       return MPI_SUCCESS;
    }
 
+   // HACK: we use the local communicator to create the new one here ? 
    error = PMPI_Comm_create(c->comm, new_group, newcomm);
 
    if (error != MPI_SUCCESS) {
@@ -1494,7 +1492,7 @@ int IMPI_Comm_create(MPI_Comm mc, MPI_Group mg, MPI_Comm *newcomm)
       error = create_communicator(tmp_comm, reply.newComm,
                  local_rank, local_size,
                  reply.rank, reply.size,
-                 reply.flags, reply.bitmap,
+                 reply.flags, reply.members,
                  &result);
 
       if (error != MPI_SUCCESS) {
@@ -1574,7 +1572,7 @@ int IMPI_Comm_split(MPI_Comm comm, int color, int key, MPI_Comm *newcomm)
       error = create_communicator(tmp, reply.newComm,
                  local_rank, local_size,
                  reply.rank, reply.size,
-                 reply.flags, reply.bitmap,
+                 reply.flags, reply.members,
                  &result);
 
       if (error != MPI_SUCCESS) {
@@ -1583,7 +1581,6 @@ int IMPI_Comm_split(MPI_Comm comm, int color, int key, MPI_Comm *newcomm)
       }
 
       set_communicator_ptr(newcomm, result);
-
    } else {
       *newcomm = MPI_COMM_NULL;
    }
@@ -1704,8 +1701,8 @@ INFO(1, "IMPI_Group_translate_ranks DEBUG", "group1 %d group2 %d", in1->size, in
       return MPI_ERR_GROUP;
    }
 
-
    for (i=0;i<n;i++) {
+
       rank = ranks1[i];
 
       if (rank < 0 || rank >= in1->size) {

@@ -5,7 +5,6 @@
 
 #ifdef IBIS_INTERCEPT
 
-
 #include "mpi.h"
 #include "types.h"
 
@@ -66,12 +65,12 @@ struct s_communicator {
    int global_rank;
    int global_size;
 
-   unsigned char *bitmap;
+   uint32_t *members;
+
+//   unsigned char *bitmap;
 
    message_buffer *queue_head;
    message_buffer *queue_tail;
-
-   s_group group;
 
 #if GATHER_STATISTICS
    unsigned long counters[STATS_TOTAL];
@@ -85,8 +84,7 @@ int init_communicators(int cluster_rank, int cluster_count,
                        int* cluster_sizes, int *cluster_offsets);
 
 int create_communicator(MPI_Comm comm, int number, int local_rank, int local_size,
-         int global_rank, int global_size, int flags, unsigned char *bitmap,
-         communicator **out);
+         int global_rank, int global_size, int flags, uint32_t *members, communicator **out);
 
 communicator *get_communicator(MPI_Comm comm);
 communicator *get_communicator_with_index(int index);

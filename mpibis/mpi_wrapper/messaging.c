@@ -600,17 +600,17 @@ int messaging_receive_comm_reply(comm_reply *reply)
 fprintf(stderr, "*Received comm reply (comm=%d src=%d newComm=%d rank=%d size=%d color=%d key=%d flag=%d)\n", reply->comm, reply->src, reply->newComm, reply->rank, reply->size, reply->color, reply->key, reply->flags);
 
     if (reply->size > 0) {
-      reply->bitmap = malloc(reply->size);
+      reply->members = malloc(reply->size * sizeof(uint32_t));
 
-      if (reply->bitmap == NULL) {
-         fprintf(stderr, "ERROR: Failed to allocate bitmap\n");
+      if (reply->members == NULL) {
+         fprintf(stderr, "ERROR: Failed to allocate members\n");
          return MPI_ERR_INTERN;
       }
 
-      error = wa_receivefully(reply->bitmap, reply->size);
+      error = wa_receivefully((unsigned char *)reply->members, reply->size * sizeof(uint32_t));
 
       if (error != CONNECT_OK) {
-         fprintf(stderr, "INTERNAL ERROR: Failed to receive comm reply bitmap!\n");
+         fprintf(stderr, "INTERNAL ERROR: Failed to receive comm reply members!\n");
          return MPI_ERR_INTERN;
       }
    }
@@ -712,19 +712,19 @@ fprintf(stderr, "*Received group reply (comm=%d src=%d newComm=%d rank=%d size=%
 
    if (reply->type == GROUP_TYPE_ACTIVE) {
 
-fprintf(stderr, "*Receiving group bitmap (%d bytes)\n", reply->size);
+fprintf(stderr, "*Receiving group members (%ld bytes)\n", reply->size * sizeof(uint32_t));
 
-      reply->bitmap = malloc(reply->size);
+      reply->members = malloc(reply->size * sizeof(uint32_t));
 
-      if (reply->bitmap == NULL) {
-         fprintf(stderr, "ERROR: Failed to allocate bitmap\n");
+      if (reply->members == NULL) {
+         fprintf(stderr, "ERROR: Failed to allocate member array!\n");
          return MPI_ERR_INTERN;
       }
 
-      error = wa_receivefully(reply->bitmap, reply->size);
+      error = wa_receivefully((unsigned char *)reply->members, reply->size * sizeof(uint32_t));
 
       if (error != CONNECT_OK) {
-         fprintf(stderr, "INTERNAL ERROR: Failed to receive comm reply bitmap!\n");
+         fprintf(stderr, "INTERNAL ERROR: Failed to receive comm reply members!\n");
          return MPI_ERR_INTERN;
       }
    }

@@ -2,7 +2,6 @@
 
 #ifdef IBIS_INTERCEPT
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <netdb.h>
@@ -10,12 +9,11 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include "shared.h"
 #include "types.h"
 #include "request.h"
 
 static request *reqs[MAX_REQUESTS];
-
-static int FORTRAN_MPI_REQUEST_NULL;
 
 int init_request()
 {

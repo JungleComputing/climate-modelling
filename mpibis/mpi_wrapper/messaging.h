@@ -47,27 +47,27 @@ typedef struct s_dup_request {
 // replies
 
 typedef struct s_comm_reply {
-    int comm;    // communicator used
-    int src;     // source rank (unused)
-    int newComm; // communicator created
-    int rank;    // rank in new communicator
-    int size;    // size of new communicator
-    int color;   // color for local split
-    int key;     // key for local split
-    int flags;   // flags of new communicator
-    unsigned char *bitmap; // local/remote bitmap
+    int comm;          // communicator used
+    int src;           // source rank (unused)
+    int newComm;       // communicator created
+    int rank;          // rank in new communicator
+    int size;          // size of new communicator
+    int color;         // color for local split
+    int key;           // key for local split
+    int flags;         // flags of new communicator
+    uint32_t *members; // communicator members
 } comm_reply;
 
 // TODO: merge with s_comm_reply ?
 typedef struct s_group_reply {
-    int comm;    // communicator used
-    int src;     // source rank (unused)
-    int newComm; // communicator created
-    int rank;    // rank in new communicator
-    int size;    // size of new communicator
-    int type;    // type of groupreply
-    int flags;   // flags of new communicator
-    unsigned char *bitmap; // local/remote bitmap
+    int comm;          // communicator used
+    int src;           // source rank (unused)
+    int newComm;       // communicator created
+    int rank;          // rank in new communicator
+    int size;          // size of new communicator
+    int type;          // type of groupreply
+    int flags;         // flags of new communicator
+    uint32_t *members; // communicator members
 } group_reply;
 
 // TODO: merge with s_comm_reply ?
