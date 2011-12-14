@@ -5,10 +5,9 @@
 
 #ifdef IBIS_INTERCEPT
 
+
 #include "mpi.h"
 #include "types.h"
-
-#define DEBUG_COMMUNICATORS
 
 #define GATHER_STATISTICS 1
 
@@ -49,7 +48,6 @@
 #define COMM_FLAG_REMOTE (1 << 1)
 #define COMM_FLAG_WORLD  (1 << 2)
 #define COMM_FLAG_SELF   (1 << 3)
-#define COMM_FLAG_USED   (1 << 16)
 
 #define COMM_OK                  0
 #define COMM_ERROR_ALLOCATE      1
@@ -57,33 +55,23 @@
 
 struct s_communicator {
 
-#ifdef DEBUG_COMMUNICATORS
-   unsigned int magic;
-#endif
+   int number;
+   int flags;
 
-   unsigned short number;
-   unsigned short flags;
+   MPI_Comm comm;
 
-#if MAX_PROCESSES <= 32768
-   short local_rank;
-   short local_size;
-
-   short global_rank;
-   short global_size;
-#else
    int local_rank;
    int local_size;
 
    int global_rank;
    int global_size;
-#endif
 
-   MPI_Comm comm;
+   unsigned char *bitmap;
 
    message_buffer *queue_head;
    message_buffer *queue_tail;
 
-   unsigned char bitmap[MAX_PROCESSES/8];
+   s_group group;
 
 #if GATHER_STATISTICS
    unsigned long counters[STATS_TOTAL];

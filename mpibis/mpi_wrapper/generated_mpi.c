@@ -1,4 +1,8 @@
 #include "flags.h"
+
+#ifdef ENABLE_INTERCEPT
+
+
 #include "debugging.h"
 #include "mpi.h"
 #include "generated_header.h"
@@ -392,6 +396,10 @@ int MPI_Bcast ( void *buffer, int count, MPI_Datatype datatype, int root, MPI_Co
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Bcast","(void *buffer=%p, int count=%d, MPI_Datatype datatype=%s, int root=%d, MPI_Comm comm=%s)", buffer, count, type_to_string(datatype), root, comm_to_string(comm));
 #endif // TRACE_CALLS
+
+if (count <= 0) { 
+   ERROR(0, "Bcast count = 0!!");
+}
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Bcast(buffer, count, datatype, root, comm);
@@ -6290,3 +6298,7 @@ MPI_Fint MPI_XXX_c2f(MPI_XXX XXX)
 #endif // IBIS_INTERCEPT
 }
 */
+
+
+
+#endif

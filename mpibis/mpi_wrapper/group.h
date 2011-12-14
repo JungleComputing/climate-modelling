@@ -13,7 +13,6 @@
 #define GROUP_TYPE_IDLE       2
 
 struct s_group {
-
    int index;
 
    int rank;
@@ -34,7 +33,11 @@ struct s_group {
 //
 // Available group operations:
 
-int init_group();
+int init_groups();
+
+int group_rank(group *g, int *rank);
+int group_size(group *g, int *size);
+
 
 // Returns in group a handle to the group of comm.
 int group_comm_group(communicator *in, group **out);

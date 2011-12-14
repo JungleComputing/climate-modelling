@@ -734,7 +734,6 @@ fprintf(stderr, "*Receiving group bitmap (%d bytes)\n", reply->size);
 
 int messaging_send_dup_request(communicator* c)
 {
-   int i;
    dup_request req;
 
    req.opcode = htonl(OPCODE_DUP);

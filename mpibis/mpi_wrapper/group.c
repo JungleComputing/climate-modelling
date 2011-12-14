@@ -2,9 +2,9 @@
 
 #ifdef IBIS_INTERCEPT
 
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "mpi.h"
 #include "types.h"
@@ -182,7 +182,14 @@ int group_comm_group(communicator *in, group **out)
    res->pid = in->global_rank;
    res->rank = in->global_rank;
 
+// TODO: FIXME: BUG: WRONG!  
+//
+// The group should contain a list of pids (ie. contact addresses of some form).
+// In our care these are simple ranks of the underlying MPI implementation. 
+// In COMM_WORLD is this equal to [0 ..  n-1], but this is unlikely in other groups!
+
    for (i=0;i<in->global_size;i++) {
+      // THIS IS VERY-VERY WRONG!!!
       res->members[i] = i;
    }
 

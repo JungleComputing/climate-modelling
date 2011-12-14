@@ -11,7 +11,6 @@
 // 3 print errors, warnings and info
 // 4+ print all
 
-#define DEBUG_BUF_SIZE 4096
 #define VERBOSE 4
 
 void init_debug();

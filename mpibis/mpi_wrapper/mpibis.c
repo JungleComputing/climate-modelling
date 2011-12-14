@@ -20,6 +20,7 @@
 #include "messaging.h"
 #include "wa_sockets.h"
 #include "util.h"
+#include "debugging.h"
 
 // The location of the server (hostname/ip and port)
 static char *server;
@@ -99,7 +100,7 @@ static int read_config_file()
 
    strcpy(server, buffer);
 
-   error = fscanf(config, "%d", &port);
+   error = fscanf(config, "%hu", &port);
 
    if (error == EOF || error == 0) {
       ERROR(1, "Failed to read server port from %s", file);
@@ -316,7 +317,7 @@ int IMPI_Init(int *argc, char **argv[])
       INFO(1, "IMPI_Init", "START MPI WRAPPER on %d of %d", local_rank, local_count);
 
       for (i=0;i<*argc;i++) {
-         INFO(4, "argv[%d] = %s", i, (*argv)[i]);
+         INFO(4, "IMPI_Init", "argv[%d] = %s", i, (*argv)[i]);
       }
 
       init_constants();
@@ -451,7 +452,7 @@ int IMPI_Rsend(void* buf, int count, MPI_Datatype datatype,
    //
    // In this implementation we simply replace rsend by send, which
    // offers a stricter (less efficient) contract.
-   return MPI_Send(buf, count, datatype, dest, tag, comm);
+   return IMPI_Send(buf, count, datatype, dest, tag, comm);
 }
 
 #define __IMPI_Isend
@@ -528,7 +529,7 @@ int IMPI_Irsend(void *buf, int count, MPI_Datatype datatype,
              buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), req);
 
    // As with rsend, we can simply replace this call with a normal isend.
-   return MPI_Isend(buf, count, datatype, dest, tag, comm, req);
+   return IMPI_Isend(buf, count, datatype, dest, tag, comm, req);
 }
 
 #define __IMPI_Irecv
@@ -539,7 +540,7 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
    request *r;
 
    if (count < 0) {
-      ERROR("Invalid count! (%d)", count);
+      ERROR(1, "Invalid count! (%d)", count);
       return MPI_ERR_COUNT;
    }
 
@@ -726,7 +727,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
 
    // It was a WA or mixed request.
 
-   // Non-persistent send should already have finishe.
+   // Non-persistent send should already have finished.
    if (request_send(r)) {
       status->MPI_SOURCE = r->source_or_dest;
       status->MPI_TAG = r->tag;
@@ -793,7 +794,7 @@ int IMPI_Wait(MPI_Request *req, MPI_Status *status)
 #define __IMPI_Waitany
 int IMPI_Waitany(int count, MPI_Request *array_of_requests, int *index, MPI_Status *status)
 {
-   int i, j;
+   int i;
    int error;
    int undef;
    int flag = 0;
@@ -993,7 +994,6 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
                       int recvcount, MPI_Datatype recvtype,
                       int root, MPI_Comm comm)
 {
-   int error;
    communicator *c = get_communicator(comm);
 
    if (c == NULL) {
@@ -1156,7 +1156,10 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count,
 int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
                          MPI_Datatype datatype, MPI_Op op, MPI_Comm comm)
 {
+   int error;
    communicator *c = get_communicator(comm);
+
+INFO(1, "JASON### IMPI_Allreduce IN:", "%d %d", count, *((int*) sendbuf));
 
    if (c == NULL) {
       ERROR(1, "Communicator not found!");
@@ -1166,7 +1169,11 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
    if (comm_is_local(c)) {
      // simply perform an allreduce in local cluster
      inc_communicator_statistics(comm, STATS_ALLREDUCE);
-     return PMPI_Allreduce(sendbuf, recvbuf, count, datatype, op, c->comm);
+     error = PMPI_Allreduce(sendbuf, recvbuf, count, datatype, op, c->comm);
+
+INFO(1, "JASON### IMPI_Allreduce OUT:", "%d %d", error, *((int*) recvbuf));
+
+     return error;
    }
 
    IERROR(0, "WA MPI_Allreduce not implemented yet!");
@@ -1362,7 +1369,7 @@ static int translate_rank(communicator *c, int global_rank)
 
 static int local_comm_create(communicator *c, group *g, MPI_Comm *newcomm)
 {
-   int i, error, local_count, size, rank;
+   int i, error, local_count;
    MPI_Group orig_group;
    MPI_Group new_group;
    int *local_members;
@@ -1690,10 +1697,13 @@ int IMPI_Group_translate_ranks(MPI_Group group1, int n, int *ranks1,
    in1 = get_group(group1);
    in2 = get_group(group2);
 
+INFO(1, "IMPI_Group_translate_ranks DEBUG", "group1 %d group2 %d", in1->size, in2->size);
+
    if (in1 == NULL || in2 == NULL) {
       ERROR(1, "Group not found!");
       return MPI_ERR_GROUP;
    }
+
 
    for (i=0;i<n;i++) {
       rank = ranks1[i];
@@ -1705,10 +1715,15 @@ int IMPI_Group_translate_ranks(MPI_Group group1, int n, int *ranks1,
 
       pid = in1->members[rank];
 
+INFO(1, "IMPI_Group_translate_ranks DEBUG", "rank %d pid %d", rank, pid);
+
       ranks2[i] = MPI_UNDEFINED;
 
       for (j=0;i<in2->size;j++) {
          if (in2->members[j] == pid) {
+
+INFO(1, "IMPI_Group_translate_ranks DEBUG", "found pid %d at %d", pid, j);
+
             ranks2[i] = j;
             break;
          }

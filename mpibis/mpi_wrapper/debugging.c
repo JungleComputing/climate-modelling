@@ -4,11 +4,19 @@
 #include <string.h>
 
 #include "flags.h"
+
+#ifdef ENABLE_INTERCEPT
+
 #include "debugging.h"
-#include "types.h"
-#include "request.h"
-#include "communicator.h"
-#include "group.h"
+#include "generated_header.h"
+
+#ifdef IBIS_INTERCEPT
+
+//#include "types.h"
+//#include "request.h"
+//#include "communicator.h"
+//#include "group.h"
+
 #endif
 
 // Indentation levels (single string with multiple pointers
@@ -19,6 +27,8 @@ static char *indents[10];
 // Circular string buffer used for debugging output. Note that if the
 // (total) output of a single print operation is larger than DEBUG_BUF_SIZE
 // the debug output will not be printed correctly.
+#define DEBUG_BUF_SIZE 4096
+
 static char debug_buf[DEBUG_BUF_SIZE+1];
 static int debug_buf_pos = 0;
 
@@ -32,17 +42,16 @@ static char *copy_to_debug_buf(const char *tmp, int len)
 
    if (len > DEBUG_BUF_SIZE) {
       // Cannot store this string!
-      IERROR(0, "Debug buffer overflow! (1)");
-      return debug_buf+debug_buf_pos;
+      IERROR(0, "Debug buffer overflow!");
+      return &debug_buf[debug_buf_pos];
    }
 
-   if (debug_buf_pos + len >= DEBUG_BUF_SIZE) {
+   if (debug_buf_pos + len > DEBUG_BUF_SIZE) {
       debug_buf_pos = 0;
    }
 
-   res = strcpy(debug_buf+debug_buf_pos, tmp);
+   res = strcpy(&debug_buf[debug_buf_pos], tmp);
    debug_buf_pos += len;
-   debug_buf[debug_buf_pos] = '\0';
    return res;
 }
 
@@ -199,19 +208,14 @@ char *ranks_to_string(int *ranks, int n)
    len += sprintf(buf, "[");
 
    for (i=0;i<n;i++) {
-      len += sprintf(buf+len, "%d", ranks[i]);
+      len += sprintf(&buf[len], "%d", ranks[i]);
 
       if (i != n-1) {
-         len += sprintf(buf+len, ",");
+         len += sprintf(&buf[len], ",");
       }
    }
 
-   len += sprintf(buf+len, "]");
-
-   if (len > 1024) {
-      IERROR(0, "Debug buffer overflow! (2)");
-   }
-
+   len += sprintf(&buf[len], "]");
    return copy_to_debug_buf(buf, len+1);
 }
 
@@ -224,21 +228,17 @@ char *ranges_to_string(int range[][3], int n)
    len += sprintf(buf, "[");
 
    for (i=0;i<n;i++) {
-      len += sprintf(buf+len, "(%d,%d,%d)", range[i][0], range[i][1], range[i][2]);
+      len += sprintf(&buf[len], "(%d,%d,%d)", range[i][0], range[i][1], range[i][2]);
 
       if (i != n-1) {
-         len += sprintf(buf+len, ",");
+         len += sprintf(&buf[len], ",");
       }
    }
 
-   len += sprintf(buf+len, "]");
-
-   if (len > 1024) {
-      IERROR(0, "Debug buffer overflow! (3)");
-   }
-
+   len += sprintf(&buf[len], "]");
    return copy_to_debug_buf(buf, len+1);
 }
+
 
 void init_debug()
 {
@@ -318,8 +318,6 @@ void ERROR(int indent, const char *fmt, ...)
    println(indent, "ERROR", fmt, argp);
    va_end(argp);
 
-   // Trigger a core dump ?
-   fprintf(stderr, "CORE DUMP TRIGGERED! (1)\n");
    ptr = NULL;
    *ptr = 1;
 #endif
@@ -335,9 +333,11 @@ void IERROR(int indent, const char *fmt, ...)
    println(indent, "INTERNAL ERROR", fmt, argp);
    va_end(argp);
 
-   // Trigger a core dump ?
-   fprintf(stderr, "CORE DUMP TRIGGERED! (2)\n");
    ptr = NULL;
    *ptr = 1;
+
 #endif
 }
+
+
+#endif // ENABLE_INTERCEPT
