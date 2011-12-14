@@ -134,7 +134,8 @@
       timer_baro_state, &
       timer_baro_rest, &
       timer_baro_updatet, &
-      timer_baro_fluxvelocities
+      timer_baro_fluxvelocities, &
+      timer_baro_accum_tavg
 
 !-----------------------------------------------------------------------
 !
@@ -460,7 +461,10 @@ call get_timer(ben_timer_zero,'BEN CLINIC zero',1,8)
 call get_timer(timer_baro_state,'BEN BARO state',1,8)
 call get_timer(timer_baro_rest, 'BEN BARO rest of baroclinic',1,8)
 call get_timer(timer_baro_updatet, 'BEN BARO update tracers',1,8)
+call get_timer(timer_baro_accum_tavg, 'BEN BARO accumulate tavg',1,8)
 call get_timer(timer_baro_fluxvelocities, 'BEN BARO flux velocities',1,8)
+
+
 
 
  call flushm (stdout)
@@ -587,8 +591,7 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
       this_block = get_block(blocks_clinic(iblock),iblock)  
 
 
-      !BEN_TIMER update_tracers
-    call timer_start(timer_baro_updatet)
+
 
       do k = 1,km 
 
@@ -628,7 +631,8 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 !
 !-----------------------------------------------------------------------
 
-
+      !BEN_TIMER update_tracers
+    call timer_start(timer_baro_updatet)
          call tracer_update(k, WTK,                             &
                                TRACER (:,:,:,:,newtime,iblock), &
                                TRACER (:,:,:,:,oldtime,iblock), &
@@ -647,7 +651,8 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
                                PSURF  (:,:    ,curtime,iblock), &
                                this_block)
          
-
+      !BEN_TIMER STOP update_tracers
+    call timer_stop(timer_baro_updatet)
 
 !-----------------------------------------------------------------------
 !
@@ -655,6 +660,9 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 !          accumulate_tavg_field
 !
 !-----------------------------------------------------------------------
+
+      !BEN_TIMER update_tracers
+    call timer_start(timer_baro_accum_tavg)
 
          if (mix_pass /= 1) then
 
@@ -809,12 +817,13 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 
          endif ! mix_pass
 
+         call timer_stop(timer_baro_accum_tavg)
+
 !-----------------------------------------------------------------------
 
       enddo  ! k loop
 
-      !BEN_TIMER STOP update_tracers
-    call timer_stop(timer_baro_updatet)
+
 !-----------------------------------------------------------------------
 !
 !     if no implicit vertical mixing, we now have updated tracers
