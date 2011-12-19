@@ -265,7 +265,7 @@ public class Communicator {
 
             realRanks.put(c.getClusterName(), key+1);
 
-            // Generate a correct bitmap for this cluster.
+            // Generate a correct members array for this cluster.
             int [] members = membersHash.get(name);
 
             if (members == null) {
@@ -345,7 +345,7 @@ public class Communicator {
         // First check the message is legal
         if (m.source < 0 || m.source >= size) {
             System.err.println("ERROR: Unknown rank " + m.source +
-                " for operation on comm " + communicator);
+                    " for operation on comm " + communicator);
         }
 
         messages[m.source] = m;

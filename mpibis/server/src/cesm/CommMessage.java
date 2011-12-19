@@ -6,22 +6,21 @@ import java.io.IOException;
 
 public class CommMessage extends Message {
 
-	public final int color;
-	public final int key;
-	
-	CommMessage(DataInputStream in) throws IOException {
-	
-		super(Protocol.OPCODE_COMM, in);
+    public final int color;
+    public final int key;
 
-		System.out.println("Reading comm message"); 
-		color = in.readInt();
-		key = in.readInt();
-	}
+    CommMessage(DataInputStream in) throws IOException {
 
-	void write(DataOutputStream out) throws IOException {
-		super.write(out);
-		out.writeInt(color);
-		out.writeInt(key);
-	}	
+        super(Protocol.OPCODE_COMM, in);
+
+        System.out.println("Reading comm message"); 
+        color = in.readInt();
+        key = in.readInt();
+    }
+
+    void write(DataOutputStream out) throws IOException {
+        super.write(out);
+        out.writeInt(color);
+        out.writeInt(key);
+    }	
 }
-	

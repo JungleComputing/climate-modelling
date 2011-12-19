@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.Socket;
 import java.util.LinkedList;
 
@@ -175,7 +174,7 @@ public class Connection implements Protocol {
 
     private boolean receiveMessage() throws Exception {
 
-        System.out.println("Waiting for message");
+        System.out.println(clusterRank + ":" + localRank + " - Waiting for message");
 
         int opcode = in.readInt();
 
