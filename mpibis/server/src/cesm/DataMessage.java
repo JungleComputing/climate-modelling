@@ -17,8 +17,6 @@ public class DataMessage extends Message {
 	
 		super(Protocol.OPCODE_DATA, in);
 
-		System.out.println("Reading data message"); 
-
 		dest   = in.readInt();
 		tag    = in.readInt();
 		count  = in.readInt();

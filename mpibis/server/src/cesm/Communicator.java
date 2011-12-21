@@ -15,6 +15,8 @@ public class Communicator {
 
     private final int communicator;
     private final Connection [] processes;
+    private final HashMap<Integer, Connection> pids;
+    
     private final int size;
     private final Server parent;
 
@@ -52,6 +54,12 @@ public class Communicator {
         this.parent = parent;
         this.size = processes.length;
         this.messages = new Message[size];
+
+        pids = new HashMap<Integer, Connection>();
+        
+        for (int i=0;i<size;i++) { 
+            pids.put(processes[i].pid, processes[i]);
+        }
     }
 
     private int generateFlags(Connection [] procs) {
@@ -202,35 +210,36 @@ public class Communicator {
 
         System.out.println("Creating new group from communicator " + communicator);
 
-        int [] ranks = ((GroupMessage) messages[0]).ranks;
+        int [] group = ((GroupMessage) messages[0]).pids;
 
         if (SANITY) {
             // Sanity check: all group messages should contain the same ranks array.
             for (int i=1;i<messages.length;i++) {
-                if (!Arrays.equals(ranks, ((GroupMessage) messages[i]).ranks)) {
+                if (!Arrays.equals(group, ((GroupMessage) messages[i]).pids)) {
                     System.out.println("ERROR: collective group creation does not have matching parameters! "
-                            + Arrays.toString(ranks) + " != " + Arrays.toString(((GroupMessage) messages[i]).ranks));
+                            + Arrays.toString(group) + " != " + Arrays.toString(((GroupMessage) messages[i]).pids));
                     return; // FIXME: This return will hang the program!
                 }
             }
         }
 
-        System.out.println("   processes(" + ranks.length + "): " + Arrays.toString(ranks));
+        System.out.println("   processes(" + group.length + "): " + Arrays.toString(group));
 
         // We gather all connections to the participating machines, and save all connections
         // to the machines that do not participate.
-        Connection [] copy = processes.clone();
-        Connection [] procs = new Connection[ranks.length];
+        HashMap<Integer, Connection> tmp = new HashMap<Integer, Connection>();
+        tmp.putAll(pids);
+        
+        Connection [] used = new Connection[group.length];
 
-        for (int i=0;i<ranks.length;i++) {
-            procs[i] = copy[ranks[i]];
-            copy[ranks[i]] = null;
+        for (int i=0;i<group.length;i++) {
+            used[i] = tmp.remove(group[i]);
         }
-
+        
         // We now send a reply to all processes. Note that some may not participate in the new communicator.
 
         // We generate a new 'virtual' communicator.
-        int number = parent.createCommunicator(procs);
+        int number = parent.createCommunicator(used);
 
         System.out.println("   new communicator: " + number);
 
@@ -245,15 +254,15 @@ public class Communicator {
         HashMap<String, int []> membersHash = new HashMap<String, int []>();
 
         // Generate the flags needed by the virtual communicator.
-        int flags = generateFlags(procs);
+        int flags = generateFlags(used);
 
         System.out.println("   flags: " + flags);
 
         // Send a reply to each participant, generating the appropriate keys and bitmaps for each participant.
-        for (int j=0;j<procs.length;j++) {
+        for (int j=0;j<used.length;j++) {
 
             // Get the connection and cluster name we are sending to
-            Connection c = procs[j];
+            Connection c = used[j];
             String name = c.getClusterName();
 
             // Generate a correct key for this cluster.
@@ -269,23 +278,25 @@ public class Communicator {
             int [] members = membersHash.get(name);
 
             if (members == null) {
-                members = generateMembers(name, procs);
+                members = generateMembers(name, used);
                 membersHash.put(name, members);
             }
 
-            System.out.println("   reply(" + j + "): " + key + " " + name + " " + procs.length + " " + flags + " " + Arrays.toString(members));
+            System.out.println("   reply(" + j + "): " + key + " " + name + " " + used.length + " " + flags + " " + Arrays.toString(members));
 
             // Send the reply.
-            c.enqueue(new GroupReply(communicator, number, j, procs.length, flags, members), false);
+            c.enqueue(new GroupReply(communicator, number, j, used.length, flags, members), false);
         }
 
         // Send a reply to each process that does not participate, as they may still need to perform a some local collectives.
         // We check in bitmaps to see if (part of) a cluster is participating in the communicators. We store this result in
         // the size field of the GroupReply
-        for (int j=0;j<copy.length;j++) {
-            if (copy[j] != null) {
-                System.out.println("   reply(" + j + "): " + membersHash.containsKey(copy[j].getClusterName()));
-                copy[j].enqueue(new GroupReply(communicator, membersHash.containsKey(copy[j].getClusterName())), false);
+        int j=0;
+        
+        for (Connection c : tmp.values()) {
+            if (c != null) {
+                System.out.println("   reply(" + j++ + "): " + membersHash.containsKey(c.getClusterName()));
+                c.enqueue(new GroupReply(communicator, membersHash.containsKey(c.getClusterName())), false);
             }
         }
     }

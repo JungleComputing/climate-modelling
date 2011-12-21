@@ -54,6 +54,7 @@ public class Connection implements Protocol {
     public final int localSize;
 
     public final int pid;
+    public final String pidAsString;
     
     private final LinkedList<Message> incoming = new LinkedList<Message>();
     private boolean done = false;
@@ -81,12 +82,14 @@ public class Connection implements Protocol {
         clusterSize = in.readInt();
 
         pid = ((clusterRank & 0xFF) << 24) | (localRank & 0x00FFFFFF);   
-       
-	System.out.println(pid + " is " + localRank + "/" + localSize + " " + clusterRank + "/" + clusterSize);
+    
+        pidAsString = (clusterRank & 0xFF) + ":" + (localRank & 0x00FFFFFF);   
+        
+	System.out.println(pidAsString + " is " + localRank + "/" + localSize + " " + clusterRank + "/" + clusterSize);
        
         int len = in.readInt();
 
-	System.out.println(pid + " read len " + len);
+	System.out.println(pidAsString + " read len " + len);
 
         byte [] tmp = new byte[len];
 
@@ -94,18 +97,18 @@ public class Connection implements Protocol {
 
         clusterName = new String(tmp);
 
-	System.out.println(pid + " cluster is " + clusterName);
+	System.out.println(pidAsString + " cluster is " + clusterName);
 
         // Register ourselves at our cluster.
         Cluster c = parent.getCluster(clusterRank, localSize, clusterSize, clusterName);
         c.addConnection(localRank, localSize, clusterName, this);
 
-	System.out.println(pid + " waiting");
+	System.out.println(pidAsString + " waiting until signup complete.");
 
         // Wait until everyone has registered.
         int [] clusterSizes = parent.waitUntilSignupComplete();
 
-	System.out.println(pid + " writing output handshake");
+	System.out.println(pidAsString + " writing output handshake");
         
         // Write the output handshake.
         out.write(OPCODE_HANDSHAKE_ACCEPTED);
@@ -116,14 +119,14 @@ public class Connection implements Protocol {
 
         out.flush();
                 
-	System.out.println(pid + " done");
-
         // Start the sender and receiver threads.
         sender = new SenderThread();
         receiver = new ReceiverThread();
    
         sender.start();
         receiver.start();
+    
+        System.out.println(pidAsString + " init done!");
     }
     
     void done() {
@@ -188,7 +191,7 @@ public class Connection implements Protocol {
 
     private boolean receiveMessage() throws Exception {
 
-        System.out.println(clusterRank + ":" + localRank + " - Waiting for message");
+        System.out.println(pidAsString + " - Waiting for message");
 
         int opcode = in.readInt();
 
@@ -196,24 +199,28 @@ public class Connection implements Protocol {
 
         switch (opcode) {
         case OPCODE_DATA:
+            System.out.println(pidAsString + " - Reading DATA message");
             m = new DataMessage(in);
             break;
 
         case OPCODE_COMM:
+            System.out.println(pidAsString + " - Reading COMM message");
             m = new CommMessage(in);
             break;
 
         case OPCODE_GROUP:
+            System.out.println(pidAsString + " - Reading GROUP message");
             m = new GroupMessage(in);
             break;
 
         case OPCODE_DUP:
+            System.out.println(pidAsString + " - Reading DUP message");
             m = new DupMessage(in);
             break;
 
         default:
-            System.out.println("GOT illegal opcode " + opcode);
-            throw new Exception("Illegal opcode " + opcode);
+            System.out.println(pidAsString + " GOT illegal opcode " + opcode);
+            throw new Exception("Illegal opcode " + opcode + " read by " + pidAsString);
         }
 
         parent.deliver(m);
@@ -228,8 +235,7 @@ public class Connection implements Protocol {
             return false;
         }
 
-        System.out.println("Forwarding message from " + m.source + " to " +
-                clusterName + ":" + localRank);
+        System.out.println(pidAsString + " Forwarding message from " + m.source);
 
         m.write(out);
         out.flush();
@@ -255,7 +261,4 @@ public class Connection implements Protocol {
     public int getLocalSize() {
         return localSize;
     }
-
-
-
 }

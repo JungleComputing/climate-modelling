@@ -10,10 +10,7 @@ public class CommMessage extends Message {
     public final int key;
 
     CommMessage(DataInputStream in) throws IOException {
-
         super(Protocol.OPCODE_COMM, in);
-
-        System.out.println("Reading comm message"); 
         color = in.readInt();
         key = in.readInt();
     }
