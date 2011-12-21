@@ -62,6 +62,8 @@ public class Connection implements Protocol {
         this.parent = parent;
         this.s = s;
 
+	System.out.println("Got connection from " + s);
+
         //in = new DataInputStream(new NoisyInputStream(s.getInputStream()));
         in = new DataInputStream(new BufferedInputStream(s.getInputStream()));
         out = new DataOutputStream(new BufferedOutputStream(s.getOutputStream()));
@@ -79,8 +81,12 @@ public class Connection implements Protocol {
         clusterSize = in.readInt();
 
         pid = ((clusterRank & 0xFF) << 24) | (localRank & 0x00FFFFFF);   
-        
+       
+	System.out.println(pid + " is " + localRank + "/" + localSize + " " + clusterRank + "/" + clusterSize);
+       
         int len = in.readInt();
+
+	System.out.println(pid + " read len " + len);
 
         byte [] tmp = new byte[len];
 
@@ -88,12 +94,18 @@ public class Connection implements Protocol {
 
         clusterName = new String(tmp);
 
+	System.out.println(pid + " cluster is " + clusterName);
+
         // Register ourselves at our cluster.
         Cluster c = parent.getCluster(clusterRank, localSize, clusterSize, clusterName);
         c.addConnection(localRank, localSize, clusterName, this);
 
+	System.out.println(pid + " waiting");
+
         // Wait until everyone has registered.
         int [] clusterSizes = parent.waitUntilSignupComplete();
+
+	System.out.println(pid + " writing output handshake");
         
         // Write the output handshake.
         out.write(OPCODE_HANDSHAKE_ACCEPTED);
@@ -104,6 +116,8 @@ public class Connection implements Protocol {
 
         out.flush();
                 
+	System.out.println(pid + " done");
+
         // Start the sender and receiver threads.
         sender = new SenderThread();
         receiver = new ReceiverThread();

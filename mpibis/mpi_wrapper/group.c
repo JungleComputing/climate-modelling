@@ -131,7 +131,7 @@ fprintf(stderr, "   ###: creating group of size %d\n", members);
 
 fprintf(stderr, "   ###: allocating members array for %d members\n", members);
 
-   res->members = malloc(members * sizeof(int));
+   res->members = malloc(members * sizeof(uint32_t));
 
    if (res->members == NULL) {
       fprintf(stderr, "   INTERNAL ERROR: Failed to allocate group member array!\n");
@@ -153,6 +153,20 @@ fprintf(stderr, "   ###: index of group is %d\n", res->index);
 fprintf(stderr, "   ###: group creating done\n");
 
    return res;
+}
+
+static void delete_group(group *group)
+{
+   if (group == NULL) { 
+      return;
+   }
+
+   groups[group->index] = NULL;
+
+fprintf(stderr, "   ###: deleting group %d of size %d\n", group->index, group->size);
+
+   free(group->members);
+   free(group);
 }
 
 // Returns in group a handle to the group of comm.
@@ -347,7 +361,7 @@ int group_incl(group *in, int n, int ranks[], group **out)
 
       if (next < 0 || next >= in->size) {
          fprintf(stderr, "   ERROR: Rank out of bounds (%d)!\n", next);
-         free(res);
+         delete_group(res);
          return MPI_ERR_RANK;
       }
 

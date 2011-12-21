@@ -568,7 +568,7 @@ int messaging_receive_comm_reply(comm_reply *reply)
    // Since operations on communicators are collective operations, we can
    // assume here that the reply has not be received yet. There is a chance,
    // however, that other messages are on the stream before our reply message.
-   int opcode;
+   int opcode, i;
 
    int error = queue_pending_messages(&opcode);
 
@@ -612,6 +612,10 @@ fprintf(stderr, "*Received comm reply (comm=%d src=%d newComm=%d rank=%d size=%d
       if (error != CONNECT_OK) {
          fprintf(stderr, "INTERNAL ERROR: Failed to receive comm reply members!\n");
          return MPI_ERR_INTERN;
+      }
+
+      for (i=0;i<reply->size;i++) {
+         reply->members[i] = ntohl(reply->members[i]);
       }
    }
 
@@ -659,7 +663,7 @@ int messaging_send_group_request(communicator* c, group *g)
       g->members[i] = htonl(g->members[i]);
    }
 
-   error = wa_sendfully((unsigned char *) g->members, g->size * sizeof(int));
+   error = wa_sendfully((unsigned char *) g->members, g->size * sizeof(uint32_t));
 
    for (i=0;i<g->size;i++) {
       g->members[i] = ntohl(g->members[i]);
@@ -678,7 +682,7 @@ int messaging_receive_group_reply(group_reply *reply)
    // Since operations on communicators are collective operations, we can
    // assume here that the reply has not be received yet. There is a chance,
    // however, that other messages are on the stream before our reply message.
-   int opcode;
+   int opcode, i;
 
    int error = queue_pending_messages(&opcode);
 
@@ -726,6 +730,10 @@ fprintf(stderr, "*Receiving group members (%ld bytes)\n", reply->size * sizeof(u
       if (error != CONNECT_OK) {
          fprintf(stderr, "INTERNAL ERROR: Failed to receive comm reply members!\n");
          return MPI_ERR_INTERN;
+      }
+
+      for (i=0;i<reply->size;i++) {
+         reply->members[i] = ntohl(reply->members[i]);
       }
    }
 
