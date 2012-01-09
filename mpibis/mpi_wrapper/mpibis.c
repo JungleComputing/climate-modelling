@@ -1612,6 +1612,41 @@ int IMPI_Comm_group(MPI_Comm comm, MPI_Group *g)
    return error;
 }
 
+#define __IMPI_Comm_free
+int IMPI_Comm_free ( MPI_Comm *comm )
+{
+   if (*comm == MPI_COMM_WORLD) { 
+      // ignored
+      return MPI_SUCCESS;
+   }
+ 
+   if (*comm == MPI_COMM_NULL) { 
+      ERROR(1, "Communicator is MPI_COMM_NULL!");
+      return MPI_ERR_COMM;
+   }
+    
+   communicator *c = get_communicator(*comm);
+
+   if (c == NULL) {
+      ERROR(1, "Communicator not found!");
+      return MPI_ERR_COMM;
+   }
+
+/* 
+   Ignored for now, as the spec implies that this is an asynchronous operation! 
+   
+   error = free_communicator(c);
+   comm = MPI_COMM_NULL;
+   return error;
+*/
+
+   WARN(1, "Ignoring MPI_Comm_free on communicator %d!\n", c->number);
+
+   *comm = MPI_COMM_NULL;
+
+   return MPI_SUCCESS;
+}
+
 #define __IMPI_Group_rank
 int IMPI_Group_rank(MPI_Group g, int *rank)
 {

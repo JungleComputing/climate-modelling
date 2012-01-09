@@ -193,6 +193,18 @@ int create_communicator(MPI_Comm comm, int number, int local_rank, int local_siz
                             global_rank, global_size, flags, members, out);
 }
 
+int free_communicator(communicator * c) 
+{
+   MPI_Comm comm; 
+
+   comm = c->comm;
+
+   comms[c->number] = NULL;
+   free(c);
+
+   return PMPI_Comm_free(&comm);
+}
+
 communicator* get_communicator(MPI_Comm comm)
 {
    if (comm == MPI_COMM_WORLD) {
