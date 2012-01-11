@@ -365,7 +365,7 @@ fprintf(stderr, "Result of receive: result=%d error=%d\n", result, *error);
       return NULL;
    }
 
-   if (opcode == OPCODE_DATA || opcode == OPCODE_COLLECTIVE_BCAST) {
+   if (opcode == OPCODE_DATA || opcode == OPCODE_COLLECTIVE_BCAST || opcode == OPCODE_COLLECTIVE_ALLREDUCE) {
       return receive_data_message(error);
    }
 
@@ -417,6 +417,16 @@ int messaging_bcast(void* buf, int count, MPI_Datatype datatype, int root, commu
 int messaging_bcast_receive(void *buf, int count, MPI_Datatype datatype, int root, communicator* c)
 {
    return messaging_receive(buf, count, datatype, root, BCAST_TAG, MPI_STATUS_IGNORE, c);
+}
+
+int messaging_allreduce(void* buf, int count, MPI_Datatype datatype, communicator* c)
+{
+   return do_send(OPCODE_COLLECTIVE_ALLREDUCE, buf, count, datatype, 0, ALLREDUCE_TAG, c);
+}
+
+int messaging_allreduce_receive(void *buf, int count, MPI_Datatype datatype, communicator* c)
+{
+   return messaging_receive(buf, count, datatype, 0, ALLREDUCE_TAG, MPI_STATUS_IGNORE, c);
 }
 
 /*
@@ -557,7 +567,7 @@ fprintf(stderr, "Queuing pending messages (blocking=1)\n");
 
 fprintf(stderr, "*Result of receive result=%d error=%d\n", result, error);
 
-      if (opcode == OPCODE_DATA || opcode == OPCODE_COLLECTIVE_BCAST) {
+      if (opcode == OPCODE_DATA || opcode == OPCODE_COLLECTIVE_BCAST || opcode == OPCODE_COLLECTIVE_ALLREDUCE) {
          // There is a message blocking the stream!
          m = receive_data_message(&error);
 

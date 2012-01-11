@@ -305,7 +305,7 @@ static void init_constants()
 
    FORTRAN_MPI_OP_NULL = PMPI_Op_c2f(MPI_OP_NULL);
 
-   init_fortran_logical(&FORTRAN_TRUE, &FORTRAN_FALSE);
+   init_fortran_logical_(&FORTRAN_TRUE, &FORTRAN_FALSE);
 
    INFO(1, "init_constants", "MPI_COMM_NULL    = %p / %d", (void *)MPI_COMM_NULL, FORTRAN_MPI_COMM_NULL);
    INFO(1, "init_constants", "MPI_COMM_WORLD   = %p / %d", (void *)MPI_COMM_WORLD, FORTRAN_MPI_COMM_WORLD);

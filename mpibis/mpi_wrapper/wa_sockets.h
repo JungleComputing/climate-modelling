@@ -42,8 +42,10 @@
 #define OPCODE_DUP_REPLY                  56
 
 #define OPCODE_COLLECTIVE_BCAST           60
+#define OPCODE_COLLECTIVE_ALLREDUCE       61
 
 #define BCAST_TAG                         -1
+#define ALLREDUCE_TAG                     -2
 
 
 #define MAX_LENGTH_CLUSTER_NAME          128
