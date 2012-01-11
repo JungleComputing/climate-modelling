@@ -24,7 +24,7 @@ else
    CC            := gcc
 endif
 
-USER_LINKER      := mpif90 -h
+USER_LINKER      := mpif90 -mcmodel medium
 
 #=====================================================
 # GENERIC_USER
