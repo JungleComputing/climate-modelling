@@ -97,7 +97,7 @@ public class Communicator {
 
         return COMM_FLAG_LOCAL;
     }
-
+    
     private int [] generateMembers(String name, Connection [] procs) {
 
         if (procs == null || procs.length == 0) {
@@ -114,6 +114,17 @@ public class Communicator {
         return members;
     }
 
+    private int countClusters(Connection [] procs) {
+        
+        HashSet<Integer> clusterCount = new HashSet<Integer>();
+        
+        for (Connection c : procs) { 
+            clusterCount.add(c.clusterRank);
+        }
+        
+        return clusterCount.size();
+    }
+    
     // This implements the split operation. Note that dup and create are just
     // special cases of split, and therefore handled by the same code.
     private void split() {
@@ -177,9 +188,12 @@ public class Communicator {
                     // participants.
                     HashMap<String, Integer> realRanks = new HashMap<String, Integer>();
 
-                    // Use a hash map to keep track of the bitmaps we need to generate.
+                    // Use a hash map to keep track of the member set we need to generate.
                     HashMap<String, int []> membersHash = new HashMap<String, int []>();
 
+                    // Use a hash map to keep track of the cluster count in each of the communicators.
+                    HashMap<String, Integer> clusterCountHash = new HashMap<String, Integer>();
+                    
                     // Generate the flags needed by the virtual communicator.
                     int flags = generateFlags(procs);
 
@@ -199,16 +213,20 @@ public class Communicator {
 
                         realRanks.put(c.getClusterName(), key+1);
 
-                        // Generate a correct bitmap for this cluster.
+                        // Generate a correct member set for this cluster.
                         int [] members = membersHash.get(name);
 
                         if (members == null) {
                             members = generateMembers(name, procs);
                             membersHash.put(name, members);
+                       
+                            clusterCountHash.put(name, countClusters(procs));
                         }
 
+                        int clusterCount = clusterCountHash.get(name);
+                        
                         // Send the reply.
-                        c.enqueue(new CommReply(communicator, number, j, size, color, key, flags, members), false);
+                        c.enqueue(new CommReply(communicator, number, j, size, color, key, clusterCount, flags, members), false);
                     }
 
                 } else {
@@ -217,7 +235,7 @@ public class Communicator {
                     // we can send a simplified reply.
                     for (CommMessage m : l) {
                         processes[m.source].enqueue(new CommReply(communicator,
-                                -1, -1, 0, -1, 0, 0, null), false);
+                                -1, -1, 0, -1, 0, 0, 0, null), false);
                     }
                 }
             }
@@ -268,9 +286,12 @@ public class Communicator {
         // participants.
         HashMap<String, Integer> realRanks = new HashMap<String, Integer>();
 
-        // Use a hash map to keep track of the bitmaps we need to generate.
+        // Use a hash map to keep track of the membersets we need to generate.
         HashMap<String, int []> membersHash = new HashMap<String, int []>();
 
+        // Use a hash map to keep track of the clusterCount for each memberset.
+        HashMap<String, Integer> clusterCountHash = new HashMap<String, Integer>();
+        
         // Generate the flags needed by the virtual communicator.
         int flags = generateFlags(used);
 
@@ -298,12 +319,16 @@ public class Communicator {
             if (members == null) {
                 members = generateMembers(name, used);
                 membersHash.put(name, members);
+            
+                clusterCountHash.put(name, countClusters(used));
             }
+
+            int clusterCount = clusterCountHash.get(name);
 
             System.out.println("   reply(" + j + "): " + key + " " + name + " " + used.length + " " + flags + " " + Arrays.toString(members));
 
             // Send the reply.
-            c.enqueue(new GroupReply(communicator, number, j, used.length, flags, members), false);
+            c.enqueue(new GroupReply(communicator, number, j, used.length, clusterCount, flags, members), false);
         }
 
         // Send a reply to each process that does not participate, as they may still need to perform a some local collectives.

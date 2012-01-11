@@ -15,10 +15,11 @@ public class CommReply extends Message {
     public final int key;
 
     // These contain info about the distribution of the virtual communicator.
+    public final int clusterCount;
     public final int flags;
     public final int [] members;
 
-    CommReply(int comm, int newComm, int rank, int size, int color, int key, int flags, int [] members) {
+    CommReply(int comm, int newComm, int rank, int size, int color, int key, int clusterCount, int flags, int [] members) {
 
         super(Protocol.OPCODE_COMM_REPLY, comm, -1);
 
@@ -28,6 +29,7 @@ public class CommReply extends Message {
         this.color = color;
         this.key = key;
 
+        this.clusterCount = clusterCount;
         this.flags = flags;
         this.members = members;
     }
@@ -39,6 +41,7 @@ public class CommReply extends Message {
         out.writeInt(size);
         out.writeInt(color);
         out.writeInt(key);
+        out.writeInt(clusterCount);
         out.writeInt(flags);
 
         // NOTE: size may be 0!

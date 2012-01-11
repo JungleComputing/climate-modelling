@@ -15,6 +15,7 @@ public class GroupReply extends Message {
     public final int size;
 
     // These contain info about the distribution of the virtual communicator.
+    public final int clusterCount;
     public final int flags;
     public final int [] members;
 
@@ -29,6 +30,7 @@ public class GroupReply extends Message {
         this.rank = -1;
         this.size = -1;
         this.flags = -1;
+        this.clusterCount = -1;
         this.members = null;
 
         if (overlap) {
@@ -38,15 +40,16 @@ public class GroupReply extends Message {
         }
     }
 
-    GroupReply(int comm, int newComm, int rank, int size, int flags, int [] members) {
+    GroupReply(int comm, int newComm, int rank, int size, int clusterCount, int flags, int [] members) {
 
         super(Protocol.OPCODE_GROUP_REPLY, comm, -1);
 
         this.newComm = newComm;
         this.rank = rank;
         this.size = size;
+        this.clusterCount = clusterCount;
         this.flags = flags;
-        this.members = members;
+        this.members = members; 
         this.type = TYPE_ACTIVE;
     }
 
@@ -57,6 +60,7 @@ public class GroupReply extends Message {
         out.writeInt(rank);
         out.writeInt(size);
         out.writeInt(type);
+        out.writeInt(clusterCount);
         out.writeInt(flags);
 
         if (type == TYPE_ACTIVE) {
