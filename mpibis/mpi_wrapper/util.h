@@ -8,5 +8,7 @@
                      (*argc)--;\
                    }
 
+void init_fortran_logical(int *, int*);
+
 #endif
 

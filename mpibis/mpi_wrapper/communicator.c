@@ -38,6 +38,7 @@ static communicator *comms[MAX_COMMUNICATORS];
 static int add_communicator(MPI_Comm comm, int number, int initial,
                            int local_rank, int local_size,
                            int global_rank, int global_size,
+                           int cluster_count,  
                            int flags, uint32_t *members,
                            communicator **out)
 {
@@ -75,6 +76,7 @@ static int add_communicator(MPI_Comm comm, int number, int initial,
    c->local_size = local_size;
    c->global_rank = global_rank;
    c->global_size = global_size;
+   c->cluster_count = cluster_count;
    c->queue_head = NULL;
    c->queue_tail = NULL;
    c->members = members;
@@ -143,7 +145,7 @@ int init_communicators(int cluster_rank, int cluster_count,
    error = add_communicator(MPI_COMM_WORLD, FORTRAN_MPI_COMM_WORLD, 1,
                             local_rank, local_count,
                             global_rank, global_count,
-                            flags, members, NULL);
+                            cluster_count, flags, members, NULL);
 
    if (error != MPI_SUCCESS) {
       fprintf(stderr, "   INTERNAL ERROR: Failed to create MPI_COMM_WORLD!\n");
@@ -164,9 +166,7 @@ int init_communicators(int cluster_rank, int cluster_count,
 
    // FIXME: this will fail hopelessly if FORTRAN_MPI_COMM_SELF has a weird value!
    error = add_communicator(MPI_COMM_SELF, FORTRAN_MPI_COMM_SELF, 1,
-                            0, 1,
-                            0, 1,
-                            flags, members, NULL);
+                            0, 1, 0, 1, 1, flags, members, NULL);
 
    if (error != MPI_SUCCESS) {
       fprintf(stderr, "   INTERNAL ERROR: Failed to create MPI_COMM_SELF!\n");
@@ -175,9 +175,7 @@ int init_communicators(int cluster_rank, int cluster_count,
 
    // FIXME: this will fail hopelessly if FORTRAN_MPI_COMM_NULL has a weird value!
    error = add_communicator(MPI_COMM_NULL, FORTRAN_MPI_COMM_NULL, 1,
-                            0, 0,
-                            0, 0,
-                            0, NULL, NULL);
+                            0, 0, 0, 0, 1, 0, NULL, NULL);
 
    if (error != MPI_SUCCESS) {
       fprintf(stderr, "   INTERNAL ERROR: Failed to create MPI_COMM_NULL!\n");
@@ -187,10 +185,11 @@ int init_communicators(int cluster_rank, int cluster_count,
 }
 
 int create_communicator(MPI_Comm comm, int number, int local_rank, int local_size,
-         int global_rank, int global_size, int flags, uint32_t *members, communicator **out)
+         int global_rank, int global_size, int cluster_count, int flags, 
+         uint32_t *members, communicator **out)
 {
    return add_communicator(comm, number, 0, local_rank, local_size,
-                            global_rank, global_size, flags, members, out);
+                            global_rank, global_size, cluster_count, flags, members, out);
 }
 
 int free_communicator(communicator * c) 

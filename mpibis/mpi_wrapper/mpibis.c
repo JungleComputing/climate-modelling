@@ -305,6 +305,8 @@ static void init_constants()
 
    FORTRAN_MPI_OP_NULL = PMPI_Op_c2f(MPI_OP_NULL);
 
+   init_fortran_logical(&FORTRAN_TRUE, &FORTRAN_FALSE);
+
    INFO(1, "init_constants", "MPI_COMM_NULL    = %p / %d", (void *)MPI_COMM_NULL, FORTRAN_MPI_COMM_NULL);
    INFO(1, "init_constants", "MPI_COMM_WORLD   = %p / %d", (void *)MPI_COMM_WORLD, FORTRAN_MPI_COMM_WORLD);
    INFO(1, "init_constants", "MPI_COMM_SELF    = %p / %d", (void *)MPI_COMM_SELF, FORTRAN_MPI_COMM_SELF);
@@ -312,6 +314,8 @@ static void init_constants()
    INFO(1, "init_constants", "MPI_GROUP_EMPTY  = %p / %d", (void *)MPI_GROUP_EMPTY, FORTRAN_MPI_GROUP_EMPTY);
    INFO(1, "init_constants", "MPI_REQUEST_NULL = %p / %d", (void *)MPI_REQUEST_NULL, FORTRAN_MPI_REQUEST_NULL);
    INFO(1, "init_constants", "MPI_OP_NULL      = %p / %d", (void *)MPI_OP_NULL, FORTRAN_MPI_OP_NULL);
+   INFO(1, "init_constants", "FORTRAN_TRUE     = %d", FORTRAN_TRUE);
+   INFO(1, "init_constants", "FORTRAN_FALSE    = %d", FORTRAN_FALSE);
 }
 
 #define __IMPI_Init
@@ -1492,7 +1496,7 @@ int IMPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm)
    error = create_communicator(tmp_com, reply.newComm,
                  c->local_rank, c->local_size,
                  c->global_rank, c->global_size,
-                 c->flags, members, &dup);
+                 c->cluster_count, c->flags, members, &dup);
 
    if (error != MPI_SUCCESS) {
       IERROR(1, "MPI_Comm_dup create communicator failed!");
@@ -1638,6 +1642,7 @@ int IMPI_Comm_create(MPI_Comm mc, MPI_Group mg, MPI_Comm *newcomm)
       error = create_communicator(tmp_comm, reply.newComm,
                  local_rank, local_size,
                  reply.rank, reply.size,
+                 reply.cluster_count, 
                  reply.flags, reply.members,
                  &result);
 
@@ -1718,6 +1723,7 @@ int IMPI_Comm_split(MPI_Comm comm, int color, int key, MPI_Comm *newcomm)
       error = create_communicator(tmp, reply.newComm,
                  local_rank, local_size,
                  reply.rank, reply.size,
+                 reply.cluster_count,
                  reply.flags, reply.members,
                  &result);
 

@@ -10,6 +10,8 @@ echo using `which $MPICC`
 
 rm -f *.o ../libmpibis.a
 
+gfortran -c logical.f
+
 $MPICC -c -g -Wall generated_mpi.c
 $MPICC -c -g -Wall debugging.c
 #$MPICC -c -g -Wall generated_impi.c
@@ -22,7 +24,7 @@ $MPICC -c -g -Wall mpibis.c
 $MPICC -c -g -Wall operation.c
 $MPICC -c -g -Wall reduce_ops.c
 
-ar -cr ../libmpibis.a generated_mpi.o debugging.o mpibis.o request.o communicator.o messaging.o wa_sockets.o group.o operation.o reduce_ops.o
+ar -cr ../libmpibis.a generated_mpi.o debugging.o mpibis.o request.o communicator.o messaging.o wa_sockets.o group.o operation.o reduce_ops.o logical.o
 #ar -cr ../libmpibis.a generated_mpi.o debugging.o generated_impi.o
 
 rm -f *.o
