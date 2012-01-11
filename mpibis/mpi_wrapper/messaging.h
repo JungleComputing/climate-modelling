@@ -98,14 +98,15 @@ struct s_msg_buffer {
     message_buffer *next;       // Next message in queue
 };
 
-int  messaging_send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, communicator* c);
+int messaging_send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, communicator* c);
+int messaging_receive(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Status *status, communicator* c);
 
-int messaging_receive(void *buf, int count, MPI_Datatype datatype, int source,
-                          int tag, MPI_Status *status, communicator* c);
+
+int messaging_bcast(void* buf, int count, MPI_Datatype datatype, int root, communicator* c);
+int messaging_bcast_receive(void *buf, int count, MPI_Datatype datatype, int root, communicator* c);
+
 int messaging_probe_receive(request *r, int blocking);
 int messaging_finalize_receive(request *r, MPI_Status *status);
-
-
 
 int messaging_send_comm_request(communicator* c, int color, int key);
 int messaging_receive_comm_reply(comm_reply *reply);

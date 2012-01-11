@@ -977,6 +977,8 @@ int IMPI_Barrier(MPI_Comm comm)
 #define __IMPI_Bcast
 int IMPI_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm)
 {
+   int error, root_cluster, local_cluster;   
+
    communicator *c = get_communicator(comm);
 
    if (c == NULL) {
@@ -990,8 +992,44 @@ int IMPI_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Com
      return PMPI_Bcast(buffer, count, datatype, root, c->comm);
    }
 
-   IERROR(0, "WA MPI_Bcast not implemented yet!");
-   return MPI_ERR_INTERN;
+   // We need to perform a WA BCAST. 
+      
+   // If we are root we first send the data to the server and then bcast locally. 
+   if (c->global_rank == root) {       
+      error = messaging_bcast(buffer, count, datatype, root, c);
+
+      if (error != MPI_SUCCESS) { 
+         ERROR(1, "Root %d failed to broadcast in communicator %d!\n", root, c->number);
+         return error;
+      }
+
+      return PMPI_Bcast(buffer, count, datatype, c->local_rank, c->comm);
+   } 
+  
+   // Retrieve the cluster of the bcast root and the local process.
+   root_cluster = GET_CLUSTER_RANK(c->members[root]);
+   local_cluster = GET_CLUSTER_RANK(c->members[c->global_rank]);
+
+   // Check if we are in the same cluster as the root. If so, just receive it's bcast.
+   if (local_cluster == root_cluster) { 
+      return PMPI_Bcast(buffer, count, datatype, GET_PROCESS_RANK(c->members[root]), c->comm);
+   }
+
+   // If we are not in the same cluster AND we are the root of the local communicator 
+   // we first receive the WA message. 
+
+   // If we are in a different cluster from the root and we are process 0 of the local 
+   // communicator, we first receive the WA bcast and then forward this bcast locally
+   if (c->local_rank == 0) { 
+      error = messaging_bcast_receive(buffer, count, datatype, root, c); 
+ 
+      if (error != MPI_SUCCESS) { 
+         ERROR(1, "Local root failed to receive broadcast in communicator %d!\n", c->number);      
+         return error;
+      }
+   } 
+
+   return PMPI_Bcast(buffer, count, datatype, 0, c->comm);
 }
 
 #define __IMPI_Gather

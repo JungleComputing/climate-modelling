@@ -41,6 +41,11 @@
 #define OPCODE_DUP                        55
 #define OPCODE_DUP_REPLY                  56
 
+#define OPCODE_COLLECTIVE_BCAST           60
+
+#define BCAST_TAG                         -1
+
+
 #define MAX_LENGTH_CLUSTER_NAME          128
 #define MAX_COMMUNICATOR_BYTES             1
 #define MAX_REQUEST_BYTES   (sizeof (int *))

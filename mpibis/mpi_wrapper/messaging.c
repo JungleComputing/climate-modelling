@@ -374,7 +374,7 @@ fprintf(stderr, "Result of receive: result=%d error=%d\n", result, *error);
    return NULL;	
 }
 
-int messaging_send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, communicator* c)
+static int do_send(int opcode, void* buf, int count, MPI_Datatype datatype, int dest, int tag, communicator* c)
 {
    // We have already checked the various parameters, so all we have to so is send the lot!
    int bytes, error;
@@ -394,7 +394,7 @@ int messaging_send(void* buf, int count, MPI_Datatype datatype, int dest, int ta
    bytes = 0;
    error = PMPI_Pack(buf, count, datatype, m->data_buffer, m->data_buffer_size, &bytes, c->comm);
 
-   write_message_header(m, OPCODE_DATA, c->number, c->global_rank, dest, tag, count, bytes);
+   write_message_header(m, opcode, c->number, c->global_rank, dest, tag, count, bytes);
 
    if (error == MPI_SUCCESS) {
       error = send_message(m);
@@ -402,6 +402,21 @@ int messaging_send(void* buf, int count, MPI_Datatype datatype, int dest, int ta
 
    free_message(m);
    return error;
+}
+
+int messaging_send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, communicator* c)
+{
+   return do_send(OPCODE_DATA, buf, count, datatype, dest, tag, c);
+}
+
+int messaging_bcast(void* buf, int count, MPI_Datatype datatype, int root, communicator* c)
+{
+   return do_send(OPCODE_COLLECTIVE_BCAST, buf, count, datatype, root, 0, c);
+}
+
+int messaging_bcast_receive(void *buf, int count, MPI_Datatype datatype, int root, communicator* c)
+{
+   return messaging_receive(buf, count, datatype, root, BCAST_TAG, MPI_STATUS_IGNORE, c);
 }
 
 /*
@@ -459,6 +474,8 @@ void messaging_complete_receive_request(request *r, MPI_Status *status)
    }
 }
 */
+
+
 
 int messaging_receive(void *buf, int count, MPI_Datatype datatype,
               int source, int tag, MPI_Status *status, communicator* c)
