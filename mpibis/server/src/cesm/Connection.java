@@ -200,9 +200,14 @@ public class Connection implements Protocol {
         switch (opcode) {
         case OPCODE_DATA:
             System.out.println(pidAsString + " - Reading DATA message");
-            m = new DataMessage(in);
+            m = new DataMessage(OPCODE_DATA, in);
             break;
 
+        case OPCODE_COLLECTIVE_BCAST:
+            System.out.println(pidAsString + " - Reading BCAST message");
+            m = new DataMessage(OPCODE_COLLECTIVE_BCAST, in);
+            break;
+            
         case OPCODE_COMM:
             System.out.println(pidAsString + " - Reading COMM message");
             m = new CommMessage(in);

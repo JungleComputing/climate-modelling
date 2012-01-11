@@ -1,9 +1,11 @@
 package cesm;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 public class Communicator {
@@ -15,6 +17,8 @@ public class Communicator {
 
     private final int communicator;
     private final Connection [] processes;
+    private final Connection [] coordinators;
+    
     private final HashMap<Integer, Connection> pids;
     
     private final int size;
@@ -56,10 +60,24 @@ public class Communicator {
         this.messages = new Message[size];
 
         pids = new HashMap<Integer, Connection>();
+       
+        ArrayList<Connection> coord = new ArrayList<Connection>();
+        HashSet<Integer> done = new HashSet<Integer>();
         
-        for (int i=0;i<size;i++) { 
-            pids.put(processes[i].pid, processes[i]);
+        for (int i=0;i<size;i++) {
+            int pid = processes[i].pid;
+            
+            pids.put(pid, processes[i]);
+            
+            int cluster = processes[i].clusterRank; 
+            
+            if (!done.contains(cluster)) { 
+                done.add(cluster);
+                coord.add(processes[i]);
+            }
         }
+        
+        coordinators = coord.toArray(new Connection[coord.size()]);
     }
 
     private int generateFlags(Connection [] procs) {
@@ -376,7 +394,8 @@ public class Communicator {
     }
 
     void deliver(DataMessage m) {
-
+        
+        // Simply enqueue the message at the destination
         if (m.dest > processes.length) {
             System.err.println("ERROR: Unable to deliver message to " + m.dest
                     + " on comm " + communicator);
@@ -386,6 +405,23 @@ public class Communicator {
         processes[m.dest].enqueue(m, true);
     }
 
+    void bcast(DataMessage m) {
+        
+        // Enqueue the message at each of the cluster coordinators, 
+        // but exclude the cluster of the root.
+        
+        Connection source = pids.get(m.dest);
+        
+        for (int i=0;i<coordinators.length;i++) { 
+            if (coordinators[i].clusterRank != source.clusterRank) { 
+                System.err.println("Enqueuing BCAST at cluster coordinator " + coordinators[i].pid + " of comm " + communicator);
+                coordinators[i].enqueue(m, true); 
+            } else { 
+                System.err.println("SKIP Enqueuing BCAST at cluster coordinator " + coordinators[i].pid + " of comm " + communicator);
+            }
+        }
+    }
+    
     void deliver(Message m) {
 
         switch (m.opcode) {
@@ -396,6 +432,9 @@ public class Communicator {
             break;
         case Protocol.OPCODE_DATA:
             deliver((DataMessage)m);
+            break; 
+        case Protocol.OPCODE_COLLECTIVE_BCAST:
+            bcast((DataMessage)m);
             break;
         default:
             System.err.println("INTERNAL ERROR: unknown message type " +

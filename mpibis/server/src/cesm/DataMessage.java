@@ -13,9 +13,9 @@ public class DataMessage extends Message {
 	
 	public final byte [] data;
 	
-	DataMessage(DataInputStream in) throws IOException {
+	DataMessage(int opcode, DataInputStream in) throws IOException {
 	
-		super(Protocol.OPCODE_DATA, in);
+		super(opcode, in);
 
 		dest   = in.readInt();
 		tag    = in.readInt();
