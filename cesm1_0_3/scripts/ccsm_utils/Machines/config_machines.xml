@@ -654,7 +654,7 @@
          BATCHQUERY="qstat"
          BATCHSUBMIT="qsub" 
          GMAKE_J="4" 
-         MAX_TASKS_PER_NODE="8"
+         MAX_TASKS_PER_NODE="1"
          MPISERIAL_SUPPORT="FALSE" />
 
 </config_machines>
