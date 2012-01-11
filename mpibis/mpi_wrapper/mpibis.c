@@ -21,6 +21,7 @@
 #include "wa_sockets.h"
 #include "util.h"
 #include "debugging.h"
+#include "operation.h"
 
 // The number of clusters and the rank of our cluster in this set.
 uint32_t cluster_count;
@@ -52,6 +53,10 @@ int FORTRAN_MPI_REQUEST_NULL;
 int FORTRAN_MPI_GROUP_EMPTY;
 int FORTRAN_MPI_COMM_WORLD;
 int FORTRAN_MPI_COMM_SELF;
+int FORTRAN_MPI_OP_NULL;
+
+int FORTRAN_FALSE;
+int FORTRAN_TRUE;
 
 /*****************************************************************************/
 /*                      Initialization / Finalization                        */
@@ -298,12 +303,15 @@ static void init_constants()
 
    FORTRAN_MPI_REQUEST_NULL = PMPI_Request_c2f(MPI_REQUEST_NULL);
 
+   FORTRAN_MPI_OP_NULL = PMPI_Op_c2f(MPI_OP_NULL);
+
    INFO(1, "init_constants", "MPI_COMM_NULL    = %p / %d", (void *)MPI_COMM_NULL, FORTRAN_MPI_COMM_NULL);
    INFO(1, "init_constants", "MPI_COMM_WORLD   = %p / %d", (void *)MPI_COMM_WORLD, FORTRAN_MPI_COMM_WORLD);
    INFO(1, "init_constants", "MPI_COMM_SELF    = %p / %d", (void *)MPI_COMM_SELF, FORTRAN_MPI_COMM_SELF);
    INFO(1, "init_constants", "MPI_GROUP_NULL   = %p / %d", (void *)MPI_GROUP_NULL, FORTRAN_MPI_GROUP_NULL);
    INFO(1, "init_constants", "MPI_GROUP_EMPTY  = %p / %d", (void *)MPI_GROUP_EMPTY, FORTRAN_MPI_GROUP_EMPTY);
    INFO(1, "init_constants", "MPI_REQUEST_NULL = %p / %d", (void *)MPI_REQUEST_NULL, FORTRAN_MPI_REQUEST_NULL);
+   INFO(1, "init_constants", "MPI_OP_NULL      = %p / %d", (void *)MPI_OP_NULL, FORTRAN_MPI_OP_NULL);
 }
 
 #define __IMPI_Init
@@ -339,6 +347,14 @@ int IMPI_Init(int *argc, char **argv[])
 
       if (status != MPI_SUCCESS) {
          IERROR(1, "Failed to initialize requests!");
+         PMPI_Finalize();
+         return status;
+      }
+
+      status = init_operations();
+
+      if (status != MPI_SUCCESS) {
+         IERROR(1, "Failed to initialize operations!");
          PMPI_Finalize();
          return status;
       }
@@ -1185,21 +1201,49 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count,
       return MPI_ERR_COMM;
    }
 
+   operation *o = get_operation(op);
+
+   if (o == NULL) {
+      ERROR(1, "Operation not found!");
+      return MPI_ERR_OP;
+   }
+
    if (comm_is_local(c)) {
      // simply perform a reduce in local cluster
      inc_communicator_statistics(comm, STATS_REDUCE);
-     return PMPI_Reduce(sendbuf, recvbuf, count, datatype, op, root, c->comm);
+     return PMPI_Reduce(sendbuf, recvbuf, count, datatype, o->op, root, c->comm);
    }
 
    IERROR(0, "WA MPI_Reduce not implemented yet!");
    return MPI_ERR_INTERN;
 }
 
+#define __IMPI_Accumulate
+int IMPI_Accumulate (void *origin_addr, int origin_count, MPI_Datatype origin_datatype, 
+                     int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, 
+                     MPI_Op op, MPI_Win win)
+{
+   operation *o = get_operation(op);
+
+   if (o == NULL) {
+      ERROR(1, "Operation not found!");
+      return MPI_ERR_OP;
+   }
+
+   return PMPI_Accumulate(origin_addr, origin_count, origin_datatype, 
+                          target_rank, target_disp, target_count, target_datatype, 
+                          o->op, win);
+}
+
 #define __IMPI_Allreduce
 int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
                          MPI_Datatype datatype, MPI_Op op, MPI_Comm comm)
 {
-   int error;
+   // FIXME: Assumes operation is commutative ?
+   int error, i;
+   MPI_Aint extent;
+   char *buffer;
+
    communicator *c = get_communicator(comm);
 
 INFO(1, "JASON### IMPI_Allreduce IN:", "%d %d", count, *((int*) sendbuf));
@@ -1209,18 +1253,75 @@ INFO(1, "JASON### IMPI_Allreduce IN:", "%d %d", count, *((int*) sendbuf));
       return MPI_ERR_COMM;
    }
 
+   operation *o = get_operation(op);
+
+   if (o == NULL) {
+      ERROR(1, "Operation not found!");
+      return MPI_ERR_OP;
+   }
+
    if (comm_is_local(c)) {
      // simply perform an allreduce in local cluster
      inc_communicator_statistics(comm, STATS_ALLREDUCE);
-     error = PMPI_Allreduce(sendbuf, recvbuf, count, datatype, op, c->comm);
+     error = PMPI_Allreduce(sendbuf, recvbuf, count, datatype, o->op, c->comm);
 
 INFO(1, "JASON### IMPI_Allreduce OUT:", "%d %d", error, *((int*) recvbuf));
 
      return error;
    }
 
-   IERROR(0, "WA MPI_Allreduce not implemented yet!");
-   return MPI_ERR_INTERN;
+   // We need to perform a WA Allreduce. We do this by performing an reduce 
+   // in our local cluster, broadcasting the result to all other clusters, 
+   // merging all results locally, and then broadcasting the final result in 
+   // out local cluster.
+  
+   error = PMPI_Reduce(sendbuf, recvbuf, count, datatype, o->op, 0, c->comm);
+  
+   if (error != MPI_SUCCESS) { 
+      ERROR(1, "Failed to perform local allreduce in communicator %d!\n", c->number);
+      return error;
+   }
+
+   // The local root shares the result with all other cluster coordinators. 
+   if (c->local_rank == 0) {
+
+      error = MPI_Type_extent(datatype, &extent);
+
+      if (error != MPI_SUCCESS) { 
+         ERROR(1, "Failed to retrieve data size for allreduce (in communicator %d)!\n", c->number);
+         return error;
+      }
+  
+      buffer = malloc(c->cluster_count * count * extent);
+
+      if (buffer == NULL) { 
+         ERROR(1, "Failed to allocate space for WA Allreduce (in communicator %d)!\n", c->number);
+         return MPI_ERR_INTERN;
+      }
+
+      error = messaging_allreduce(recvbuf, count, datatype, c); 
+  
+      if (error != MPI_SUCCESS) { 
+         ERROR(1, "Local root %d failed to bcast local allreduce result in communicator %d!\n", c->global_rank, c->number);
+         return error;
+      }
+
+      error = messaging_allreduce_receive(buffer, c->cluster_count, datatype, c);
+
+      if (error != MPI_SUCCESS) { 
+         ERROR(1, "Local root %d failed to receive remote allreduce results (in communicator %d)!\n", c->global_rank, c->number);
+         free(buffer);
+         return error;
+      }
+
+      for (i=0;i<c->cluster_count-1; i++){
+         (*(o->function))((void*)((char*)buffer+i*count*extent), recvbuf, &count, &datatype);
+      }
+
+      free(buffer);
+   } 
+
+   return PMPI_Bcast(recvbuf, count, datatype, 0, c->comm);
 }
 
 #define __IMPI_Scan
@@ -1234,10 +1335,17 @@ int IMPI_Scan( void* sendbuf, void* recvbuf, int count,
       return MPI_ERR_COMM;
    }
 
+   operation *o = get_operation(op);
+
+   if (o == NULL) {
+      ERROR(1, "Operation not found!");
+      return MPI_ERR_OP;
+   }
+
    if (comm_is_local(c)) {
      // simply perform a scan in local cluster
      inc_communicator_statistics(comm, STATS_SCAN);
-     return PMPI_Scan(sendbuf, recvbuf, count, datatype, op, c->comm);
+     return PMPI_Scan(sendbuf, recvbuf, count, datatype, o->op, c->comm);
    }
 
    IERROR(0, "WA MPI_Scan not implemented yet!");
@@ -1939,6 +2047,40 @@ MPI_Fint IMPI_Request_c2f(MPI_Request req)
    if (tmp == NULL) {
       ERROR(1, "MPI_Request_c2f(req=%p) request not found!", req);
       return FORTRAN_MPI_REQUEST_NULL;
+   }
+
+   return tmp->index;
+}
+
+#define __IMPI_Op_f2c
+MPI_Op IMPI_Op_f2c(MPI_Fint op)
+{
+   MPI_Op o;
+
+   if (op == FORTRAN_MPI_OP_NULL) {
+      return MPI_OP_NULL;
+   }
+
+   operation *tmp = get_operation_with_index(op);
+
+   if (tmp == NULL) {
+      ERROR(1, "MPI_Op_f2c(req=%d) operation not found!", op);
+      return MPI_OP_NULL;
+   }
+
+   set_operation_ptr(&o, tmp);
+   return o;
+}
+
+
+#define __IMPI_Op_c2f
+MPI_Fint IMPI_Op_c2f(MPI_Op op) 
+{
+   operation *tmp = get_operation(op);
+
+   if (tmp == NULL) {
+      ERROR(1, "MPI_Op_c2f(op=%p) op not found!", op);
+      return FORTRAN_MPI_OP_NULL;
    }
 
    return tmp->index;

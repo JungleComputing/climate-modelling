@@ -64,6 +64,8 @@ struct s_communicator {
 
    int global_rank;
    int global_size;
+   
+   int cluster_count;
 
    uint32_t *members;
 

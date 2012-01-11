@@ -10,7 +10,7 @@
 #define __IMPI_Abort_FORWARD 0
 int IMPI_Abort ( MPI_Comm comm, int errorcode );
 
-#define __IMPI_Accumulate_FORWARD 1
+#define __IMPI_Accumulate_FORWARD 0
 int IMPI_Accumulate ( void *origin_addr, int origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, MPI_Op op, MPI_Win win );
 
 #define __IMPI_Add_error_class_FORWARD 1
@@ -544,13 +544,13 @@ int IMPI_Keyval_free ( int *keyval );
 #define __IMPI_Lookup_name_FORWARD 1
 int IMPI_Lookup_name ( char *service_name, MPI_Info info, char *port_name );
 
-#define __IMPI_Op_create_FORWARD 1
+#define __IMPI_Op_create_FORWARD 0
 int IMPI_Op_create ( MPI_User_function *function, int commute, MPI_Op *op );
 
 #define __IMPI_Open_port_FORWARD 1
 int IMPI_Open_port ( MPI_Info info, char *port_name );
 
-#define __IMPI_Op_free_FORWARD 1
+#define __IMPI_Op_free_FORWARD 0
 int IMPI_Op_free ( MPI_Op *op );
 
 #define __IMPI_Pack_external_FORWARD 1
@@ -880,7 +880,7 @@ MPI_Info IMPI_Info_f2c(MPI_Fint Info);
 #define __IMPI_File_f2c_FORWARD 1
 MPI_File IMPI_File_f2c(MPI_Fint File);
 
-#define __IMPI_Op_f2c_FORWARD 1
+#define __IMPI_Op_f2c_FORWARD 0
 MPI_Op IMPI_Op_f2c(MPI_Fint Op);
 
 #define __IMPI_Win_f2c_FORWARD 1
@@ -910,7 +910,7 @@ MPI_Fint IMPI_Info_c2f(MPI_Info Info);
 #define __IMPI_File_c2f_FORWARD 1
 MPI_Fint IMPI_File_c2f(MPI_File File);
 
-#define __IMPI_Op_c2f_FORWARD 1
+#define __IMPI_Op_c2f_FORWARD 0
 MPI_Fint IMPI_Op_c2f(MPI_Op Op);
 
 #define __IMPI_Win_c2f_FORWARD 1

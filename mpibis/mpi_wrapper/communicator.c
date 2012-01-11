@@ -263,8 +263,10 @@ int comm_is_self(communicator* c)
 
 int comm_is_local(communicator* c)
 {
-   fprintf(stderr, "   JASON: comm_is_local %d %d %d\n", c->number, (c->flags & COMM_FLAG_LOCAL), (c->flags & COMM_FLAG_REMOTE));
-   return ((c->flags & COMM_FLAG_LOCAL) != 0) && ((c->flags & COMM_FLAG_REMOTE) == 0);
+   int result = ((c->flags & COMM_FLAG_LOCAL) != 0) && ((c->flags & COMM_FLAG_REMOTE) == 0);
+   fprintf(stderr, "   JASON: comm_is_local: comm: %d local: %d remote: %d -> result: %d \n", 
+	c->number, (c->flags & COMM_FLAG_LOCAL), (c->flags & COMM_FLAG_REMOTE), result);
+   return result;
 }
 
 int comm_is_wa(communicator* c)

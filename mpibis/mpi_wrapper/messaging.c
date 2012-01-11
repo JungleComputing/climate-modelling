@@ -365,7 +365,7 @@ fprintf(stderr, "Result of receive: result=%d error=%d\n", result, *error);
       return NULL;
    }
 
-   if (opcode == OPCODE_DATA) {
+   if (opcode == OPCODE_DATA || opcode == OPCODE_COLLECTIVE_BCAST) {
       return receive_data_message(error);
    }
 
@@ -411,7 +411,7 @@ int messaging_send(void* buf, int count, MPI_Datatype datatype, int dest, int ta
 
 int messaging_bcast(void* buf, int count, MPI_Datatype datatype, int root, communicator* c)
 {
-   return do_send(OPCODE_COLLECTIVE_BCAST, buf, count, datatype, root, 0, c);
+   return do_send(OPCODE_COLLECTIVE_BCAST, buf, count, datatype, root, BCAST_TAG, c);
 }
 
 int messaging_bcast_receive(void *buf, int count, MPI_Datatype datatype, int root, communicator* c)
@@ -557,7 +557,7 @@ fprintf(stderr, "Queuing pending messages (blocking=1)\n");
 
 fprintf(stderr, "*Result of receive result=%d error=%d\n", result, error);
 
-      if (opcode == OPCODE_DATA) {
+      if (opcode == OPCODE_DATA || opcode == OPCODE_COLLECTIVE_BCAST) {
          // There is a message blocking the stream!
          m = receive_data_message(&error);
 
@@ -566,7 +566,7 @@ fprintf(stderr, "*Result of receive result=%d error=%d\n", result, error);
             return error;
          }
 
-fprintf(stderr, "*Message received from %d %d\n", m->header.source, m->header.tag);
+fprintf(stderr, "*Message received from src: %d opcode: %d tag: %d\n", m->header.source, opcode, m->header.tag);
 
          store_message(m);
          result = 0;
