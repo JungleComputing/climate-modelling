@@ -123,19 +123,19 @@
       tavg_RESID_S        ! free-surface residual flux (S)
 
 !BEN
-   integer (POP_i4), private :: &
-      timer_clinic,             &! timer number for clinic subroutine
-      ben_timer_advection,      &! timer number for clinic subroutine
-      ben_timer_coriolis,       &! timer number for clinic subroutine
-      ben_timer_gradients,      &! timer number for clinic subroutine
-      ben_timer_hdiff,          &! timer number for clinic subroutine
-      ben_timer_vdiff,          &! timer number for clinic subroutine
-      ben_timer_zero,           & ! timer number for clinic subroutine
-      timer_baro_state, &
-      timer_baro_rest, &
-      timer_baro_updatet, &
-      timer_baro_fluxvelocities, &
-      timer_baro_accum_tavg
+!   integer (POP_i4), private :: &
+!      timer_clinic,             &! timer number for clinic subroutine
+!      ben_timer_advection,      &! timer number for clinic subroutine
+!      ben_timer_coriolis,       &! timer number for clinic subroutine
+!      ben_timer_gradients,      &! timer number for clinic subroutine
+!      ben_timer_hdiff,          &! timer number for clinic subroutine
+!      ben_timer_vdiff,          &! timer number for clinic subroutine
+!      ben_timer_zero,           & ! timer number for clinic subroutine
+!      timer_baro_state, &
+!      timer_baro_rest, &
+!      timer_baro_updatet, &
+!      timer_baro_fluxvelocities, &
+!      timer_baro_accum_tavg
 
 !-----------------------------------------------------------------------
 !
@@ -442,27 +442,20 @@
 
 !BEN
 !init timers
-!call get_timer(timer_clinic,'BEN CLINIC',1,distrb_clinic%nprocs)
-!call get_timer(ben_timer_advection,'BEN CLINIC advection',1,distrb_clinic%nprocs)
-!call get_timer(ben_timer_coriolis,'BEN CLINIC coriolis',1,distrb_clinic%nprocs)
-!call get_timer(ben_timer_gradients,'BEN CLINIC gradients',1,distrb_clinic%nprocs)
-!call get_timer(ben_timer_hdiff,'BEN CLINIC hdiff',1,distrb_clinic%nprocs)
-!call get_timer(ben_timer_vdiff,'BEN CLINIC vdiff',1,distrb_clinic%nprocs)
-!call get_timer(ben_timer_zero,'BEN CLINIC zero',1,distrb_clinic%nprocs)
 
-call get_timer(timer_clinic,'BEN CLINIC',1,8)
-call get_timer(ben_timer_advection,'BEN CLINIC advection',1,8)
-call get_timer(ben_timer_coriolis,'BEN CLINIC coriolis',1,8)
-call get_timer(ben_timer_gradients,'BEN CLINIC gradients',1,8)
-call get_timer(ben_timer_hdiff,'BEN CLINIC hdiff',1,8)
-call get_timer(ben_timer_vdiff,'BEN CLINIC vdiff',1,8)
-call get_timer(ben_timer_zero,'BEN CLINIC zero',1,8)
+!call get_timer(timer_clinic,'BEN CLINIC',1,8)
+!call get_timer(ben_timer_advection,'BEN CLINIC advection',1,8)
+!call get_timer(ben_timer_coriolis,'BEN CLINIC coriolis',1,8)
+!call get_timer(ben_timer_gradients,'BEN CLINIC gradients',1,8)
+!call get_timer(ben_timer_hdiff,'BEN CLINIC hdiff',1,8)
+!call get_timer(ben_timer_vdiff,'BEN CLINIC vdiff',1,8)
+!call get_timer(ben_timer_zero,'BEN CLINIC zero',1,8)
 
-call get_timer(timer_baro_state,'BEN BARO state',1,8)
-call get_timer(timer_baro_rest, 'BEN BARO rest of baroclinic',1,8)
-call get_timer(timer_baro_updatet, 'BEN BARO update tracers',1,8)
-call get_timer(timer_baro_accum_tavg, 'BEN BARO accumulate tavg',1,8)
-call get_timer(timer_baro_fluxvelocities, 'BEN BARO flux velocities',1,8)
+!call get_timer(timer_baro_state,'BEN BARO state',1,8)
+!call get_timer(timer_baro_rest, 'BEN BARO rest of baroclinic',1,8)
+!call get_timer(timer_baro_updatet, 'BEN BARO update tracers',1,8)
+!call get_timer(timer_baro_accum_tavg, 'BEN BARO accumulate tavg',1,8)
+!call get_timer(timer_baro_fluxvelocities, 'BEN BARO flux velocities',1,8)
 
 
 
@@ -561,7 +554,7 @@ call get_timer(timer_baro_fluxvelocities, 'BEN BARO flux velocities',1,8)
 !
 !-----------------------------------------------------------------------
 !BEN_TIMER
-call timer_start(timer_baro_fluxvelocities)
+!call timer_start(timer_baro_fluxvelocities)
 
    errorCode = POP_Success
 
@@ -572,7 +565,7 @@ call timer_start(timer_baro_fluxvelocities)
          'baroclinic_driver: error in comp_flux_vel_ghost')
       return
    endif
-call timer_stop(timer_baro_fluxvelocities)
+!call timer_stop(timer_baro_fluxvelocities)
 !-----------------------------------------------------------------------
 !
 !  first block loop to update tracers
@@ -632,7 +625,7 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 !-----------------------------------------------------------------------
 
       !BEN_TIMER update_tracers
-    call timer_start(timer_baro_updatet)
+    !call timer_start(timer_baro_updatet)
          call tracer_update(k, WTK,                             &
                                TRACER (:,:,:,:,newtime,iblock), &
                                TRACER (:,:,:,:,oldtime,iblock), &
@@ -652,7 +645,7 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
                                this_block)
          
       !BEN_TIMER STOP update_tracers
-    call timer_stop(timer_baro_updatet)
+    !call timer_stop(timer_baro_updatet)
 
 !-----------------------------------------------------------------------
 !
@@ -662,7 +655,7 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 !-----------------------------------------------------------------------
 
       !BEN_TIMER update_tracers
-    call timer_start(timer_baro_accum_tavg)
+    !call timer_start(timer_baro_accum_tavg)
 
          if (mix_pass /= 1) then
 
@@ -817,7 +810,7 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 
          endif ! mix_pass
 
-         call timer_stop(timer_baro_accum_tavg)
+         !call timer_stop(timer_baro_accum_tavg)
 
 !-----------------------------------------------------------------------
 
@@ -943,13 +936,13 @@ write (stdout,*) 'BEN nx_blocks= ', nx_block, ' ny_blocks= ', ny_block
 !        we need the updated density for the pressure averaging
 !
 !-----------------------------------------------------------------------
-call timer_start(timer_baro_state)
+!!call timer_start(timer_baro_state)
          if (lpressure_avg .and. leapfrogts) then
             call state(k,k,TRACER(:,:,k,1,newtime,iblock), &
                            TRACER(:,:,k,2,newtime,iblock), &
                            this_block, RHOOUT=RHO(:,:,k,newtime,iblock))
          endif
-call timer_stop(timer_baro_state)
+!!call timer_stop(timer_baro_state)
 !-----------------------------------------------------------------------
 !
 !        calculate forcing terms (Fx,Fy) at level k.
@@ -960,7 +953,7 @@ call timer_stop(timer_baro_state)
 !write (stdout,*) 'BEN k= ', k, ' iblock= ', iblock ! ' this_block= ', this_block
 
 
-call timer_start(timer_clinic)
+!call timer_start(timer_clinic)
          call clinic(k, FX, FY, WUK,                &
                         UVEL(:,:,:,curtime,iblock), &
                         VVEL(:,:,:,curtime,iblock), &
@@ -974,14 +967,14 @@ call timer_start(timer_clinic)
                         SMF (:,:,:,iblock),         &
                         DHU (:,:,iblock),           &
                         this_block)
-call timer_stop(timer_clinic)
+!call timer_stop(timer_clinic)
 
 !-----------------------------------------------------------------------
 !
 !        store forces temporarily in UVEL(newtime),VVEL(newtime).
 !
 !-----------------------------------------------------------------------
-call timer_start(timer_baro_rest)
+!call timer_start(timer_baro_rest)
 
 
          if (impcor) then   ! implicit treatment
@@ -1113,7 +1106,7 @@ call timer_start(timer_baro_rest)
 !-----------------------------------------------------------------------
 
    enddo ! second block loop
-call timer_stop(timer_baro_rest)
+!call timer_stop(timer_baro_rest)
 
    !$OMP END PARALLEL DO
 
@@ -1531,7 +1524,7 @@ call timer_stop(timer_baro_rest)
 !  set vertical velocity at surface
 !
 !-----------------------------------------------------------------------
-call timer_start(ben_timer_advection)
+!call timer_start(ben_timer_advection)
    bid = this_block%local_id
  
    if (k == 1) WUK = DHU_BLOCK  ! free surface
@@ -1552,13 +1545,13 @@ call timer_start(ben_timer_advection)
                                           VCUR(:,:,k)*WORKY)
       endif
    endif
-call timer_stop(ben_timer_advection)
+!call timer_stop(ben_timer_advection)
 !-----------------------------------------------------------------------
 !
 !  coriolis terms
 !
 !-----------------------------------------------------------------------
-call timer_start(ben_timer_coriolis)
+!call timer_start(ben_timer_coriolis)
    if (impcor .and. leapfrogts) then          ! implicit, leapfrog
 !write (stdout,*) 'BEN in clinic: implicit, leapfrog'
       FX = FX + FCOR(:,:,bid)*(      gamma* VCUR(:,:,k) + &
@@ -1579,13 +1572,13 @@ call timer_start(ben_timer_coriolis)
       FY = FY - FCOR(:,:,bid)*UOLD(:,:,k)
 
    endif
-call timer_stop(ben_timer_coriolis)
+!call timer_stop(ben_timer_coriolis)
 !-----------------------------------------------------------------------
 !
 !  hydrostatic pressure gradients
 !
 !-----------------------------------------------------------------------
-call timer_start(ben_timer_gradients)
+!call timer_start(ben_timer_gradients)
    call gradp(k,WORKX, WORKY, RHOKOLD, RHOKCUR, RHOKNEW, this_block)
 
    FX = FX - WORKX   ! gradp returns WORKX as +Gradx(p)
@@ -1604,13 +1597,13 @@ call timer_start(ben_timer_gradients)
    if (ldiag_global) then
       DIAG_KE_PRESS_2D(:,:,bid) = DIAG_KE_PRESS_2D(:,:,bid) + WORKX
    endif
-call timer_stop(ben_timer_gradients)
+!call timer_stop(ben_timer_gradients)
 !-----------------------------------------------------------------------
 !
 !  horizontal diffusion HDiff(Ub),HDiff(Vb)
 !
 !-----------------------------------------------------------------------
-call timer_start(ben_timer_hdiff)
+!call timer_start(ben_timer_hdiff)
    call hdiffu(k, WORKX, WORKY, UMIXK, VMIXK, this_block)
 
    FX = FX + WORKX
@@ -1627,13 +1620,13 @@ call timer_start(ben_timer_hdiff)
                                            VCUR(:,:,k)*WORKY)
       endif
    endif
-call timer_stop(ben_timer_hdiff)
+!call timer_stop(ben_timer_hdiff)
 !-----------------------------------------------------------------------
 !
 !  vertical diffusion VDiff(Ub),VDiff(Vb)
 !
 !-----------------------------------------------------------------------
-call timer_start(ben_timer_vdiff)
+!call timer_start(ben_timer_vdiff)
    call vdiffu(k, WORKX, WORKY, UOLD, VOLD, SMF_BLOCK, this_block)
 
    FX = FX + WORKX
@@ -1651,18 +1644,18 @@ call timer_start(ben_timer_vdiff)
                                            VCUR(:,:,k)*WORKY)
       endif
    endif
-call timer_stop(ben_timer_vdiff)
+!call timer_stop(ben_timer_vdiff)
 !-----------------------------------------------------------------------
 !
 !  zero forces (and hence velocities) at land points
 !
 !-----------------------------------------------------------------------
-call timer_start(ben_timer_zero)
+!call timer_start(ben_timer_zero)
    where (k > KMU(:,:,bid))
       FX = c0
       FY = c0
    endwhere
-call timer_stop(ben_timer_zero)
+!call timer_stop(ben_timer_zero)
 !-----------------------------------------------------------------------
 !EOC
 
