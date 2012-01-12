@@ -56,6 +56,7 @@ typedef struct s_comm_reply {
     int key;           // key for local split
     int cluster_count; // number of cluster in communicator
     int flags;         // flags of new communicator
+    int *coordinators; // cluster coordinators
     uint32_t *members; // communicator members
 } comm_reply;
 
@@ -69,6 +70,7 @@ typedef struct s_group_reply {
     int type;          // type of groupreply
     int cluster_count; // number of cluster in communicator
     int flags;         // flags of new communicator
+    int *coordinators; // cluster coordinators
     uint32_t *members; // communicator members
 } group_reply;
 

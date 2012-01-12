@@ -67,6 +67,7 @@ struct s_communicator {
    
    int cluster_count;
 
+   int *coordinators;
    uint32_t *members;
 
 //   unsigned char *bitmap;
@@ -86,8 +87,8 @@ int init_communicators(int cluster_rank, int cluster_count,
                        int* cluster_sizes, int *cluster_offsets);
 
 int create_communicator(MPI_Comm comm, int number, int local_rank, int local_size,
-         int global_rank, int global_size, int cluster_count, int flags, 
-         uint32_t *members, communicator **out);
+         int global_rank, int global_size, int cluster_count, int *coordinators, 
+         int flags, uint32_t *members, communicator **out);
 
 int free_communicator(communicator * c);
 

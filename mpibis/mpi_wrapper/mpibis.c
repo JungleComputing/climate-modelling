@@ -1274,10 +1274,10 @@ INFO(1, "JASON### IMPI_Allreduce OUT:", "%d %d", error, *((int*) recvbuf));
      return error;
    }
 
-   // We need to perform a WA Allreduce. We do this by performing an reduce 
-   // in our local cluster, broadcasting the result to all other clusters, 
-   // merging all results locally, and then broadcasting the final result in 
-   // out local cluster.
+   // We need to perform a WA Allreduce. We do this by performing a reduce 
+   // to our local cluster coordinator. This result is then broadcast to the 
+   // other cluster coordinators, which merging the results locally. The result 
+   // of this merge is then broadcast in our local cluster.
   
    error = PMPI_Reduce(sendbuf, recvbuf, count, datatype, o->op, 0, c->comm);
   
@@ -1303,26 +1303,25 @@ INFO(1, "JASON### IMPI_Allreduce OUT:", "%d %d", error, *((int*) recvbuf));
          return MPI_ERR_INTERN;
       }
 
-      error = messaging_allreduce(recvbuf, count, datatype, c); 
+      error = messaging_bcast(recvbuf, count, datatype, c->global_rank, c);
   
       if (error != MPI_SUCCESS) { 
          ERROR(1, "Local root %d failed to bcast local allreduce result in communicator %d!\n", c->global_rank, c->number);
          return error;
       }
 
-      error = messaging_allreduce_receive(buffer, c->cluster_count, datatype, c);
+      for (i=0;i<c->cluster_count;i++) { 
+         if (c->coordinators[i] != c->global_rank) { 
+            error = messaging_bcast_receive(buffer, count, datatype, c->coordinators[i], c); 
 
-      if (error != MPI_SUCCESS) { 
-         ERROR(1, "Local root %d failed to receive remote allreduce results (in communicator %d)!\n", c->global_rank, c->number);
-         free(buffer);
-         return error;
+            if (error != MPI_SUCCESS) { 
+               ERROR(1, "Local root %d failed to bcast local allreduce result in communicator %d!\n", c->global_rank, c->number);
+               return error;
+            }
+
+            (*(o->function))((void*)buffer, recvbuf, &count, &datatype );
+         }
       }
-
-      for (i=0;i<c->cluster_count-1; i++){
-         (*(o->function))((void*)((char*)buffer+i*count*extent), recvbuf, &count, &datatype);
-      }
-
-      free(buffer);
    } 
 
    return PMPI_Bcast(recvbuf, count, datatype, 0, c->comm);
@@ -1449,6 +1448,17 @@ static uint32_t *copy_members(uint32_t *members, int size)
    return memcpy(tmp, members, size * sizeof(uint32_t));
 }
 
+static int *copy_coordinators(int *coordinators, int size)
+{
+   int *tmp = malloc(size * sizeof(int));
+
+   if (tmp == NULL) {
+      return NULL;
+   }
+
+   return memcpy(tmp, coordinators, size * sizeof(int));
+}
+
 #define __IMPI_Comm_dup
 int IMPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm)
 {
@@ -1456,6 +1466,7 @@ int IMPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm)
    dup_reply reply;
    MPI_Comm tmp_com;
    uint32_t *members;
+   int *coordinators;
    communicator *dup;
 
    communicator *c = get_communicator(comm);
@@ -1493,10 +1504,19 @@ int IMPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm)
       return error;
    }
 
+   coordinators = copy_coordinators(c->coordinators, c->cluster_count);
+
+   if (coordinators == NULL) {
+      IERROR(1, "MPI_Comm_dup coordinator copy failed!");
+      free(members);
+      return error;
+   }
+
    error = create_communicator(tmp_com, reply.newComm,
                  c->local_rank, c->local_size,
                  c->global_rank, c->global_size,
-                 c->cluster_count, c->flags, members, &dup);
+                 c->cluster_count, coordinators, 
+                 c->flags, members, &dup);
 
    if (error != MPI_SUCCESS) {
       IERROR(1, "MPI_Comm_dup create communicator failed!");
@@ -1642,7 +1662,7 @@ int IMPI_Comm_create(MPI_Comm mc, MPI_Group mg, MPI_Comm *newcomm)
       error = create_communicator(tmp_comm, reply.newComm,
                  local_rank, local_size,
                  reply.rank, reply.size,
-                 reply.cluster_count, 
+                 reply.cluster_count, reply.coordinators,              
                  reply.flags, reply.members,
                  &result);
 
@@ -1723,7 +1743,7 @@ int IMPI_Comm_split(MPI_Comm comm, int color, int key, MPI_Comm *newcomm)
       error = create_communicator(tmp, reply.newComm,
                  local_rank, local_size,
                  reply.rank, reply.size,
-                 reply.cluster_count,
+                 reply.cluster_count, reply.coordinators,
                  reply.flags, reply.members,
                  &result);
 
