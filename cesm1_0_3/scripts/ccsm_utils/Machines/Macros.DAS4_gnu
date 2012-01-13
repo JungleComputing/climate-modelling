@@ -17,14 +17,14 @@ ifeq ($(compile_threaded), true)
 endif
 
 ifeq ($(USE_MPISERIAL),TRUE)
-   FC            := gfortran -pg -mcmodel=large
-   CC            := gcc -pg -mcmodel=large
+   FC            := gfortran -pg
+   CC            := gcc -pg
 else
-   FC            := gfortran -pg -mcmodel=large
-   CC            := gcc -pg -mcmodel=large
+   FC            := gfortran -pg
+   CC            := gcc -pg
 endif
 
-USER_LINKER      := mpif90 -pg -mcmodel=large
+USER_LINKER      := mpif90 -pg
 
 #=====================================================
 # GENERIC_USER
