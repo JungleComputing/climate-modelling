@@ -1304,7 +1304,7 @@ INFO(1, "JASON### IMPI_Allreduce OUT:", "%d %d", error, *((int*) recvbuf));
          return MPI_ERR_INTERN;
       }
 
-  INFO(1, "FIXME: WA BCAST with CRAP performance!!\n");
+  INFO(1, "JASON ALLREDUCE WA", "FIXME: WA BCAST with CRAP performance!!\n");
 
       // FIXME: This is a synchronous implementation, which is correct but has crap performance!
       for (i=0;i<c->cluster_count;i++) {
