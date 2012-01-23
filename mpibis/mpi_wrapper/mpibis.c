@@ -1243,7 +1243,7 @@ int IMPI_Accumulate (void *origin_addr, int origin_count, MPI_Datatype origin_da
 int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
                          MPI_Datatype datatype, MPI_Op op, MPI_Comm comm)
 {
-   // FIXME: Assumes operation is commutative ?
+   // FIXME: Assumes operation is commutative!
    int error, i;
    MPI_Aint extent;
    char *buffer;
@@ -1274,55 +1274,59 @@ INFO(1, "JASON### IMPI_Allreduce OUT:", "%d %d", error, *((int*) recvbuf));
      return error;
    }
 
-   // We need to perform a WA Allreduce. We do this by performing a reduce 
-   // to our local cluster coordinator. This result is then broadcast to the 
-   // other cluster coordinators, which merging the results locally. The result 
-   // of this merge is then broadcast in our local cluster.
-  
+   // We need to perform a WA Allreduce. We do this by performing a reduce
+   // to our local cluster coordinator. This result is then broadcast to the
+   // other cluster coordinators, which merge the results locally. The result
+   // of this local merge is then broadcast in each local cluster.
+   // NOTE: this does assume the operation is commutative!
+
    error = PMPI_Reduce(sendbuf, recvbuf, count, datatype, o->op, 0, c->comm);
-  
-   if (error != MPI_SUCCESS) { 
+
+   if (error != MPI_SUCCESS) {
       ERROR(1, "Failed to perform local allreduce in communicator %d!\n", c->number);
       return error;
    }
 
-   // The local root shares the result with all other cluster coordinators. 
+   // The local root shares the result with all other cluster coordinators.
    if (c->local_rank == 0) {
 
       error = MPI_Type_extent(datatype, &extent);
 
-      if (error != MPI_SUCCESS) { 
+      if (error != MPI_SUCCESS) {
          ERROR(1, "Failed to retrieve data size for allreduce (in communicator %d)!\n", c->number);
          return error;
       }
-  
-      buffer = malloc(c->cluster_count * count * extent);
 
-      if (buffer == NULL) { 
+      buffer = malloc(count * extent);
+
+      if (buffer == NULL) {
          ERROR(1, "Failed to allocate space for WA Allreduce (in communicator %d)!\n", c->number);
          return MPI_ERR_INTERN;
       }
 
-      error = messaging_bcast(recvbuf, count, datatype, c->global_rank, c);
-  
-      if (error != MPI_SUCCESS) { 
-         ERROR(1, "Local root %d failed to bcast local allreduce result in communicator %d!\n", c->global_rank, c->number);
-         return error;
-      }
+  INFO(1, "FIXME: WA BCAST with CRAP performance!!\n");
 
-      for (i=0;i<c->cluster_count;i++) { 
-         if (c->coordinators[i] != c->global_rank) { 
-            error = messaging_bcast_receive(buffer, count, datatype, c->coordinators[i], c); 
+      // FIXME: This is a synchronous implementation, which is correct but has crap performance!
+      for (i=0;i<c->cluster_count;i++) {
+         if (c->coordinators[i] == c->global_rank) {
+            error = messaging_bcast(recvbuf, count, datatype, c->global_rank, c);
 
-            if (error != MPI_SUCCESS) { 
+            if (error != MPI_SUCCESS) {
+               ERROR(1, "Local root %d failed to bcast local allreduce result in communicator %d!\n", c->global_rank, c->number);
+               return error;
+            }
+         } else {
+            error = messaging_bcast_receive(buffer, count, datatype, c->coordinators[i], c);
+
+            if (error != MPI_SUCCESS) {
                ERROR(1, "Local root %d failed to bcast local allreduce result in communicator %d!\n", c->global_rank, c->number);
                return error;
             }
 
-            (*(o->function))((void*)buffer, recvbuf, &count, &datatype );
+            (*(o->function))((void*)buffer, recvbuf, &count, &datatype);
          }
       }
-   } 
+   }
 
    return PMPI_Bcast(recvbuf, count, datatype, 0, c->comm);
 }
