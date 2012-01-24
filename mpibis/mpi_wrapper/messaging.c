@@ -763,7 +763,7 @@ fprintf(stderr, "*Received group reply (comm=%d src=%d newComm=%d rank=%d size=%
 
    if (reply->type == GROUP_TYPE_ACTIVE) {
 
-fprintf(stderr, "*Receiving group members (%ld bytes)\n", reply->size * sizeof(uint32_t));
+fprintf(stderr, "*Receiving cluster coordinators (%ld bytes)\n", reply->cluster_count * sizeof(int));
 
       reply->coordinators = malloc(reply->cluster_count * sizeof(int));
  
@@ -782,6 +782,8 @@ fprintf(stderr, "*Receiving group members (%ld bytes)\n", reply->size * sizeof(u
       for (i=0;i<reply->cluster_count;i++) {
          reply->coordinators[i] = ntohl(reply->coordinators[i]);
       }
+
+fprintf(stderr, "*Receiving group members (%ld bytes)\n", reply->size * sizeof(uint32_t));
 
       reply->members = malloc(reply->size * sizeof(uint32_t));
 
