@@ -468,6 +468,11 @@ public class Communicator {
         
         Connection source = pids.get(m.dest);
         
+        if (source == null) {
+            System.out.println("ERROR: bcast target " + m.dest + " not found! -- DROPPING MESSAGE!!");
+            return;
+        }
+        
         for (int i=0;i<coordinatorRanks.length;i++) {
             
             Connection c = processes[coordinatorRanks[i]];
