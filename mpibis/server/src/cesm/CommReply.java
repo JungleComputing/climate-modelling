@@ -18,10 +18,11 @@ public class CommReply extends Message {
     public final int clusterCount;
     public final int flags;
     public final int [] coordinators;
+    public final int [] clusterSizes;
     public final int [] members;
     
     CommReply(int comm, int newComm, int rank, int size, int color, int key, int clusterCount, int flags, 
-            int [] coordinators, int [] members) {
+            int [] coordinators, int [] clusterSizes, int [] members) {
 
         super(Protocol.OPCODE_COMM_REPLY, comm, -1);
 
@@ -34,6 +35,7 @@ public class CommReply extends Message {
         this.clusterCount = clusterCount;
         this.flags = flags;
         this.coordinators = coordinators;
+        this.clusterSizes = clusterSizes;
         this.members = members;
     }
 
@@ -49,6 +51,10 @@ public class CommReply extends Message {
 
         for (int i=0;i<clusterCount;i++) { 
             out.writeInt(coordinators[i]);
+        }
+       
+        for (int i=0;i<clusterCount;i++) { 
+            out.writeInt(clusterSizes[i]);
         }
         
         // NOTE: size may be 0!

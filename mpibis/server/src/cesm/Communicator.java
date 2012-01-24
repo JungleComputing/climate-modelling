@@ -18,6 +18,7 @@ public class Communicator {
     private final int communicator;
     private final Connection [] processes;
     private final int [] coordinatorRanks;
+    private final int [] clusterSizes;
     
     private final HashMap<Integer, Connection> pids;
     
@@ -27,6 +28,25 @@ public class Communicator {
     private final Message [] messages;
     private int participants = 0;
 
+    private class ClusterInfo { 
+        final String name;
+        final int clusterRank;
+        final int coordinatorRank;
+        int size;
+        
+        public ClusterInfo(String name, int clusterRank, int coordinatorRank) {
+            super();
+            this.name = name;
+            this.clusterRank = clusterRank;
+            this.coordinatorRank = coordinatorRank;
+            size = 1;
+        }
+ 
+        public void increaseSize() { 
+            size++;
+        }
+    }
+    
     private class ColorComparator implements Comparator<CommMessage> {
 
         @Override
@@ -77,26 +97,33 @@ public class Communicator {
 
         pids = new HashMap<Integer, Connection>();
        
-        ArrayList<Integer> coordinatorRanks = new ArrayList<Integer>();
-        HashSet<Integer> clusters = new HashSet<Integer>();
+        ArrayList<ClusterInfo> info = new ArrayList<ClusterInfo>();
+        HashMap<Integer, ClusterInfo> infoMap = new HashMap<Integer, ClusterInfo>();
         
         for (int i=0;i<size;i++) {
             int pid = processes[i].pid;
-            
             pids.put(pid, processes[i]);
             
-            int cluster = processes[i].clusterRank; 
+            int clusterRank = processes[i].clusterRank; 
             
-            if (!clusters.contains(cluster)) { 
-                clusters.add(cluster);
-                coordinatorRanks.add(i);
+            ClusterInfo tmp = infoMap.get(clusterRank);
+            
+            if (tmp == null) { 
+                tmp = new ClusterInfo(processes[i].clusterName, clusterRank, i);
+                info.add(tmp);
+                infoMap.put(clusterRank, tmp);
+            } else { 
+                tmp.increaseSize();
             }
         }
       
-        this.coordinatorRanks = new int[coordinatorRanks.size()];
+        this.coordinatorRanks = new int[info.size()];
+        this.clusterSizes = new int[info.size()];
         
-        for (int i=0;i<coordinatorRanks.size();i++) { 
-            this.coordinatorRanks[i] = coordinatorRanks.get(i);
+        for (int i=0;i<info.size();i++) { 
+            ClusterInfo tmp = info.get(i);
+            this.coordinatorRanks[i] = tmp.coordinatorRank;
+            this.clusterSizes[i] = tmp.size;
         }
     }
 
@@ -106,6 +133,10 @@ public class Communicator {
 
     public int [] getCoordinatorRanks() {
         return coordinatorRanks;
+    }
+  
+    private int [] getClusterSizes() {
+        return clusterSizes;
     }
     
     private int generateFlags(Connection [] procs) {
@@ -223,7 +254,9 @@ public class Communicator {
                     int number = com.getNumber();
                     
                     int [] coordinators = com.getCoordinatorRanks();
-                   
+                
+                    int [] clusterSizes = com.getClusterSizes();
+                    
                     int [] members = generateMembers(procs);
                     
                     // Send a reply to each participant, generating the appropriate local rank for each participant.
@@ -243,7 +276,8 @@ public class Communicator {
                         localRanks.put(c.getClusterName(), key+1);
                        
                         // Send the reply.
-                        c.enqueue(new CommReply(communicator, number, j, size, color, key, coordinators.length, flags, coordinators, members), false);
+                        c.enqueue(new CommReply(communicator, number, j, size, color, key, coordinators.length, flags, 
+                                coordinators, clusterSizes, members), false);
                     }
 
                 } else {
@@ -252,13 +286,14 @@ public class Communicator {
                     // we can send a simplified reply.
                     for (CommMessage m : l) {
                         processes[m.source].enqueue(new CommReply(communicator,
-                                -1, -1, 0, -1, 0, 0, 0, null, null), false);
+                                -1, -1, 0, -1, 0, 0, 0, null, null, null), false);
                     }
                 }
             }
         }
     }
 
+  
     private String printPID(int pid) { 
         return ((pid & 0xFF000000) >> 24) + ":" + (pid & 0xFFFFFF); 
     }
@@ -317,7 +352,6 @@ public class Communicator {
         Communicator com = parent.createCommunicator(used);
 
         int number = com.getNumber();
-        int [] coordinators = com.getCoordinatorRanks();
                      
         System.out.println("   new communicator: " + number);
 
@@ -331,9 +365,12 @@ public class Communicator {
 
         // Generate a correct members array for this cluster.
         int [] members = generateMembers(used);
+        int [] coordinators = com.getCoordinatorRanks();
+        int [] clusterSizes = com.getClusterSizes();
         
         System.out.println("   group reply: " + number + " " + flags + " " 
                 + coordinators.length + " " + Arrays.toString(coordinators) 
+                + " " + Arrays.toString(clusterSizes)
                 + members.length + " " + flags + " " + printPIDs(members));
         
         // We need to figure out which cluster do and which don't participate. Those that don't do not need to create a local 
@@ -353,8 +390,8 @@ public class Communicator {
             System.out.println("        sending group info to " + j + " " + printPID(c.pid) + " at " + name);
             
             // Create and send the reply.
-            c.enqueue(new GroupReply(communicator, number, j, members.length, coordinators.length, flags, coordinators, members), 
-                    false);
+            c.enqueue(new GroupReply(communicator, number, j, members.length, coordinators.length, flags, 
+                    coordinators, clusterSizes, members), false);
         }
 
         // Send a reply to each process that does not participate, as they may still need to perform a some local collectives.

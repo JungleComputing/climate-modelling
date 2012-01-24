@@ -19,6 +19,7 @@ public class GroupReply extends Message {
     public final int flags;
     
     public final int [] coordinators;
+    public final int [] clusterSizes;
     public final int [] members;
     
     // This field indicates if the
@@ -34,6 +35,7 @@ public class GroupReply extends Message {
         this.flags = -1;
         this.clusterCount = -1;
         this.members = null;
+        this.clusterSizes = null;
         this.coordinators = null;
         
         if (overlap) {
@@ -43,7 +45,8 @@ public class GroupReply extends Message {
         }
     }
 
-    GroupReply(int comm, int newComm, int rank, int size, int clusterCount, int flags, int [] coordinators, int [] members) {
+    GroupReply(int comm, int newComm, int rank, int size, int clusterCount, int flags, 
+            int [] coordinators, int [] clusterSizes, int [] members) {
 
         super(Protocol.OPCODE_GROUP_REPLY, comm, -1);
 
@@ -53,6 +56,7 @@ public class GroupReply extends Message {
         this.clusterCount = clusterCount;
         this.flags = flags;
         this.coordinators = coordinators;
+        this.clusterSizes = clusterSizes;
         this.members = members; 
         this.type = TYPE_ACTIVE;
     }
@@ -69,6 +73,10 @@ public class GroupReply extends Message {
 
         for (int i=0;i<clusterCount;i++) { 
             out.writeInt(coordinators[i]);
+        }
+        
+        for (int i=0;i<clusterCount;i++) { 
+            out.writeInt(clusterSizes[i]);
         }
         
         if (type == TYPE_ACTIVE) {
