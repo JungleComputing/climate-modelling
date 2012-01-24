@@ -76,17 +76,17 @@ public class Server {
         c.deliver(m);
     }
 
-    protected int createCommunicator(Connection [] processes) {
-        int c = -1;
-
+    protected Communicator createCommunicator(Connection [] processes) {
+        Communicator comm;
+        
         synchronized (this) {
-            c = communicators.size();
-            Communicator comm = new Communicator(this, c, processes);
+            int c = communicators.size();
+            comm = new Communicator(this, c, processes);
             communicators.add(c, comm);
         }
 
-        System.out.println("Created new communicator: " + c);
-        return c;
+        System.out.println("Created new communicator: " + comm.getNumber());
+        return comm;
     }
 
     private boolean signupComplete() {

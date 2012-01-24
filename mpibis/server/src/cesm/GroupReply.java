@@ -17,8 +17,10 @@ public class GroupReply extends Message {
     // These contain info about the distribution of the virtual communicator.
     public final int clusterCount;
     public final int flags;
+    
+    public final int [] coordinators;
     public final int [] members;
-
+    
     // This field indicates if the
     public final int type;
 
@@ -32,7 +34,8 @@ public class GroupReply extends Message {
         this.flags = -1;
         this.clusterCount = -1;
         this.members = null;
-
+        this.coordinators = null;
+        
         if (overlap) {
             this.type = TYPE_SEPERATIST;
         } else {
@@ -40,7 +43,7 @@ public class GroupReply extends Message {
         }
     }
 
-    GroupReply(int comm, int newComm, int rank, int size, int clusterCount, int flags, int [] members) {
+    GroupReply(int comm, int newComm, int rank, int size, int clusterCount, int flags, int [] coordinators, int [] members) {
 
         super(Protocol.OPCODE_GROUP_REPLY, comm, -1);
 
@@ -49,6 +52,7 @@ public class GroupReply extends Message {
         this.size = size;
         this.clusterCount = clusterCount;
         this.flags = flags;
+        this.coordinators = coordinators;
         this.members = members; 
         this.type = TYPE_ACTIVE;
     }
@@ -63,6 +67,10 @@ public class GroupReply extends Message {
         out.writeInt(clusterCount);
         out.writeInt(flags);
 
+        for (int i=0;i<clusterCount;i++) { 
+            out.writeInt(coordinators[i]);
+        }
+        
         if (type == TYPE_ACTIVE) {
             for (int i=0;i<size;i++) { 
                 out.writeInt(members[i]);

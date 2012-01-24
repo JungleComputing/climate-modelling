@@ -167,7 +167,6 @@ public class Connection implements Protocol {
             }
         }
     }
-
     
     private void close() {
         try {

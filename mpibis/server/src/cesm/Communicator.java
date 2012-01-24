@@ -17,7 +17,7 @@ public class Communicator {
 
     private final int communicator;
     private final Connection [] processes;
-    private final Connection [] coordinators;
+    private final int [] coordinatorRanks;
     
     private final HashMap<Integer, Connection> pids;
     
@@ -61,8 +61,8 @@ public class Communicator {
 
         pids = new HashMap<Integer, Connection>();
        
-        ArrayList<Connection> coord = new ArrayList<Connection>();
-        HashSet<Integer> done = new HashSet<Integer>();
+        ArrayList<Integer> coordinatorRanks = new ArrayList<Integer>();
+        HashSet<Integer> clusters = new HashSet<Integer>();
         
         for (int i=0;i<size;i++) {
             int pid = processes[i].pid;
@@ -71,15 +71,27 @@ public class Communicator {
             
             int cluster = processes[i].clusterRank; 
             
-            if (!done.contains(cluster)) { 
-                done.add(cluster);
-                coord.add(processes[i]);
+            if (!clusters.contains(cluster)) { 
+                clusters.add(cluster);
+                coordinatorRanks.add(i);
             }
         }
+      
+        this.coordinatorRanks = new int[coordinatorRanks.size()];
         
-        coordinators = coord.toArray(new Connection[coord.size()]);
+        for (int i=0;i<coordinatorRanks.size();i++) { 
+            this.coordinatorRanks[i] = coordinatorRanks.get(i);
+        }
     }
 
+    public int getNumber() { 
+        return communicator;
+    }
+
+    public int [] getCoordinatorRanks() {
+        return coordinatorRanks;
+    }
+    
     private int generateFlags(Connection [] procs) {
 
         if (procs == null || procs.length == 0) {
@@ -98,7 +110,7 @@ public class Communicator {
         return COMM_FLAG_LOCAL;
     }
     
-    private int [] generateMembers(String name, Connection [] procs) {
+    private int [] generateMembers(Connection [] procs) {
 
         if (procs == null || procs.length == 0) {
             System.err.println("INTERNAL ERROR: generateMembers called for empty list!");
@@ -114,6 +126,7 @@ public class Communicator {
         return members;
     }
 
+    /*
     private int countClusters(Connection [] procs) {
         
         HashSet<Integer> clusterCount = new HashSet<Integer>();
@@ -124,6 +137,7 @@ public class Communicator {
         
         return clusterCount.size();
     }
+    */
     
     // This implements the split operation. Note that dup and create are just
     // special cases of split, and therefore handled by the same code.
@@ -160,7 +174,6 @@ public class Communicator {
                 System.err.println("INTERNAL ERROR: Split created empty list!");
             } else {
                 // Create a new communicator, provided the color >= 0 (color -1 is used for non-participating processes).
-                int number = -1;
                 int size = l.size();
 
                 if (color >= 0) {
@@ -178,55 +191,43 @@ public class Communicator {
                     }
 
                     // We generate a new 'virtual' communicator.
-                    number = parent.createCommunicator(procs);
+                    Communicator com = parent.createCommunicator(procs);
 
                     // Next, we send a reply to all participants, providing them with the new virtual communicator, its size,
                     // and their new rank. In addition, we need to send a color and rank for the split that needs to be performed
-                    // on the 'real communicator', and a flag and bitmap needed by the virtual communicator on the MPI side.
+                    // on the 'real communicator', and a flag and member set needed by the virtual communicator on the MPI side.
 
-                    // Use a hash map to keep track of the keys (= real ranks) in each of the clusters for each of the
-                    // participants.
-                    HashMap<String, Integer> realRanks = new HashMap<String, Integer>();
+                    // Use a hash map to keep track of the desired local ranks in each of the clusters for each of the 
+                    // participants. These are needed to perform the local split.
+                    HashMap<String, Integer> localRanks = new HashMap<String, Integer>();
 
-                    // Use a hash map to keep track of the member set we need to generate.
-                    HashMap<String, int []> membersHash = new HashMap<String, int []>();
-
-                    // Use a hash map to keep track of the cluster count in each of the communicators.
-                    HashMap<String, Integer> clusterCountHash = new HashMap<String, Integer>();
-                    
                     // Generate the flags needed by the virtual communicator.
                     int flags = generateFlags(procs);
 
-                    // Send a reply to each participant, generating the appropriate keys and bitmaps for each participant.
+                    int number = com.getNumber();
+                    
+                    int [] coordinators = com.getCoordinatorRanks();
+                   
+                    int [] members = generateMembers(procs);
+                    
+                    // Send a reply to each participant, generating the appropriate local rank for each participant.
                     for (int j=0;j<size;j++) {
 
                         // Get the connection and cluster name we are sending to
                         Connection c = procs[j];
                         String name = c.getClusterName();
 
-                        // Generate a correct key for this cluster.
-                        Integer key = realRanks.get(name);
+                        // Generate a correct local for this specific cluster.
+                        Integer key = localRanks.get(name);
 
                         if (key == null) {
                             key = 0;
                         }
 
-                        realRanks.put(c.getClusterName(), key+1);
-
-                        // Generate a correct member set for this cluster.
-                        int [] members = membersHash.get(name);
-
-                        if (members == null) {
-                            members = generateMembers(name, procs);
-                            membersHash.put(name, members);
+                        localRanks.put(c.getClusterName(), key+1);
                        
-                            clusterCountHash.put(name, countClusters(procs));
-                        }
-
-                        int clusterCount = clusterCountHash.get(name);
-                        
                         // Send the reply.
-                        c.enqueue(new CommReply(communicator, number, j, size, color, key, clusterCount, flags, members), false);
+                        c.enqueue(new CommReply(communicator, number, j, size, color, key, coordinators.length, flags, coordinators, members), false);
                     }
 
                 } else {
@@ -235,7 +236,7 @@ public class Communicator {
                     // we can send a simplified reply.
                     for (CommMessage m : l) {
                         processes[m.source].enqueue(new CommReply(communicator,
-                                -1, -1, 0, -1, 0, 0, 0, null), false);
+                                -1, -1, 0, -1, 0, 0, 0, null, null), false);
                     }
                 }
             }
@@ -297,60 +298,47 @@ public class Communicator {
         // We now send a reply to all processes. Note that some may not participate in the new communicator.
 
         // We generate a new 'virtual' communicator.
-        int number = parent.createCommunicator(used);
+        Communicator com = parent.createCommunicator(used);
 
+        int number = com.getNumber();
+        int [] coordinators = com.getCoordinatorRanks();
+                     
         System.out.println("   new communicator: " + number);
 
         // Next, we send a reply to all participants, providing them with the new virtual communicator, its size,
         // and their new rank.
 
-        // Use a hash map to keep track of the keys (= real ranks) in each of the clusters for each of the
-        // participants.
-        HashMap<String, Integer> realRanks = new HashMap<String, Integer>();
-
-        // Use a hash map to keep track of the membersets we need to generate.
-        HashMap<String, int []> membersHash = new HashMap<String, int []>();
-
-        // Use a hash map to keep track of the clusterCount for each memberset.
-        HashMap<String, Integer> clusterCountHash = new HashMap<String, Integer>();
-        
         // Generate the flags needed by the virtual communicator.
         int flags = generateFlags(used);
 
         System.out.println("   flags: " + flags);
 
+        // Generate a correct members array for this cluster.
+        int [] members = generateMembers(used);
+        
+        System.out.println("   group reply: " + number + " " + flags + " " 
+                + coordinators.length + " " + Arrays.toString(coordinators) 
+                + members.length + " " + flags + " " + printPIDs(members));
+        
+        // We need to figure out which cluster do and which don't participate. Those that don't do not need to create a local 
+        // communicator.
+        HashSet<String> participatingCluster = new HashSet<String>();
+        
         // Send a reply to each participant, generating the appropriate keys and bitmaps for each participant.
-        for (int j=0;j<used.length;j++) {
-
+        for (int j=0;j<used.length;j++) {        
+            
             // Get the connection and cluster name we are sending to
             Connection c = used[j];
             String name = c.getClusterName();
-
-            // Generate a correct key for this cluster.
-            Integer key = realRanks.get(name);
-
-            if (key == null) {
-                key = 0;
-            }
-
-            realRanks.put(c.getClusterName(), key+1);
-
-            // Generate a correct members array for this cluster.
-            int [] members = membersHash.get(name);
-
-            if (members == null) {
-                members = generateMembers(name, used);
-                membersHash.put(name, members);
+        
+            // Add the cluster to the set of participants.
+            participatingCluster.add(name);
             
-                clusterCountHash.put(name, countClusters(used));
-            }
-
-            int clusterCount = clusterCountHash.get(name);
-
-            System.out.println("   reply(" + j + "): " + key + " " + name + " " + used.length + " " + flags + " " + printPIDs(members));
-
-            // Send the reply.
-            c.enqueue(new GroupReply(communicator, number, j, used.length, clusterCount, flags, members), false);
+            System.out.print("        sending group info to " + j + " " + printPID(c.pid) + " at " + name);
+            
+            // Create and send the reply.
+            c.enqueue(new GroupReply(communicator, number, j, members.length, coordinators.length, flags, coordinators, members), 
+                    false);
         }
 
         // Send a reply to each process that does not participate, as they may still need to perform a some local collectives.
@@ -360,8 +348,12 @@ public class Communicator {
         
         for (Connection c : tmp.values()) {
             if (c != null) {
-                System.out.println("   reply(" + j++ + "): " + membersHash.containsKey(c.getClusterName()));
-                c.enqueue(new GroupReply(communicator, membersHash.containsKey(c.getClusterName())), false);
+                String name = c.getClusterName();
+                boolean participant = participatingCluster.contains(name);
+            
+                System.out.print("        sending participant info to " + j++ + " " + printPID(c.pid) + " at " + name);
+                
+                c.enqueue(new GroupReply(communicator, participant), false);
             }
         }
     }
@@ -371,7 +363,7 @@ public class Communicator {
         System.out.println("Creating dup of communicator " + communicator);
 
         // We generate a new 'virtual' communicator.
-        int number = parent.createCommunicator(processes);
+        int number = parent.createCommunicator(processes).getNumber();
 
         System.out.println("   dup communicator: " + communicator + " -> " + number);
 
@@ -459,12 +451,15 @@ public class Communicator {
         
         Connection source = pids.get(m.dest);
         
-        for (int i=0;i<coordinators.length;i++) { 
-            if (coordinators[i].clusterRank != source.clusterRank) { 
-                System.err.println("Enqueuing BCAST at cluster coordinator " + coordinators[i].pid + " of comm " + communicator);
-                coordinators[i].enqueue(m, true); 
+        for (int i=0;i<coordinatorRanks.length;i++) {
+            
+            Connection c = processes[coordinatorRanks[i]];
+            
+            if (c.clusterRank != source.clusterRank) { 
+                System.err.println("Enqueuing BCAST at cluster coordinator " + c.pid + " of comm " + communicator);
+                c.enqueue(m, true); 
             } else { 
-                System.err.println("SKIP Enqueuing BCAST at cluster coordinator " + coordinators[i].pid + " of comm " + communicator);
+                System.err.println("SKIP Enqueuing BCAST at cluster coordinator " + c.pid + " of comm " + communicator);
             }
         }
     }
