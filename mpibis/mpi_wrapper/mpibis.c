@@ -1835,7 +1835,7 @@ int IMPI_Comm_create(MPI_Comm mc, MPI_Group mg, MPI_Comm *newcomm)
 
       error = create_communicator(tmp_comm, reply.newComm,
                  local_rank, local_size, reply.rank, reply.size,
-                 reply.cluster_count, reply.coordinators, reply.cluster_sizes;
+                 reply.cluster_count, reply.coordinators, reply.cluster_sizes,
                  reply.flags, reply.members,
                  &result);
 
@@ -1914,9 +1914,8 @@ int IMPI_Comm_split(MPI_Comm comm, int color, int key, MPI_Comm *newcomm)
       PMPI_Comm_size(tmp, &local_size);
 
       error = create_communicator(tmp, reply.newComm,
-                 local_rank, local_size,
-                 reply.rank, reply.size,
-                 reply.cluster_count, reply.coordinators,
+                 local_rank, local_size, reply.rank, reply.size,
+                 reply.cluster_count, reply.coordinators, reply.cluster_sizes,
                  reply.flags, reply.members,
                  &result);
 
