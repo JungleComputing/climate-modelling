@@ -53,6 +53,22 @@ public class Communicator {
     private final ColorComparator colorComparator = new ColorComparator();
 
     Communicator(Server parent, int communicator, Connection [] processes) {
+        
+        if (SANITY) { 
+            // Make sure the processes array doesn't contain any holes!
+            if (processes == null) { 
+                System.out.println("ERROR: processes array null at communicator creation!");
+                throw new IllegalArgumentException("Processes array null at communicator creation");
+            }
+           
+            for (int i=0;i<processes.length;i++) { 
+                if (processes[i] == null) { 
+                    System.out.println("ERROR: processes array entry " + i + " null at communicator creation!");
+                    throw new IllegalArgumentException("Processes array entry " + i + " null at communicator creation");
+                }
+            } 
+        }
+        
         this.communicator = communicator;
         this.processes = processes;
         this.parent = parent;
@@ -457,10 +473,10 @@ public class Communicator {
             Connection c = processes[coordinatorRanks[i]];
             
             if (c.clusterRank != source.clusterRank) { 
-                System.out.println("Enqueuing BCAST at cluster coordinator " + c.pid + " of comm " + communicator);
+                System.out.println("Enqueuing BCAST at cluster coordinator " + printPID(c.pid) + " of comm " + communicator);
                 c.enqueue(m, true); 
             } else { 
-                System.out.println("SKIP Enqueuing BCAST at cluster coordinator " + c.pid + " of comm " + communicator);
+                System.out.println("SKIP Enqueuing BCAST at cluster coordinator " + printPID(c.pid) + " of comm " + communicator);
             }
         }
     }
