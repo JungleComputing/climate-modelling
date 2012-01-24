@@ -466,7 +466,8 @@ public class Communicator {
         // Enqueue the message at each of the cluster coordinators, 
         // but exclude the cluster of the root.
         
-        Connection source = pids.get(m.dest);
+        // FIXME: shouldn't we always use pids here?
+        Connection source = processes[m.dest]; // pids.get(m.dest);
         
         if (source == null) {
             System.out.println("ERROR: bcast target " + m.dest + " not found! -- DROPPING MESSAGE!!");
