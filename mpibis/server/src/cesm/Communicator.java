@@ -242,6 +242,28 @@ public class Communicator {
         }
     }
 
+    private String printPID(int pid) { 
+        return ((pid & 0xFF000000) >> 24) + ":" + (pid & 0xFFFFFF); 
+    }
+        
+    private String printPIDs(int [] pids) { 
+        
+        StringBuilder sb = new StringBuilder("[ ");
+        
+        for (int i=0;i<pids.length;i++) { 
+            
+            sb.append(printPID(pids[i]));
+            
+            if (i != pids.length-1) { 
+                sb.append(", ");
+            }
+        }
+        
+        sb.append(" ]");
+  
+        return sb.toString();
+    }
+    
     private void group() {
 
         System.out.println("Creating new group from communicator " + communicator);
@@ -259,7 +281,7 @@ public class Communicator {
             }
         }
 
-        System.out.println("   processes(" + group.length + "): " + Arrays.toString(group));
+        System.out.println("   processes(" + group.length + "): " + printPIDs(group));
 
         // We gather all connections to the participating machines, and save all connections
         // to the machines that do not participate.
@@ -325,7 +347,7 @@ public class Communicator {
 
             int clusterCount = clusterCountHash.get(name);
 
-            System.out.println("   reply(" + j + "): " + key + " " + name + " " + used.length + " " + flags + " " + Arrays.toString(members));
+            System.out.println("   reply(" + j + "): " + key + " " + name + " " + used.length + " " + flags + " " + printPIDs(members));
 
             // Send the reply.
             c.enqueue(new GroupReply(communicator, number, j, used.length, clusterCount, flags, members), false);
