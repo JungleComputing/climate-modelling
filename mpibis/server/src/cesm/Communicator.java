@@ -457,10 +457,10 @@ public class Communicator {
             Connection c = processes[coordinatorRanks[i]];
             
             if (c.clusterRank != source.clusterRank) { 
-                System.err.println("Enqueuing BCAST at cluster coordinator " + c.pid + " of comm " + communicator);
+                System.out.println("Enqueuing BCAST at cluster coordinator " + c.pid + " of comm " + communicator);
                 c.enqueue(m, true); 
             } else { 
-                System.err.println("SKIP Enqueuing BCAST at cluster coordinator " + c.pid + " of comm " + communicator);
+                System.out.println("SKIP Enqueuing BCAST at cluster coordinator " + c.pid + " of comm " + communicator);
             }
         }
     }
@@ -480,8 +480,7 @@ public class Communicator {
             bcast((DataMessage)m);
             break;
         default:
-            System.err.println("INTERNAL ERROR: unknown message type " +
-                    m.opcode);
+            System.err.println("INTERNAL ERROR: unknown message type " + m.opcode);
         }
     }
 
