@@ -46,6 +46,7 @@
 
 #define BCAST_TAG                         -1
 #define ALLREDUCE_TAG                     -2
+#define GATHER_TAG                        -3
 
 
 #define MAX_LENGTH_CLUSTER_NAME          128

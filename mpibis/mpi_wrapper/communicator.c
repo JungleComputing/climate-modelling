@@ -36,9 +36,8 @@ static char *statistic_names[STATS_TOTAL] = {
 static communicator *comms[MAX_COMMUNICATORS];
 
 static int add_communicator(MPI_Comm comm, int number, int initial,
-                           int local_rank, int local_size,
-                           int global_rank, int global_size,
-                           int cluster_count, int *coordinators,
+                           int local_rank, int local_size, int global_rank, int global_size,
+                           int cluster_count, int *coordinators, int *cluster_sizes,
                            int flags, uint32_t *members,
                            communicator **out)
 {
@@ -80,6 +79,7 @@ static int add_communicator(MPI_Comm comm, int number, int initial,
    c->queue_head = NULL;
    c->queue_tail = NULL;
    c->coordinators = coordinators;
+   c->cluster_sizes = cluster_sizes;
    c->members = members;
 
    comms[number] = c;
@@ -98,7 +98,7 @@ static int add_communicator(MPI_Comm comm, int number, int initial,
 }
 
 int init_communicators(int cluster_rank, int cluster_count,
-                       int* cluster_sizes, int *cluster_offsets)
+                       int *cluster_sizes, int *cluster_offsets)
 {
    // We create three special communicators here for
    // MPI_COMM_WORLD, MPI_COMM_SELF and MPI_COMM_NULL.
@@ -157,9 +157,8 @@ int init_communicators(int cluster_rank, int cluster_count,
 
    // FIXME: this will fail hopelessly if FORTRAN_MPI_COMM_WORLD has a weird value!
    error = add_communicator(MPI_COMM_WORLD, FORTRAN_MPI_COMM_WORLD, 1,
-                            local_rank, local_count,
-                            global_rank, global_count,
-                            cluster_count, coordinators,
+                            local_rank, local_count, global_rank, global_count,
+                            cluster_count, coordinators, cluster_sizes,
                             flags, members, NULL);
 
    if (error != MPI_SUCCESS) {
@@ -178,6 +177,7 @@ int init_communicators(int cluster_rank, int cluster_count,
    members[0] = my_pid;
 
    coordinators = malloc(sizeof(int));
+   cluster_sizes = malloc(sizeof(int));
 
    if (coordinators == NULL) {
       fprintf(stderr, "   INTERNAL ERROR: Failed to allocate space for communicator (coordinators -- self)!\n");     
@@ -185,12 +185,13 @@ int init_communicators(int cluster_rank, int cluster_count,
    }
 
    coordinators[0] = 0;
+   cluster_sizes[0] = 1;
 
    flags = COMM_FLAG_SELF | COMM_FLAG_LOCAL;
 
    // FIXME: this will fail hopelessly if FORTRAN_MPI_COMM_SELF has a weird value!
    error = add_communicator(MPI_COMM_SELF, FORTRAN_MPI_COMM_SELF, 1,
-                            0, 1, 0, 1, 1, coordinators, flags, members, NULL);
+                            0, 1, 0, 1, 1, coordinators, cluster_sizes, flags, members, NULL);
 
    if (error != MPI_SUCCESS) {
       fprintf(stderr, "   INTERNAL ERROR: Failed to create MPI_COMM_SELF!\n");
@@ -199,7 +200,7 @@ int init_communicators(int cluster_rank, int cluster_count,
 
    // FIXME: this will fail hopelessly if FORTRAN_MPI_COMM_NULL has a weird value!
    error = add_communicator(MPI_COMM_NULL, FORTRAN_MPI_COMM_NULL, 1,
-                            0, 0, 0, 0, 1, NULL, 0, NULL, NULL);
+                            0, 0, 0, 0, 1, NULL, NULL, 0, NULL, NULL);
 
    if (error != MPI_SUCCESS) {
       fprintf(stderr, "   INTERNAL ERROR: Failed to create MPI_COMM_NULL!\n");
@@ -208,15 +209,18 @@ int init_communicators(int cluster_rank, int cluster_count,
    return error;
 }
 
-int create_communicator(MPI_Comm comm, int number, int local_rank, int local_size,
-         int global_rank, int global_size, int cluster_count, int *coordinators, 
+int create_communicator(MPI_Comm comm, int number,
+         int local_rank, int local_size, int global_rank, int global_size,
+         int cluster_count, int *coordinators, int *cluster_sizes,
          int flags, uint32_t *members, communicator **out)
 {
-   return add_communicator(comm, number, 0, local_rank, local_size, global_rank, 
-                    global_size, cluster_count, coordinators, flags, members, out);
+   return add_communicator(comm, number, 0,
+                    local_rank, local_size, global_rank, global_size,
+                    cluster_count, coordinators, cluster_size,
+                    flags, members, out);
 }
 
-int free_communicator(communicator * c) 
+int free_communicator(communicator * c)
 {
    int error;
 
@@ -225,8 +229,9 @@ int free_communicator(communicator * c)
    error = MPI_Comm_free(&comm);
 
    comms[c->number] = NULL;
-   
+
    free(c->coordinators);
+   free(c->cluster_sizes);
    free(c->members);
    free(c);
 

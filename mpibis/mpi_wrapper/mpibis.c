@@ -997,7 +997,7 @@ int IMPI_Barrier(MPI_Comm comm)
 #define __IMPI_Bcast
 int IMPI_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm)
 {
-   int error, root_cluster, local_cluster;   
+   int error, root_cluster, local_cluster;
 
    communicator *c = get_communicator(comm);
 
@@ -1012,42 +1012,42 @@ int IMPI_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Com
      return PMPI_Bcast(buffer, count, datatype, root, c->comm);
    }
 
-   // We need to perform a WA BCAST. 
-      
-   // If we are root we first send the data to the server and then bcast locally. 
-   if (c->global_rank == root) {       
+   // We need to perform a WA BCAST.
+
+   // If we are root we first send the data to the server and then bcast locally.
+   if (c->global_rank == root) {
       error = messaging_bcast(buffer, count, datatype, root, c);
 
-      if (error != MPI_SUCCESS) { 
+      if (error != MPI_SUCCESS) {
          ERROR(1, "Root %d failed to broadcast in communicator %d!\n", root, c->number);
          return error;
       }
 
       return PMPI_Bcast(buffer, count, datatype, c->local_rank, c->comm);
-   } 
-  
+   }
+
    // Retrieve the cluster of the bcast root and the local process.
    root_cluster = GET_CLUSTER_RANK(c->members[root]);
    local_cluster = GET_CLUSTER_RANK(c->members[c->global_rank]);
 
    // Check if we are in the same cluster as the root. If so, just receive it's bcast.
-   if (local_cluster == root_cluster) { 
+   if (local_cluster == root_cluster) {
       return PMPI_Bcast(buffer, count, datatype, GET_PROCESS_RANK(c->members[root]), c->comm);
    }
 
-   // If we are not in the same cluster AND we are the root of the local communicator 
-   // we first receive the WA message. 
+   // If we are not in the same cluster AND we are the root of the local communicator
+   // we first receive the WA message.
 
-   // If we are in a different cluster from the root and we are process 0 of the local 
+   // If we are in a different cluster from the root and we are process 0 of the local
    // communicator, we first receive the WA bcast and then forward this bcast locally
-   if (c->local_rank == 0) { 
-      error = messaging_bcast_receive(buffer, count, datatype, root, c); 
- 
-      if (error != MPI_SUCCESS) { 
-         ERROR(1, "Local root failed to receive broadcast in communicator %d!\n", c->number);      
+   if (c->local_rank == 0) {
+      error = messaging_bcast_receive(buffer, count, datatype, root, c);
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "Local root failed to receive broadcast in communicator %d!\n", c->number);
          return error;
       }
-   } 
+   }
 
    return PMPI_Bcast(buffer, count, datatype, 0, c->comm);
 }
@@ -1057,6 +1057,9 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
                       int recvcount, MPI_Datatype recvtype,
                       int root, MPI_Comm comm)
 {
+   int error, root_cluster, local_cluster, local_root, extent, i, tmp_rank, tmp_cluster;
+   unsigned char *buffer, *bigbuffer;
+
    communicator *c = get_communicator(comm);
 
    if (c == NULL) {
@@ -1070,8 +1073,174 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
      return PMPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, c->comm);
    }
 
-   // We need to do a global gather. We currently implement using simple send/receive calls.
-   // TODO: Is this efficient ?
+   // We need to do a WA gather.
+
+   // Retrieve the cluster of the gather root and the local process.
+   root_cluster = GET_CLUSTER_RANK(c->members[root]);
+   local_cluster = GET_CLUSTER_RANK(c->members[c->global_rank]);
+
+   // FIXME: Slow ?
+   if (c->global_rank == root) {
+
+      // If we are the root, we simple receive the data in-order from all other processes.
+
+      // Retrieve the data size.
+      error = MPI_Type_extent(sendtype, &extent);
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "Failed to retrieve data size for gather (in communicator %d)!\n", c->number);
+         return error;
+      }
+
+      // Receive all data.
+      for (i=0;i<c->size;i++) {
+
+         // Test is the data is send locally or over the WA link
+         tmp_cluster = GET_CLUSTER_RANK(c->members[i]);
+
+         if (tmp_cluster == root_cluster) {
+            // The data is send locally.
+            if (i == c->global_rank) {
+               // Our own data is simply copied.
+               memcpy(recvbuf + (i * recvcount * extent), sendbuf, recvcount*extent);
+               error = MPI_SUCCESS;
+            } else {
+               // All other local data directly used MPI
+               tmp_rank = GET_PROCESS_RANK(c->members[i]);
+               error = MPI_Recv(recvbuf + (i * recvcount * extent), recvcount, recvtype, tmp_rank, 999 /*FIXME*/, c->comm, MPI_STATUS_IGNORE);
+            }
+         } else {
+            // The data is send remotely
+            error = messaging_receive(recvbuf + (i * recvcount * extent), recvcount, recvtype, c->member[i], GATHER_TAG, MPI_STATUS_IGNORE, c);
+         }
+
+         if (error != MPI_SUCCESS) {
+            ERROR(1, "Failed to receive data from %d for gather (in communicator %d)!\n", i, c->number);
+            return error;
+         }
+
+   } else {
+
+      // We need to send some data
+      if (local_cluster == root_cluster) {
+         // Send within the cluster
+         tmp_rank = GET_PROCESS_RANK(c->members[root]);
+         error = MPI_Send(sendbuf, sendcount, sendtype, tmp_rank, 999 /*FIXME*/, c->comm);
+      } else {
+         // Send between clusters
+         error = messaging_send(sendbuf, sendcount, sendtype, root, GATHER_TAG, c);
+      }
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "Failed to send data (in communicator %d)!\n", c->number);
+         return error;
+      }
+   }
+
+   return MPI_SUCCESS;
+}
+
+/*
+   // We start by performing a local gather. The root for this local gather will be the overall root (for
+   // the cluster that contains this process) or the local cluster coordinator (for all other clusters).
+   if (root_cluster == local_cluster) {
+      local_root = GET_PROCESS_RANK(c->members[root]));
+   } else {
+      local_root = 0;
+   }
+
+   // Create a receive buffer on each of the local root processes.
+   if (local_root == c->local_rank) {
+
+      error = MPI_Type_extent(sendtype, &extent);
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "Failed to retrieve data size for gather (in communicator %d)!\n", c->number);
+         return error;
+      }
+
+      buffer = malloc(c->local_size * sendcount * extent);
+
+      if (buffer == NULL) {
+         ERROR(1, "Failed to allocate buffer for local gather (in communicator %d)!\n", c->number);
+         return MPI_ERR_INTERN;
+      }
+   }
+
+   // NOTE: we only use the send side parameters here. The receive side are only valid on the overall root!
+   error = MPI_Gather(sendbuf, sendcount, sendtype, buffer, sendcount, sendtype, local_root, c->comm);
+
+   if (error != MPI_SUCCESS) {
+      ERROR(1, "Failed to perform local gather in communicator %d!\n", c->number);
+      return error;
+   }
+
+   // Next, all cluster coordinators will send their results to the overall root.
+   if (local_root == c->local_rank) {
+
+      if (root_cluster == local_cluster) {
+         // I am the overall root, so I create a buffer to receive all data.
+         bigbuffer = malloc(c->global_size * sendcount * extent);
+
+         if (bigbuffer == NULL) {
+            ERROR(1, "Failed to allocate buffer for global gather (in communicator %d)!\n", c->number);
+            return MPI_ERR_INTERN;
+         }
+
+         // Next, receive the data from all cluster coordinators. Since the cluster sizes may vary,
+         // we need to calculate the appropriate receive offset.
+         offset = 0;
+
+         for (i=0;i<c->cluster_count;i++) {
+
+            if (c->coordinator[i] != c->global_rank) {
+               // If the coordinator is not me, I'll do a receive.
+               error = messaging_receive(bigbuffer + (offset * sendcount * extent), sendcount,
+                                   sendtype, c->coordinator[i], GATHER_TAG, MPI_STATUS_IGNORE, c);
+
+               if (error != MPI_SUCCESS) {
+                  ERROR(1, "Failed to recievce data from %d in global gather (in communicator %d)!\n", c->coordinator[i], c->number);
+                  free(bigbuffer);
+                  free(buffer);
+                  return MPI_ERR_INTERN;
+               }
+            } else {
+               // Otherwise a copy is enough.
+               memcpy(bigbuffer + (offset * sendcount * extent), buffer, sendcount * extent);
+            }
+
+            offset += c->cluster_sizes[i];
+         }
+
+         // Once all data has been received, we need to reorder it (as the clusters may be interleaved).
+         for (i=0;i<c->size;i++) {
+            tmp_cluster = GET_CLUSTER_RANK(c->members[i]);
+            tmp_rank = GET_PROCESS_RANK(c->members[i]);
+
+     EEP!!! WHAT NOW?
+
+
+
+         }
+
+        
+
+
+
+      } else {
+         // I am a local root.
+         error = messaging_send(buffer, sendcount*c->local_size, sendtype, root, GATHER_TAG, c);
+
+         if (error != MPI_SUCCESS) {
+            ERROR(1, "Failed to perform local gather in communicator %d!\n", c->number);
+            return error;
+         }
+      }
+
+      free(buffer);
+   }
+
+*/
 
 /*
    if (c->global_rank == root) {
@@ -1079,11 +1248,12 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
    } else {
       MPI_Send(sendbuf, sendcount, sendtype, root, comm);
    }
-*/
 
    IERROR(0, "WA MPI_Gather not implemented yet!");
    return MPI_ERR_INTERN;
 }
+*/
+
 
 #define __IMPI_Gatherv
 int IMPI_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,

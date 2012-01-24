@@ -590,6 +590,31 @@ fprintf(stderr, "*Received non-message opcode %d\n", opcode);
    return MPI_SUCCESS;
 }
 
+static int *alloc_and_receive_int_array(int len)
+{
+   int i;
+   int *tmp = malloc(len * sizeof(int));
+
+   if (tmp == NULL) {
+      fprintf(stderr, "ERROR: Failed to allocate int buffer\n"");
+      return NULL;
+   }
+
+   error = wa_receivefully((unsigned char *)tmp, len * sizeof(int));
+
+   if (error != CONNECT_OK) {
+      fprintf(stderr, "INTERNAL ERROR: Failed to receive int buffer!\n");
+      free(tmp);
+      return NULL;
+   }
+
+   for (i=0;i<len;i++) {
+      tmp[i] = ntohl(tmp[i]);
+   }
+
+   return tmp;
+}
+
 int messaging_receive_comm_reply(comm_reply *reply)
 {
    // Since operations on communicators are collective operations, we can
@@ -627,44 +652,29 @@ int messaging_receive_comm_reply(comm_reply *reply)
 
 fprintf(stderr, "*Received comm reply (comm=%d src=%d newComm=%d rank=%d size=%d color=%d key=%d cluster_count=%d flag=%d)\n", reply->comm, reply->src, reply->newComm, reply->rank, reply->size, reply->color, reply->key, reply->cluster_count, reply->flags);
 
-   reply->coordinators = malloc(reply->cluster_count * sizeof(int));
+
+
+
+   reply->coordinators = alloc_and_receive_int_array(reply->cluster_count);
 
    if (reply->coordinators == NULL) {
-      fprintf(stderr, "ERROR: Failed to allocate coordinators\n");
+      fprintf(stderr, "ERROR: Failed to allocate or receive coordinators\n");
       return MPI_ERR_INTERN;
    }
 
-   error = wa_receivefully((unsigned char *)(reply->coordinators), reply->cluster_count * sizeof(int));
+   reply->cluster_sizes = alloc_and_receive_int_array(reply->cluster_count);
 
-   if (error != CONNECT_OK) {
-      fprintf(stderr, "INTERNAL ERROR: Failed to receive comm reply coordinators!\n");
+   if (reply->cluster_sizes == NULL) {
+      fprintf(stderr, "ERROR: Failed to allocate or receive cluster sizes\n");
       return MPI_ERR_INTERN;
-   }
-
-fprintf(stderr, "*Received comm reply coordinators\n)");
-
-   for (i=0;i<reply->cluster_count;i++) {
-      reply->coordinators[i] = ntohl(reply->coordinators[i]);
-      fprintf(stderr, "   *reply->coordinators[%d] = %d\n)", i, reply->coordinators[i]);
    }
 
    if (reply->size > 0) {
-      reply->members = malloc(reply->size * sizeof(uint32_t));
+      reply->members = alloc_and_receive_int_array(reply->size);
 
       if (reply->members == NULL) {
-         fprintf(stderr, "ERROR: Failed to allocate members\n");
+         fprintf(stderr, "ERROR: Failed to allocate or receive communicator members\n");
          return MPI_ERR_INTERN;
-      }
-
-      error = wa_receivefully((unsigned char *)reply->members, reply->size * sizeof(uint32_t));
-
-      if (error != CONNECT_OK) {
-         fprintf(stderr, "INTERNAL ERROR: Failed to receive comm reply members!\n");
-         return MPI_ERR_INTERN;
-      }
-
-      for (i=0;i<reply->size;i++) {
-         reply->members[i] = ntohl(reply->members[i]);
       }
    }
 
@@ -766,47 +776,27 @@ fprintf(stderr, "*Received group reply (comm=%d src=%d newComm=%d rank=%d size=%
 
    if (reply->type == GROUP_TYPE_ACTIVE) {
 
-fprintf(stderr, "*Receiving cluster coordinators (%ld bytes)\n", reply->cluster_count * sizeof(int));
-
-      reply->coordinators = malloc(reply->cluster_count * sizeof(int));
+      reply->coordinators = alloc_and_receive_int_array(reply->cluster_count);
 
       if (reply->coordinators == NULL) {
-         fprintf(stderr, "ERROR: Failed to allocate coordinators\n");
+         fprintf(stderr, "ERROR: Failed to allocate or receive coordinators\n");
          return MPI_ERR_INTERN;
       }
 
-      error = wa_receivefully((unsigned char *)(reply->coordinators), reply->cluster_count * sizeof(int));
+      reply->cluster_sizes = alloc_and_receive_int_array(reply->cluster_count);
 
-      if (error != CONNECT_OK) {
-         fprintf(stderr, "INTERNAL ERROR: Failed to receive comm reply coordinators!\n");
+      if (reply->cluster_sizes == NULL) {
+         fprintf(stderr, "ERROR: Failed to allocate or receive cluster sizes\n");
          return MPI_ERR_INTERN;
       }
 
-fprintf(stderr, "*Received comm reply coordinators\n)");
+      if (reply->size > 0) {
+         reply->members = alloc_and_receive_int_array(reply->size);
 
-      for (i=0;i<reply->cluster_count;i++) {
-         reply->coordinators[i] = ntohl(reply->coordinators[i]);
-         fprintf(stderr, "   *reply->coordinators[%d] = %d\n)", i, reply->coordinators[i]);
-      }
-
-fprintf(stderr, "*Receiving group members (%ld bytes)\n", reply->size * sizeof(uint32_t));
-
-      reply->members = malloc(reply->size * sizeof(uint32_t));
-
-      if (reply->members == NULL) {
-         fprintf(stderr, "ERROR: Failed to allocate member array!\n");
-         return MPI_ERR_INTERN;
-      }
-
-      error = wa_receivefully((unsigned char *)reply->members, reply->size * sizeof(uint32_t));
-
-      if (error != CONNECT_OK) {
-         fprintf(stderr, "INTERNAL ERROR: Failed to receive comm reply members!\n");
-         return MPI_ERR_INTERN;
-      }
-
-      for (i=0;i<reply->size;i++) {
-         reply->members[i] = ntohl(reply->members[i]);
+         if (reply->members == NULL) {
+            fprintf(stderr, "ERROR: Failed to allocate or receive communicator members\n");
+            return MPI_ERR_INTERN;
+         }
       }
    }
 

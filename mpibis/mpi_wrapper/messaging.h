@@ -47,17 +47,18 @@ typedef struct s_dup_request {
 #define COMM_REPLY_SIZE (9*sizeof(int))
 
 typedef struct s_comm_reply {
-    int comm;          // communicator used
-    int src;           // source rank (unused)
-    int newComm;       // communicator created
-    int rank;          // rank in new communicator
-    int size;          // size of new communicator
-    int color;         // color for local split
-    int key;           // key for local split
-    int cluster_count; // number of cluster in communicator
-    int flags;         // flags of new communicator
-    int *coordinators; // cluster coordinators
-    uint32_t *members; // communicator members
+    int comm;           // communicator used
+    int src;            // source rank (unused)
+    int newComm;        // communicator created
+    int rank;           // rank in new communicator
+    int size;           // size of new communicator
+    int color;          // color for local split
+    int key;            // key for local split
+    int cluster_count;  // number of cluster in communicator
+    int flags;          // flags of new communicator
+    int *coordinators;  // cluster coordinators
+    int *cluster_sizes; // cluster sizes
+    uint32_t *members;  // communicator members
 } comm_reply;
 
 
@@ -65,16 +66,17 @@ typedef struct s_comm_reply {
 
 // TODO: merge with s_comm_reply ?
 typedef struct s_group_reply {
-    int comm;          // communicator used
-    int src;           // source rank (unused)
-    int newComm;       // communicator created
-    int rank;          // rank in new communicator
-    int size;          // size of new communicator
-    int type;          // type of groupreply
-    int cluster_count; // number of clusters in communicator
-    int flags;         // flags of new communicator
-    int *coordinators; // cluster coordinators
-    uint32_t *members; // communicator members
+    int comm;           // communicator used
+    int src;            // source rank (unused)
+    int newComm;        // communicator created
+    int rank;           // rank in new communicator
+    int size;           // size of new communicator
+    int type;           // type of groupreply
+    int cluster_count;  // number of clusters in communicator
+    int flags;          // flags of new communicator
+    int *coordinators;  // cluster coordinators
+    int *cluster_sizes; // cluster sizes
+    uint32_t *members;  // communicator members
 } group_reply;
 
 
