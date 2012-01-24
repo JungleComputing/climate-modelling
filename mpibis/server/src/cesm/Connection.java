@@ -200,11 +200,13 @@ public class Connection implements Protocol {
         case OPCODE_DATA:
             System.out.println(pidAsString + " - Reading DATA message");
             m = new DataMessage(OPCODE_DATA, in);
+            System.out.println(pidAsString + " - DATA message read");
             break;
 
         case OPCODE_COLLECTIVE_BCAST:
             System.out.println(pidAsString + " - Reading BCAST message");
             m = new DataMessage(OPCODE_COLLECTIVE_BCAST, in);
+            System.out.println(pidAsString + " - BCAST message read");
             break;
             
         case OPCODE_COMM:
