@@ -38,7 +38,7 @@ static communicator *comms[MAX_COMMUNICATORS];
 static int add_communicator(MPI_Comm comm, int number, int initial,
                            int local_rank, int local_size,
                            int global_rank, int global_size,
-                           int cluster_count, int *coordinators, 
+                           int cluster_count, int *coordinators,
                            int flags, uint32_t *members,
                            communicator **out)
 {
@@ -79,6 +79,7 @@ static int add_communicator(MPI_Comm comm, int number, int initial,
    c->cluster_count = cluster_count;
    c->queue_head = NULL;
    c->queue_tail = NULL;
+   c->coordinators = coordinators;
    c->members = members;
 
    comms[number] = c;
@@ -118,7 +119,7 @@ int init_communicators(int cluster_rank, int cluster_count,
       return MPI_ERR_INTERN;
    }
 
-   for (i=0;i<cluster_count;i++) { 
+   for (i=0;i<cluster_count;i++) {
       coordinators[i] = cluster_offsets[i];
    }
 
@@ -137,20 +138,20 @@ int init_communicators(int cluster_rank, int cluster_count,
    tmp_process_rank = 0;
    tmp_cluster_rank = 0;
 
-   for (i=0;i<global_count;i++) { 
+   for (i=0;i<global_count;i++) {
 
       if (i >= cluster_offsets[tmp_cluster_rank+1]) {
          tmp_process_rank = 0;
          tmp_cluster_rank++;
-      }      
+      }
 
       members[i] = SET_PID(tmp_cluster_rank, tmp_process_rank);
       tmp_process_rank++;
-   }  
+   }
 
    flags = COMM_FLAG_WORLD | COMM_FLAG_LOCAL;
 
-   if (cluster_count > 1) { 
+   if (cluster_count > 1) {
       flags |= COMM_FLAG_REMOTE;
    }
 
@@ -158,7 +159,7 @@ int init_communicators(int cluster_rank, int cluster_count,
    error = add_communicator(MPI_COMM_WORLD, FORTRAN_MPI_COMM_WORLD, 1,
                             local_rank, local_count,
                             global_rank, global_count,
-                            cluster_count, coordinators, 
+                            cluster_count, coordinators,
                             flags, members, NULL);
 
    if (error != MPI_SUCCESS) {
