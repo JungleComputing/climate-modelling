@@ -334,7 +334,7 @@ public class Communicator {
             // Add the cluster to the set of participants.
             participatingCluster.add(name);
             
-            System.out.print("        sending group info to " + j + " " + printPID(c.pid) + " at " + name);
+            System.out.println("        sending group info to " + j + " " + printPID(c.pid) + " at " + name);
             
             // Create and send the reply.
             c.enqueue(new GroupReply(communicator, number, j, members.length, coordinators.length, flags, coordinators, members), 
@@ -351,7 +351,8 @@ public class Communicator {
                 String name = c.getClusterName();
                 boolean participant = participatingCluster.contains(name);
             
-                System.out.print("        sending participant info to " + j++ + " " + printPID(c.pid) + " at " + name);
+                System.out.println("        sending participant info to " + j++ + " " + printPID(c.pid) + " at " + name 
+                        + "(" + participant + ")");
                 
                 c.enqueue(new GroupReply(communicator, participant), false);
             }
