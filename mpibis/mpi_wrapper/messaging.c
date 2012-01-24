@@ -596,7 +596,7 @@ static int *alloc_and_receive_int_array(int len)
    int *tmp = malloc(len * sizeof(int));
 
    if (tmp == NULL) {
-      fprintf(stderr, "ERROR: Failed to allocate int buffer\n"");
+      fprintf(stderr, "ERROR: Failed to allocate int buffer\n");
       return NULL;
    }
 

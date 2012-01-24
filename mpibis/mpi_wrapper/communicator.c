@@ -216,7 +216,7 @@ int create_communicator(MPI_Comm comm, int number,
 {
    return add_communicator(comm, number, 0,
                     local_rank, local_size, global_rank, global_size,
-                    cluster_count, coordinators, cluster_size,
+                    cluster_count, coordinators, cluster_sizes,
                     flags, members, out);
 }
 
