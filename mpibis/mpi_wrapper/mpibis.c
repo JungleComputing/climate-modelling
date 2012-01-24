@@ -1118,6 +1118,7 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
             ERROR(1, "Failed to receive data from %d for gather (in communicator %d)!\n", i, c->number);
             return error;
          }
+      }
 
    } else {
 
@@ -1630,7 +1631,6 @@ int IMPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm)
    MPI_Comm tmp_com;
    uint32_t *members;
    int *coordinators;
-   int *cluster_count;
    int *cluster_sizes;
    communicator *dup;
 
@@ -1662,7 +1662,7 @@ int IMPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm)
       return error;
    }
 
-   members = (uint32_t *) copy_int_array(c->members, c->global_size);
+   members = (uint32_t *) copy_int_array((int *)c->members, c->global_size);
 
    if (members == NULL) {
       IERROR(1, "MPI_Comm_dup member copy failed!");
@@ -1834,9 +1834,8 @@ int IMPI_Comm_create(MPI_Comm mc, MPI_Group mg, MPI_Comm *newcomm)
       PMPI_Comm_size(tmp_comm, &local_size);
 
       error = create_communicator(tmp_comm, reply.newComm,
-                 local_rank, local_size,
-                 reply.rank, reply.size,
-                 reply.cluster_count, reply.coordinators,
+                 local_rank, local_size, reply.rank, reply.size,
+                 reply.cluster_count, reply.coordinators, reply.cluster_sizes;
                  reply.flags, reply.members,
                  &result);
 
