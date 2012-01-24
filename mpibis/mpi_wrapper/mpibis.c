@@ -1666,7 +1666,7 @@ int IMPI_Comm_create(MPI_Comm mc, MPI_Group mg, MPI_Comm *newcomm)
       error = create_communicator(tmp_comm, reply.newComm,
                  local_rank, local_size,
                  reply.rank, reply.size,
-                 reply.cluster_count, reply.coordinators,              
+                 reply.cluster_count, reply.coordinators,
                  reply.flags, reply.members,
                  &result);
 

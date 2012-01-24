@@ -9,18 +9,9 @@
 #include "mpi.h"
 #include "types.h"
 
-#define COMM_REQUEST_SIZE (5*sizeof(int))
-#define COMM_REPLY_SIZE (8*sizeof(int))
-
-#define GROUP_REQUEST_SIZE (4*sizeof(int))
-#define GROUP_REPLY_SIZE (7*sizeof(int))
-
-#define DUP_REQUEST_SIZE (3*sizeof(int))
-#define DUP_REPLY_SIZE (3*sizeof(int))
-
-#define MSG_HEADER_SIZE (7*sizeof(int))
-
 // requests
+
+#define COMM_REQUEST_SIZE (5*sizeof(int))
 
 typedef struct s_comm_request {
     int opcode;  // type of message
@@ -30,6 +21,9 @@ typedef struct s_comm_request {
     int key;     // prefered rank in target communicator
 } comm_request;
 
+
+#define GROUP_REQUEST_SIZE (4*sizeof(int))
+
 typedef struct s_group_request {
     int opcode;  // type of message
     int comm;    // communicator used
@@ -38,6 +32,9 @@ typedef struct s_group_request {
     // int *ranks // ranks for group
 } group_request;
 
+
+#define DUP_REQUEST_SIZE (3*sizeof(int))
+
 typedef struct s_dup_request {
     int opcode;  // type of message
     int comm;    // communicator used
@@ -45,6 +42,9 @@ typedef struct s_dup_request {
 } dup_request;
 
 // replies
+
+
+#define COMM_REPLY_SIZE (9*sizeof(int))
 
 typedef struct s_comm_reply {
     int comm;          // communicator used
@@ -60,6 +60,9 @@ typedef struct s_comm_reply {
     uint32_t *members; // communicator members
 } comm_reply;
 
+
+#define GROUP_REPLY_SIZE (8*sizeof(int))
+
 // TODO: merge with s_comm_reply ?
 typedef struct s_group_reply {
     int comm;          // communicator used
@@ -68,11 +71,14 @@ typedef struct s_group_reply {
     int rank;          // rank in new communicator
     int size;          // size of new communicator
     int type;          // type of groupreply
-    int cluster_count; // number of cluster in communicator
+    int cluster_count; // number of clusters in communicator
     int flags;         // flags of new communicator
     int *coordinators; // cluster coordinators
     uint32_t *members; // communicator members
 } group_reply;
+
+
+#define DUP_REPLY_SIZE (3*sizeof(int))
 
 // TODO: merge with s_comm_reply ?
 typedef struct s_dup_reply {
@@ -82,6 +88,8 @@ typedef struct s_dup_reply {
 } dup_reply;
 
 // mesg
+
+#define MSG_HEADER_SIZE (7*sizeof(int))
 
 typedef struct s_msg_header {
     int opcode;  // type of message
