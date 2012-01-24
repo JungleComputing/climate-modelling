@@ -1057,8 +1057,8 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
                       int recvcount, MPI_Datatype recvtype,
                       int root, MPI_Comm comm)
 {
-   int error, root_cluster, local_cluster, local_root, extent, i, tmp_rank, tmp_cluster;
-   unsigned char *buffer, *bigbuffer;
+   int error, root_cluster, local_cluster, i, tmp_rank, tmp_cluster;
+   MPI_Aint extent;
 
    communicator *c = get_communicator(comm);
 
@@ -1093,7 +1093,7 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
       }
 
       // Receive all data.
-      for (i=0;i<c->size;i++) {
+      for (i=0;i<c->global_size;i++) {
 
          // Test is the data is send locally or over the WA link
          tmp_cluster = GET_CLUSTER_RANK(c->members[i]);
@@ -1111,7 +1111,7 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
             }
          } else {
             // The data is send remotely
-            error = messaging_receive(recvbuf + (i * recvcount * extent), recvcount, recvtype, c->member[i], GATHER_TAG, MPI_STATUS_IGNORE, c);
+            error = messaging_receive(recvbuf + (i * recvcount * extent), recvcount, recvtype, c->members[i], GATHER_TAG, MPI_STATUS_IGNORE, c);
          }
 
          if (error != MPI_SUCCESS) {
@@ -1611,18 +1611,7 @@ int IMPI_Comm_rank(MPI_Comm comm, int *rank)
    return MPI_SUCCESS;
 }
 
-static uint32_t *copy_members(uint32_t *members, int size)
-{
-   uint32_t *tmp = malloc(size * sizeof(uint32_t));
-
-   if (tmp == NULL) {
-      return NULL;
-   }
-
-   return memcpy(tmp, members, size * sizeof(uint32_t));
-}
-
-static int *copy_coordinators(int *coordinators, int size)
+static int *copy_int_array(int *src, int size)
 {
    int *tmp = malloc(size * sizeof(int));
 
@@ -1630,7 +1619,7 @@ static int *copy_coordinators(int *coordinators, int size)
       return NULL;
    }
 
-   return memcpy(tmp, coordinators, size * sizeof(int));
+   return memcpy(tmp, src, size * sizeof(int));
 }
 
 #define __IMPI_Comm_dup
@@ -1641,6 +1630,8 @@ int IMPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm)
    MPI_Comm tmp_com;
    uint32_t *members;
    int *coordinators;
+   int *cluster_count;
+   int *cluster_sizes;
    communicator *dup;
 
    communicator *c = get_communicator(comm);
@@ -1671,14 +1662,14 @@ int IMPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm)
       return error;
    }
 
-   members = copy_members(c->members, c->global_size);
+   members = (uint32_t *) copy_int_array(c->members, c->global_size);
 
    if (members == NULL) {
       IERROR(1, "MPI_Comm_dup member copy failed!");
       return error;
    }
 
-   coordinators = copy_coordinators(c->coordinators, c->cluster_count);
+   coordinators = copy_int_array(c->coordinators, c->cluster_count);
 
    if (coordinators == NULL) {
       IERROR(1, "MPI_Comm_dup coordinator copy failed!");
@@ -1686,10 +1677,19 @@ int IMPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm)
       return error;
    }
 
+   cluster_sizes = copy_int_array(c->cluster_sizes, c->cluster_count);
+
+   if (coordinators == NULL) {
+      IERROR(1, "MPI_Comm_dup cluster_sizes copy failed!");
+      free(members);
+      free(coordinators);
+      return error;
+   }
+
    error = create_communicator(tmp_com, reply.newComm,
                  c->local_rank, c->local_size,
                  c->global_rank, c->global_size,
-                 c->cluster_count, coordinators, 
+                 c->cluster_count, coordinators, cluster_sizes,
                  c->flags, members, &dup);
 
    if (error != MPI_SUCCESS) {
