@@ -592,7 +592,7 @@ fprintf(stderr, "*Received non-message opcode %d\n", opcode);
 
 static int *alloc_and_receive_int_array(int len)
 {
-   int i;
+   int i, error;
    int *tmp = malloc(len * sizeof(int));
 
    if (tmp == NULL) {
@@ -620,7 +620,7 @@ int messaging_receive_comm_reply(comm_reply *reply)
    // Since operations on communicators are collective operations, we can
    // assume here that the reply has not be received yet. There is a chance,
    // however, that other messages are on the stream before our reply message.
-   int opcode, i;
+   int opcode;
 
    int error = queue_pending_messages(&opcode);
 
@@ -670,7 +670,7 @@ fprintf(stderr, "*Received comm reply (comm=%d src=%d newComm=%d rank=%d size=%d
    }
 
    if (reply->size > 0) {
-      reply->members = alloc_and_receive_int_array(reply->size);
+      reply->members = (uint32_t *) alloc_and_receive_int_array(reply->size);
 
       if (reply->members == NULL) {
          fprintf(stderr, "ERROR: Failed to allocate or receive communicator members\n");
@@ -741,7 +741,7 @@ int messaging_receive_group_reply(group_reply *reply)
    // Since operations on communicators are collective operations, we can
    // assume here that the reply has not be received yet. There is a chance,
    // however, that other messages are on the stream before our reply message.
-   int opcode, i;
+   int opcode;
 
    int error = queue_pending_messages(&opcode);
 
@@ -791,7 +791,7 @@ fprintf(stderr, "*Received group reply (comm=%d src=%d newComm=%d rank=%d size=%
       }
 
       if (reply->size > 0) {
-         reply->members = alloc_and_receive_int_array(reply->size);
+         reply->members = (uint32_t *) alloc_and_receive_int_array(reply->size);
 
          if (reply->members == NULL) {
             fprintf(stderr, "ERROR: Failed to allocate or receive communicator members\n");
