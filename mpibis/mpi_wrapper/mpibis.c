@@ -1022,6 +1022,8 @@ int IMPI_Request_get_status(MPI_Request req, int *flag, MPI_Status *status )
 #define __IMPI_Barrier
 int IMPI_Barrier(MPI_Comm comm)
 {
+   int error, i;
+   char buffer = 42;
    communicator *c = get_communicator(comm);
 
    if (c == NULL) {
@@ -1035,8 +1037,68 @@ int IMPI_Barrier(MPI_Comm comm)
      return PMPI_Barrier(c->comm);
    }
 
-   IERROR(0, "WA MPI_Barrier not implemented yet!");
-   return MPI_ERR_INTERN;
+   // We need to perform a WA barrier. This consists of three steps:
+   //
+   // 1) local barrier, to ensure all local processes have entered the call
+   // 2) WA barrier (implemented using flat tree on coordinators) to ensure all
+   //    clusters have entered the call
+   // 3) local barrier, to ensure all local processes wait until their coordinator
+   //    has finished the WA barrier.
+
+   // Perform the first local barrier
+   error = PMPI_Barrier(c->comm);
+
+   if (error != MPI_SUCCESS) {
+      ERROR(1, "IMPI_Barrier: local barrier failed! (1)");
+      return MPI_ERR_INTERN;
+   }
+
+   // Perform the WA barrier (coordinators only)
+   if (c->global_rank == c->coordinators[0]) {
+      // Coordinator 0 first receives from all others....
+      for (i=1;i<c->cluster_count;i++) {
+         error = messaging_receive(&buffer, 1, MPI_TYPE_BYTE, c->coordinators[i], BARRIER_TAG, MPI_STATUS_IGNORE, c);
+
+         if (error != MPI_SUCCESS) {
+            ERROR(1, "IMPI_Barrier: WA receive failed!");
+            return MPI_ERR_INTERN;
+         }
+      }
+
+      // ... then bcasts reply.
+      error = messaging_bcast(&buffer, 1, MPI_TYPE_BYTE, c->coordinators[0], c);
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "IMPI_Barrier: WA bcast failed!");
+         return MPI_ERR_INTERN;
+      }
+   } else {
+      // All other coordinators first send to coordinator 0...
+      error = messaging_send(buffer, 1, MPI_TYPE_BYTE, c->coordinators[0], BARRIER_TAG, MPI_STATUS_IGNORE, c);
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "IMPI_Barrier: WA send failed!");
+         return MPI_ERR_INTERN;
+      }
+
+      // Then wait for reply.
+      error = messaging_bcast_receive(buffer, 1, MPI_TYPE_BYTE, c->coordinators[0], c);
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "IMPI_Barrier: WA bcast receive failed!");
+         return MPI_ERR_INTERN;
+      }
+   }
+
+   // Perform the second local barrier
+   error = PMPI_Barrier(c->comm);
+
+   if (error != MPI_SUCCESS) {
+      ERROR(1, "IMPI_Barrier: local barrier failed! (2)");
+      return MPI_ERR_INTERN;
+   }
+
+   return MPI_SUCCESS;
 }
 
 #define __IMPI_Bcast
