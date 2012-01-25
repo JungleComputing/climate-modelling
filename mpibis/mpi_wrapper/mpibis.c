@@ -562,7 +562,6 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
                      int source, int tag, MPI_Comm comm, MPI_Request *req)
 {
    int error, local, flag, flags = REQUEST_FLAG_RECEIVE;
-   MPI_Status status;
    request *r;
 
    inc_communicator_statistics(comm, STATS_IRECV);
@@ -757,7 +756,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
       r->error = MPI_SUCCESS;
       *flag = 1;
 
-   } else if (r->source_or_dest != MPI_SOURCE_ANY) {
+   } else if (r->source_or_dest != MPI_ANY_SOURCE) {
 
       // It was a non-persistent remote receive request, so probe the
       // WA link (will do nothing if the request was already completed).
@@ -780,7 +779,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
       // the local network and the WA link.
       do {
          // Probe locally first
-         r->error = PMPI_Iprobe(MPI_ANY_SOURCE, r->tag, r->c->comm, flag, status);
+         r->error = PMPI_Iprobe(MPI_ANY_SOURCE, r->tag, r->c->comm, flag, MPI_STATUS_IGNORE);
 
          if (r->error != MPI_SUCCESS) {
             IERROR(1, "IProbe from MPI_ANY_SOURCE failed! ()");
@@ -789,7 +788,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
 
          if (flag) {
             // A message is available locally, so receiving it!
-            r->error = PMPI_Recv(r->buf, r->count, r->type, MPI_ANY_SOURCE, r->tag, r->c->comm);
+            r->error = PMPI_Recv(r->buf, r->count, r->type, MPI_ANY_SOURCE, r->tag, r->c->comm, status);
             r->flags |= REQUEST_FLAG_COMPLETED;
          } else {
             // No local message was found (yet), so try the WA link.
