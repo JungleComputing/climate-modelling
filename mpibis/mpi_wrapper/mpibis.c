@@ -561,23 +561,18 @@ int IMPI_Irsend(void *buf, int count, MPI_Datatype datatype,
 int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
                      int source, int tag, MPI_Comm comm, MPI_Request *req)
 {
-   int error, local, flags = REQUEST_FLAG_RECEIVE;
+   int error, local, flag, flags = REQUEST_FLAG_RECEIVE;
+   MPI_Status status;
    request *r;
+
+   inc_communicator_statistics(comm, STATS_IRECV);
 
    if (count < 0) {
       ERROR(1, "Invalid count! (%d)", count);
       return MPI_ERR_COUNT;
    }
 
-/*
-   if (tag < 0 || tag > MPI_TAG_UB) {
-      if (tag != MPI_ANY_TAG) {
-         ERROR(1, "Illegal tag! (3) %d %d", tag, MPI_TAG_UB);
-         return MPI_ERR_TAG;
-      }
-   }
-*/
-
+   // We first unpack the communicator.
    communicator *c = get_communicator(comm);
 
    if (c == NULL) {
@@ -585,6 +580,7 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
       return MPI_ERR_COMM;
    }
 
+   // Next, we check if the source is local or not.
    if (source == MPI_ANY_SOURCE) {
       // if source is any, the local flag is determined by the distribution of the communicator.
       local = comm_is_local(c);
@@ -597,6 +593,7 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
       }
    }
 
+   // Next, we create the request struct.
    if (local) {
       flags |= REQUEST_FLAG_LOCAL;
    }
@@ -608,18 +605,32 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
       return MPI_ERR_INTERN;
    }
 
-   inc_communicator_statistics(comm, STATS_IRECV);
-
+   // Post the ireceive.
    if (local == 1) {
+      // If the source is guarenteed to be local, we directly use MPI.
       error = PMPI_Irecv(buf, count, datatype, source, tag, c->comm, &(r->req));
-   } else {
-      // TODO: implement
-      if (source == MPI_ANY_SOURCE) {
-         IERROR(1, "IRecv from MPI_ANY_SOURCE not supported yet!");
+
+   } else if (source != MPI_ANY_SOURCE) {
+      // If the source is guarenteed to be remote, we directly use the WA link.
+      error = messaging_probe_receive(r, 0);
+
+   } else { // local == 0 && source == MPI_ANY_SOURCE
+      // If the source may be local or remote, we must poll both. Start with local MPI.
+      // FIXME: fixed order may cause starvation ?
+      error = PMPI_Iprobe(MPI_ANY_SOURCE, tag, c->comm, &flag, MPI_STATUS_IGNORE);
+
+      if (error != MPI_SUCCESS) {
+         IERROR(1, "IProbe from MPI_ANY_SOURCE failed!");
          return MPI_ERR_INTERN;
       }
 
-      error = messaging_probe_receive(r, 0);
+      if (flag) {
+         // A message is available locally, so start receiving it!
+         error = PMPI_Irecv(buf, count, datatype, source, tag, c->comm, &(r->req));
+      } else {
+         // No local message was found (yet), so try the WA link.
+         error = messaging_probe_receive(r, 0);
+      }
    }
 
    if (error != MPI_SUCCESS) {
@@ -639,6 +650,8 @@ int IMPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
 {
    int error;
    int local = 0;
+
+   inc_communicator_statistics(comm, STATS_RECV);
 
    if (count < 0) {
       ERROR(1, "Invalid count!");
@@ -676,8 +689,6 @@ int IMPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
          return MPI_ERR_RANK;
       }
    }
-
-   inc_communicator_statistics(comm, STATS_RECV);
 
    if (local == 1) {
       return PMPI_Recv(buf, count, datatype, source, tag, c->comm, status);
@@ -728,9 +739,8 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
       *flag = 1;
       *req = MPI_REQUEST_NULL;
       return MPI_ERR_REQUEST;
-   }
 
-   if (request_local(r)) {
+   } else if (request_local(r)) {
       // Pure local request, so we ask MPI.
       if (blocking) {
          r->error = PMPI_Wait(&(r->req), status);
@@ -739,49 +749,64 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
          r->error = PMPI_Test(&(r->req), flag, status);
       }
 
-      if (*flag == 1) {
-        error = r->error;
-        free_request(r);
-        *req = MPI_REQUEST_NULL;
-      }
-
-      return error;
-   }
-
-   IERROR(0, "WA probe not supported yet!");
-
-   // It was a WA or mixed request.
-
-   // Non-persistent send should already have finished.
-   if (request_send(r)) {
+   } else if (request_send(r)) {
+      // Non-persistent WA send should already have finished.
       status->MPI_SOURCE = r->source_or_dest;
       status->MPI_TAG = r->tag;
       status->MPI_ERROR = MPI_SUCCESS;
+      r->error = MPI_SUCCESS;
       *flag = 1;
-      free_request(r);
-      *req = MPI_REQUEST_NULL;
-      return MPI_SUCCESS;
-   }
 
-   // Non-persistent receive may not have completed yet.
-   *flag = request_completed(r);
+   } else if (r->source_or_dest != MPI_SOURCE_ANY) {
 
-   if (!(*flag)) {
+      // It was a non-persistent remote receive request, so probe the
+      // WA link (will do nothing if the request was already completed).
       messaging_probe_receive(r, blocking);
-   }
 
-   if (request_completed(r)) {
-      *flag = 1;
-      if (r->error == MPI_SUCCESS) {
-         r->error = messaging_finalize_receive(r, status);
-      } else {
-         status->MPI_SOURCE = r->source_or_dest;
-         status->MPI_TAG = r->tag;
-         status->MPI_ERROR = r->error;
+      if (request_completed(r)) {
+         *flag = 1;
+         if (r->error == MPI_SUCCESS) {
+            r->error = messaging_finalize_receive(r, status);
+         } else {
+            status->MPI_SOURCE = r->source_or_dest;
+            status->MPI_TAG = r->tag;
+            status->MPI_ERROR = r->error;
+         }
       }
+
+   } else {
+
+      // It was a non-persistent mixed receive request, so we must probe
+      // the local network and the WA link.
+      do {
+         // Probe locally first
+         r->error = PMPI_Iprobe(MPI_ANY_SOURCE, r->tag, r->c->comm, flag, status);
+
+         if (r->error != MPI_SUCCESS) {
+            IERROR(1, "IProbe from MPI_ANY_SOURCE failed! ()");
+            return MPI_ERR_INTERN;
+         }
+
+         if (flag) {
+            // A message is available locally, so receiving it!
+            r->error = PMPI_Recv(r->buf, r->count, r->type, MPI_ANY_SOURCE, r->tag, r->c->comm);
+            r->flags |= REQUEST_FLAG_COMPLETED;
+         } else {
+            // No local message was found (yet), so try the WA link.
+            r->error = messaging_probe_receive(r, blocking);
+
+            if (request_completed(r)) {
+               *flag = 1;
+               status->MPI_SOURCE = r->source_or_dest;
+               status->MPI_TAG = r->tag;
+               status->MPI_ERROR = r->error;
+            }
+         }
+
+      } while (blocking && (*flag == 0) && (r->error = MPI_SUCCESS));
    }
 
-   if (*flag) {
+   if (*flag == 1) {
       error = r->error;
       free_request(r);
       *req = MPI_REQUEST_NULL;

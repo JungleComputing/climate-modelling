@@ -44,30 +44,30 @@ static message_buffer *probe_wa(communicator *c, int source, int tag, int blocki
 {
    message_buffer *m;
 
-fprintf(stderr, "Probing socket for incoming messages from %d %d (%d)\n", source, tag, blocking);
+fprintf(stderr, "PROBE_WA: Probing socket for incoming messages from %d %d (%d)\n", source, tag, blocking);
 
    do {
       m = receive_message(blocking, error);
 
       if (m == NULL) {
-fprintf(stderr, "No message received\n");
+fprintf(stderr, "PROBE_WA: No message received\n");
          return NULL;
       }
 
-fprintf(stderr, "Message received from %d %d\n", m->header.source, m->header.tag);
+fprintf(stderr, "PROBE_WA: Message received from %d %d\n", m->header.source, m->header.tag);
 
       if (match_message(m, c->number, source, tag)) {
          // we have a match!
-fprintf(stderr, "Match! Returning message\n");
+fprintf(stderr, "PROBE_WA: Match! Returning message\n");
          return m;
       } else {
-fprintf(stderr, "No match. Storing message\n");
+fprintf(stderr, "PROBE_WA: No match. Storing message\n");
          store_message(m);
       }
 
    } while (blocking);
 
-fprintf(stderr, "No message received\n");
+fprintf(stderr, "PROBE_WA: No message received\n");
 
    return NULL;
 }
