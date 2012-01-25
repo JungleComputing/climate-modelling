@@ -47,7 +47,7 @@
 #define BCAST_TAG                         -1
 #define ALLREDUCE_TAG                     -2
 #define GATHER_TAG                        -3
-
+#define BARRIER_TAG                       -4
 
 #define MAX_LENGTH_CLUSTER_NAME          128
 #define MAX_COMMUNICATOR_BYTES             1
