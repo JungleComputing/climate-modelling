@@ -218,7 +218,7 @@ int wa_wait_for_data(int blocking)
    struct timeval timeout;
    fd_set select_set;
 
-fprintf(stderr, "Waiting for data to appear on socket %d\n", blocking);
+fprintf(stderr, "WA_WAIT_FOR_DATA: Waiting for data to appear on socket (blocking=%d)\n", blocking);
 
    FD_ZERO(&select_set);
    max_sd = socketfd;
@@ -233,6 +233,8 @@ fprintf(stderr, "Waiting for data to appear on socket %d\n", blocking);
       timeout.tv_usec = 0;
       result = select(max_sd + 1, &select_set, NULL, NULL, &timeout);
    }
+
+fprintf(stderr, "WA_WAIT_FOR_DATA: Result is %d\n", result);
 
    // Result will be 1 (have data), 0 (no data), -1 (error)
    return result;

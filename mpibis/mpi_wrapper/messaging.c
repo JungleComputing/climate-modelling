@@ -251,15 +251,13 @@ static int send_message(message_buffer *m)
    return MPI_SUCCESS;
 }
 
-
-
 static int receive_opcode(int* opcode, int *error, int blocking)
 {
-fprintf(stderr, "Receiving opcode from socket (blocking=%d)\n", blocking);
+fprintf(stderr, "RECEIVE_OPCODE: Receiving from socket (blocking=%d)\n", blocking);
 
    int result = wa_wait_for_data(blocking);
 
-fprintf(stderr, "Result of receive: result=%d error=%d\n", result, *error);
+fprintf(stderr, "RECEIVE_OPCODE: Result of receive: result=%d error=%d\n", result, *error);
 
    if (result == -1) {
       *error = MPI_ERR_INTERN;
@@ -278,7 +276,7 @@ fprintf(stderr, "Result of receive: result=%d error=%d\n", result, *error);
    result = wa_receivefully((unsigned char *) opcode, 4);
 
    if (result != CONNECT_OK) {
-      fprintf(stderr, "Failed to receive message opcode!\n");
+      fprintf(stderr, "RECEIVE_OPCODE: Failed to receive message opcode!\n");
       *error = MPI_ERR_INTERN;
       return 0;
    }
@@ -361,7 +359,7 @@ fprintf(stderr, "Receiving message from socket (blocking=%d)\n", blocking);
 fprintf(stderr, "Result of receive: result=%d error=%d\n", result, *error);
 
    if (result == 0) {
-      // Note: error will be set correctly is blocking was true
+      // Note: error will be set correctly if blocking was true
       return NULL;
    }
 
@@ -556,7 +554,7 @@ static int queue_pending_messages(int *next_opcode)
 
    while (result == 0) {
 
-fprintf(stderr, "Queuing pending messages (blocking=1)\n");
+fprintf(stderr, "QUEUE_PENDING_MESSAGES: start blocking receive for opcode\n");
 
       result = receive_opcode(&opcode, &error, 1);
 
@@ -565,7 +563,7 @@ fprintf(stderr, "Queuing pending messages (blocking=1)\n");
          return error;
       }
 
-fprintf(stderr, "*Result of receive result=%d error=%d\n", result, error);
+fprintf(stderr, "QUEUE_PENDING_MESSAGES: Result of receive result=%d error=%d\n", result, error);
 
       if (opcode == OPCODE_DATA || opcode == OPCODE_COLLECTIVE_BCAST || opcode == OPCODE_COLLECTIVE_ALLREDUCE) {
          // There is a message blocking the stream!
@@ -576,12 +574,12 @@ fprintf(stderr, "*Result of receive result=%d error=%d\n", result, error);
             return error;
          }
 
-fprintf(stderr, "*Message received from src: %d opcode: %d tag: %d\n", m->header.source, opcode, m->header.tag);
+fprintf(stderr, "QUEUE_PENDING_MESSAGES: Message received from src: %d opcode: %d tag: %d\n", m->header.source, opcode, m->header.tag);
 
          store_message(m);
          result = 0;
       } else {
-fprintf(stderr, "*Received non-message opcode %d\n", opcode);
+fprintf(stderr, "QUEUE_PENDING_MESSAGES: Received non-message opcode %d\n", opcode);
          *next_opcode = opcode;
          result = 1;
       }
