@@ -1131,7 +1131,7 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
             } else {
                // All other local data directly used MPI
                tmp_rank = GET_PROCESS_RANK(c->members[i]);
-               error = MPI_Recv(recvbuf + (i * recvcount * extent), recvcount, recvtype, tmp_rank, 999 /*FIXME*/, c->comm, MPI_STATUS_IGNORE);
+               error = PMPI_Recv(recvbuf + (i * recvcount * extent), recvcount, recvtype, tmp_rank, 999 /*FIXME*/, c->comm, MPI_STATUS_IGNORE);
             }
          } else {
             // The data is send remotely
@@ -1150,7 +1150,7 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
       if (local_cluster == root_cluster) {
          // Send within the cluster
          tmp_rank = GET_PROCESS_RANK(c->members[root]);
-         error = MPI_Send(sendbuf, sendcount, sendtype, tmp_rank, 999 /*FIXME*/, c->comm);
+         error = PMPI_Send(sendbuf, sendcount, sendtype, tmp_rank, 999 /*FIXME*/, c->comm);
       } else {
          // Send between clusters
          error = messaging_send(sendbuf, sendcount, sendtype, root, GATHER_TAG, c);
@@ -1193,7 +1193,7 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
    }
 
    // NOTE: we only use the send side parameters here. The receive side are only valid on the overall root!
-   error = MPI_Gather(sendbuf, sendcount, sendtype, buffer, sendcount, sendtype, local_root, c->comm);
+   error = PMPI_Gather(sendbuf, sendcount, sendtype, buffer, sendcount, sendtype, local_root, c->comm);
 
    if (error != MPI_SUCCESS) {
       ERROR(1, "Failed to perform local gather in communicator %d!\n", c->number);
@@ -1271,7 +1271,7 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
    if (c->global_rank == root) {
 
    } else {
-      MPI_Send(sendbuf, sendcount, sendtype, root, comm);
+      PMPI_Send(sendbuf, sendcount, sendtype, root, comm);
    }
 
    IERROR(0, "WA MPI_Gather not implemented yet!");
