@@ -1156,7 +1156,7 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
             }
          } else {
             // The data is send remotely
-            error = messaging_receive(recvbuf + (i * recvcount * extent), recvcount, recvtype, c->members[i], GATHER_TAG, MPI_STATUS_IGNORE, c);
+            error = messaging_receive(recvbuf + (i * recvcount * extent), recvcount, recvtype, i, GATHER_TAG, MPI_STATUS_IGNORE, c);
          }
 
          if (error != MPI_SUCCESS) {

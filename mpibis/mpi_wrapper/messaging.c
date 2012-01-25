@@ -44,7 +44,7 @@ static message_buffer *probe_wa(communicator *c, int source, int tag, int blocki
 {
    message_buffer *m;
 
-fprintf(stderr, "PROBE_WA: Probing socket for incoming messages from %d %d (%d)\n", source, tag, blocking);
+fprintf(stderr, "PROBE_WA: Probing socket for incoming messages from source=%d tag=%d blocking=%d\n", source, tag, blocking);
 
    do {
       m = receive_message(blocking, error);
