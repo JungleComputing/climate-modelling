@@ -1057,7 +1057,7 @@ int IMPI_Barrier(MPI_Comm comm)
    if (c->global_rank == c->coordinators[0]) {
       // Coordinator 0 first receives from all others....
       for (i=1;i<c->cluster_count;i++) {
-         error = messaging_receive(&buffer, 1, MPI_TYPE_BYTE, c->coordinators[i], BARRIER_TAG, MPI_STATUS_IGNORE, c);
+         error = messaging_receive(&buffer, 1, MPI_BYTE, c->coordinators[i], BARRIER_TAG, MPI_STATUS_IGNORE, c);
 
          if (error != MPI_SUCCESS) {
             ERROR(1, "IMPI_Barrier: WA receive failed!");
@@ -1066,7 +1066,7 @@ int IMPI_Barrier(MPI_Comm comm)
       }
 
       // ... then bcasts reply.
-      error = messaging_bcast(&buffer, 1, MPI_TYPE_BYTE, c->coordinators[0], c);
+      error = messaging_bcast(&buffer, 1, MPI_BYTE, c->coordinators[0], c);
 
       if (error != MPI_SUCCESS) {
          ERROR(1, "IMPI_Barrier: WA bcast failed!");
@@ -1074,7 +1074,7 @@ int IMPI_Barrier(MPI_Comm comm)
       }
    } else {
       // All other coordinators first send to coordinator 0...
-      error = messaging_send(buffer, 1, MPI_TYPE_BYTE, c->coordinators[0], BARRIER_TAG, MPI_STATUS_IGNORE, c);
+      error = messaging_send(buffer, 1, MPI_BYTE, c->coordinators[0], BARRIER_TAG, MPI_STATUS_IGNORE, c);
 
       if (error != MPI_SUCCESS) {
          ERROR(1, "IMPI_Barrier: WA send failed!");
@@ -1082,7 +1082,7 @@ int IMPI_Barrier(MPI_Comm comm)
       }
 
       // Then wait for reply.
-      error = messaging_bcast_receive(buffer, 1, MPI_TYPE_BYTE, c->coordinators[0], c);
+      error = messaging_bcast_receive(buffer, 1, MPI_BYTE, c->coordinators[0], c);
 
       if (error != MPI_SUCCESS) {
          ERROR(1, "IMPI_Barrier: WA bcast receive failed!");
