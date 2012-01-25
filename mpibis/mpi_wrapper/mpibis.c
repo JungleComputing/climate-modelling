@@ -1073,20 +1073,25 @@ int IMPI_Barrier(MPI_Comm comm)
          return MPI_ERR_INTERN;
       }
    } else {
-      // All other coordinators first send to coordinator 0...
-      error = messaging_send(&buffer, 1, MPI_BYTE, c->coordinators[0], BARRIER_TAG, c);
 
-      if (error != MPI_SUCCESS) {
-         ERROR(1, "IMPI_Barrier: WA send failed!");
-         return MPI_ERR_INTERN;
-      }
+      for (i=1;i<c->cluster_count;i++) {
+         if (c->global_rank == c->coordinators[i]) {
+            // All other coordinators first send to coordinator 0...
+            error = messaging_send(&buffer, 1, MPI_BYTE, c->coordinators[0], BARRIER_TAG, c);
 
-      // Then wait for reply.
-      error = messaging_bcast_receive(&buffer, 1, MPI_BYTE, c->coordinators[0], c);
+            if (error != MPI_SUCCESS) {
+               ERROR(1, "IMPI_Barrier: WA send failed!");
+               return MPI_ERR_INTERN;
+            }
 
-      if (error != MPI_SUCCESS) {
-         ERROR(1, "IMPI_Barrier: WA bcast receive failed!");
-         return MPI_ERR_INTERN;
+            // Then wait for reply.
+            error = messaging_bcast_receive(&buffer, 1, MPI_BYTE, c->coordinators[0], c);
+
+            if (error != MPI_SUCCESS) {
+               ERROR(1, "IMPI_Barrier: WA bcast receive failed!");
+               return MPI_ERR_INTERN;
+            }
+         }
       }
    }
 
