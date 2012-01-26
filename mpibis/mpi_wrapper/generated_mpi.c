@@ -229,11 +229,15 @@ int MPI_Allreduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype dataty
    INFO(0, "MPI_Allreduce","(void *sendbuf=%p, void *recvbuf=%p, int count=%d, MPI_Datatype datatype=%s, MPI_Op op=%s, MPI_Comm comm=%s)", sendbuf, recvbuf, count, type_to_string(datatype), op_to_string(op), comm_to_string(comm));
 #endif // TRACE_CALLS
 
+INFO(1, "JASON### MPI_Allreduce IN:", "%d %d\n", count, *((int*) sendbuf));
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm);
 #else
    int error = PMPI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm);
 #endif // IBIS_INTERCEPT
+
+INFO(1, "JASON### MPI_Allreduce OUT:", "%d %d %d\n", count, *((int*) recvbuf, error));
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
