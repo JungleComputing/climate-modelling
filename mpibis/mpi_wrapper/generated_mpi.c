@@ -237,7 +237,7 @@ INFO(1, "JASON### MPI_Allreduce IN:", "%d %d\n", count, *((int*) sendbuf));
    int error = PMPI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm);
 #endif // IBIS_INTERCEPT
 
-INFO(1, "JASON### MPI_Allreduce OUT:", "%d %d %d\n", count, *((int*) recvbuf, error);
+INFO(1, "JASON### MPI_Allreduce OUT:", "%d %d %d\n", count, *((int*) recvbuf), error);
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
