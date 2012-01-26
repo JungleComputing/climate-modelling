@@ -1549,12 +1549,12 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
      // simply perform an allreduce in local cluster
      inc_communicator_statistics(comm, STATS_ALLREDUCE);
 
-INFO(1, "JASON#### LOCAL MPI_Allreduce\n");
+INFO(1, "JASON#### LOCAL MPI_Allreduce\n", "");
 
      return PMPI_Allreduce(sendbuf, recvbuf, count, datatype, o->op, c->comm);
    }
 
-INFO(1, "JASON#### WA MPI_Allreduce\n");
+INFO(1, "JASON#### WA MPI_Allreduce\n", "");
 
    // We need to perform a WA Allreduce. We do this by performing a reduce
    // to our local cluster coordinator. This result is then broadcast to the
