@@ -165,10 +165,16 @@ char *type_to_string(MPI_Datatype type)
 
 char *op_to_string(MPI_Op o)
 {
-   int len;
+   int len, number;
    char tmp[64];
 
-   len = sprintf(tmp, "<%d>", PMPI_Op_c2f(o));
+#ifdef IBIS_INTERCEPT
+   int number = IMPI_Op_c2f(g);
+#else
+   int number = PMPI_Op_c2f(g);
+#endif
+
+   len = sprintf(tmp, "<%d>", number);
    return copy_to_debug_buf(tmp, len+1);
 }
 
