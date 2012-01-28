@@ -31,10 +31,15 @@ void MAGPIE_MAX(void *invec, void *inoutvec, int *len, MPI_Datatype *type) {
 INFO(2, "MAGPIE_MAX", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
 
   if ( *type == MPI_INT ){
+
+INFO(2, "MAGPIE_MAX ", "PERFORMING MAX!\n");
+
     int *a = (int*)inoutvec;
     int *b = (int*)invec;
-    for (i=0; i < *len; i++)
+    for (i=0; i < *len; i++) {
+      INFO(2, "MAGPIE_MAX ", "MAX(%d, %d) = %d\n", b[i], a[i], MACRO_MAX(b[i],a[i]));
       a[i] = MACRO_MAX(b[i],a[i]);
+    }
     return;
   }
   else if ( *type == MPI_UNSIGNED ){
