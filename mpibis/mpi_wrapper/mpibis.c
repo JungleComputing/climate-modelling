@@ -1624,7 +1624,7 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
       }
    }
 
-  INFO(1, "JASON ALLREDUCE WA", "LOCAL BAST grank=%d lrank=%d count=%d buf[0]=%d\n", c->global_rank, c->local_rank, count, ((int*)recvbuf[0]);
+  INFO(1, "JASON ALLREDUCE WA", "LOCAL BAST grank=%d lrank=%d count=%d buf[0]=%d\n", c->global_rank, c->local_rank, count, ((int*)recvbuf)[0]);
 
    return PMPI_Bcast(recvbuf, count, datatype, 0, c->comm);
 }
