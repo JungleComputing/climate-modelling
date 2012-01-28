@@ -1595,7 +1595,7 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
       for (i=0;i<c->cluster_count;i++) {
          if (c->coordinators[i] == c->global_rank) {
 
-  INFO(1, "JASON ALLREDUCE WA", "WA BAST SEND i=%d grank=%d lrank=%d count=%d buf[0]=%d\n", i, c->global_rank, c->local_rank, count, ((int*)recvbuf[0]);
+  INFO(1, "JASON ALLREDUCE WA", "WA BAST SEND i=%d grank=%d lrank=%d count=%d buf[0]=%d\n", i, c->global_rank, c->local_rank, count, ((int*)recvbuf)[0]);
             error = messaging_bcast(recvbuf, count, datatype, c->global_rank, c);
 
             if (error != MPI_SUCCESS) {
