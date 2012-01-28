@@ -1,3 +1,7 @@
+#include "flags.h"
+
+#ifdef IBIS_INTERCEPT
+
 #include "reduce_ops.h"
 
 typedef struct { 
@@ -1248,4 +1252,4 @@ void MAGPIE_MINLOC(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
   }
 }
 
-
+#endif
