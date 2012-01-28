@@ -1617,9 +1617,14 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
 
   INFO(1, "JASON ALLREDUCE WA", "CALLING REDUCE OP buf[0]=%d revcbuf[0]=%d count=%d\n", ((int *)buffer)[0], ((int *)recvbuf)[0], count);
 
-            (*(o->function))((void*)buffer, recvbuf, &count, &datatype);
+            error = (*(o->function))((void*)buffer, recvbuf, &count, &datatype);
 
-  INFO(1, "JASON ALLREDUCE WA", "RESULT REDUCE OP buf[0]=%d revcbuf[0]=%d count=%d\n", ((int *)buffer)[0], ((int *)recvbuf)[0], count);
+  INFO(1, "JASON ALLREDUCE WA", "RESULT REDUCE OP buf[0]=%d revcbuf[0]=%d count=%d error=%d\n", ((int *)buffer)[0], ((int *)recvbuf)[0], count, error);
+
+            if (error != MPI_SUCCESS) {
+               ERROR(1, "Local root %d failed to perform reduce operation in communicator %d!\n", c->global_rank, c->number);
+               return error;
+            }
          }
       }
    }

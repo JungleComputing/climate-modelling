@@ -22,19 +22,19 @@ static int init_operation(MPI_Op op, MPI_User_function *function, int commute)
 {
    int index = PMPI_Op_c2f(op);
 
-   if (index < 0 || index > MAX_OPERATIONS) { 
+   if (index < 0 || index > MAX_OPERATIONS) {
       IERROR(1, "Failed to initialize operations -- index %d out of bounds!\n", index);
       return MPI_ERR_INTERN;
    }
- 
-   if (ops[index] != NULL) { 
+
+   if (ops[index] != NULL) {
       IERROR(1, "Failed to initialize operations -- index %d already in use!\n", index);
       return MPI_ERR_INTERN;
    }
 
    ops[index] = malloc(sizeof(operation));
 
-   if (ops[index] == NULL) { 
+   if (ops[index] == NULL) {
       IERROR(1, "Failed to initialize operations -- cannot allocate operation %d!\n", index);
       return MPI_ERR_INTERN;
    }
@@ -44,7 +44,7 @@ static int init_operation(MPI_Op op, MPI_User_function *function, int commute)
    ops[index]->index = index;
    ops[index]->op = op;
 
-   if (index >= next_operation) { 
+   if (index >= next_operation) {
       next_operation = index+1;
    }
 
@@ -76,25 +76,25 @@ int init_operations()
 
    error = init_operation(MPI_MAXLOC, MAGPIE_MAXLOC, 1);
    if (error != MPI_SUCCESS) return error;
- 
+
    error = init_operation(MPI_MINLOC, MAGPIE_MINLOC, 1);
    if (error != MPI_SUCCESS) return error;
- 
+
    error = init_operation(MPI_BOR, MAGPIE_BOR, 1);
    if (error != MPI_SUCCESS) return error;
-  
+
    error = init_operation(MPI_BAND, MAGPIE_BAND, 1);
    if (error != MPI_SUCCESS) return error;
-   
+
    error = init_operation(MPI_BXOR, MAGPIE_BXOR, 1);
    if (error != MPI_SUCCESS) return error;
-   
+
    error = init_operation(MPI_LOR, MAGPIE_LOR, 1);
    if (error != MPI_SUCCESS) return error;
-   
+
    error = init_operation(MPI_LAND, MAGPIE_LAND, 1);
    if (error != MPI_SUCCESS) return error;
- 
+
    error = init_operation(MPI_LXOR, MAGPIE_LXOR, 1);
    if (error != MPI_SUCCESS) return error;
 
@@ -131,29 +131,29 @@ void set_operation_ptr(MPI_Op *dst, operation *src)
 operation *create_operation(MPI_User_function *function, int commute)
 {
    int error;
-   MPI_Op op;  
+   MPI_Op op;
    operation *result;
 
-   if (next_operation >= MAX_OPERATIONS) { 
+   if (next_operation >= MAX_OPERATIONS) {
       IERROR(1, "Failed to create operation -- max operations %d reached!\n", MAX_OPERATIONS);
       return NULL;
    }
- 
-   if (ops[next_operation] != NULL) { 
+
+   if (ops[next_operation] != NULL) {
       IERROR(1, "Failed to create operation -- index %d already in use!\n", next_operation);
       return NULL;
    }
 
    error = PMPI_Op_create(function, commute, &op);
 
-   if (error != MPI_SUCCESS) { 
+   if (error != MPI_SUCCESS) {
       ERROR(1, "Failed to create operation -- cannot create MPI operation!\n");
       return NULL;
    }
 
    result = malloc(sizeof(operation));
 
-   if (result == NULL) { 
+   if (result == NULL) {
       IERROR(1, "Failed to create operation -- cannot allocate operation %d!\n", next_operation);
       return NULL;
    }
@@ -172,10 +172,10 @@ void free_operation(operation *op)
 {
    int index = op->index;
 
-   if (ops[index] == NULL) { 
+   if (ops[index] == NULL) {
       return;
    }
-  
+
    PMPI_Op_free(&ops[index]->op);
 
    free(ops[index]);
