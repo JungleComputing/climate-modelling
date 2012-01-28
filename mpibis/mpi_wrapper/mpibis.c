@@ -1548,19 +1548,17 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
    if (comm_is_local(c)) {
      // simply perform an allreduce in local cluster
      inc_communicator_statistics(comm, STATS_ALLREDUCE);
-
-INFO(1, "JASON#### LOCAL MPI_Allreduce\n", "");
-
      return PMPI_Allreduce(sendbuf, recvbuf, count, datatype, o->op, c->comm);
    }
-
-INFO(1, "JASON#### WA MPI_Allreduce\n", "");
 
    // We need to perform a WA Allreduce. We do this by performing a reduce
    // to our local cluster coordinator. This result is then broadcast to the
    // other cluster coordinators, which merge the results locally. The result
    // of this local merge is then broadcast in each local cluster.
    // NOTE: this does assume the operation is commutative!
+
+  INFO(1, "JASON ALLREDUCE WA", "START LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
+                       c->global_rank, c->local_rank, count, ((int *)sendbuf)[0], ((int *)recvbuf)[0]);
 
    error = PMPI_Reduce(sendbuf, recvbuf, count, datatype, o->op, 0, c->comm);
 
@@ -1569,10 +1567,15 @@ INFO(1, "JASON#### WA MPI_Allreduce\n", "");
       return error;
    }
 
+  INFO(1, "JASON ALLREDUCE WA", "RESULT LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
+                       c->global_rank, c->local_rank, count, ((int *)sendbuf)[0], ((int *)recvbuf)[0]);
+
    // The local root shares the result with all other cluster coordinators.
    if (c->local_rank == 0) {
 
-      error = MPI_Type_extent(datatype, &extent);
+  INFO(1, "JASON ALLREDUCE WA", "LOCAL ROOT!\n");
+
+      error = PMPI_Type_extent(datatype, &extent);
 
       if (error != MPI_SUCCESS) {
          ERROR(1, "Failed to retrieve data size for allreduce (in communicator %d)!\n", c->number);
@@ -1591,24 +1594,37 @@ INFO(1, "JASON#### WA MPI_Allreduce\n", "");
       // FIXME: This is a synchronous implementation, which is correct but has crap performance!
       for (i=0;i<c->cluster_count;i++) {
          if (c->coordinators[i] == c->global_rank) {
+
+  INFO(1, "JASON ALLREDUCE WA", "WA BAST SEND i=%d grank=%d lrank=%d count=%d buf[0]=%d\n", i, c->global_rank, c->local_rank, count, ((int*)recvbuf[0]);
             error = messaging_bcast(recvbuf, count, datatype, c->global_rank, c);
 
             if (error != MPI_SUCCESS) {
-               ERROR(1, "Local root %d failed to bcast local allreduce result in communicator %d!\n", c->global_rank, c->number);
+               ERROR(1, "Local root %d failed to bcast local allreduce result in communicator %d error=%d!\n", c->global_rank, c->number, error);
                return error;
             }
          } else {
+
+  INFO(1, "JASON ALLREDUCE WA", "WA BAST RECV i=%d grank=%d lrank=%d count=%d from=%d\n", i, c->global_rank, c->local_rank, count, c->coordinators[i]);
+
             error = messaging_bcast_receive(buffer, count, datatype, c->coordinators[i], c);
+
+  INFO(1, "JASON ALLREDUCE WA", "WA BAST RECEIVED %d\n", buffer[i]);
 
             if (error != MPI_SUCCESS) {
                ERROR(1, "Local root %d failed to bcast local allreduce result in communicator %d!\n", c->global_rank, c->number);
                return error;
             }
 
+  INFO(1, "JASON ALLREDUCE WA", "CALLING REDUCE OP buf[0]=%d revcbuf[0]=%d count=%d\n", ((int *)buffer)[0], ((int *)recvbuf)[0], count);
+
             (*(o->function))((void*)buffer, recvbuf, &count, &datatype);
+
+  INFO(1, "JASON ALLREDUCE WA", "RESULT REDUCE OP buf[0]=%d revcbuf[0]=%d count=%d\n", ((int *)buffer)[0], ((int *)recvbuf)[0], count);
          }
       }
    }
+
+  INFO(1, "JASON ALLREDUCE WA", "LOCAL BAST grank=%d lrank=%d count=%d buf[0]=%d\n", c->global_rank, c->local_rank, count, ((int*)recvbuf[0]);
 
    return PMPI_Bcast(recvbuf, count, datatype, 0, c->comm);
 }
