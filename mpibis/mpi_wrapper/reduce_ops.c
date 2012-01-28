@@ -124,6 +124,9 @@ INFO(2, "MAGPIE_MAX ", "PERFORMING MAX!\n");
   }
 #endif
   else {
+
+INFO(2, "MAGPIE_MAX ", "FAILED TO FIND CORRECT TYPE!\n");
+
     MAGPIE_Op_errno = MPI_ERR_OP;
   }
 }
