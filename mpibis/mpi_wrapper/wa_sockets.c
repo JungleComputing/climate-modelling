@@ -246,7 +246,7 @@ int wa_finalize() {
    // Send a close link opcode before shutting down the socket.
    int tmp = htons(OPCODE_CLOSE_LINK);
 
-   error = wa_sendfully(&tmp, 4);
+   error = wa_sendfully((unsigned char *) &tmp, 4);
 
    if (error != 0) {
       fprintf(stderr, "Failed to close link! %d\n", error);

@@ -363,7 +363,7 @@ fprintf(stderr, "Result of receive: result=%d error=%d\n", result, *error);
       return NULL;
    }
 
-   if (opcode == OPCODE_DATA || opcode == OPCODE_COLLECTIVE_BCAST || opcode == OPCODE_COLLECTIVE_ALLREDUCE) {
+   if (opcode == OPCODE_DATA || opcode == OPCODE_COLLECTIVE_BCAST) {
       return receive_data_message(error);
    }
 
@@ -417,6 +417,7 @@ int messaging_bcast_receive(void *buf, int count, MPI_Datatype datatype, int roo
    return messaging_receive(buf, count, datatype, root, BCAST_TAG, MPI_STATUS_IGNORE, c);
 }
 
+/*
 int messaging_allreduce(void* buf, int count, MPI_Datatype datatype, communicator* c)
 {
    return do_send(OPCODE_COLLECTIVE_ALLREDUCE, buf, count, datatype, 0, ALLREDUCE_TAG, c);
@@ -426,6 +427,7 @@ int messaging_allreduce_receive(void *buf, int count, MPI_Datatype datatype, com
 {
    return messaging_receive(buf, count, datatype, 0, ALLREDUCE_TAG, MPI_STATUS_IGNORE, c);
 }
+*/
 
 /*
 int messaging_probe_receive_request(request *r)

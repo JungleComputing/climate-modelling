@@ -128,8 +128,8 @@ int messaging_receive(void *buf, int count, MPI_Datatype datatype, int source, i
 int messaging_bcast(void* buf, int count, MPI_Datatype datatype, int root, communicator* c);
 int messaging_bcast_receive(void *buf, int count, MPI_Datatype datatype, int root, communicator* c);
 
-int messaging_allreduce(void* buf, int count, MPI_Datatype datatype, communicator* c);
-int messaging_allreduce_receive(void *buf, int count, MPI_Datatype datatype, communicator* c);
+//int messaging_allreduce(void* buf, int count, MPI_Datatype datatype, communicator* c);
+//int messaging_allreduce_receive(void *buf, int count, MPI_Datatype datatype, communicator* c);
 
 // Probe if a message is available.
 int messaging_probe_receive(request *r, int blocking);
