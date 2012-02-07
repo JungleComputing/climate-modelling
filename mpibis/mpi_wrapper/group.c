@@ -439,7 +439,7 @@ int group_range_incl(group *in, int n, int ranges[][3], group **out)
    int i, next, error;
 
    if (in == NULL) {
-      ERROR(1, Group_range_incl got NULL as input!\n");
+      ERROR(1, "Group_range_incl got NULL as input!\n");
       return MPI_ERR_GROUP;
    }
 
