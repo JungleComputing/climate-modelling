@@ -243,17 +243,27 @@ fprintf(stderr, "WA_WAIT_FOR_DATA: Result is %d\n", result);
 int wa_finalize() {
    int error;
 
+   // Send a close link opcode before shutting down the socket.
+   int tmp = htons(OPCODE_CLOSE_LINK);
+
+   error = wa_sendfully(&tmp, 4);
+
+   if (error != 0) {
+      fprintf(stderr, "Failed to close link! %d\n", error);
+      return CONNECT_ERROR_CLOSE_FAILED;
+   }
+
    error = shutdown(socketfd, SHUT_RDWR);
 
-   if (error != 0) { 
-      fprintf(stderr, "Failed to close socket! %d\n", error); 
+   if (error != 0) {
+      fprintf(stderr, "Failed to shutdown socket! %d\n", error);
       return CONNECT_ERROR_CLOSE_FAILED;
    }
 
    error = close(socketfd);
 
-   if (error != 0) { 
-      fprintf(stderr, "Failed to close socket! %d\n", error); 
+   if (error != 0) {
+      fprintf(stderr, "Failed to close socket! %d\n", error);
       return CONNECT_ERROR_CLOSE_FAILED;
    }
 

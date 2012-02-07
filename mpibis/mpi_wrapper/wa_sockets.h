@@ -41,8 +41,11 @@
 #define OPCODE_DUP                        55
 #define OPCODE_DUP_REPLY                  56
 
+#define OPCODE_TERMINATE                  57
+
 #define OPCODE_COLLECTIVE_BCAST           60
-#define OPCODE_COLLECTIVE_ALLREDUCE       61
+
+#define OPCODE_CLOSE_LINK                127
 
 #define BCAST_TAG                         -1
 #define ALLREDUCE_TAG                     -2

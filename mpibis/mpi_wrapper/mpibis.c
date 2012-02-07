@@ -398,7 +398,18 @@ int IMPI_Init(int *argc, char **argv[])
 #define __IMPI_Finalize
 int IMPI_Finalize(void)
 {
+   int error;
+
    print_all_communicator_statistics();
+
+   // We tell the system to shut down by terminating MPI_COMM_WORLD.
+   error = messaging_send_terminate_request(get_communicator(MPI_COMM_WORLD));
+
+   if (error != MPI_SUCCESS) {
+      IERROR(1, "Failed to terminate MPI_COMM_WORLD! (error=%d)", error);
+   }
+
+   wa_finalize();
 
    return PMPI_Finalize();
 }

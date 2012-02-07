@@ -819,6 +819,25 @@ int messaging_send_dup_request(communicator* c)
    return MPI_SUCCESS;
 }
 
+int messaging_send_terminate_request(communicator* c)
+{
+   terminate_request req;
+
+   req.opcode = htonl(OPCODE_TERMINATE);
+   req.comm = htonl(c->number);
+   req.src = htonl(c->global_rank);
+
+   int error = wa_sendfully((unsigned char *) &req, TERMINATE_REQUEST_SIZE);
+
+   if (error != CONNECT_OK) {
+      fprintf(stderr, "ERROR: Failed to send terminate request!\n");
+      return MPI_ERR_INTERN;
+   }
+
+   return MPI_SUCCESS;
+}
+
+
 int messaging_receive_dup_reply(dup_reply *reply)
 {
    // Since operations on communicators are collective operations, we can

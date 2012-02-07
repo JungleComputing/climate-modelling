@@ -41,6 +41,14 @@ typedef struct s_dup_request {
     int src;     // rank in current communicator
 } dup_request;
 
+#define TERMINATE_REQUEST_SIZE (3*sizeof(int))
+
+typedef struct s_terminate_request {
+    int opcode;  // type of message
+    int comm;    // communicator used
+    int src;     // rank in current communicator
+} terminate_request;
+
 // replies
 
 
@@ -112,33 +120,37 @@ struct s_msg_buffer {
     message_buffer *next;       // Next message in queue
 };
 
+// Send and receive messages (to any remote participant).
 int messaging_send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, communicator* c);
 int messaging_receive(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Status *status, communicator* c);
 
+// Broadcast messages (to all cluster coordinators).
 int messaging_bcast(void* buf, int count, MPI_Datatype datatype, int root, communicator* c);
 int messaging_bcast_receive(void *buf, int count, MPI_Datatype datatype, int root, communicator* c);
 
 int messaging_allreduce(void* buf, int count, MPI_Datatype datatype, communicator* c);
 int messaging_allreduce_receive(void *buf, int count, MPI_Datatype datatype, communicator* c);
 
+// Probe if a message is available.
 int messaging_probe_receive(request *r, int blocking);
+
+// Finalize a pending receive request.
 int messaging_finalize_receive(request *r, MPI_Status *status);
 
+// Send and receive functions used to implement an MPI_COMM_SPLIT
 int messaging_send_comm_request(communicator* c, int color, int key);
 int messaging_receive_comm_reply(comm_reply *reply);
 
-
+// Send and receive functions used to implement an MPI_COMM_CREATE
 int messaging_send_group_request(communicator* c, group *g);
 int messaging_receive_group_reply(group_reply *reply);
 
-
+// Send and receive functions used to implement an MPI_COMM_DUP
 int messaging_send_dup_request(communicator* c);
 int messaging_receive_dup_reply(dup_reply *reply);
 
-
-
-//int  messaging_probe_receive_request(request *r);
-//void messaging_complete_receive_request(request *r, MPI_Status *status);
+// Send and receive functions used to implement an MPI_COMM_FREE and MPI_FINALIZE
+int messaging_send_terminate_request(communicator* c);
 
 #endif // IBIS_INTERCEPT
 
