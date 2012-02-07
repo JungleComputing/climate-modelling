@@ -244,7 +244,7 @@ int wa_finalize() {
    int error;
 
    // Send a close link opcode before shutting down the socket.
-   int tmp = htons(OPCODE_CLOSE_LINK);
+   int tmp = htonl(OPCODE_CLOSE_LINK);
 
    error = wa_sendfully((unsigned char *) &tmp, 4);
 
