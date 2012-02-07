@@ -8,5 +8,5 @@ module purge
 module list 
 
 rm -f *.o app.exe
-gcc -Wall app5.c -o app.exe -I$MPI/include -L.. -lmpibis -L$MPI/lib -lmpi -lm
+gcc -Wall app4.c -o app.exe -I$MPI/include -L.. -lmpibis -L$MPI/lib -lmpi -lm
 

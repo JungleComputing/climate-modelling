@@ -32,7 +32,7 @@ INFO(2, "MAGPIE_MAX", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0],
 
   if ( *type == MPI_INTEGER ){
 
-INFO(2, "MAGPIE_MAX ", "PERFORMING MPI_INTEGER MAX!\n");
+//INFO(2, "MAGPIE_MAX ", "PERFORMING MPI_INTEGER MAX!\n");
 
     int *a = (int*)inoutvec;
     int *b = (int*)invec;
@@ -43,7 +43,7 @@ INFO(2, "MAGPIE_MAX ", "PERFORMING MPI_INTEGER MAX!\n");
     return;
   } else if ( *type == MPI_INT ){
 
-INFO(2, "MAGPIE_MAX ", "PERFORMING MPI_INT MAX!\n");
+//INFO(2, "MAGPIE_MAX ", "PERFORMING MPI_INT MAX!\n");
 
     int *a = (int*)inoutvec;
     int *b = (int*)invec;

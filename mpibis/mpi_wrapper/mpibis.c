@@ -525,13 +525,13 @@ int IMPI_Isend(void *buf, int count, MPI_Datatype datatype,
    inc_communicator_statistics(comm, STATS_ISEND);
 
    if (local == 1) {
-      DEBUG(1, "Performing local isend!");
+//      DEBUG(1, "Performing local isend!");
       error = PMPI_Isend(buf, count, datatype, dest, tag, c->comm, &(r->req));
-      DEBUG(1, "Local isend done %d %p!", error, (void *) r->req);
+//      DEBUG(1, "Local isend done %d %p!", error, (void *) r->req);
    } else {
-      DEBUG(1, "Performing WA isend !");
+//      DEBUG(1, "Performing WA isend !");
       error = messaging_send(buf, count, datatype, dest, tag, c);
-      DEBUG(1, "WA isend done %d %p!", error, (void *) r->req);
+//      DEBUG(1, "WA isend done %d %p!", error, (void *) r->req);
    }
 
    if (error != MPI_SUCCESS) {
@@ -726,14 +726,14 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
 
    if (r == NULL) {
 
-fprintf(stderr, "PROBE_REQUEST: request=NULL, blocking=%d\n", blocking);
+//fprintf(stderr, "PROBE_REQUEST: request=NULL, blocking=%d\n", blocking);
 
       clear_status(status);
       *flag = 1;
       return MPI_SUCCESS;
    }
 
-fprintf(stderr, "PROBE_REQUEST: request=(index=%d, flags=%d, srcdest=%d, count=%d, tag=%d) blocking=%d\n", r->index, r->flags, r->source_or_dest, r->count, r->tag, blocking);
+//fprintf(stderr, "PROBE_REQUEST: request=(index=%d, flags=%d, srcdest=%d, count=%d, tag=%d) blocking=%d\n", r->index, r->flags, r->source_or_dest, r->count, r->tag, blocking);
 
    // We don't support persistent request yet!
    if (request_persistent(r)) {
@@ -747,7 +747,7 @@ fprintf(stderr, "PROBE_REQUEST: request=(index=%d, flags=%d, srcdest=%d, count=%
    } else if (request_local(r)) {
       // Pure local request, so we ask MPI.
 
-fprintf(stderr, "PROBE_REQUEST: request=LOCAL blocking=%d\n", blocking);
+//fprintf(stderr, "PROBE_REQUEST: request=LOCAL blocking=%d\n", blocking);
 
       if (blocking) {
          r->error = PMPI_Wait(&(r->req), status);
@@ -758,7 +758,7 @@ fprintf(stderr, "PROBE_REQUEST: request=LOCAL blocking=%d\n", blocking);
 
    } else if (request_send(r)) {
 
-fprintf(stderr, "PROBE_REQUEST: request=WA_SEND blocking=%d\n", blocking);
+//fprintf(stderr, "PROBE_REQUEST: request=WA_SEND blocking=%d\n", blocking);
 
       // Non-persistent WA send should already have finished.
       status->MPI_SOURCE = r->source_or_dest;
@@ -769,7 +769,7 @@ fprintf(stderr, "PROBE_REQUEST: request=WA_SEND blocking=%d\n", blocking);
 
    } else if (r->source_or_dest != MPI_ANY_SOURCE) {
 
-fprintf(stderr, "PROBE_REQUEST: request=WA_RECEIVE blocking=%d\n", blocking);
+//fprintf(stderr, "PROBE_REQUEST: request=WA_RECEIVE blocking=%d\n", blocking);
 
       // It was a non-persistent remote receive request, so probe the
       // WA link (will do nothing if the request was already completed).
@@ -788,7 +788,7 @@ fprintf(stderr, "PROBE_REQUEST: request=WA_RECEIVE blocking=%d\n", blocking);
 
    } else {
 
-fprintf(stderr, "PROBE_REQUEST: request=WA_RECEIVE_ANY blocking=%d\n", blocking);
+//fprintf(stderr, "PROBE_REQUEST: request=WA_RECEIVE_ANY blocking=%d\n", blocking);
 
       // It was a non-persistent mixed receive request, so we must probe
       // the local network and the WA link.
@@ -803,14 +803,14 @@ fprintf(stderr, "PROBE_REQUEST: request=WA_RECEIVE_ANY blocking=%d\n", blocking)
 
          if (*flag) {
 
-fprintf(stderr, "PROBE_REQUEST: request=WA_RECEIVE performing LOCAL receive\n");
+//fprintf(stderr, "PROBE_REQUEST: request=WA_RECEIVE performing LOCAL receive\n");
             // A message is available locally, so receiving it!
             r->error = PMPI_Recv(r->buf, r->count, r->type, MPI_ANY_SOURCE, r->tag, r->c->comm, status);
             r->flags |= REQUEST_FLAG_COMPLETED;
 
          } else {
 
-fprintf(stderr, "PROBE_REQUEST: request=WA_RECEIVE performing WA probe\n");
+//fprintf(stderr, "PROBE_REQUEST: request=WA_RECEIVE performing WA probe\n");
 
             // No local message was found (yet), so try the WA link.
             r->error = messaging_probe_receive(r, blocking);
@@ -1045,7 +1045,12 @@ int IMPI_Barrier(MPI_Comm comm)
    // 3) local barrier, to ensure all local processes wait until their coordinator
    //    has finished the WA barrier.
 
+INFO(1, "IMPI_Barrier WA BARRIER", "grank=%d lrank=%d coord[0]=%d", c->global_rank, c->local_rank, c->coordinators[0]);
+
    // Perform the first local barrier
+
+INFO(1, "IMPI_Barrier WA BARRIER", "LOCAL BARRIER(1)");
+
    error = PMPI_Barrier(c->comm);
 
    if (error != MPI_SUCCESS) {
@@ -1055,8 +1060,14 @@ int IMPI_Barrier(MPI_Comm comm)
 
    // Perform the WA barrier (coordinators only)
    if (c->global_rank == c->coordinators[0]) {
+
+INFO(1, "IMPI_Barrier WA BARRIER", "I am coord[0]");
+
       // Coordinator 0 first receives from all others....
       for (i=1;i<c->cluster_count;i++) {
+
+INFO(1, "IMPI_Barrier WA BARRIER", "Receiving from coord[i]=%d", c->coordinators[i]);
+
          error = messaging_receive(&buffer, 1, MPI_BYTE, c->coordinators[i], BARRIER_TAG, MPI_STATUS_IGNORE, c);
 
          if (error != MPI_SUCCESS) {
@@ -1065,6 +1076,8 @@ int IMPI_Barrier(MPI_Comm comm)
          }
       }
 
+INFO(1, "IMPI_Barrier WA BARRIER", "Bcast result from coord[0]");
+
       // ... then bcasts reply.
       error = messaging_bcast(&buffer, 1, MPI_BYTE, c->coordinators[0], c);
 
@@ -1072,11 +1085,18 @@ int IMPI_Barrier(MPI_Comm comm)
          ERROR(1, "IMPI_Barrier: WA bcast failed!");
          return MPI_ERR_INTERN;
       }
+
    } else {
 
       for (i=1;i<c->cluster_count;i++) {
          if (c->global_rank == c->coordinators[i]) {
+
+INFO(1, "IMPI_Barrier WA BARRIER", "I am coord[%d]=%d", i, c->coordinators[i]);
+
             // All other coordinators first send to coordinator 0...
+
+INFO(1, "IMPI_Barrier WA BARRIER", "Sending to coord[0]");
+
             error = messaging_send(&buffer, 1, MPI_BYTE, c->coordinators[0], BARRIER_TAG, c);
 
             if (error != MPI_SUCCESS) {
@@ -1084,16 +1104,20 @@ int IMPI_Barrier(MPI_Comm comm)
                return MPI_ERR_INTERN;
             }
 
+INFO(1, "IMPI_Barrier WA BARRIER", "Receiving BCAST");
+
             // Then wait for reply.
             error = messaging_bcast_receive(&buffer, 1, MPI_BYTE, c->coordinators[0], c);
 
             if (error != MPI_SUCCESS) {
-               ERROR(1, "IMPI_Barrier: WA bcast receive failed!");
+               ERROR(1, "IMPI_Barrier: WA bcast receive failed (error=%d)!", error);
                return MPI_ERR_INTERN;
             }
          }
       }
    }
+
+INFO(1, "IMPI_Barrier WA BARRIER", "LOCAL BARRIER(2)");
 
    // Perform the second local barrier
    error = PMPI_Barrier(c->comm);
@@ -1102,6 +1126,9 @@ int IMPI_Barrier(MPI_Comm comm)
       ERROR(1, "IMPI_Barrier: local barrier failed! (2)");
       return MPI_ERR_INTERN;
    }
+
+INFO(1, "IMPI_Barrier WA BARRIER", "DONE!");
+
 
    return MPI_SUCCESS;
 }
@@ -1557,7 +1584,7 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
    // of this local merge is then broadcast in each local cluster.
    // NOTE: this does assume the operation is commutative!
 
-  INFO(1, "JASON ALLREDUCE WA", "START LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
+   INFO(1, "JASON ALLREDUCE WA", "START LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
                        c->global_rank, c->local_rank, count, ((int *)sendbuf)[0], ((int *)recvbuf)[0]);
 
    error = PMPI_Reduce(sendbuf, recvbuf, count, datatype, o->op, 0, c->comm);
@@ -1567,13 +1594,13 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
       return error;
    }
 
-  INFO(1, "JASON ALLREDUCE WA", "RESULT LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
-                       c->global_rank, c->local_rank, count, ((int *)sendbuf)[0], ((int *)recvbuf)[0]);
+//  INFO(1, "JASON ALLREDUCE WA", "RESULT LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
+//                       c->global_rank, c->local_rank, count, ((int *)sendbuf)[0], ((int *)recvbuf)[0]);
 
    // The local root shares the result with all other cluster coordinators.
    if (c->local_rank == 0) {
 
-  INFO(1, "JASON ALLREDUCE WA", "LOCAL ROOT!\n");
+//  INFO(1, "JASON ALLREDUCE WA", "LOCAL ROOT!\n");
 
       error = PMPI_Type_extent(datatype, &extent);
 
@@ -1589,13 +1616,13 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
          return MPI_ERR_INTERN;
       }
 
-  INFO(1, "JASON ALLREDUCE WA", "FIXME: WA BCAST with CRAP performance!!\n");
+//  INFO(1, "JASON ALLREDUCE WA", "FIXME: WA BCAST with CRAP performance!!\n");
 
       // FIXME: This is a synchronous implementation, which is correct but has crap performance!
       for (i=0;i<c->cluster_count;i++) {
          if (c->coordinators[i] == c->global_rank) {
 
-  INFO(1, "JASON ALLREDUCE WA", "WA BAST SEND i=%d grank=%d lrank=%d count=%d buf[0]=%d\n", i, c->global_rank, c->local_rank, count, ((int*)recvbuf)[0]);
+//  INFO(1, "JASON ALLREDUCE WA", "WA BAST SEND i=%d grank=%d lrank=%d count=%d buf[0]=%d\n", i, c->global_rank, c->local_rank, count, ((int*)recvbuf)[0]);
             error = messaging_bcast(recvbuf, count, datatype, c->global_rank, c);
 
             if (error != MPI_SUCCESS) {
@@ -1604,27 +1631,27 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
             }
          } else {
 
-  INFO(1, "JASON ALLREDUCE WA", "WA BAST RECV i=%d grank=%d lrank=%d count=%d from=%d\n", i, c->global_rank, c->local_rank, count, c->coordinators[i]);
+//  INFO(1, "JASON ALLREDUCE WA", "WA BAST RECV i=%d grank=%d lrank=%d count=%d from=%d\n", i, c->global_rank, c->local_rank, count, c->coordinators[i]);
 
             error = messaging_bcast_receive(buffer, count, datatype, c->coordinators[i], c);
 
-  INFO(1, "JASON ALLREDUCE WA", "WA BAST RECEIVED %d\n", buffer[i]);
+//  INFO(1, "JASON ALLREDUCE WA", "WA BAST RECEIVED %d\n", buffer[i]);
 
             if (error != MPI_SUCCESS) {
                ERROR(1, "Local root %d failed to bcast local allreduce result in communicator %d!\n", c->global_rank, c->number);
                return error;
             }
 
-  INFO(1, "JASON ALLREDUCE WA", "CALLING REDUCE OP buf[0]=%d revcbuf[0]=%d count=%d\n", ((int *)buffer)[0], ((int *)recvbuf)[0], count);
+//  INFO(1, "JASON ALLREDUCE WA", "CALLING REDUCE OP buf[0]=%d revcbuf[0]=%d count=%d\n", ((int *)buffer)[0], ((int *)recvbuf)[0], count);
 
             (*(o->function))((void*)buffer, recvbuf, &count, &datatype);
 
-  INFO(1, "JASON ALLREDUCE WA", "RESULT REDUCE OP buf[0]=%d revcbuf[0]=%d count=%d\n", ((int *)buffer)[0], ((int *)recvbuf)[0], count);
+//  INFO(1, "JASON ALLREDUCE WA", "RESULT REDUCE OP buf[0]=%d revcbuf[0]=%d count=%d\n", ((int *)buffer)[0], ((int *)recvbuf)[0], count);
          }
       }
    }
 
-  INFO(1, "JASON ALLREDUCE WA", "LOCAL BAST grank=%d lrank=%d count=%d buf[0]=%d\n", c->global_rank, c->local_rank, count, ((int*)recvbuf)[0]);
+//  INFO(1, "JASON ALLREDUCE WA", "LOCAL BAST grank=%d lrank=%d count=%d buf[0]=%d\n", c->global_rank, c->local_rank, count, ((int*)recvbuf)[0]);
 
    return PMPI_Bcast(recvbuf, count, datatype, 0, c->comm);
 }
@@ -1715,7 +1742,7 @@ int IMPI_Comm_size(MPI_Comm comm, int *size)
       return MPI_ERR_COMM;
    }
 
-   INFO(1, "MPI_Comm_size", "Retrieve size from %d: local(%d %d) | global(%d %d)", c->number, c->local_rank, c->local_size, c->global_rank, c->global_size);
+//   INFO(1, "MPI_Comm_size", "Retrieve size from %d: local(%d %d) | global(%d %d)", c->number, c->local_rank, c->local_size, c->global_rank, c->global_size);
 
    *size = c->global_size;
 
@@ -1732,7 +1759,7 @@ int IMPI_Comm_rank(MPI_Comm comm, int *rank)
       return MPI_ERR_COMM;
    }
 
-   INFO(1, "MPI_Comm_rank", "Retrieve rank from %d: local(%d %d) | global(%d %d)", c->number, c->local_rank, c->local_size, c->global_rank, c->global_size);
+//   INFO(1, "MPI_Comm_rank", "Retrieve rank from %d: local(%d %d) | global(%d %d)", c->number, c->local_rank, c->local_size, c->global_rank, c->global_size);
 
    *rank = c->global_rank;
 

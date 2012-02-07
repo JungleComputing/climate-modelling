@@ -279,7 +279,7 @@ int rank_is_local(communicator *c, int rank, int *result)
 
    *result = (GET_CLUSTER_RANK(c->members[rank]) == cluster_rank);
 
-fprintf(stderr, "   is_local %d = %d\n", rank, *result);
+//fprintf(stderr, "   is_local %d = %d\n", rank, *result);
 
    return MPI_SUCCESS;
 }
@@ -297,8 +297,8 @@ int comm_is_self(communicator* c)
 int comm_is_local(communicator* c)
 {
    int result = ((c->flags & COMM_FLAG_LOCAL) != 0) && ((c->flags & COMM_FLAG_REMOTE) == 0);
-   fprintf(stderr, "   JASON: comm_is_local: comm: %d local: %d remote: %d -> result: %d \n", 
-	c->number, (c->flags & COMM_FLAG_LOCAL), (c->flags & COMM_FLAG_REMOTE), result);
+//   fprintf(stderr, "   JASON: comm_is_local: comm: %d local: %d remote: %d -> result: %d \n", 
+//	c->number, (c->flags & COMM_FLAG_LOCAL), (c->flags & COMM_FLAG_REMOTE), result);
    return result;
 }
 

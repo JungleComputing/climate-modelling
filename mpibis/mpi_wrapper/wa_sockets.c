@@ -79,7 +79,7 @@ fprintf(stderr, "Sendfully failed! (%s)\n", strerror(errno));
       }
    }
 
-fprintf(stderr, "Sendfully send %lu bytes!\n", len);
+//fprintf(stderr, "Sendfully send %lu bytes!\n", len);
 
    return CONNECT_OK;
 }
@@ -91,7 +91,7 @@ int wa_receivefully(unsigned char *buffer, size_t len)
 
    while (r < len) {
 
-fprintf(stderr, "wa_receivefully %lu-%lu\n", len, r);
+//fprintf(stderr, "wa_receivefully %lu-%lu\n", len, r);
 
       tmp = read(socketfd, buffer+r, len-r);
 
@@ -99,7 +99,7 @@ fprintf(stderr, "wa_receivefully %lu-%lu\n", len, r);
 fprintf(stderr, "wa_receivefully failed! (%s)\n", strerror(errno));
          return CONNECT_ERROR_RECEIVE_FAILED;
       } else { 
-fprintf(stderr, "wa_receivefully received %lu\n", tmp);
+//fprintf(stderr, "wa_receivefully received %lu\n", tmp);
          r += tmp;
       }
    }
@@ -229,7 +229,7 @@ fprintf(stderr, "WA_WAIT_FOR_DATA: Waiting for data to appear on socket (blockin
       timeout.tv_usec = 0;
       result = select(max_sd + 1, &select_set, NULL, NULL, &timeout);
    } else {
-      timeout.tv_sec  = 60;
+      timeout.tv_sec  = 600;
       timeout.tv_usec = 0;
       result = select(max_sd + 1, &select_set, NULL, NULL, &timeout);
    }

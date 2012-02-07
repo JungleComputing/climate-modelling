@@ -79,14 +79,14 @@ request *create_request(int flags, void *buf, int count, MPI_Datatype datatype, 
 void free_request(request *r)
 {
 
-fprintf(stderr, "   DEBUG: Free request %p\n", r);
+//fprintf(stderr, "   DEBUG: Free request %p\n", r);
 
    if (r != NULL) {
 
-fprintf(stderr, "   DEBUG: Free request with index %d\n", r->index);
+//fprintf(stderr, "   DEBUG: Free request with index %d\n", r->index);
 
       if (r->req != MPI_REQUEST_NULL) {
-fprintf(stderr, "   DEBUG: MPI request also freed!\n");
+//fprintf(stderr, "   DEBUG: MPI request also freed!\n");
           PMPI_Request_free(&(r->req));
       }
 

@@ -5997,7 +5997,7 @@ double MPI_Wtime( )
 MPI_Comm MPI_Comm_f2c(MPI_Fint comm)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Comm_f2c", "(comm=%d)", comm);
+//   INFO(0, "MPI_Comm_f2c", "(comm=%d)", comm);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6011,7 +6011,7 @@ MPI_Comm MPI_Comm_f2c(MPI_Fint comm)
 MPI_Fint MPI_Comm_c2f(MPI_Comm comm)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Comm_c2f", "(comm=%p)", (void *)comm);
+//   INFO(0, "MPI_Comm_c2f", "(comm=%p)", (void *)comm);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6025,7 +6025,7 @@ MPI_Fint MPI_Comm_c2f(MPI_Comm comm)
 MPI_Group MPI_Group_f2c(MPI_Fint g)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Group_f2c", "(group=%d)", g);
+//   INFO(0, "MPI_Group_f2c", "(group=%d)", g);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6038,7 +6038,7 @@ MPI_Group MPI_Group_f2c(MPI_Fint g)
 MPI_Fint MPI_Group_c2f(MPI_Group g)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Group_c2f", "(group=%p)", (void *)g);
+//   INFO(0, "MPI_Group_c2f", "(group=%p)", (void *)g);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6052,7 +6052,7 @@ MPI_Fint MPI_Group_c2f(MPI_Group g)
 MPI_Request MPI_Request_f2c(MPI_Fint request)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Request_f2c", "(request=%d)", request);
+//   INFO(0, "MPI_Request_f2c", "(request=%d)", request);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6066,7 +6066,7 @@ MPI_Request MPI_Request_f2c(MPI_Fint request)
 MPI_Fint MPI_Request_c2f(MPI_Request request)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Request_c2f", "(request=%p)", (void *)request);
+//   INFO(0, "MPI_Request_c2f", "(request=%p)", (void *)request);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6080,7 +6080,7 @@ MPI_Fint MPI_Request_c2f(MPI_Request request)
 MPI_Info MPI_Info_f2c(MPI_Fint info)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Info_f2c", "(info=%d)", info);
+//   INFO(0, "MPI_Info_f2c", "(info=%d)", info);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6094,7 +6094,7 @@ MPI_Info MPI_Info_f2c(MPI_Fint info)
 MPI_Fint MPI_Info_c2f(MPI_Info info)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Info_c2f", "(info=%p)", (void *)info);
+//   INFO(0, "MPI_Info_c2f", "(info=%p)", (void *)info);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6108,7 +6108,7 @@ MPI_Fint MPI_Info_c2f(MPI_Info info)
 MPI_File MPI_File_f2c(MPI_Fint file)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_File_f2c", "(file=%d)", file);
+//   INFO(0, "MPI_File_f2c", "(file=%d)", file);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6122,7 +6122,7 @@ MPI_File MPI_File_f2c(MPI_Fint file)
 MPI_Fint MPI_File_c2f(MPI_File file)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_File_c2f", "(file=%p)", (void *)file);
+//   INFO(0, "MPI_File_c2f", "(file=%p)", (void *)file);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6136,7 +6136,7 @@ MPI_Fint MPI_File_c2f(MPI_File file)
 MPI_Op MPI_Op_f2c(MPI_Fint op)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Op_f2c", "(op=%d)", op);
+//   INFO(0, "MPI_Op_f2c", "(op=%d)", op);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6150,7 +6150,7 @@ MPI_Op MPI_Op_f2c(MPI_Fint op)
 MPI_Fint MPI_Op_c2f(MPI_Op op)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Op_c2f", "(op=%p)", (void *)op);
+//   INFO(0, "MPI_Op_c2f", "(op=%p)", (void *)op);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6164,7 +6164,7 @@ MPI_Fint MPI_Op_c2f(MPI_Op op)
 MPI_Win MPI_Win_f2c(MPI_Fint Win)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Win_f2c", "(win=%d)", Win);
+//   INFO(0, "MPI_Win_f2c", "(win=%d)", Win);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6178,7 +6178,7 @@ MPI_Win MPI_Win_f2c(MPI_Fint Win)
 MPI_Fint MPI_Win_c2f(MPI_Win Win)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Win_c2f", "(win=%p)", (void *)Win);
+//   INFO(0, "MPI_Win_c2f", "(win=%p)", (void *)Win);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6220,7 +6220,7 @@ MPI_Fint MPI_Status_c2f(MPI_Status Status)
 MPI_Errhandler MPI_Errhandler_f2c(MPI_Fint Errhandler)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Errhandler_f2c", "(errhandler=%d)", Errhandler);
+//   INFO(0, "MPI_Errhandler_f2c", "(errhandler=%d)", Errhandler);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6234,7 +6234,7 @@ MPI_Errhandler MPI_Errhandler_f2c(MPI_Fint Errhandler)
 MPI_Fint MPI_Errhandler_c2f(MPI_Errhandler Errhandler)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Errhandler_c2f", "(errhandler=%p)", (void *)Errhandler);
+//   INFO(0, "MPI_Errhandler_c2f", "(errhandler=%p)", (void *)Errhandler);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6248,7 +6248,7 @@ MPI_Fint MPI_Errhandler_c2f(MPI_Errhandler Errhandler)
 MPI_Datatype MPI_Type_f2c(MPI_Fint Type)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Type_f2c", "(type=%d)", Type);
+//   INFO(0, "MPI_Type_f2c", "(type=%d)", Type);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
@@ -6262,7 +6262,7 @@ MPI_Datatype MPI_Type_f2c(MPI_Fint Type)
 MPI_Fint MPI_Type_c2f(MPI_Datatype Type)
 {
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Type_c2f", "(type=%p)", (void *)Type);
+//   INFO(0, "MPI_Type_c2f", "(type=%p)", (void *)Type);
 #endif // TRACE_CALLS
 
 #ifdef IBIS_INTERCEPT
