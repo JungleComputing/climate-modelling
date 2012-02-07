@@ -448,7 +448,7 @@ public class Communicator {
     }
 
     public void terminate() {
-        Logging.println("Terminating communicator " + communicator + "\n" + printStatistics());
+        Logging.println("Terminating communicator " + communicator + ": " + printStatistics());
     }
     
     private void processMessages() {
@@ -581,13 +581,11 @@ public class Communicator {
     
     private String printStatistics() {         
 
-        StringBuilder sb = new StringBuilder("Communicator " + communicator + " statistics:\n");
-        sb.append("   size   : " + size);
-        sb.append("   data   : " + dataMessages + " / " + dataBytes + "\n");
-        sb.append("   bcast  : " + bcastMessages + " / " + bcastBytes + "\n");
-        sb.append("   commIn : " + commMessages + " / " + commBytes + "\n");
-        sb.append("   commOut: " + commReplies + " / " + commReplyBytes + "\n");
-        
+        StringBuilder sb = new StringBuilder("size: " + size);
+        sb.append(" data: " + dataMessages + " / " + dataBytes);
+        sb.append(" bcast: " + bcastMessages + " / " + bcastBytes);
+        sb.append(" commIn: " + commMessages + " / " + commBytes);
+        sb.append(" commOut: " + commReplies + " / " + commReplyBytes);        
         return sb.toString();
     }
 }

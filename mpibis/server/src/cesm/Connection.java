@@ -278,10 +278,10 @@ public class Connection extends Thread implements Protocol {
         
         StringBuilder sb = new StringBuilder();
 
-        sb.append(pidAsString + " " + localRank + " " + localSize + " " + 
-                  clusterName + " " + clusterRank + " " + clusterSize + " " + 
-                  messagesReceived + " " + messagesSend + " " + 
-                  bytesReceived + " " + bytesSend);
+        sb.append(pidAsString + " local: " + localRank + " / " + localSize + " " + 
+                  "cluster: " + clusterName + " / " + clusterRank + " / " + clusterSize + " " + 
+                  "messages i/o: " + messagesReceived + " / " + messagesSend + " " + 
+                  "bytes i/o: " + bytesReceived + " / " + bytesSend);
         
         return sb.toString();
     }
