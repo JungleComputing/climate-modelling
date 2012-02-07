@@ -87,13 +87,13 @@ public class Communicator {
         if (SANITY) { 
             // Make sure the processes array doesn't contain any holes!
             if (processes == null) { 
-                System.out.println("ERROR: processes array null at communicator creation!");
+                Logging.println("ERROR: processes array null at communicator creation!");
                 throw new IllegalArgumentException("Processes array null at communicator creation");
             }
            
             for (int i=0;i<processes.length;i++) { 
                 if (processes[i] == null) { 
-                    System.out.println("ERROR: processes array entry " + i + " null at communicator creation!");
+                    Logging.println("ERROR: processes array entry " + i + " null at communicator creation!");
                     throw new IllegalArgumentException("Processes array entry " + i + " null at communicator creation");
                 }
             } 
@@ -152,7 +152,7 @@ public class Communicator {
     private int generateFlags(Connection [] procs) {
 
         if (procs == null || procs.length == 0) {
-            System.err.println("INTERNAL ERROR: generateFlags called for empty list!");
+            Logging.error("generateFlags called for empty list!");
             return 0;
         }
 
@@ -170,7 +170,7 @@ public class Communicator {
     private int [] generateMembers(Connection [] procs) {
 
         if (procs == null || procs.length == 0) {
-            System.err.println("INTERNAL ERROR: generateMembers called for empty list!");
+            Logging.error("generateMembers called for empty list!");
             return new int[0];
         }
 
@@ -215,7 +215,7 @@ public class Communicator {
             LinkedList<CommMessage> l = tmp.get(color);
 
             if (l == null || l.isEmpty()) {
-                System.err.println("INTERNAL ERROR: Split created empty list!");
+                Logging.error("Split created empty list!");
             } else {
                 // Create a new communicator, provided the color >= 0 (color -1 is used for non-participating processes).
                 int size = l.size();
@@ -322,7 +322,7 @@ public class Communicator {
     
     private void group() {
 
-        System.out.println("Creating new group from communicator " + communicator);
+        Logging.println("Creating new group from communicator " + communicator);
 
         int [] group = ((GroupMessage) messages[0]).pids;
 
@@ -330,14 +330,14 @@ public class Communicator {
             // Sanity check: all group messages should contain the same ranks array.
             for (int i=1;i<messages.length;i++) {
                 if (!Arrays.equals(group, ((GroupMessage) messages[i]).pids)) {
-                    System.out.println("ERROR: collective group creation does not have matching parameters! "
+                    Logging.println("ERROR: collective group creation does not have matching parameters! "
                             + Arrays.toString(group) + " != " + Arrays.toString(((GroupMessage) messages[i]).pids));
                     return; // FIXME: This return will hang the program!
                 }
             }
         }
 
-        System.out.println("   processes(" + group.length + "): " + printPIDs(group));
+        Logging.println("   processes(" + group.length + "): " + printPIDs(group));
 
         // We gather all connections to the participating machines, and save all connections
         // to the machines that do not participate.
@@ -357,7 +357,7 @@ public class Communicator {
 
         int number = com.getNumber();
                      
-        System.out.println("   new communicator: " + number);
+        Logging.println("   new communicator: " + number);
 
         // Next, we send a reply to all participants, providing them with the new virtual communicator, its size,
         // and their new rank.
@@ -365,14 +365,14 @@ public class Communicator {
         // Generate the flags needed by the virtual communicator.
         int flags = generateFlags(used);
 
-        System.out.println("   flags: " + flags);
+        Logging.println("   flags: " + flags);
 
         // Generate a correct members array for this cluster.
         int [] members = generateMembers(used);
         int [] coordinators = com.getCoordinatorRanks();
         int [] clusterSizes = com.getClusterSizes();
         
-        System.out.println("   group reply: " + number + " " + flags + " " 
+        Logging.println("   group reply: " + number + " " + flags + " " 
                 + coordinators.length + " " + Arrays.toString(coordinators) 
                 + " " + Arrays.toString(clusterSizes)
                 + members.length + " " + flags + " " + printPIDs(members));
@@ -391,7 +391,7 @@ public class Communicator {
             // Add the cluster to the set of participants.
             participatingCluster.add(name);
             
-            System.out.println("        sending group info to " + j + " " + printPID(c.pid) + " at " + name);
+            Logging.println("        sending group info to " + j + " " + printPID(c.pid) + " at " + name);
             
             GroupReply reply = new GroupReply(communicator, number, j, members.length, coordinators.length, flags, 
                     coordinators, clusterSizes, members); 
@@ -413,7 +413,7 @@ public class Communicator {
                 String name = c.getClusterName();
                 boolean participant = participatingCluster.contains(name);
             
-                System.out.println("        sending participant info to " + j++ + " " + printPID(c.pid) + " at " + name 
+                Logging.println("        sending participant info to " + j++ + " " + printPID(c.pid) + " at " + name 
                         + "(" + participant + ")");
                 
                 
@@ -429,12 +429,12 @@ public class Communicator {
 
     private void dup() {
 
-        System.out.println("Creating dup of communicator " + communicator);
+        Logging.println("Creating dup of communicator " + communicator);
 
         // We generate a new 'virtual' communicator.
         int number = parent.createCommunicator(processes).getNumber();
 
-        System.out.println("   dup communicator: " + communicator + " -> " + number);
+        Logging.println("   dup communicator: " + communicator + " -> " + number);
 
         // Next, we send a reply to all participants, providing them with the new virtual communicator.
         DupReply reply = new DupReply(communicator, number);
@@ -448,7 +448,7 @@ public class Communicator {
     }
 
     public void terminate() {
-        System.out.println("Terminating communicator " + communicator + "\n" + printStatistics());
+        Logging.println("Terminating communicator " + communicator + "\n" + printStatistics());
     }
     
     private void processMessages() {
@@ -459,7 +459,7 @@ public class Communicator {
             // Sanity check: see if all opcodes match
             for (int i=1;i<messages.length;i++) {
                 if (messages[i].opcode != opcode) {
-                    System.out.println("ERROR: opcode mismatch in collective communicator operation! " + opcode + " != " + messages[1].opcode);
+                    Logging.error("opcode mismatch in collective communicator operation! " + opcode + " != " + messages[1].opcode);
                     return; //  FIXME: This return will hang the program!
                 }
             }
@@ -485,7 +485,7 @@ public class Communicator {
 
         
         default:
-            System.out.println("ERROR: unknown opcode collective communicator operation! " + opcode);
+            Logging.error("unknown opcode collective communicator operation! " + opcode);
             return; // FIXME: This return will hang the program!
         }
     }
@@ -494,8 +494,7 @@ public class Communicator {
 
         // First check the message is legal
         if (m.source < 0 || m.source >= size) {
-            System.err.println("ERROR: Unknown rank " + m.source +
-                    " for operation on comm " + communicator);
+            Logging.error("Unknown rank " + m.source + " for operation on comm " + communicator);
         }
 
         commMessages++;
@@ -521,8 +520,7 @@ public class Communicator {
         
         // Simply enqueue the message at the destination
         if (m.dest > processes.length) {
-            System.err.println("ERROR: Unable to deliver message to " + m.dest
-                    + " on comm " + communicator);
+            Logging.error("Unable to deliver message to " + m.dest + " on comm " + communicator);
             return;
         }
 
@@ -541,7 +539,7 @@ public class Communicator {
         Connection source = processes[m.dest]; // pids.get(m.dest);
         
         if (source == null) {
-            System.out.println("ERROR: bcast target " + m.dest + " not found! -- DROPPING MESSAGE!!");
+            Logging.println("ERROR: bcast target " + m.dest + " not found! -- DROPPING MESSAGE!!");
             return;
         }
         
@@ -550,10 +548,10 @@ public class Communicator {
             Connection c = processes[coordinatorRanks[i]];
             
             if (c.clusterRank != source.clusterRank) { 
-                System.out.println("Enqueuing BCAST at cluster coordinator " + printPID(c.pid) + " of comm " + communicator);
+                Logging.println("Enqueuing BCAST at cluster coordinator " + printPID(c.pid) + " of comm " + communicator);
                 c.enqueue(m, true); 
             } else { 
-                System.out.println("SKIP Enqueuing BCAST at cluster coordinator " + printPID(c.pid) + " of comm " + communicator);
+                Logging.println("SKIP Enqueuing BCAST at cluster coordinator " + printPID(c.pid) + " of comm " + communicator);
             }
         }
         
@@ -577,7 +575,7 @@ public class Communicator {
             bcast((DataMessage)m);
             break;
         default:
-            System.err.println("INTERNAL ERROR: unknown message type " + m.opcode);
+            Logging.error("unknown message type " + m.opcode);
         }
     }
     

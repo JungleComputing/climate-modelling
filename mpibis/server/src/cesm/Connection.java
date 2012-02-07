@@ -53,7 +53,7 @@ public class Connection extends Thread implements Protocol {
         this.parent = parent;
         this.s = s;
 
-	System.out.println("Got connection from " + s);
+	Logging.println("Got connection from " + s);
 
         //in = new DataInputStream(new NoisyInputStream(s.getInputStream()));
         in = new DataInputStream(new BufferedInputStream(s.getInputStream()));
@@ -75,11 +75,11 @@ public class Connection extends Thread implements Protocol {
     
         pidAsString = (clusterRank & 0xFF) + ":" + (localRank & 0x00FFFFFF);   
         
-	System.out.println(pidAsString + " is " + localRank + "/" + localSize + " " + clusterRank + "/" + clusterSize);
+	Logging.println(pidAsString + " is " + localRank + "/" + localSize + " " + clusterRank + "/" + clusterSize);
        
         int len = in.readInt();
 
-	System.out.println(pidAsString + " read len " + len);
+	Logging.println(pidAsString + " read len " + len);
 
         byte [] tmp = new byte[len];
 
@@ -87,18 +87,18 @@ public class Connection extends Thread implements Protocol {
 
         clusterName = new String(tmp);
 
-	System.out.println(pidAsString + " cluster is " + clusterName);
+	Logging.println(pidAsString + " cluster is " + clusterName);
 
         // Register ourselves at our cluster.
         Cluster c = parent.getCluster(clusterRank, localSize, clusterSize, clusterName);
         c.addConnection(localRank, localSize, clusterName, this);
 
-	System.out.println(pidAsString + " waiting until signup complete.");
+	Logging.println(pidAsString + " waiting until signup complete.");
 
         // Wait until everyone has registered.
         int [] clusterSizes = parent.waitUntilSignupComplete();
 
-	System.out.println(pidAsString + " writing output handshake");
+	Logging.println(pidAsString + " writing output handshake");
         
         // Write the output handshake.
         out.write(OPCODE_HANDSHAKE_ACCEPTED);
@@ -113,7 +113,7 @@ public class Connection extends Thread implements Protocol {
         sender = new SenderThread();
         sender.start();
      
-        System.out.println(pidAsString + " init done!");
+        Logging.println(pidAsString + " init done!");
         
         // Start my thread to receive incoming messages.
         start();
@@ -180,7 +180,7 @@ public class Connection extends Thread implements Protocol {
     
     private boolean receiveMessage() throws Exception {
 
-        System.out.println(pidAsString + " - Waiting for message");
+        Logging.println(pidAsString + " - Waiting for message");
 
         int opcode = in.readInt();
 
@@ -188,34 +188,34 @@ public class Connection extends Thread implements Protocol {
 
         switch (opcode) {
         case OPCODE_DATA:
-            System.out.println(pidAsString + " - Reading DATA message");
+            Logging.println(pidAsString + " - Reading DATA message");
             m = new DataMessage(OPCODE_DATA, in);
-            System.out.println(pidAsString + " - DATA message read");
+            Logging.println(pidAsString + " - DATA message read");
             break;
 
         case OPCODE_COLLECTIVE_BCAST:
-            System.out.println(pidAsString + " - Reading BCAST message");
+            Logging.println(pidAsString + " - Reading BCAST message");
             m = new DataMessage(OPCODE_COLLECTIVE_BCAST, in);
-            System.out.println(pidAsString + " - BCAST message read");
+            Logging.println(pidAsString + " - BCAST message read");
             break;
             
         case OPCODE_COMM:
-            System.out.println(pidAsString + " - Reading COMM message");
+            Logging.println(pidAsString + " - Reading COMM message");
             m = new CommMessage(in);
             break;
 
         case OPCODE_GROUP:
-            System.out.println(pidAsString + " - Reading GROUP message");
+            Logging.println(pidAsString + " - Reading GROUP message");
             m = new GroupMessage(in);
             break;
 
         case OPCODE_DUP:
-            System.out.println(pidAsString + " - Reading DUP message");
+            Logging.println(pidAsString + " - Reading DUP message");
             m = new DupMessage(in);
             break;
 
         case OPCODE_TERMINATE:
-            System.out.println(pidAsString + " - Reading TERMINATE message");
+            Logging.println(pidAsString + " - Reading TERMINATE message");
             m = new TerminateMessage(in);
             break;
             
@@ -224,7 +224,7 @@ public class Connection extends Thread implements Protocol {
             return false;
             
         default:
-            System.out.println(pidAsString + " GOT illegal opcode " + opcode);
+            Logging.println(pidAsString + " GOT illegal opcode " + opcode);
             throw new Exception("Illegal opcode " + opcode + " read by " + pidAsString);
         }
 
@@ -243,7 +243,7 @@ public class Connection extends Thread implements Protocol {
             return false;
         }
 
-        System.out.println(pidAsString + " Forwarding message from " + m.source);
+        Logging.println(pidAsString + " Forwarding message from " + m.source);
 
         m.write(out);
         out.flush();
@@ -299,7 +299,7 @@ public class Connection extends Thread implements Protocol {
             try { 
                 sender.join();
             } catch (Exception e) {
-                System.err.println("Sender thread failed to join!");
+                Logging.error("Sender thread failed to join!");
                 e.printStackTrace(System.err);
             }
         
@@ -307,10 +307,10 @@ public class Connection extends Thread implements Protocol {
             close();
             
             // Finally we print some statistics
-            System.out.println("Connection closed: " + printStatistics());
+            Logging.println("Connection closed: " + printStatistics());
         
         } catch (Exception e) {
-            System.err.println("Connection thread failed!");
+            Logging.error("Connection thread failed!");
             e.printStackTrace(System.err);
         }
     }

@@ -22,7 +22,7 @@ public class Server {
             try { 
                 new Connection(parent, s);
             } catch (Exception e) {
-                System.err.println("Failed to initiate new connection!" + e);
+                Logging.error("Failed to initiate new connection!" + e);
                 e.printStackTrace(System.err);
             }
         }
@@ -61,7 +61,7 @@ public class Server {
         // FIXME: potentially huge bottleneck!    
         synchronized (this) {
             if (m.comm >= communicators.size()) {
-                System.err.println("Cannot deliver message, unknown communicator " + m.comm);
+                Logging.error("Cannot deliver message, unknown communicator " + m.comm);
                 return;
             }
 
@@ -69,7 +69,7 @@ public class Server {
         }
 
         if (c == null) {
-            System.err.println("Cannot deliver message, unknown communicator " + m.comm);
+            Logging.error("Cannot deliver message, unknown communicator " + m.comm);
             return;
         }
 
@@ -85,7 +85,7 @@ public class Server {
             communicators.add(c, comm);
         }
 
-        System.out.println("Created new communicator: " + comm.getNumber());
+        Logging.println("Created new communicator: " + comm.getNumber());
         return comm;
     }
 
@@ -142,7 +142,7 @@ public class Server {
         Communicator com = new Communicator(this, 0,
                 (Connection[]) c.toArray(new Connection[c.size()]));
 
-        System.out.println("Created communicator 0 with " + totalProcesses
+        Logging.println("Created communicator 0 with " + totalProcesses
                 + " processes");
 
         synchronized (this) {
@@ -181,7 +181,7 @@ public class Server {
 
         synchronized (clusters) {
             if (clusters[clusterRank] == null) {
-                System.out.println("Added cluster " + clusterName + " (" + clusterRank
+                Logging.println("Added cluster " + clusterName + " (" + clusterRank
                         + " of " + clusterCount + ") of size " + clusterSize);
                 clusters[clusterRank] = new Cluster(clusterName, clusterSize, clusterRank);
             }
@@ -228,7 +228,7 @@ public class Server {
 
         while (!done) { 
             
-            System.out.println("Server waiting until application terminates.");
+            Logging.println("Server waiting until application terminates.");
             
             try { 
                 wait(10000);
@@ -271,9 +271,13 @@ public class Server {
                 System.err.println("Illegal clusters count " + clusters);
             }
 
+            Logging.start();
+            
             Server s = new Server(clusters, port);            
             s.setupConnections();
             s.waitUntilDone();       
+            
+            Logging.stop();
             
         } catch (Exception e) {
             e.printStackTrace();
