@@ -2,7 +2,6 @@
 
 #ifdef IBIS_INTERCEPT
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <netdb.h>
@@ -18,6 +17,7 @@
 
 #include "wa_sockets.h"
 #include "util.h"
+#include "debugging.h"
 
 // The filedescriptor of the socket connected to the 'server'
 static int socketfd = 0;

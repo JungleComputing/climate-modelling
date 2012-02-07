@@ -12,6 +12,7 @@
 #include "shared.h"
 #include "types.h"
 #include "request.h"
+#include "debugging.h"
 
 static request *reqs[MAX_REQUESTS];
 

@@ -12,6 +12,8 @@
 #include "types.h"
 #include "group.h"
 #include "communicator.h"
+#include "debugging.h"
+
 
 static group *groups[MAX_GROUPS];
 static int next_group   = 0;
