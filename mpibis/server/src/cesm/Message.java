@@ -29,5 +29,21 @@ public abstract class Message {
         out.writeInt(opcode);
         out.writeInt(comm);
         out.writeInt(source);
-    }	
+    }
+    
+    public long dataSize() { 
+        return 0;
+    }
+    
+    public long headerSize() { 
+        return 3*4;
+    }
+    
+    public boolean isData() { 
+        return false;
+    }
+    
+    public long size() { 
+        return headerSize() + dataSize();
+    }
 }

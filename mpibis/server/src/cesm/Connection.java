@@ -7,30 +7,15 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.LinkedList;
 
-public class Connection implements Protocol {
+public class Connection extends Thread implements Protocol {
 
     class SenderThread extends Thread {
         public void run() {
             try {
-                boolean done = false;
+                boolean more = true;
 
-                while (!done) {
-                    sendMessage();
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace(System.err);
-            }
-        }
-    }
-
-    class ReceiverThread extends Thread {
-        public void run() {
-            try {
-                boolean done = false;
-
-                while (!done) {
-                    receiveMessage();
+                while (more) {
+                    more = sendMessage();
                 }
             } catch (Exception e) {
                 e.printStackTrace(System.err);
@@ -39,7 +24,6 @@ public class Connection implements Protocol {
     }
 
     private final SenderThread sender;
-    private final ReceiverThread receiver;
 
     private final Server parent;
 
@@ -59,6 +43,12 @@ public class Connection implements Protocol {
     private final LinkedList<Message> incoming = new LinkedList<Message>();
     private boolean done = false;
 
+    public long bytesSend; 
+    public long bytesReceived; 
+    
+    public long messagesSend; 
+    public long messagesReceived; 
+        
     Connection(Server parent, Socket s) throws Exception {
         this.parent = parent;
         this.s = s;
@@ -119,14 +109,14 @@ public class Connection implements Protocol {
 
         out.flush();
                 
-        // Start the sender and receiver threads.
+        // Start a separate sender thread.
         sender = new SenderThread();
-        receiver = new ReceiverThread();
-   
         sender.start();
-        receiver.start();
-    
+     
         System.out.println(pidAsString + " init done!");
+        
+        // Start my thread to receive incoming messages.
+        start();
     }
     
     void done() {
@@ -187,7 +177,7 @@ public class Connection implements Protocol {
             // ignore
         }
     }
-
+    
     private boolean receiveMessage() throws Exception {
 
         System.out.println(pidAsString + " - Waiting for message");
@@ -224,11 +214,23 @@ public class Connection implements Protocol {
             m = new DupMessage(in);
             break;
 
+        case OPCODE_TERMINATE:
+            System.out.println(pidAsString + " - Reading TERMINATE message");
+            m = new TerminateMessage(in);
+            break;
+            
+        case OPCODE_CLOSE_LINK:
+            done();           
+            return false;
+            
         default:
             System.out.println(pidAsString + " GOT illegal opcode " + opcode);
             throw new Exception("Illegal opcode " + opcode + " read by " + pidAsString);
         }
 
+        bytesReceived += m.size();
+        messagesReceived++;
+        
         parent.deliver(m);
         return true;
     }
@@ -245,6 +247,10 @@ public class Connection implements Protocol {
 
         m.write(out);
         out.flush();
+        
+        bytesSend += m.size();
+        messagesSend++;
+        
         return true;
     }
 
@@ -267,4 +273,46 @@ public class Connection implements Protocol {
     public int getLocalSize() {
         return localSize;
     }
+
+    public String printStatistics() { 
+        
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(pidAsString + " " + localRank + " " + localSize + " " + 
+                  clusterName + " " + clusterRank + " " + clusterSize + " " + 
+                  messagesReceived + " " + messagesSend + " " + 
+                  bytesReceived + " " + bytesSend);
+        
+        return sb.toString();
+    }
+    
+    public void run() {
+        try {
+
+            boolean more = true;
+
+            while (more) {
+                more = receiveMessage();
+            }
+
+            // If we are done, we wait for the sender to join.
+            try { 
+                sender.join();
+            } catch (Exception e) {
+                System.err.println("Sender thread failed to join!");
+                e.printStackTrace(System.err);
+            }
+        
+            // Next we close the socket.
+            close();
+            
+            // Finally we print some statistics
+            System.out.println("Connection closed: " + printStatistics());
+        
+        } catch (Exception e) {
+            System.err.println("Connection thread failed!");
+            e.printStackTrace(System.err);
+        }
+    }
+
 }

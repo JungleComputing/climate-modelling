@@ -17,4 +17,8 @@ public class DupReply extends Message {
         super.write(out);
         out.writeInt(newComm);
     }
+    
+    public long dataSize() { 
+        return 4;
+    }
 }

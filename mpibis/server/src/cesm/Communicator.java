@@ -28,6 +28,16 @@ public class Communicator {
     private final Message [] messages;
     private int participants = 0;
 
+    private long commMessages;
+    private long commReplies;    
+    private long dataMessages;
+    private long bcastMessages;
+    
+    private long commBytes;
+    private long commReplyBytes;
+    private long dataBytes;
+    private long bcastBytes;
+    
     private class ClusterInfo { 
         final String name;
         final int clusterRank;
@@ -171,20 +181,7 @@ public class Communicator {
         }
 
         return members;
-    }
-
-    /*
-    private int countClusters(Connection [] procs) {
-        
-        HashSet<Integer> clusterCount = new HashSet<Integer>();
-        
-        for (Connection c : procs) { 
-            clusterCount.add(c.clusterRank);
-        }
-        
-        return clusterCount.size();
-    }
-    */
+    }   
     
     // This implements the split operation. Note that dup and create are just
     // special cases of split, and therefore handled by the same code.
@@ -274,19 +271,26 @@ public class Communicator {
                         }
 
                         localRanks.put(c.getClusterName(), key+1);
-                       
+                      
+                        CommReply reply = new CommReply(communicator, number, j, size, color, key, coordinators.length, flags, 
+                                coordinators, clusterSizes, members);
+                                                
                         // Send the reply.
-                        c.enqueue(new CommReply(communicator, number, j, size, color, key, coordinators.length, flags, 
-                                coordinators, clusterSizes, members), false);
+                        c.enqueue(reply, false);
+                        
+                        commReplies++;
+                        commReplyBytes += reply.size();
                     }
-
                 } else {
                     // We must also send a reply to all participants with color -1.
                     // As these will not actually create a new virtual communicator,
                     // we can send a simplified reply.
                     for (CommMessage m : l) {
-                        processes[m.source].enqueue(new CommReply(communicator,
-                                -1, -1, 0, -1, 0, 0, 0, null, null, null), false);
+                        CommReply reply = new CommReply(communicator, -1, -1, 0, -1, 0, 0, 0, null, null, null);                        
+                        processes[m.source].enqueue(reply, false);
+                        
+                        commReplies++;
+                        commReplyBytes += reply.size();
                     }
                 }
             }
@@ -389,9 +393,14 @@ public class Communicator {
             
             System.out.println("        sending group info to " + j + " " + printPID(c.pid) + " at " + name);
             
+            GroupReply reply = new GroupReply(communicator, number, j, members.length, coordinators.length, flags, 
+                    coordinators, clusterSizes, members); 
+            
             // Create and send the reply.
-            c.enqueue(new GroupReply(communicator, number, j, members.length, coordinators.length, flags, 
-                    coordinators, clusterSizes, members), false);
+            c.enqueue(reply, false);
+            
+            commReplies++;
+            commReplyBytes += reply.size();
         }
 
         // Send a reply to each process that does not participate, as they may still need to perform a some local collectives.
@@ -407,7 +416,13 @@ public class Communicator {
                 System.out.println("        sending participant info to " + j++ + " " + printPID(c.pid) + " at " + name 
                         + "(" + participant + ")");
                 
-                c.enqueue(new GroupReply(communicator, participant), false);
+                
+                GroupReply reply = new GroupReply(communicator, participant);
+                
+                c.enqueue(reply, false);
+
+                commReplies++;
+                commReplyBytes += reply.size();
             }
         }
     }
@@ -427,8 +442,15 @@ public class Communicator {
         for (int j=0;j<processes.length;j++) {
             processes[j].enqueue(reply, false);
         }
+        
+        commReplies += processes.length;
+        commReplyBytes += processes.length * reply.size();
     }
 
+    public void terminate() {
+        System.out.println("Terminating communicator " + communicator + "\n" + printStatistics());
+    }
+    
     private void processMessages() {
 
         int opcode = messages[0].opcode;
@@ -456,6 +478,12 @@ public class Communicator {
             dup();
             break;
 
+        case Protocol.OPCODE_TERMINATE:
+            terminate();
+            parent.terminateCommunicator(this);        
+            break;
+
+        
         default:
             System.out.println("ERROR: unknown opcode collective communicator operation! " + opcode);
             return; // FIXME: This return will hang the program!
@@ -470,6 +498,9 @@ public class Communicator {
                     " for operation on comm " + communicator);
         }
 
+        commMessages++;
+        commBytes += m.size();
+        
         messages[m.source] = m;
         participants++;
 
@@ -486,7 +517,7 @@ public class Communicator {
         }
     }
 
-    void deliver(DataMessage m) {
+    private void deliver(DataMessage m) {
         
         // Simply enqueue the message at the destination
         if (m.dest > processes.length) {
@@ -496,9 +527,12 @@ public class Communicator {
         }
 
         processes[m.dest].enqueue(m, true);
+        
+        dataMessages++;
+        dataBytes += m.size();        
     }
 
-    void bcast(DataMessage m) {
+    private void bcast(DataMessage m) {
         
         // Enqueue the message at each of the cluster coordinators, 
         // but exclude the cluster of the root.
@@ -522,14 +556,18 @@ public class Communicator {
                 System.out.println("SKIP Enqueuing BCAST at cluster coordinator " + printPID(c.pid) + " of comm " + communicator);
             }
         }
+        
+        bcastMessages++;
+        bcastBytes += m.size();        
     }
     
-    void deliver(Message m) {
+    public void deliver(Message m) {
 
         switch (m.opcode) {
         case Protocol.OPCODE_COMM:
         case Protocol.OPCODE_GROUP:
-        case Protocol.OPCODE_DUP:            
+        case Protocol.OPCODE_DUP:
+        case Protocol.OPCODE_TERMINATE:                        
             process(m);
             break;
         case Protocol.OPCODE_DATA:
@@ -542,5 +580,16 @@ public class Communicator {
             System.err.println("INTERNAL ERROR: unknown message type " + m.opcode);
         }
     }
+    
+    private String printStatistics() {         
 
+        StringBuilder sb = new StringBuilder("Communicator " + communicator + " statistics:\n");
+        sb.append("   size   : " + size);
+        sb.append("   data   : " + dataMessages + " / " + dataBytes + "\n");
+        sb.append("   bcast  : " + bcastMessages + " / " + bcastBytes + "\n");
+        sb.append("   commIn : " + commMessages + " / " + commBytes + "\n");
+        sb.append("   commOut: " + commReplies + " / " + commReplyBytes + "\n");
+        
+        return sb.toString();
+    }
 }

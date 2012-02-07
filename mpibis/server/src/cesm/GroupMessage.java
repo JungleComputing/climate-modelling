@@ -29,4 +29,8 @@ public class GroupMessage extends Message {
             out.writeInt(pids[i]);
         }
     }	
+    
+    public long dataSize() { 
+        return 4 * pids.length;
+    }
 }

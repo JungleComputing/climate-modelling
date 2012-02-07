@@ -85,4 +85,8 @@ public class GroupReply extends Message {
             }
         }
     }
+    
+    public long dataSize() { 
+        return 4*5 + clusterCount*4*2 + size*4;
+    }
 }

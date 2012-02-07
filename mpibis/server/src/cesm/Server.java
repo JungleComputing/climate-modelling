@@ -35,8 +35,8 @@ public class Server {
     private final int [] clusterSizes;
     private int totalProcesses;
 
-    private ServerSocket ss;
-
+    private boolean done = false;
+    
     private boolean signupComplete = false;
 
     private ArrayList<Communicator> communicators = new ArrayList<Communicator>();
@@ -89,6 +89,30 @@ public class Server {
         return comm;
     }
 
+    protected void terminateCommunicator(Communicator c) {
+        
+        if (c.getNumber() == 0) { 
+            // Terminating MPI_COMM_WORLD indicates the end of the application!
+
+            synchronized (this) {               
+                for (Communicator tmp : communicators) { 
+                    if (tmp != null) {
+                        tmp.terminate();
+                    } 
+                } 
+            
+                communicators.clear();
+                done();
+            }
+        } else {
+            // A single communicator is terminated (
+            synchronized (this) {
+                c.terminate();                
+                communicators.set(c.getNumber(), null);
+            }
+        }
+    }
+    
     private boolean signupComplete() {
 
         for (int i=0;i<clusters.length;i++) {
@@ -168,11 +192,11 @@ public class Server {
         return tmp;
     }
 
-    public void run() throws Exception {
+    public void setupConnections() throws Exception {
 
         boolean done = false;
 
-        ss = new ServerSocket(port);
+        ServerSocket ss = new ServerSocket(port);
         ss.setSoTimeout(1000);
 
         while (!done) {
@@ -195,6 +219,24 @@ public class Server {
         }
     }
 
+    private synchronized void done() {
+        done = true;
+        notifyAll();
+    }
+
+    private synchronized void waitUntilDone() { 
+
+        while (!done) { 
+            
+            System.out.println("Server waiting until application terminates.");
+            
+            try { 
+                wait(10000);
+            } catch (InterruptedException e) {
+                // ignored
+            }
+        }        
+    }
 
     public static void main(String [] args) {
 
@@ -229,10 +271,11 @@ public class Server {
                 System.err.println("Illegal clusters count " + clusters);
             }
 
-            new Server(clusters, port).run();
-
+            Server s = new Server(clusters, port);            
+            s.setupConnections();
+            s.waitUntilDone();       
+            
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

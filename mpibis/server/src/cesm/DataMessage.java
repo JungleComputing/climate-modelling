@@ -35,5 +35,13 @@ public class DataMessage extends Message {
 		out.writeInt(bytes);
 		out.write(data);
 	}	
+	
+	public long dataSize() { 
+	    return bytes; 
+	}
+	
+	public long headerSize() { 
+            return super.headerSize() + 4*4; 
+        }
 }
 	

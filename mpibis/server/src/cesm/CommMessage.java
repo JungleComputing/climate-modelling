@@ -20,4 +20,8 @@ public class CommMessage extends Message {
         out.writeInt(color);
         out.writeInt(key);
     }	
+    
+    public long dataSize() { 
+        return 2*4;
+    }
 }

@@ -62,4 +62,8 @@ public class CommReply extends Message {
             out.writeInt(members[i]);
         }
     }
+    
+    public long dataSize() { 
+        return 4*7 + clusterCount*4*2 + size*4;
+    }
 }

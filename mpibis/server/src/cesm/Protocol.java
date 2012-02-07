@@ -17,7 +17,9 @@ public interface Protocol {
     public static final int OPCODE_DUP         = 55;
     public static final int OPCODE_DUP_REPLY   = 56;
 
+    public static final int OPCODE_TERMINATE   = 57;
+        
     public static final int OPCODE_COLLECTIVE_BCAST = 60;
-
     
+    public static final int OPCODE_CLOSE_LINK  = 127;      
 }
