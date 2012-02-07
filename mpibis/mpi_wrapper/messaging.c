@@ -567,7 +567,7 @@ fprintf(stderr, "QUEUE_PENDING_MESSAGES: start blocking receive for opcode\n");
 
 fprintf(stderr, "QUEUE_PENDING_MESSAGES: Result of receive result=%d error=%d\n", result, error);
 
-      if (opcode == OPCODE_DATA || opcode == OPCODE_COLLECTIVE_BCAST || opcode == OPCODE_COLLECTIVE_ALLREDUCE) {
+      if (opcode == OPCODE_DATA || opcode == OPCODE_COLLECTIVE_BCAST) {
          // There is a message blocking the stream!
          m = receive_data_message(&error);
 
