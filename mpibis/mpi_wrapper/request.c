@@ -52,7 +52,7 @@ request *create_request(int flags, void *buf, int count, MPI_Datatype datatype, 
    request *r = malloc(sizeof(request));
 
    if (r == NULL) {
-      fprintf(stderr, "   INTERNAL ERROR: Failed to allocate request!\n");
+      ERROR(1, "Failed to allocate request!\n");
       return NULL;
    }
 
@@ -68,7 +68,7 @@ request *create_request(int flags, void *buf, int count, MPI_Datatype datatype, 
    r->index = add_request(r);
 
    if (r->index == -1) {
-      fprintf(stderr, "   INTERNAL ERROR: Failed to store request!\n");
+      ERROR(1, "Failed to store request!\n");
       free(r);
       return NULL;
    }
@@ -78,15 +78,8 @@ request *create_request(int flags, void *buf, int count, MPI_Datatype datatype, 
 
 void free_request(request *r)
 {
-
-//fprintf(stderr, "   DEBUG: Free request %p\n", r);
-
    if (r != NULL) {
-
-//fprintf(stderr, "   DEBUG: Free request with index %d\n", r->index);
-
       if (r->req != MPI_REQUEST_NULL) {
-//fprintf(stderr, "   DEBUG: MPI request also freed!\n");
           PMPI_Request_free(&(r->req));
       }
 
@@ -111,12 +104,12 @@ request *get_request(MPI_Request r)
 request *get_request_with_index(int index)
 {
    if (index < 0 || index >= MAX_REQUESTS) {
-      fprintf(stderr, "ERROR: Failed to find request %d (out of bounds)!\n", index);
+      ERROR(1, "Failed to find request %d (out of bounds)!\n", index);
       return NULL;
    }
 
    if (reqs[index] == NULL) {
-      fprintf(stderr, "ERROR: Failed to find request %d (empty slot)!\n", index);
+      ERROR(1, "Failed to find request %d (empty slot)!\n", index);
       return NULL;
    }
 

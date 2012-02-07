@@ -44,27 +44,27 @@ static int add_communicator(MPI_Comm comm, int number, int initial,
    int i; //, start, end, local, remote;
 
    if (number < 0 || number >= MAX_COMMUNICATORS) {
-      fprintf(stderr, "   INTERNAL ERROR: Ran out of communicator storage (%d)!\n", number);
+      ERROR(1, "Ran out of communicator storage (%d)!\n", number);
       return MPI_ERR_INTERN;
    }
 
    if (initial == 0 && number < 3) {
-      fprintf(stderr, "   INTERNAL ERROR: Attempting to overwrite reserved communicator (%d)!\n", number);
+      ERROR(1, "Attempting to overwrite reserved communicator (%d)!\n", number);
       return MPI_ERR_INTERN;
    }
 
    if (comms[number] != NULL) {
-      fprintf(stderr, "   INTERNAL ERROR: Attempting to overwrite existing communicator (%d)!\n", number);
+      ERROR(1, "Attempting to overwrite existing communicator (%d)!\n", number);
       return MPI_ERR_INTERN;
    }
 
-   fprintf(stderr, "   Creating communicator %d : local(%d %d) | global(%d %d)\n",
+   INFO(0, "add_communicator", "Creating communicator %d : local(%d %d) | global(%d %d)\n",
            number, local_rank, local_size, global_rank, global_size);
 
    communicator *c = malloc(sizeof(communicator));
 
    if (c == NULL) {
-      fprintf(stderr, "   INTERNAL ERROR: Failed to allocate space for communicator (%d)!\n", number);
+      ERROR(1, "Failed to allocate space for communicator (%d)!\n", number);
       return MPI_ERR_INTERN;
    }
 
@@ -115,7 +115,7 @@ int init_communicators(int cluster_rank, int cluster_count,
    coordinators = malloc(cluster_count * sizeof(int));
 
    if (coordinators == NULL) {
-      fprintf(stderr, "   INTERNAL ERROR: Failed to allocate space for communicator (coordinators)!\n");
+      ERROR(1, "Failed to allocate space for communicator (coordinators)!\n");
       return MPI_ERR_INTERN;
    }
 
@@ -130,7 +130,7 @@ int init_communicators(int cluster_rank, int cluster_count,
    members = malloc(global_count * sizeof(uint32_t));
 
    if (members == NULL) {
-      fprintf(stderr, "   INTERNAL ERROR: Failed to allocate space for communicator (members)!\n");
+      ERROR(1, "Failed to allocate space for communicator (members)!\n");
       free(coordinators);
       return MPI_ERR_INTERN;
    }
@@ -162,7 +162,7 @@ int init_communicators(int cluster_rank, int cluster_count,
                             flags, members, NULL);
 
    if (error != MPI_SUCCESS) {
-      fprintf(stderr, "   INTERNAL ERROR: Failed to create MPI_COMM_WORLD!\n");
+      ERROR(1, "Failed to create MPI_COMM_WORLD!\n");
       return error;
    }
 
@@ -170,7 +170,7 @@ int init_communicators(int cluster_rank, int cluster_count,
    members = malloc(sizeof(uint32_t));
 
    if (members == NULL) {
-      fprintf(stderr, "   INTERNAL ERROR: Failed to allocate space for communicator (members -- self)!\n");
+      ERROR(1, "Failed to allocate space for communicator (members -- self)!\n");
       return MPI_ERR_INTERN;
    }
 
@@ -180,7 +180,7 @@ int init_communicators(int cluster_rank, int cluster_count,
    cluster_sizes = malloc(sizeof(int));
 
    if (coordinators == NULL) {
-      fprintf(stderr, "   INTERNAL ERROR: Failed to allocate space for communicator (coordinators -- self)!\n");     
+      ERROR(1, "Failed to allocate space for communicator (coordinators -- self)!\n");     
       return MPI_ERR_INTERN;
    }
 
@@ -194,7 +194,7 @@ int init_communicators(int cluster_rank, int cluster_count,
                             0, 1, 0, 1, 1, coordinators, cluster_sizes, flags, members, NULL);
 
    if (error != MPI_SUCCESS) {
-      fprintf(stderr, "   INTERNAL ERROR: Failed to create MPI_COMM_SELF!\n");
+      ERROR(1, "Failed to create MPI_COMM_SELF!\n");
       return error;
    }
 
@@ -203,7 +203,7 @@ int init_communicators(int cluster_rank, int cluster_count,
                             0, 0, 0, 0, 1, NULL, NULL, 0, NULL, NULL);
 
    if (error != MPI_SUCCESS) {
-      fprintf(stderr, "   INTERNAL ERROR: Failed to create MPI_COMM_NULL!\n");
+      ERROR(1, "Failed to create MPI_COMM_NULL!\n");
    }
 
    return error;
@@ -254,12 +254,12 @@ communicator* get_communicator(MPI_Comm comm)
 communicator *get_communicator_with_index(int index)
 {
    if (index < 0 || index >= MAX_COMMUNICATORS) {
-      fprintf(stderr, "   ERROR: get_communicator_with_index(index=%d) index out of bounds!\n", index);
+      ERROR(1, "get_communicator_with_index(index=%d) index out of bounds!\n", index);
       return NULL;
    }
 
    if (comms[index] == NULL) {
-      fprintf(stderr, "   ERROR: get_communicator_with_index(index=%d) communicator not found!\n", index);
+      ERROR(1, "get_communicator_with_index(index=%d) communicator not found!\n", index);
       return NULL;
    }
 
@@ -278,8 +278,6 @@ int rank_is_local(communicator *c, int rank, int *result)
    }
 
    *result = (GET_CLUSTER_RANK(c->members[rank]) == cluster_rank);
-
-//fprintf(stderr, "   is_local %d = %d\n", rank, *result);
 
    return MPI_SUCCESS;
 }
@@ -317,9 +315,9 @@ void store_message(message_buffer *m)
    communicator* c = comms[m->header.comm];
 
    if (c == NULL) {
-      fprintf(stderr, "   INTERNAL ERROR: Failed to find communicator %d in store_message!\n",
+      ERROR(1, "Failed to find communicator %d in store_message!\n",
 		m->header.comm);
-      fprintf(stderr, "   INTERNAL ERROR: Dropping message!\n");
+      ERROR(1, "Dropping message!\n");
       return;
    }
 
@@ -344,11 +342,10 @@ message_buffer *find_pending_message(communicator *c, int source, int tag)
 {
    message_buffer *curr, *prev;
 
-fprintf(stderr, "   Checking for pending messages in %d from %d %d\n", c->number, source, tag); 
+   DEBUG(1, "Checking for pending messages in %d from %d %d\n", c->number, source, tag);
 
    if (c->queue_head == NULL) {
-fprintf(stderr, "   No pending messages\n");
-
+      DEBUG(1, "No pending messages\n");
       return NULL;
    }
 
@@ -376,9 +373,7 @@ fprintf(stderr, "   No pending messages\n");
           }
 
           curr->next = NULL;
-
-fprintf(stderr, "   Found pending message from %d\n", curr->header.source);
-
+          DEBUG(1, "Found pending message from %d\n", curr->header.source);
           return curr;
       }
 
@@ -386,7 +381,7 @@ fprintf(stderr, "   Found pending message from %d\n", curr->header.source);
       curr = curr->next;
    }
 
-fprintf(stderr, "   No pending messages\n");
+   DEBUG(1, "No pending messages\n");
 
    return NULL;
 }
