@@ -737,14 +737,14 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
 
    if (r == NULL) {
 
-//fprintf(stderr, "PROBE_REQUEST: request=NULL, blocking=%d\n", blocking);
+      DEBUG(1, "PROBE_REQUEST: request=NULL, blocking=%d", blocking);
 
       clear_status(status);
       *flag = 1;
       return MPI_SUCCESS;
    }
 
-//fprintf(stderr, "PROBE_REQUEST: request=(index=%d, flags=%d, srcdest=%d, count=%d, tag=%d) blocking=%d\n", r->index, r->flags, r->source_or_dest, r->count, r->tag, blocking);
+   DEBUG(1, "PROBE_REQUEST: request=(index=%d, flags=%d, srcdest=%d, count=%d, tag=%d) blocking=%d", r->index, r->flags, r->source_or_dest, r->count, r->tag, blocking);
 
    // We don't support persistent request yet!
    if (request_persistent(r)) {
@@ -758,7 +758,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
    } else if (request_local(r)) {
       // Pure local request, so we ask MPI.
 
-//fprintf(stderr, "PROBE_REQUEST: request=LOCAL blocking=%d\n", blocking);
+      DEBUG(1, "PROBE_REQUEST: request=LOCAL blocking=%d", blocking);
 
       if (blocking) {
          r->error = PMPI_Wait(&(r->req), status);
@@ -769,7 +769,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
 
    } else if (request_send(r)) {
 
-//fprintf(stderr, "PROBE_REQUEST: request=WA_SEND blocking=%d\n", blocking);
+      DEBUG(1, "PROBE_REQUEST: request=WA_SEND blocking=%d", blocking);
 
       // Non-persistent WA send should already have finished.
       status->MPI_SOURCE = r->source_or_dest;
@@ -780,7 +780,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
 
    } else if (r->source_or_dest != MPI_ANY_SOURCE) {
 
-//fprintf(stderr, "PROBE_REQUEST: request=WA_RECEIVE blocking=%d\n", blocking);
+      DEBUG(1, "PROBE_REQUEST: request=WA_RECEIVE blocking=%d", blocking);
 
       // It was a non-persistent remote receive request, so probe the
       // WA link (will do nothing if the request was already completed).
@@ -799,7 +799,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
 
    } else {
 
-//fprintf(stderr, "PROBE_REQUEST: request=WA_RECEIVE_ANY blocking=%d\n", blocking);
+      DEBUG(1, "PROBE_REQUEST: request=WA_RECEIVE_ANY blocking=%d", blocking);
 
       // It was a non-persistent mixed receive request, so we must probe
       // the local network and the WA link.
@@ -814,14 +814,15 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
 
          if (*flag) {
 
-//fprintf(stderr, "PROBE_REQUEST: request=WA_RECEIVE performing LOCAL receive\n");
+            DEBUG(1, "PROBE_REQUEST: request=WA_RECEIVE performing LOCAL receive");
+
             // A message is available locally, so receiving it!
             r->error = PMPI_Recv(r->buf, r->count, r->type, MPI_ANY_SOURCE, r->tag, r->c->comm, status);
             r->flags |= REQUEST_FLAG_COMPLETED;
 
          } else {
 
-//fprintf(stderr, "PROBE_REQUEST: request=WA_RECEIVE performing WA probe\n");
+            DEBUG(1, "PROBE_REQUEST: request=WA_RECEIVE performing WA probe");
 
             // No local message was found (yet), so try the WA link.
             r->error = messaging_probe_receive(r, blocking);
@@ -842,6 +843,8 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
       free_request(r);
       *req = MPI_REQUEST_NULL;
    }
+
+   DEBUG(1, "PROBE_REQUEST: done error=%d", error);
 
    return error;
 }

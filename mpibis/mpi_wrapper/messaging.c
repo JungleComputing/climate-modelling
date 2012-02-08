@@ -44,30 +44,30 @@ static message_buffer *probe_wa(communicator *c, int source, int tag, int blocki
 {
    message_buffer *m;
 
-   DEBUG(1, "PROBE_WA: Probing socket for incoming messages from source=%d tag=%d blocking=%d\n", source, tag, blocking);
+   DEBUG(1, "PROBE_WA: Probing socket for incoming messages from source=%d tag=%d blocking=%d", source, tag, blocking);
 
    do {
       m = receive_message(blocking, error);
 
       if (m == NULL) {
-         DEBUG(1, "PROBE_WA: No message received\n");
+         DEBUG(1, "PROBE_WA: No message received");
          return NULL;
       }
 
-      DEBUG(1, "PROBE_WA: Message received from %d %d\n", m->header.source, m->header.tag);
+      DEBUG(1, "PROBE_WA: Message received from %d %d", m->header.source, m->header.tag);
 
       if (match_message(m, c->number, source, tag)) {
          // we have a match!
-         DEBUG(1, "PROBE_WA: Match! Returning message\n");
+         DEBUG(1, "PROBE_WA: Match! Returning message");
          return m;
       } else {
-         DEBUG(1, "PROBE_WA: No match. Storing message\n");
+         DEBUG(1, "PROBE_WA: No match. Storing message");
          store_message(m);
       }
 
    } while (blocking);
 
-   DEBUG(1, "PROBE_WA: No message received\n");
+   DEBUG(1, "PROBE_WA: No message received");
 
    return NULL;
 }
@@ -229,11 +229,11 @@ static int send_message(message_buffer *m)
 
 static int receive_opcode(int* opcode, int *error, int blocking)
 {
-   DEBUG(1, "RECEIVE_OPCODE: Receiving from socket (blocking=%d)\n", blocking);
+   DEBUG(1, "RECEIVE_OPCODE: Receiving from socket (blocking=%d)", blocking);
 
    int result = wa_wait_for_data(blocking);
 
-   DEBUG(1, "RECEIVE_OPCODE: Result of receive: result=%d error=%d\n", result, *error);
+   DEBUG(1, "RECEIVE_OPCODE: Result of receive: result=%d error=%d", result, *error);
 
    if (result == -1) {
       *error = MPI_ERR_INTERN;
@@ -252,7 +252,7 @@ static int receive_opcode(int* opcode, int *error, int blocking)
    result = wa_receivefully((unsigned char *) opcode, 4);
 
    if (result != CONNECT_OK) {
-      ERROR(1, "RECEIVE_OPCODE: Failed to receive message opcode!\n");
+      ERROR(1, "RECEIVE_OPCODE: Failed to receive message opcode!");
       *error = MPI_ERR_INTERN;
       return 0;
    }
@@ -270,7 +270,7 @@ static int receive_message_header(message_buffer *m)
    int error = wa_receivefully(tmp, MSG_HEADER_SIZE-4);
 
    if (error != CONNECT_OK) {
-      ERROR(1, "Failed to receive message header!\n");
+      ERROR(1, "Failed to receive message header!");
       return error;
    }
 
@@ -284,7 +284,7 @@ static int receive_message_data(message_buffer *m)
    int error = wa_receivefully(m->data_buffer, m->header.bytes);
 
    if (error != CONNECT_OK) {
-      ERROR(1, "Failed to receive message data!\n");
+      ERROR(1, "Failed to receive message data!");
       return error;
    }
 
@@ -328,11 +328,11 @@ static message_buffer *receive_message(int blocking, int *error)
 {
    int opcode;
 
-   DEBUG(1, "Receiving message from socket (blocking=%d)\n", blocking);
+   DEBUG(1, "Receiving message from socket (blocking=%d)", blocking);
 
    int result = receive_opcode(&opcode, error, blocking);
 
-   DEBUG(1, "Result of receive: result=%d error=%d\n", result, *error);
+   DEBUG(1, "Result of receive: result=%d error=%d", result, *error);
 
    if (result == 0) {
       // Note: error will be set correctly if blocking was true
@@ -343,7 +343,7 @@ static message_buffer *receive_message(int blocking, int *error)
       return receive_data_message(error);
    }
 
-   ERROR(1, "unexpected message opcode (RM) %d\n", opcode);
+   ERROR(1, "unexpected message opcode (RM) %d", opcode);
    *error = MPI_ERR_INTERN;
    return NULL;	
 }
@@ -532,32 +532,32 @@ static int queue_pending_messages(int *next_opcode)
 
    while (result == 0) {
 
-      DEBUG(1, "QUEUE_PENDING_MESSAGES: start blocking receive for opcode\n");
+      DEBUG(1, "QUEUE_PENDING_MESSAGES: start blocking receive for opcode");
 
       result = receive_opcode(&opcode, &error, 1);
 
       if (result == 0) {
-         ERROR(1, "INTERNAL ERROR: Failed to receive opcode! (%d)\n", error);
+         ERROR(1, "INTERNAL ERROR: Failed to receive opcode! (%d)", error);
          return error;
       }
 
-      DEBUG(1, "QUEUE_PENDING_MESSAGES: Result of receive result=%d error=%d\n", result, error);
+      DEBUG(1, "QUEUE_PENDING_MESSAGES: Result of receive result=%d error=%d", result, error);
 
       if (opcode == OPCODE_DATA || opcode == OPCODE_COLLECTIVE_BCAST) {
          // There is a message blocking the stream!
          m = receive_data_message(&error);
 
          if (m == NULL) {
-            ERROR(1, "Failed to receive message!\n");
+            ERROR(1, "Failed to receive message!");
             return error;
          }
 
-         DEBUG(1, "QUEUE_PENDING_MESSAGES: Message received from src: %d opcode: %d tag: %d\n", m->header.source, opcode, m->header.tag);
+         DEBUG(1, "QUEUE_PENDING_MESSAGES: Message received from src: %d opcode: %d tag: %d", m->header.source, opcode, m->header.tag);
 
          store_message(m);
          result = 0;
       } else {
-         DEBUG(1, "QUEUE_PENDING_MESSAGES: Received non-message opcode %d\n", opcode);
+         DEBUG(1, "QUEUE_PENDING_MESSAGES: Received non-message opcode %d", opcode);
          *next_opcode = opcode;
          result = 1;
       }
@@ -572,14 +572,14 @@ static int *alloc_and_receive_int_array(int len)
    int *tmp = malloc(len * sizeof(int));
 
    if (tmp == NULL) {
-      ERROR(1, "Failed to allocate int buffer\n");
+      ERROR(1, "Failed to allocate int buffer!");
       return NULL;
    }
 
    error = wa_receivefully((unsigned char *)tmp, len * sizeof(int));
 
    if (error != CONNECT_OK) {
-      ERROR(1, "Failed to receive int buffer!\n");
+      ERROR(1, "Failed to receive int buffer!");
       free(tmp);
       return NULL;
    }
@@ -605,14 +605,14 @@ int messaging_receive_comm_reply(comm_reply *reply)
    }
 
    if (opcode != OPCODE_COMM_REPLY) {
-      ERROR(1, "unexpected message opcode (RC) %d\n", opcode);
+      ERROR(1, "unexpected message opcode (RC) %d", opcode);
       return MPI_ERR_INTERN;
    }
 
    error = wa_receivefully((unsigned char *) reply, COMM_REPLY_SIZE);
 
    if (error != CONNECT_OK) {
-      ERROR(1, "Failed to receive comm reply!\n");
+      ERROR(1, "Failed to receive comm reply!");
       return MPI_ERR_INTERN;
    }
 
@@ -626,19 +626,20 @@ int messaging_receive_comm_reply(comm_reply *reply)
    reply->cluster_count = ntohl(reply->cluster_count);
    reply->flags = ntohl(reply->flags);
 
-   DEBUG(1, "*Received comm reply (comm=%d src=%d newComm=%d rank=%d size=%d color=%d key=%d cluster_count=%d flag=%d)\n", reply->comm, reply->src, reply->newComm, reply->rank, reply->size, reply->color, reply->key, reply->cluster_count, reply->flags);
+   DEBUG(1, "*Received comm reply (comm=%d src=%d newComm=%d rank=%d size=%d color=%d key=%d cluster_count=%d flag=%d)", 
+           reply->comm, reply->src, reply->newComm, reply->rank, reply->size, reply->color, reply->key, reply->cluster_count, reply->flags);
 
    reply->coordinators = alloc_and_receive_int_array(reply->cluster_count);
 
    if (reply->coordinators == NULL) {
-      ERROR(1, "Failed to allocate or receive coordinators\n");
+      ERROR(1, "Failed to allocate or receive coordinators");
       return MPI_ERR_INTERN;
    }
 
    reply->cluster_sizes = alloc_and_receive_int_array(reply->cluster_count);
 
    if (reply->cluster_sizes == NULL) {
-      ERROR(1, "Failed to allocate or receive cluster sizes\n");
+      ERROR(1, "Failed to allocate or receive cluster sizes");
       return MPI_ERR_INTERN;
    }
 
@@ -646,7 +647,7 @@ int messaging_receive_comm_reply(comm_reply *reply)
       reply->members = (uint32_t *) alloc_and_receive_int_array(reply->size);
 
       if (reply->members == NULL) {
-         ERROR(1, "Failed to allocate or receive communicator members\n");
+         ERROR(1, "Failed to allocate or receive communicator members");
          return MPI_ERR_INTERN;
       }
    }
@@ -667,7 +668,7 @@ int messaging_send_comm_request(communicator* c, int color, int key)
    int error = wa_sendfully((unsigned char *) &req, COMM_REQUEST_SIZE);
 
    if (error != CONNECT_OK) {
-      ERROR(1, "Failed to send comm request!\n");
+      ERROR(1, "Failed to send comm request!");
       return MPI_ERR_INTERN;
    }
 
@@ -687,7 +688,7 @@ int messaging_send_group_request(communicator* c, group *g)
    int error = wa_sendfully((unsigned char *) &req, GROUP_REQUEST_SIZE);
 
    if (error != CONNECT_OK) {
-      ERROR(1, "Failed to send comm request!\n");
+      ERROR(1, "Failed to send comm request!");
       return MPI_ERR_INTERN;
    }
 
@@ -702,7 +703,7 @@ int messaging_send_group_request(communicator* c, group *g)
    }
 
    if (error != CONNECT_OK) {
-      ERROR(1, "Failed to send comm request!\n");
+      ERROR(1, "Failed to send comm request!");
       return MPI_ERR_INTERN;
    }
 
@@ -723,16 +724,16 @@ int messaging_receive_group_reply(group_reply *reply)
    }
 
    if (opcode != OPCODE_GROUP_REPLY) {
-      ERROR(1, "unexpected message opcode (RG) %d\n", opcode);
+      ERROR(1, "unexpected message opcode (RG) %d", opcode);
       return MPI_ERR_INTERN;
    }
 
-DEBUG(1, "*Receiving group reply %lu %lu %lu %lu\n", sizeof(group_reply), sizeof(unsigned char *), sizeof(group_reply)-sizeof(unsigned char *), GROUP_REPLY_SIZE);
+DEBUG(1, "*Receiving group reply %lu %lu %lu %lu", sizeof(group_reply), sizeof(unsigned char *), sizeof(group_reply)-sizeof(unsigned char *), GROUP_REPLY_SIZE);
 
    error = wa_receivefully((unsigned char *) reply, GROUP_REPLY_SIZE);
 
    if (error != CONNECT_OK) {
-      ERROR(1, "INTERNAL ERROR: Failed to receive group reply!\n");
+      ERROR(1, "INTERNAL ERROR: Failed to receive group reply!");
       return MPI_ERR_INTERN;
    }
 
@@ -745,21 +746,21 @@ DEBUG(1, "*Receiving group reply %lu %lu %lu %lu\n", sizeof(group_reply), sizeof
    reply->cluster_count = ntohl(reply->cluster_count);
    reply->flags = ntohl(reply->flags);
 
-DEBUG(1, "*Received group reply (comm=%d src=%d newComm=%d rank=%d size=%d type=%d cluster_count=%d flags=%d)\n", reply->comm, reply->src, reply->newComm, reply->rank, reply->size, reply->type, reply->cluster_count, reply->flags);
+DEBUG(1, "*Received group reply (comm=%d src=%d newComm=%d rank=%d size=%d type=%d cluster_count=%d flags=%d)", reply->comm, reply->src, reply->newComm, reply->rank, reply->size, reply->type, reply->cluster_count, reply->flags);
 
    if (reply->type == GROUP_TYPE_ACTIVE) {
 
       reply->coordinators = alloc_and_receive_int_array(reply->cluster_count);
 
       if (reply->coordinators == NULL) {
-         ERROR(1, "Failed to allocate or receive coordinators\n");
+         ERROR(1, "Failed to allocate or receive coordinators");
          return MPI_ERR_INTERN;
       }
 
       reply->cluster_sizes = alloc_and_receive_int_array(reply->cluster_count);
 
       if (reply->cluster_sizes == NULL) {
-         ERROR(1, "Failed to allocate or receive cluster sizes\n");
+         ERROR(1, "Failed to allocate or receive cluster sizes");
          return MPI_ERR_INTERN;
       }
 
@@ -767,7 +768,7 @@ DEBUG(1, "*Received group reply (comm=%d src=%d newComm=%d rank=%d size=%d type=
          reply->members = (uint32_t *) alloc_and_receive_int_array(reply->size);
 
          if (reply->members == NULL) {
-            ERROR(1, "Failed to allocate or receive communicator members\n");
+            ERROR(1, "Failed to allocate or receive communicator members");
             return MPI_ERR_INTERN;
          }
       }
@@ -787,7 +788,7 @@ int messaging_send_dup_request(communicator* c)
    int error = wa_sendfully((unsigned char *) &req, DUP_REQUEST_SIZE);
 
    if (error != CONNECT_OK) {
-      ERROR(1, "Failed to send dup request!\n");
+      ERROR(1, "Failed to send dup request!");
       return MPI_ERR_INTERN;
    }
 
@@ -805,7 +806,7 @@ int messaging_send_terminate_request(communicator* c)
    int error = wa_sendfully((unsigned char *) &req, TERMINATE_REQUEST_SIZE);
 
    if (error != CONNECT_OK) {
-      ERROR(1, "Failed to send terminate request!\n");
+      ERROR(1, "Failed to send terminate request!");
       return MPI_ERR_INTERN;
    }
 
@@ -827,14 +828,14 @@ int messaging_receive_dup_reply(dup_reply *reply)
    }
 
    if (opcode != OPCODE_DUP_REPLY) {
-      ERROR(1, "INTERNAL ERROR: unexpected message opcode (RD) %d\n", opcode);
+      ERROR(1, "INTERNAL ERROR: unexpected message opcode (RD) %d", opcode);
       return MPI_ERR_INTERN;
    }
 
    error = wa_receivefully((unsigned char *) reply, DUP_REPLY_SIZE);
 
    if (error != CONNECT_OK) {
-      ERROR(1, "INTERNAL ERROR: Failed to receive group reply!\n");
+      ERROR(1, "INTERNAL ERROR: Failed to receive group reply!");
       return MPI_ERR_INTERN;
    }
 
@@ -842,7 +843,7 @@ int messaging_receive_dup_reply(dup_reply *reply)
    reply->src = ntohl(reply->src);
    reply->newComm = ntohl(reply->newComm);
 
-DEBUG(1, "*Received dup reply (comm=%d src=%d newComm=%d)\n", reply->comm, reply->src, reply->newComm);
+DEBUG(1, "*Received dup reply (comm=%d src=%d newComm=%d)", reply->comm, reply->src, reply->newComm);
 
    return MPI_SUCCESS;
 }
