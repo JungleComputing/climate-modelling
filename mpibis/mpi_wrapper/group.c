@@ -50,7 +50,7 @@ static int add_group(group *g)
    }
 
    if (next_group >= MAX_GROUPS) {
-      ERROR(1, "MAX_GROUPS reached!\n");
+      ERROR(1, "MAX_GROUPS reached!");
       return -1;
    }
 
@@ -86,7 +86,7 @@ group *get_group(MPI_Group src)
   group *res;
 
   if (src == MPI_GROUP_EMPTY || src == MPI_GROUP_NULL) {
-     WARN(0, "get_group returns NULL!\n");
+     WARN(0, "get_group returns NULL!");
      return NULL;
   }
 
@@ -99,12 +99,12 @@ group *get_group(MPI_Group src)
 group* get_group_with_index(int f)
 {
    if (f < 0 || f >= MAX_GROUPS) {
-      ERROR(1, "get_group_with_index(index=%d) index out of bounds!\n", f);
+      ERROR(1, "get_group_with_index(index=%d) index out of bounds!", f);
       return NULL;
    }
 
    if (groups[f] == NULL) {
-      ERROR(1, "get_group_with_index(index=%d) index not active!\n", f);
+      ERROR(1, "get_group_with_index(index=%d) index not active!", f);
       return NULL;
    }
 
@@ -119,37 +119,37 @@ void set_group_ptr(MPI_Group *dst, group *src)
 
 static group *create_group(int members)
 {
-   DEBUG(1, "Creating group of size %d\n", members);
+   DEBUG(1, "Creating group of size %d", members);
 
    group *res = malloc(sizeof(group));
 
    if (res == NULL) {
-      ERROR(1, "Failed to allocate group struct!\n");
+      ERROR(1, "Failed to allocate group struct!");
       return NULL;
    }
 
-   DEBUG(1, "allocating members array for %d members\n", members);
+   DEBUG(1, "allocating members array for %d members", members);
 
    res->members = malloc(members * sizeof(uint32_t));
 
    if (res->members == NULL) {
-      ERROR(1, "Failed to allocate group member array!\n");
+      ERROR(1, "Failed to allocate group member array!");
       free(res);
       return NULL;
    }
 
    res->index = add_group(res);
 
-   DEBUG(1, "index of group is %d\n", res->index);
+   DEBUG(1, "index of group is %d", res->index);
 
    if (res->index == -1) {
-      ERROR(1, "Failed to store group!\n");
+      ERROR(1, "Failed to store group!");
       free(res->members);
       free(res);
       return NULL;
    }
 
-   DEBUG(1, "group creating done\n");
+   DEBUG(1, "group creating done");
 
    return res;
 }
@@ -162,7 +162,7 @@ static void delete_group(group *group)
 
    groups[group->index] = NULL;
 
-   DEBUG(1, "deleting group %d of size %d\n", group->index, group->size);
+   DEBUG(1, "deleting group %d of size %d", group->index, group->size);
 
    free(group->members);
    free(group);
@@ -176,14 +176,14 @@ int group_comm_group(communicator *in, group **out)
    group *res;
 
    if (in == NULL || out == NULL) {
-      ERROR(1, "Group_comm_group(in=%p, out=%p) get NULL as input!\n", in, out);
+      ERROR(1, "Group_comm_group(in=%p, out=%p) get NULL as input!", in, out);
       return MPI_ERR_COMM;
    }
 
    res = create_group(in->global_size);
 
    if (res == NULL) {
-      ERROR(1, "Failed to create new group!\n");
+      ERROR(1, "Failed to create new group!");
       return MPI_ERR_INTERN;
    }
 
@@ -235,16 +235,16 @@ int group_union(group *in1, group *in2, group **out)
    int *members;
    int i, j, found, index, size, rank, current;
 
-//fprintf(stderr, "   JASON: Group union %p %p %p\n", in1, in2, out);
+//fprintf(stderr, "   JASON: Group union %p %p %p", in1, in2, out);
 
    size = in1->size + in2->size;
 
-//fprintf(stderr, "   JASON: Group union size %d %d %d\n", in1->size, in2->size, size);
+//fprintf(stderr, "   JASON: Group union size %d %d %d", in1->size, in2->size, size);
 
    members = malloc(size * sizeof(uint32_t));
 
    if (members == NULL) {
-      ERROR(1, "Failed to allocate temporary group!\n");
+      ERROR(1, "Failed to allocate temporary group!");
       return MPI_ERR_INTERN;
    }
 
@@ -254,7 +254,7 @@ int group_union(group *in1, group *in2, group **out)
       members[index++] = in1->members[i];
    }
 
-//fprintf(stderr, "   JASON: Group union group 1 copied\n");
+//fprintf(stderr, "   JASON: Group union group 1 copied");
 
    for (i=0;i<in2->size;i++) {
 
@@ -278,16 +278,16 @@ int group_union(group *in1, group *in2, group **out)
       }
    }
 
-//fprintf(stderr, "   JASON: Group union create_group APP %d\n", index);
+//fprintf(stderr, "   JASON: Group union create_group APP %d", index);
 
    res = create_group(index);
 
    if (res == NULL) {
-      ERROR(1, "Failed to create group!\n");
+      ERROR(1, "Failed to create group!");
       return MPI_ERR_INTERN;
    }
 
-//fprintf(stderr, "   JASON: Group union create_group done %p\n", res);
+//fprintf(stderr, "   JASON: Group union create_group done %p", res);
 
    res->size = index;
 
@@ -299,7 +299,7 @@ int group_union(group *in1, group *in2, group **out)
       res->rank = -1;
    }
 
-//fprintf(stderr, "   JASON: Group union copy to group\n");
+//fprintf(stderr, "   JASON: Group union copy to group");
 
    for (i=0;i<index;i++) {
       res->members[i] = members[i];
@@ -307,7 +307,7 @@ int group_union(group *in1, group *in2, group **out)
 
    free(members);
 
-//fprintf(stderr, "   JASON: Group union done %p %p!\n", out, res);
+//fprintf(stderr, "   JASON: Group union done %p %p!", out, res);
 
    *out = res;
 
@@ -340,14 +340,14 @@ int group_incl(group *in, int n, int ranks[], group **out)
    int i, next;
 
    if (in == NULL) {
-      ERROR(1, "Group include got NULL as input!\n");
+      ERROR(1, "Group include got NULL as input!");
       return MPI_ERR_GROUP;
    }
 
    res = create_group(n);
 
    if (res == NULL) {
-      ERROR(1, "Failed to allocate space for new group!\n");
+      ERROR(1, "Failed to allocate space for new group!");
       return MPI_ERR_INTERN;
    }
 
@@ -359,7 +359,7 @@ int group_incl(group *in, int n, int ranks[], group **out)
       next = ranks[i];
 
       if (next < 0 || next >= in->size) {
-         ERROR(1, "Rank out of bounds (%d)!\n", next);
+         ERROR(1, "Rank out of bounds (%d)!", next);
          delete_group(res);
          return MPI_ERR_RANK;
       }
@@ -439,16 +439,16 @@ int group_range_incl(group *in, int n, int ranges[][3], group **out)
    int i, next, error;
 
    if (in == NULL) {
-      ERROR(1, "Group_range_incl got NULL as input!\n");
+      ERROR(1, "Group_range_incl got NULL as input!");
       return MPI_ERR_GROUP;
    }
 
-//   fprintf(stderr, "   *group_range_incl called. (%d %d %d) %d\n", in->rank, in->pid, in->size, n);
+//   fprintf(stderr, "   *group_range_incl called. (%d %d %d) %d", in->rank, in->pid, in->size, n);
 
    tmp = malloc(in->size * sizeof(int));
 
    if (tmp == NULL) {
-      ERROR(1, "Failed to allocate space for temporary group!\n");
+      ERROR(1, "Failed to allocate space for temporary group!");
       return MPI_ERR_INTERN;
    }
 
@@ -458,7 +458,7 @@ int group_range_incl(group *in, int n, int ranges[][3], group **out)
       error = get_range(in, tmp, &next, ranges[i][0], ranges[i][1], ranges[i][2]);
 
       if (error != MPI_SUCCESS) {
-         ERROR(1, "Failed to retrieve range %d (%d,%d,%d)!\n",
+         ERROR(1, "Failed to retrieve range %d (%d,%d,%d)!",
 				i, ranges[i][0], ranges[i][1], ranges[i][2]);
          free(tmp);
          return error;
@@ -468,7 +468,7 @@ int group_range_incl(group *in, int n, int ranges[][3], group **out)
    res = create_group(next);
 
    if (res == NULL) {
-      ERROR(1, "Failed to allocate space for new group!\n");
+      ERROR(1, "Failed to allocate space for new group!");
       free(tmp);
       return MPI_ERR_INTERN;
    }
@@ -507,21 +507,21 @@ MPI_Group group_f2c(int f)
    int i;
    MPI_Group res;
 
-fprintf(stderr, "   MPI_GROUP_F2C %d\n", f);
+fprintf(stderr, "   MPI_GROUP_F2C %d", f);
 
    if (f >= MAX_GROUPS) {
-fprintf(stderr, "   MPI_GROUP_F2C %d returns NULL(0)\n", f);
+fprintf(stderr, "   MPI_GROUP_F2C %d returns NULL(0)", f);
       return MPI_GROUP_NULL;
    }
 
    if (groups[f] == NULL) {
-fprintf(stderr, "   MPI_GROUP_F2C %d returns NULL(1)\n", f);
+fprintf(stderr, "   MPI_GROUP_F2C %d returns NULL(1)", f);
       return MPI_GROUP_NULL;
    }
 
    set_group_ptr(&res, groups[f]);
 
-fprintf(stderr, "   MPI_GROUP_F2C %d returns %p\n", f, groups[f]);
+fprintf(stderr, "   MPI_GROUP_F2C %d returns %p", f, groups[f]);
 
    return res;
 }

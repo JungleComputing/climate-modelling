@@ -31,16 +31,16 @@ static int wa_connect(char *server, unsigned short port)
    error = getaddrinfo(server, NULL, NULL, &result);
 
    if (error != 0) {
-       ERROR(1, "error in getaddrinfo: %s\n", gai_strerror(error));
+       ERROR(1, "error in getaddrinfo: %s", gai_strerror(error));
        return CONNECT_ERROR_SERVER_NOT_FOUND;
    }
 
    if (result->ai_family == AF_INET) {
-	DEBUG(1, "Got inet4\n");
+	DEBUG(1, "Got inet4");
    } else if (result->ai_family == AF_INET6) {
-	DEBUG(1, "Got inet6\n");
+	DEBUG(1, "Got inet6");
    } else {
-	ERROR(1, "Got unknown address type!\n");
+	ERROR(1, "Got unknown address type!");
    }
 
    socketfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -72,7 +72,7 @@ int wa_sendfully(unsigned char *buffer, size_t len)
       tmp = write(socketfd, buffer+w, len-w);
 
       if (tmp < 0) {
-         ERROR(1, "wa_sendfully failed! (%s)\n", strerror(errno));
+         ERROR(1, "wa_sendfully failed! (%s)", strerror(errno));
          return CONNECT_ERROR_SEND_FAILED;
       } else {
          w += tmp;
@@ -91,7 +91,7 @@ int wa_receivefully(unsigned char *buffer, size_t len)
       tmp = read(socketfd, buffer+r, len-r);
 
       if (tmp < 0) {
-         ERROR(1, "wa_receivefully failed! (%s)\n", strerror(errno));
+         ERROR(1, "wa_receivefully failed! (%s)", strerror(errno));
          return CONNECT_ERROR_RECEIVE_FAILED;
       } else { 
          r += tmp;
@@ -129,19 +129,19 @@ static int handshake(int local_rank, int local_count, int cluster_rank, int clus
    error = wa_sendfully(message, 6*4+strlen(cluster_name));
 
    if (error != CONNECT_OK) {
-      ERROR(1, "Handshake with server failed! (%d)\n", error);
+      ERROR(1, "Handshake with server failed! (%d)", error);
       return CONNECT_ERROR_HANDSHAKE_FAILED;
    }
 
    error = wa_receivefully(message, 1);
 
    if (error != CONNECT_OK) {
-      ERROR(1, "Handshake with server failed! (%d)\n", error);
+      ERROR(1, "Handshake with server failed! (%d)", error);
       return CONNECT_ERROR_HANDSHAKE_FAILED;
    }
 
    if (message[0] != OPCODE_HANDSHAKE_ACCEPTED) { 
-      ERROR(1, "Server refused handshake! (%d)\n", message[0]);
+      ERROR(1, "Server refused handshake! (%d)", message[0]);
       return CONNECT_ERROR_HANDSHAKE_FAILED;
    }
 
@@ -151,7 +151,7 @@ static int handshake(int local_rank, int local_count, int cluster_rank, int clus
    error = wa_receivefully((unsigned char*) cluster_sizes, cluster_count * 4);
 
    if (error != CONNECT_OK) {
-      ERROR(1, "Handshake with server failed! (%d)\n", error);
+      ERROR(1, "Handshake with server failed! (%d)", error);
       return CONNECT_ERROR_HANDSHAKE_FAILED;
    }
 
@@ -167,10 +167,10 @@ static int handshake(int local_rank, int local_count, int cluster_rank, int clus
 
    if (local_rank == 0) {
       for (i=0;i<cluster_count;i++) {
-        INFO(0, "HANDSHAKE", "Cluster %d %d %d\n", i, cluster_sizes[i], cluster_offsets[i]);
+        INFO(0, "HANDSHAKE", "Cluster %d %d %d", i, cluster_sizes[i], cluster_offsets[i]);
       }
 
-      INFO(0, "HANDHAKE", "Total size %d\n", cluster_offsets[cluster_count]);
+      INFO(0, "HANDHAKE", "Total size %d", cluster_offsets[cluster_count]);
    }
 
    return CONNECT_OK;
@@ -186,7 +186,7 @@ int wa_init(char *server_name, unsigned short port,
    error = wa_connect(server_name, port);
 
    if (error != CONNECT_OK) {
-      ERROR(1, "Failed to connect to hub!\n");
+      ERROR(1, "Failed to connect to hub!");
       return 0;
    }
 
@@ -194,7 +194,7 @@ int wa_init(char *server_name, unsigned short port,
                       cluster_name, cluster_sizes, cluster_offsets);
 
    if (error != CONNECT_OK) {
-      ERROR(1, "Failed to perform handshake with hub!\n");
+      ERROR(1, "Failed to perform handshake with hub!");
       close(socketfd);
       return 0;
    }
@@ -208,7 +208,7 @@ int wa_wait_for_data(int blocking)
    struct timeval timeout;
    fd_set select_set;
 
-   DEBUG(1, "WA_WAIT_FOR_DATA: Waiting for data to appear on socket (blocking=%d)\n", blocking);
+   DEBUG(1, "WA_WAIT_FOR_DATA: Waiting for data to appear on socket (blocking=%d)", blocking);
 
    FD_ZERO(&select_set);
    max_sd = socketfd;
@@ -224,7 +224,7 @@ int wa_wait_for_data(int blocking)
       result = select(max_sd + 1, &select_set, NULL, NULL, &timeout);
    }
 
-   DEBUG(1, "WA_WAIT_FOR_DATA: Result is %d\n", result);
+   DEBUG(1, "WA_WAIT_FOR_DATA: Result is %d", result);
 
    // Result will be 1 (have data), 0 (no data), -1 (error)
    return result;
@@ -239,21 +239,21 @@ int wa_finalize() {
    error = wa_sendfully((unsigned char *) &tmp, 4);
 
    if (error != 0) {
-      ERROR(1, "Failed to close link! %d\n", error);
+      ERROR(1, "Failed to close link! %d", error);
       return CONNECT_ERROR_CLOSE_FAILED;
    }
 
    error = shutdown(socketfd, SHUT_RDWR);
 
    if (error != 0) {
-      ERROR(1, "Failed to shutdown socket! %d\n", error);
+      ERROR(1, "Failed to shutdown socket! %d", error);
       return CONNECT_ERROR_CLOSE_FAILED;
    }
 
    error = close(socketfd);
 
    if (error != 0) {
-      ERROR(1, "Failed to close socket! %d\n", error);
+      ERROR(1, "Failed to close socket! %d", error);
       return CONNECT_ERROR_CLOSE_FAILED;
    }
 

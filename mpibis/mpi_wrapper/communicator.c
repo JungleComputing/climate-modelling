@@ -45,27 +45,27 @@ static int add_communicator(MPI_Comm comm, int number, int initial,
    int i; //, start, end, local, remote;
 
    if (number < 0 || number >= MAX_COMMUNICATORS) {
-      ERROR(1, "Ran out of communicator storage (%d)!\n", number);
+      ERROR(1, "Ran out of communicator storage (%d)!", number);
       return MPI_ERR_INTERN;
    }
 
    if (initial == 0 && number < 3) {
-      ERROR(1, "Attempting to overwrite reserved communicator (%d)!\n", number);
+      ERROR(1, "Attempting to overwrite reserved communicator (%d)!", number);
       return MPI_ERR_INTERN;
    }
 
    if (comms[number] != NULL) {
-      ERROR(1, "Attempting to overwrite existing communicator (%d)!\n", number);
+      ERROR(1, "Attempting to overwrite existing communicator (%d)!", number);
       return MPI_ERR_INTERN;
    }
 
-   INFO(0, "add_communicator", "Creating communicator %d : local(%d %d) | global(%d %d)\n",
+   INFO(0, "add_communicator", "Creating communicator %d : local(%d %d) | global(%d %d)",
            number, local_rank, local_size, global_rank, global_size);
 
    communicator *c = malloc(sizeof(communicator));
 
    if (c == NULL) {
-      ERROR(1, "Failed to allocate space for communicator (%d)!\n", number);
+      ERROR(1, "Failed to allocate space for communicator (%d)!", number);
       return MPI_ERR_INTERN;
    }
 
@@ -116,7 +116,7 @@ int init_communicators(int cluster_rank, int cluster_count,
    coordinators = malloc(cluster_count * sizeof(int));
 
    if (coordinators == NULL) {
-      ERROR(1, "Failed to allocate space for communicator (coordinators)!\n");
+      ERROR(1, "Failed to allocate space for communicator (coordinators)!");
       return MPI_ERR_INTERN;
    }
 
@@ -131,7 +131,7 @@ int init_communicators(int cluster_rank, int cluster_count,
    members = malloc(global_count * sizeof(uint32_t));
 
    if (members == NULL) {
-      ERROR(1, "Failed to allocate space for communicator (members)!\n");
+      ERROR(1, "Failed to allocate space for communicator (members)!");
       free(coordinators);
       return MPI_ERR_INTERN;
    }
@@ -163,7 +163,7 @@ int init_communicators(int cluster_rank, int cluster_count,
                             flags, members, NULL);
 
    if (error != MPI_SUCCESS) {
-      ERROR(1, "Failed to create MPI_COMM_WORLD!\n");
+      ERROR(1, "Failed to create MPI_COMM_WORLD!");
       return error;
    }
 
@@ -171,7 +171,7 @@ int init_communicators(int cluster_rank, int cluster_count,
    members = malloc(sizeof(uint32_t));
 
    if (members == NULL) {
-      ERROR(1, "Failed to allocate space for communicator (members -- self)!\n");
+      ERROR(1, "Failed to allocate space for communicator (members -- self)!");
       return MPI_ERR_INTERN;
    }
 
@@ -181,7 +181,7 @@ int init_communicators(int cluster_rank, int cluster_count,
    cluster_sizes = malloc(sizeof(int));
 
    if (coordinators == NULL) {
-      ERROR(1, "Failed to allocate space for communicator (coordinators -- self)!\n");     
+      ERROR(1, "Failed to allocate space for communicator (coordinators -- self)!");     
       return MPI_ERR_INTERN;
    }
 
@@ -195,7 +195,7 @@ int init_communicators(int cluster_rank, int cluster_count,
                             0, 1, 0, 1, 1, coordinators, cluster_sizes, flags, members, NULL);
 
    if (error != MPI_SUCCESS) {
-      ERROR(1, "Failed to create MPI_COMM_SELF!\n");
+      ERROR(1, "Failed to create MPI_COMM_SELF!");
       return error;
    }
 
@@ -204,7 +204,7 @@ int init_communicators(int cluster_rank, int cluster_count,
                             0, 0, 0, 0, 1, NULL, NULL, 0, NULL, NULL);
 
    if (error != MPI_SUCCESS) {
-      ERROR(1, "Failed to create MPI_COMM_NULL!\n");
+      ERROR(1, "Failed to create MPI_COMM_NULL!");
    }
 
    return error;
@@ -255,12 +255,12 @@ communicator* get_communicator(MPI_Comm comm)
 communicator *get_communicator_with_index(int index)
 {
    if (index < 0 || index >= MAX_COMMUNICATORS) {
-      ERROR(1, "get_communicator_with_index(index=%d) index out of bounds!\n", index);
+      ERROR(1, "get_communicator_with_index(index=%d) index out of bounds!", index);
       return NULL;
    }
 
    if (comms[index] == NULL) {
-      ERROR(1, "get_communicator_with_index(index=%d) communicator not found!\n", index);
+      ERROR(1, "get_communicator_with_index(index=%d) communicator not found!", index);
       return NULL;
    }
 
@@ -316,9 +316,9 @@ void store_message(message_buffer *m)
    communicator* c = comms[m->header.comm];
 
    if (c == NULL) {
-      ERROR(1, "Failed to find communicator %d in store_message!\n",
+      ERROR(1, "Failed to find communicator %d in store_message!",
 		m->header.comm);
-      ERROR(1, "Dropping message!\n");
+      ERROR(1, "Dropping message!");
       return;
    }
 
@@ -343,10 +343,10 @@ message_buffer *find_pending_message(communicator *c, int source, int tag)
 {
    message_buffer *curr, *prev;
 
-   DEBUG(1, "Checking for pending messages in %d from %d %d\n", c->number, source, tag);
+   DEBUG(1, "Checking for pending messages in %d from %d %d", c->number, source, tag);
 
    if (c->queue_head == NULL) {
-      DEBUG(1, "No pending messages\n");
+      DEBUG(1, "No pending messages");
       return NULL;
    }
 
@@ -374,7 +374,7 @@ message_buffer *find_pending_message(communicator *c, int source, int tag)
           }
 
           curr->next = NULL;
-          DEBUG(1, "Found pending message from %d\n", curr->header.source);
+          DEBUG(1, "Found pending message from %d", curr->header.source);
           return curr;
       }
 
@@ -382,7 +382,7 @@ message_buffer *find_pending_message(communicator *c, int source, int tag)
       curr = curr->next;
    }
 
-   DEBUG(1, "No pending messages\n");
+   DEBUG(1, "No pending messages");
 
    return NULL;
 }
