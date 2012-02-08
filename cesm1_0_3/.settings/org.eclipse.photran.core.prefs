@@ -1,0 +1,8 @@
+#Wed Feb 08 16:13:24 CET 2012
+EnableContentAssist=true
+EnableDeclView=true
+EnableHoverTip=true
+EnableVPG=true
+FortranIncludePaths=\\cesm1_0_3\n
+FortranModulePaths=\\cesm1_0_3\n
+eclipse.preferences.version=1
