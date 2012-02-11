@@ -334,7 +334,7 @@ void store_message(message_buffer *m)
 
 int match_message(message_buffer *m, int comm, int source, int tag)
 {
-   int result = ((comm == m->header.comm &&
+   int result = ((comm == m->header.comm) &&
                  (source == MPI_ANY_SOURCE || source == m->header.source) &&
                  (tag == MPI_ANY_TAG || tag == m->header.tag));
 
