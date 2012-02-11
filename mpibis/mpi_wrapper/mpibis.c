@@ -825,7 +825,9 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
             DEBUG(3, "PROBE_REQUEST: request=WA_RECEIVE performing WA probe");
 
             // No local message was found (yet), so try the WA link.
-            r->error = messaging_probe_receive(r, blocking);
+            // NOTE: we should poll here, so blocking is set to 0,
+            // ignoring the value of the parameter.
+            r->error = messaging_probe_receive(r, 0 /*blocking*/);
 
             if (request_completed(r)) {
                *flag = 1;
