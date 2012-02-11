@@ -334,19 +334,25 @@ void store_message(message_buffer *m)
 
 int match_message(message_buffer *m, int comm, int source, int tag)
 {
-   return (comm == m->header.comm &&
-           (source == MPI_ANY_SOURCE || source == m->header.source) &&
-           (tag == MPI_ANY_TAG || tag == m->header.tag));
+   int result = ((comm == m->header.comm &&
+                 (source == MPI_ANY_SOURCE || source == m->header.source) &&
+                 (tag == MPI_ANY_TAG || tag == m->header.tag));
+
+   DEBUG(5, "MATCH_MESSAGE: (comm=%d source=%d [any=%d] tag=%d [any=%d]) == (m.comm=%d m.source=%d m.tag=%d) => %d",
+	comm, source, MPI_ANY_SOURCE, tag, MPI_ANY_TAG,
+        m->header.comm, m->header.source, m->header.tag, result);
+
+   return result;
 }
 
 message_buffer *find_pending_message(communicator *c, int source, int tag)
 {
    message_buffer *curr, *prev;
 
-   DEBUG(1, "Checking for pending messages in %d from %d %d", c->number, source, tag);
+   DEBUG(4, "FIND_PENDING_MESSAGE: Checking for pending messages in comm=%d from source=%d tag=%d", c->number, source, tag);
 
    if (c->queue_head == NULL) {
-      DEBUG(1, "No pending messages");
+      DEBUG(4, "FIND_PENDING_MESSAGE: No pending messages");
       return NULL;
    }
 
@@ -374,7 +380,7 @@ message_buffer *find_pending_message(communicator *c, int source, int tag)
           }
 
           curr->next = NULL;
-          DEBUG(1, "Found pending message from %d", curr->header.source);
+          DEBUG(4, "FIND_PENDING_MESSAGE: Found pending message from %d", curr->header.source);
           return curr;
       }
 
@@ -382,7 +388,7 @@ message_buffer *find_pending_message(communicator *c, int source, int tag)
       curr = curr->next;
    }
 
-   DEBUG(1, "No pending messages");
+   DEBUG(4, "FIND_PENDING_MESSAGE: No matching messages");
 
    return NULL;
 }

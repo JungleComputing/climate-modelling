@@ -44,30 +44,30 @@ static message_buffer *probe_wa(communicator *c, int source, int tag, int blocki
 {
    message_buffer *m;
 
-   DEBUG(1, "PROBE_WA: Probing socket for incoming messages from source=%d tag=%d blocking=%d", source, tag, blocking);
+   DEBUG(4, "PROBE_WA: Probing socket for incoming messages from source=%d tag=%d blocking=%d", source, tag, blocking);
 
    do {
       m = receive_message(blocking, error);
 
       if (m == NULL) {
-         DEBUG(1, "PROBE_WA: No message received");
+         DEBUG(5, "PROBE_WA: No message received");
          return NULL;
       }
 
-      DEBUG(1, "PROBE_WA: Message received from %d %d", m->header.source, m->header.tag);
+      DEBUG(5, "PROBE_WA: Message received from source=%d tag=%d", m->header.source, m->header.tag);
 
       if (match_message(m, c->number, source, tag)) {
          // we have a match!
-         DEBUG(1, "PROBE_WA: Match! Returning message");
+         DEBUG(5, "PROBE_WA: Match! Returning message");
          return m;
       } else {
-         DEBUG(1, "PROBE_WA: No match. Storing message");
+         DEBUG(5, "PROBE_WA: No match. Storing message");
          store_message(m);
       }
 
    } while (blocking);
 
-   DEBUG(1, "PROBE_WA: No message received");
+   DEBUG(4, "PROBE_WA: No message received");
 
    return NULL;
 }
@@ -328,11 +328,11 @@ static message_buffer *receive_message(int blocking, int *error)
 {
    int opcode;
 
-   DEBUG(1, "Receiving message from socket (blocking=%d)", blocking);
+   DEBUG(4, "RECEIVE_MESSAGE: Receiving message from socket (blocking=%d)", blocking);
 
    int result = receive_opcode(&opcode, error, blocking);
 
-   DEBUG(1, "Result of receive: result=%d error=%d", result, *error);
+   DEBUG(4, "RECEIVE_MESSAGE: Result of receive: result=%d error=%d", result, *error);
 
    if (result == 0) {
       // Note: error will be set correctly if blocking was true
