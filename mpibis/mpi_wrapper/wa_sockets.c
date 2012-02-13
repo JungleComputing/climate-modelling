@@ -219,7 +219,7 @@ int wa_wait_for_data(int blocking)
       timeout.tv_usec = 0;
       result = select(max_sd + 1, &select_set, NULL, NULL, &timeout);
    } else {
-      timeout.tv_sec  = 600;
+      timeout.tv_sec  = WA_SOCKET_TIMEOUT;
       timeout.tv_usec = 0;
       result = select(max_sd + 1, &select_set, NULL, NULL, &timeout);
    }

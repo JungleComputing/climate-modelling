@@ -11,7 +11,7 @@
 // 3 print errors, warnings and info
 // 4+ print all
 
-#define VERBOSE 4
+#define VERBOSE 1
 
 void init_debug();
 

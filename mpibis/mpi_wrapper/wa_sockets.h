@@ -12,6 +12,9 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 
+// Timeout for a WA receive (in seconds).
+#define WA_SOCKET_TIMEOUT                  3600
+
 #define CONNECT_OK                         0
 #define CONNECT_ERROR_SERVER_NOT_FOUND     1
 #define CONNECT_ERROR_CANNOT_CREATE_SOCKET 2

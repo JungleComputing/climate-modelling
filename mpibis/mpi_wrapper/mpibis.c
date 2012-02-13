@@ -9,6 +9,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <execinfo.h>
 
 #include "mpi.h"
 #include "generated_header.h"
@@ -625,6 +626,7 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
       error = messaging_probe_receive(r, 0);
 
    } else { // local == 0 && source == MPI_ANY_SOURCE
+
       // If the source may be local or remote, we must poll both. Start with local MPI.
       // FIXME: fixed order may cause starvation ?
       error = PMPI_Iprobe(MPI_ANY_SOURCE, tag, c->comm, &flag, MPI_STATUS_IGNORE);
@@ -635,8 +637,9 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
       }
 
       if (flag) {
-         // A message is available locally, so start receiving it!
-         error = PMPI_Irecv(buf, count, datatype, source, tag, c->comm, &(r->req));
+         // A message is available locally, so receiving it!
+         r->error = PMPI_Recv(buf, count, datatype, MPI_ANY_SOURCE, tag, c->comm, MPI_STATUS_IGNORE);
+         r->flags |= REQUEST_FLAG_COMPLETED;
       } else {
          // No local message was found (yet), so try the WA link.
          error = messaging_probe_receive(r, 0);
@@ -798,46 +801,56 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
       }
 
    } else {
+      // It was a non-persistent mixed receive request, so we must probe
+      // the local network and the WA link.
 
       DEBUG(2, "PROBE_REQUEST: request=WA_RECEIVE_ANY blocking=%d", blocking);
 
-      // It was a non-persistent mixed receive request, so we must probe
-      // the local network and the WA link.
-      do {
-         // Probe locally first
-         r->error = PMPI_Iprobe(MPI_ANY_SOURCE, r->tag, r->c->comm, flag, MPI_STATUS_IGNORE);
+      if (request_completed(r)) { 
+         DEBUG(3, "PROBE_REQUEST: request=WA_RECEIVE_ANY already completed by source=%d tag=%d count=%d", r->source_or_dest, r->tag, r->count);
+         *flag = 1;
+      } else { 
+         do {
+            // Probe locally first
+            DEBUG(3, "PROBE_REQUEST: request=WA_RECEIVE_ANY performing LOCAL probe for ANY, %d", r->tag);
 
-         if (r->error != MPI_SUCCESS) {
-            IERROR(1, "IProbe from MPI_ANY_SOURCE failed! ()");
-            return MPI_ERR_INTERN;
-         }
+            r->error = PMPI_Iprobe(MPI_ANY_SOURCE, r->tag, r->c->comm, flag, MPI_STATUS_IGNORE);
 
-         if (*flag) {
-
-            DEBUG(3, "PROBE_REQUEST: request=WA_RECEIVE performing LOCAL receive");
-
-            // A message is available locally, so receiving it!
-            r->error = PMPI_Recv(r->buf, r->count, r->type, MPI_ANY_SOURCE, r->tag, r->c->comm, status);
-            r->flags |= REQUEST_FLAG_COMPLETED;
-
-         } else {
-
-            DEBUG(3, "PROBE_REQUEST: request=WA_RECEIVE performing WA probe");
-
-            // No local message was found (yet), so try the WA link.
-            // NOTE: we should poll here, so blocking is set to 0,
-            // ignoring the value of the parameter.
-            r->error = messaging_probe_receive(r, 0 /*blocking*/);
-
-            if (request_completed(r)) {
-               *flag = 1;
-               status->MPI_SOURCE = r->source_or_dest;
-               status->MPI_TAG = r->tag;
-               status->MPI_ERROR = r->error;
+            if (r->error != MPI_SUCCESS) {
+               IERROR(1, "IProbe from MPI_ANY_SOURCE failed! ()");
+               return MPI_ERR_INTERN;
             }
-         }
 
-      } while (blocking && (*flag == 0) && (r->error == MPI_SUCCESS));
+            if (*flag) {
+
+               DEBUG(3, "PROBE_REQUEST: request=WA_RECEIVE_ANY performing LOCAL receive");
+ 
+               // A message is available locally, so receiving it!
+               r->error = PMPI_Recv(r->buf, r->count, r->type, MPI_ANY_SOURCE, r->tag, r->c->comm, status);
+               r->flags |= REQUEST_FLAG_COMPLETED;
+
+            } else {
+
+               DEBUG(3, "PROBE_REQUEST: request=WA_RECEIVE_ANY performing WA probe");
+ 
+               // No local message was found (yet), so try the WA link.
+               // NOTE: we should poll here, so blocking is set to 0,
+               // ignoring the value of the parameter.
+               r->error = messaging_probe_receive(r, 0 /*blocking*/);
+
+               if (request_completed(r)) {
+
+                  DEBUG(3, "PROBE_REQUEST: request=WA_RECEIVE_ANY perfored WA receive");
+
+                  *flag = 1;
+                  status->MPI_SOURCE = r->source_or_dest;
+                  status->MPI_TAG = r->tag;
+                  status->MPI_ERROR = r->error;
+               }
+            }
+
+         } while (blocking && (*flag == 0) && (r->error == MPI_SUCCESS));
+      }
    }
 
    if (*flag == 1) {
@@ -923,19 +936,33 @@ int IMPI_Waitany(int count, MPI_Request *array_of_requests, int *index, MPI_Stat
 #define __IMPI_Waitall
 int IMPI_Waitall(int count, MPI_Request *array_of_requests, MPI_Status *array_of_statuses)
 {
-   int i;
-   int error;
-   int errors = 0;
+   int i, error;
+//   size_t size;
+//   void *array[5];
 
-   for (i=0;i<count;i++) {
+   int errors = 0;   
+
+   DEBUG(0, "MPI_WAITALL: %d", count); 
+
+//   size = backtrace(array, 5);
+//   backtrace_symbols_fd(array, size, 2);
+
+   for (i=0;i<count;i++) {      
       if (array_of_requests[i] != MPI_REQUEST_NULL) {
+
+         DEBUG(1, "MPI_WAITALL: %d of %d request=%s", i, count, request_to_string(array_of_requests[i])); 
+ 
          error = IMPI_Wait(&array_of_requests[i], &array_of_statuses[i]);
+
+         DEBUG(1, "MPI_WAITALL: %d of %d request=%s -> error=%d", i, count, request_to_string(array_of_requests[i]), error); 
 
          if (error != MPI_SUCCESS) {
             errors++;
          }
       }
    }
+
+   DEBUG(0, "MPI_WAITALL: %d error=%d", count, errors); 
 
    if (errors != 0) {
       return MPI_ERR_IN_STATUS;
@@ -947,7 +974,7 @@ int IMPI_Waitall(int count, MPI_Request *array_of_requests, MPI_Status *array_of
 #define __IMPI_Request_free
 int IMPI_Request_free(MPI_Request *r)
 {
-   int error;
+   int error = MPI_SUCCESS;
    request *req = NULL;
 
    if (r == NULL || *r == MPI_REQUEST_NULL) {

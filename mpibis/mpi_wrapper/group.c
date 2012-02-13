@@ -233,7 +233,7 @@ int group_union(group *in1, group *in2, group **out)
 {
    group *res;
    int *members;
-   int i, j, found, index, size, rank, current;
+   int i, j, found, index, size, current, rank = -1;
 
 //fprintf(stderr, "   JASON: Group union %p %p %p", in1, in2, out);
 
