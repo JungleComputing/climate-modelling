@@ -13,19 +13,19 @@
 source /etc/profile.d/modules.csh
 
 module purge
-module add openmpi/gcc/64/1.4.2
-module add netcdf/gcc/64/4.1.1
+module add openmpi/gcc/64
+module add netcdf/gcc/64
 module list
 
 #--- set paths
 if ($USE_MPISERIAL == "FALSE") then
-   setenv MPICH_PATH /cm/shared/apps/openmpi/gcc/64/1.4.2/
+   setenv MPICH_PATH $MPI_HOME
 endif
 
 setenv PATH ${MPICH_PATH}/bin:${PATH}
 
 #--- set env variables for Macros if needed
-setenv NETCDF_PATH /cm/shared/apps/netcdf/gcc/64/4.1.1
+setenv NETCDF_PATH $NETCDF
 
 #-------------------------------------------------------------------------------
 # GENERIC_USER

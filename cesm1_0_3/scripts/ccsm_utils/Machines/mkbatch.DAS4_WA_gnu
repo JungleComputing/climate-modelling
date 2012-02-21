@@ -33,7 +33,7 @@ source /etc/csh.cshrc
 source /etc/profile.d/modules.csh
 
 module purge
-module load netcdf/gcc/64/4.1.1
+#module load netcdf/gcc/64/4.1.1
 module load sge/6.2u5p2
 module list 
 
@@ -63,7 +63,7 @@ else if ($PHASE == set_exe) then
 set maxthrds = `${UTILROOT}/Tools/taskmaker.pl -maxthrds`
 set maxtasks = `${UTILROOT}/Tools/taskmaker.pl -sumtasks`
 
-cat >> ${CASEROOT}/${CASE}.${MACH}.run << EOF1
+cat >> ${CASEROOT}/${CASE}.${mach}.run << EOF1
 # -------------------------------------------------------------------------
 # Run the model
 # -------------------------------------------------------------------------
@@ -74,7 +74,7 @@ echo "\`date\` -- CSM EXECUTION BEGINS HERE"
 
 setenv OMP_NUM_THREADS ${maxthrds}
 
-$MPI_RUN -np \$totcores --hostfile \$HOSTFILE --output-filename out.c1.\$LID ./ccsm.exe >&! ccsm.log.\$LID
+/var/scratch/jason/OpenMPI/openmpi-1.4.2-fixed-gnu/bin/mpirun -np \$totcores --hostfile \$HOSTFILE --output-filename out.c1.\$LID ./ccsm.exe >&! ccsm.log.\$LID
 
 wait
 echo "\`date\` -- CSM EXECUTION HAS FINISHED" 

@@ -60,12 +60,12 @@ LIB_PNETCDF   :=
 LAPACK_LIBDIR := 
 #=====================================================
 
-CFLAGS        := $(CPPDEFS) -g
+CFLAGS        := $(CPPDEFS) -O3
 FIXEDFLAGS    := 
 FREEFLAGS     := 
-FFLAGS        := $(CPPDEFS) -g -fno-range-check -ffree-line-length-none -fconvert=swap -fcray-pointer -ffpe-trap=invalid,zero,overflow
+FFLAGS        := $(CPPDEFS) -g -fno-range-check -ffree-line-length-none -fconvert=swap -fcray-pointer -ffpe-trap=invalid,zero,overflow -fmax-stack-var-size=262144
 FFLAGS_NOOPT  := $(FFLAGS) -O0
-FFLAGS_OPT    := -O2
+FFLAGS_OPT    := -O3
 LDFLAGS       := -lcurl -lssl -lcrypto -lz
 AR            := ar
 MOD_SUFFIX    := mod
@@ -125,7 +125,7 @@ endif
 
 ifeq ($(MODEL),mct)
         #add arguments for mct configure here
-  CONFIG_ARGS += CC="$(CC)" FC="$(FC)" F90="$(FC)" INCLUDEPATH="-I$(INC_MPI)"
+  CONFIG_ARGS += CC="$(CC)" FC="$(FC)" F90="$(FC)" INCLUDEPATH="-I$(INC_MPI)" FCFLAGS="$(FFLAGS)" F90FLAGS="$(FFLAGS)"
 endif
 
 ifeq ($(MODEL),pio)
@@ -134,7 +134,7 @@ ifeq ($(MODEL),pio)
   endif 
 
 # JASON: What about the other options ? 
-  CONFIG_ARGS += CC="$(CC)" F90="$(FC)" NETCDF_PATH="$(NETCDF_PATH)" MPI_INC="-I$(INC_MPI)" FFLAGS="-ffree-line-length-none"
+  CONFIG_ARGS += CC="$(CC)" F90="$(FC)" NETCDF_PATH="$(NETCDF_PATH)" MPI_INC="-I$(INC_MPI)" FFLAGS="$(FFLAGS)" CFLAGS="$(CFLAGS)"
 endif
 #=====================================================
 
