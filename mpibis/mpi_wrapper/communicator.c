@@ -227,7 +227,7 @@ int free_communicator(communicator * c)
 
    MPI_Comm comm = c->comm;
 
-   error = MPI_Comm_free(&comm);
+   error = PMPI_Comm_free(&comm);
 
    comms[c->number] = NULL;
 
