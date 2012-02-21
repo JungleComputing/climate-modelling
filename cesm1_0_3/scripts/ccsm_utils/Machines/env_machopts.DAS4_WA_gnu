@@ -13,7 +13,7 @@
 source /etc/profile.d/modules.csh
 
 module purge
-module add netcdf/gcc/64/4.1.1
+#module add netcdf/gcc/64/4.1.1
 module list
 
 #--- set paths
@@ -24,7 +24,8 @@ endif
 setenv PATH ${MPICH_PATH}/bin:${PATH}
 
 #--- set env variables for Macros if needed
-setenv NETCDF_PATH /cm/shared/apps/netcdf/gcc/64/4.1.1
+#setenv NETCDF_PATH /cm/shared/apps/netcdf/gcc/64/4.1.1
+setenv NETCDF_PATH /var/scratch/jason/netcdf/netcdf-3.6.3-bin
 
 #-------------------------------------------------------------------------------
 # GENERIC_USER
