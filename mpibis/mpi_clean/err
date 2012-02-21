@@ -1,0 +1,33 @@
+No Modulefiles Currently Loaded.
+debugging.c:360: warning: ‘println2’ defined but not used
+In file included from request.c:12:
+request.h:26: error: expected specifier-qualifier-list before ‘MPI_Datatype’
+request.h:44: error: expected declaration specifiers or ‘...’ before ‘MPI_Datatype’
+request.h:48: error: expected ‘)’ before ‘request’
+request.h:50: error: expected ‘)’ before ‘*’ token
+request.c:16:17: error: mpi.h: No such file or directory
+request.c:50: error: conflicting types for ‘create_request’
+request.h:44: note: previous declaration of ‘create_request’ was here
+request.c: In function ‘create_request’:
+request.c:61: error: ‘request’ has no member named ‘type’
+request.c:62: error: ‘request’ has no member named ‘count’
+request.c:63: error: ‘request’ has no member named ‘source_or_dest’
+request.c:64: error: ‘request’ has no member named ‘tag’
+request.c:65: error: ‘request’ has no member named ‘c’
+request.c:66: error: ‘request’ has no member named ‘error’
+request.c:67: error: ‘request’ has no member named ‘req’
+request.c:67: error: ‘MPI_REQUEST_NULL’ undeclared (first use in this function)
+request.c:67: error: (Each undeclared identifier is reported only once
+request.c:67: error: for each function it appears in.)
+request.c:68: error: ‘request’ has no member named ‘index’
+request.c:70: error: ‘request’ has no member named ‘index’
+request.c: In function ‘free_request’:
+request.c:82: error: ‘request’ has no member named ‘req’
+request.c:82: error: ‘MPI_REQUEST_NULL’ undeclared (first use in this function)
+request.c:83: warning: implicit declaration of function ‘PMPI_Request_free’
+request.c:83: error: ‘request’ has no member named ‘req’
+request.c:86: error: ‘request’ has no member named ‘index’
+request.c: In function ‘get_request’:
+request.c:94: warning: unused variable ‘res’
+request.c: In function ‘set_request_ptr’:
+request.c:120: error: ‘request’ has no member named ‘index’
