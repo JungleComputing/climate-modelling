@@ -331,6 +331,10 @@ contains
     call mpi_bcast(pelist, size(pelist), MPI_INTEGER, 0, GLOBAL_COMM, ierr)
     call seq_comm_setcomm(GLOID,pelist)
 
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_comm_init CREATE GLOID', GLOID, 0, numpes-1, 1
+#endif
+
     if (mype == 0) then
        pelist(1,1) = amin
        pelist(2,1) = amax
@@ -338,6 +342,10 @@ contains
     end if
     call mpi_bcast(pelist, size(pelist), MPI_INTEGER, 0, GLOBAL_COMM, ierr)
     call seq_comm_setcomm(ATMID,pelist,atm_nthreads)
+
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_comm_init CREATE ATMID', ATMID, amin, amax, astr
+#endif
 
     if (mype == 0) then
        pelist(1,1) = lmin
@@ -347,6 +355,10 @@ contains
     call mpi_bcast(pelist, size(pelist), MPI_INTEGER, 0, GLOBAL_COMM, ierr)
     call seq_comm_setcomm(LNDID,pelist,lnd_nthreads)
 
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_comm_init CREATE LNDID', LNDID, lmin, lmax, lstr
+#endif
+
     if (mype == 0) then
        pelist(1,1) = imin
        pelist(2,1) = imax
@@ -354,6 +366,10 @@ contains
     end if
     call mpi_bcast(pelist, size(pelist), MPI_INTEGER, 0, GLOBAL_COMM, ierr)
     call seq_comm_setcomm(ICEID,pelist,ice_nthreads)
+
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_comm_init CREATE ICEID', ICEID, imin, imax, istr
+#endif
 
     if (mype == 0) then
        pelist(1,1) = gmin
@@ -363,6 +379,10 @@ contains
     call mpi_bcast(pelist, size(pelist), MPI_INTEGER, 0, GLOBAL_COMM, ierr)
     call seq_comm_setcomm(GLCID,pelist,glc_nthreads)
 
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_comm_init CREATE GLCID', GLCID, gmin, gmax, gstr
+#endif
+
     if (mype == 0) then
        pelist(1,1) = omin
        pelist(2,1) = omax
@@ -371,19 +391,47 @@ contains
     call mpi_bcast(pelist, size(pelist), MPI_INTEGER, 0, GLOBAL_COMM, ierr)
     call seq_comm_setcomm(OCNID,pelist,ocn_nthreads)
 
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_comm_init CREATE OCNID', OCNID, omin, omax, ostr
+#endif
+
     if (mype == 0) then
        pelist(1,1) = cmin
        pelist(2,1) = cmax
        pelist(3,1) = cstr
     end if
     call mpi_bcast(pelist, size(pelist), MPI_INTEGER, 0, GLOBAL_COMM, ierr)
-
     call seq_comm_setcomm(CPLID,pelist,cpl_nthreads)
 
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_comm_init CREATE CPLID', CPLID, cmin, cmax, cstr
+write(*,*) 'JASON: seq_comm_init JOIN CPLID ATMID CPLATMID', CPLID, ATMID, CPLATMID
+#endif
+
     call seq_comm_joincomm(CPLID,ATMID,CPLATMID)
+
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_comm_init JOIN CPLID LNDID CPLLNDID', CPLID, LNDID, CPLLNDID
+#endif
+
     call seq_comm_joincomm(CPLID,LNDID,CPLLNDID)
+
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_comm_init JOIN CPLID ICEID CPLICEID', CPLID, ICEID, CPLICEID
+#endif
+
     call seq_comm_joincomm(CPLID,ICEID,CPLICEID)
+
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_comm_init JOIN CPLID OCNID CPLOCNID', CPLID, OCNID, CPLOCNID
+#endif
+
     call seq_comm_joincomm(CPLID,OCNID,CPLOCNID)
+
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_comm_init JOIN CPLID GLCID CPLGLCID', CPLID, GLCID, CPLGLCID
+#endif
+
     call seq_comm_joincomm(CPLID,GLCID,CPLGLCID)
 
     max_threads = -1
@@ -546,8 +594,17 @@ contains
        call shr_sys_abort()
     endif
 
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_comm_join UNION of ', ID1, ID2, ID
+#endif
+
     call mpi_group_union(seq_comms(ID1)%mpigrp,seq_comms(ID2)%mpigrp,mpigrp,ierr)
     call shr_mpi_chkerr(ierr,subname//' mpi_comm_union mpigrp')
+
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_comm_join COMM CREATE of ', ID
+#endif
+
     call mpi_comm_create(GLOBAL_COMM, mpigrp, mpicom, ierr)
     call shr_mpi_chkerr(ierr,subname//' mpi_comm_create mpigrp')
 

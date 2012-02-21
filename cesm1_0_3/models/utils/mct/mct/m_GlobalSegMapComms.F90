@@ -444,6 +444,10 @@
   integer :: myID, ierr, n
   integer, dimension(:), allocatable :: IntBuffer
 
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: GlobalSegMap.bcast_ ', root, comm
+#endif
+
        ! Step One:  which process am I?
 
   call MP_COMM_RANK(comm, myID, ierr)
@@ -451,6 +455,10 @@
 
        ! Step Two:  Broadcast the scalar bits of the GlobalSegMap from
        ! the root.
+
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: GlobalSegMap.bcast_ I am ', myID
+#endif
 
   allocate(IntBuffer(3), stat=ierr) ! allocate buffer space (all PEs)
   if(ierr /= 0) then
@@ -469,6 +477,10 @@
      IntBuffer(3) = GSMap%gsize
   endif
 
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: GlobalSegMap.bcast_ BCAST1 IN ', myID, root, IntBuffer(1), IntBuffer(2), IntBuffer(3)
+#endif
+
   call MPI_BCAST(IntBuffer, 3, MP_type(IntBuffer(1)), root, comm, ierr)
   if(ierr /= 0) call MP_perr_die(myname_,'MPI_BCAST(IntBuffer)',ierr)
 
@@ -477,6 +489,10 @@
      GSMap%ngseg = IntBuffer(2)
      GSMap%gsize = IntBuffer(3)
   endif
+
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: GlobalSegMap.bcast_ BCAST1 OUT ', myId, root, IntBuffer(1), IntBuffer(2), IntBuffer(3)
+#endif
 
   deallocate(IntBuffer, stat=ierr) ! deallocate buffer space
   if(ierr /= 0) then
@@ -492,6 +508,10 @@
        ! Step Three:  Broadcast the vector bits of GSMap from the root.
        ! Pack them into one big array to save latency costs associated
        ! with multiple broadcasts.
+
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: GlobalSegMap.bcast_ Allocate ', (3*GSMap%ngseg)
+#endif
 
   allocate(IntBuffer(3*GSMap%ngseg), stat=ierr) ! allocate buffer space (all PEs)
   if(ierr /= 0) then
@@ -511,6 +531,10 @@
 	IntBuffer(2*GSMap%ngseg+n) = GSMap%pe_loc(n)
      end do
   endif
+
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: GlobalSegMap.bcast_ BCAST2 ', myID, root, (3*GSMap%ngseg)
+#endif
 
   call MPI_BCAST(IntBuffer, 3*GSMap%ngseg, MP_Type(IntBuffer(1)), root, comm, ierr)
   if(ierr /= 0) call MP_perr_die(myname_,'Error in second MPI_BCAST(IntBuffer)',ierr)
@@ -549,6 +573,10 @@
        return
     endif
   endif 
+
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: GlobalSegMap.bcast_ DONE'
+#endif
 
  end subroutine bcast_
 

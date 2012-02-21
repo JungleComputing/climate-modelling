@@ -204,6 +204,11 @@
 ! ------------------------------------------------------------------
 
 ! Check that ncomps is a legal value
+
+#ifdef DEBUG_JASON
+WRITE(*,*) 'JASON: mct.initm: ', ncomps, globalcomm, mycomms, myids
+#endif
+
   if(ncomps < 1) then
      call die(myname_, "argument ncomps can't less than one!",ncomps)
   endif
@@ -227,9 +232,18 @@
   call MP_comm_rank(globalcomm,myGid,ier)
   if(ier /= 0) call MP_perr_die(myname_,'MP_comm_rank()',ier)
 
+#ifdef DEBUG_JASON
+WRITE(*,*) 'JASON: mct.initm: I am ', myGid, Gsize
+#endif
+
 ! allocate space on global root to receive info about 
 ! the other components
   if(myGid == 0) then
+
+#ifdef DEBUG_JASON
+WRITE(*,*) 'JASON: mct.initm: allocating space', ncomps
+#endif
+
      allocate(nprocs(ncomps),compids(ncomps),&
      reqs(ncomps),status(MP_STATUS_SIZE,ncomps),&
      root_nprocs(ncomps),stat=ier)
@@ -238,14 +252,19 @@
      endif
   endif
 
-
 !!!!!!!!!!!!!!!!!!
 !  Gather the number of procs from the root of each component
 !!!!!!!!!!!!!!!!!!
 !
 !  First on the global root, post a receive for each component
   if(myGid == 0) then
+
     do i=1,ncomps
+
+#ifdef DEBUG_JASON
+WRITE(*,*) 'JASON: mct.initm: I am 0 - POSTING IRECV from any ', i, root_nprocs(i)
+#endif
+
        call MPI_IRECV(root_nprocs(i), 1, MP_INTEGER, MP_ANY_SOURCE,i, &
 	 globalcomm, reqs(i), ier)
        if(ier /= 0) call MP_perr_die(myname_,'MPI_IRECV(root_nprocs)',ier)
@@ -260,6 +279,11 @@
       call MP_comm_rank(mycomms(i),myLid,ier)
       if(ier /= 0) call MP_perr_die(myname_,'MP_comm_rank()',ier)
       if(myLid == 0) then
+
+#ifdef DEBUG_JASON
+WRITE(*,*) 'JASON: mct.initm: Doing SEND to 0 tag=', myids(i)
+#endif
+
         call MPI_SEND(mysize,1,MP_INTEGER,0,myids(i),globalcomm,ier)
         if(ier /= 0) call MP_perr_die(myname_,'MPI_SEND(mysize)',ier)
       endif
@@ -268,6 +292,11 @@
 
 !  Global root waits for all sends
   if(myGid == 0) then
+
+#ifdef DEBUG_JASON
+WRITE(*,*) 'JASON: mct.initm: WAITALL for IRECV(1) ', size(reqs)
+#endif
+
     call MPI_WAITALL(size(reqs), reqs, status, ier)
     if(ier /= 0) call MP_perr_die(myname_,'MPI_WAITALL()',ier)
   endif
@@ -295,6 +324,11 @@
   if(myGid == 0) then
     do i=1,ncomps
        apoint => tmparray(0:Gsize-1,i)
+
+#ifdef DEBUG_JASON
+WRITE(*,*) 'JASON: mct.initm: POSTING IRECV(2) from any', i, root_nprocs(i)
+#endif
+
        call MPI_IRECV(apoint(1), root_nprocs(i),MP_INTEGER, &
        MP_ANY_SOURCE,i,globalcomm, reqs(i), ier)
        if(ier /= 0) call MP_perr_die(myname_,'MPI_IRECV()',ier)
@@ -316,10 +350,20 @@
       allocate(Gprocids(mysize),stat=ier)
       if(ier/=0) call die(myname_,'allocate(Gprocids)',ier)
 ! gather over the LOCAL comm
+
+#ifdef DEBUG_JASON
+WRITE(*,*) 'JASON: mct.initm: LOCAL GATHER', mycomms(i)
+#endif
+
       call MPI_GATHER(myGid,1,MP_INTEGER,Gprocids,1,MP_INTEGER,0,mycomms(i),ier)
       if(ier/=0) call die(myname_,'MPI_GATHER Gprocids',ier)
 
       if(myLid == 0) then
+
+#ifdef DEBUG_JASON
+WRITE(*,*) 'JASON: mct.initm: SEND TO', 0, myids(i)
+#endif
+
         call MPI_SEND(Gprocids,mysize,MP_INTEGER,0,myids(i),globalcomm,ier)
         if(ier /= 0) call MP_perr_die(myname_,'MPI_SEND(Gprocids)',ier)
       endif
@@ -331,6 +375,11 @@
 
 !  Global root waits for all sends
   if(myGid == 0) then
+
+#ifdef DEBUG_JASON
+WRITE(*,*) 'JASON: mct.initm: WAITALL for IRECV(2) ', size(reqs)
+#endif
+
     call MPI_WAITALL(size(reqs), reqs, status, ier)
     if(ier /= 0) call MP_perr_die(myname_,'MPI_WAITALL(Gprocids)',ier)
   endif
@@ -370,6 +419,10 @@
    deallocate(compids,reqs,status,nprocs,tmparray,stat=ier)
    if(ier/=0) call die(myname_,'deallocate(compids,..)',ier)
  endif
+
+#ifdef DEBUG_JASON
+WRITE(*,*) 'JASON: mct.initm: DONE'
+#endif
 
  end subroutine initm_
 

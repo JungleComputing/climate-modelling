@@ -218,11 +218,20 @@ module seq_rearr_mod
 
     mranko = -1
 
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_rearr_gsmapExtend ', mpicomi, mpicomo, compido
+#endif
+
     ! --- create the new gsmap on the mpicomi root only
 
     if (mpicomi /= MPI_COMM_NULL) then
        call mpi_comm_rank(mpicomi,mrank,ierr)
        call shr_mpi_chkerr(ierr,subname//' gsm_cop mpi_comm_rank i')
+
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_rearr_gsmapExtend RANK ', mrank
+#endif
+
        if (mrank == 0) then
           call mpi_comm_group(mpicomi,mpigrpi,ierr)
           call shr_mpi_chkerr(ierr,subname//' gsm_cop mpi_comm_group i')
@@ -236,10 +245,18 @@ module seq_rearr_mod
           ! --- setup the translation of pe numbers from the old gsmap(mpicom)
           ! --- to the new one, pei -> peo
 
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_rearr_gsmapExtend ALLOCATE ', msizei, msizeo, msizei
+#endif
+
           allocate(pei(0:msizei-1),peo(0:msizei-1))
           do n = 0,msizei-1
              pei(n) = n
           enddo
+
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_rearr_gsmapExtend ARRAYIN ', pei
+#endif
 
           peo = -1
           call mpi_group_translate_ranks(mpigrpi,msizei,pei,mpigrpo,peo,ierr)
@@ -252,7 +269,14 @@ module seq_rearr_mod
              endif
           enddo
 
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_rearr_gsmapExtend ARRAYOUT ', peo
+#endif
           mranko = peo(0)
+
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_rearr_gsmapExtend MRANKO ', mranko
+#endif
 
           ! --- compute the new gsmap which has the same start and length values
           ! --- but peloc is now the mapping of pei to peo
@@ -276,6 +300,10 @@ module seq_rearr_mod
 
     ! --- broadcast via allreduce the mpicomi root pe in mpicomo space
     ! --- mranko is -1 except on the root pe where is it peo of that pe
+
+#ifdef DEBUG_JASON
+write(*,*) 'JASON: seq_rearr_gsmapExtend ALLREDUCE MRANKO ', mranko
+#endif
 
     call mpi_allreduce(mranko,mrankog,1,MPI_INTEGER,MPI_MAX,mpicomo,ierr)
     call shr_mpi_chkerr(ierr,subname//' gsm_cop mpi_allreduce max')
