@@ -38,7 +38,7 @@ USER_LINKER      := mpif90
 # below.  Ignore PNETCDF stuff initially, it's not required.
 
 ifeq ($(strip $(NETCDF_PATH)),)
-    NETCDF_PATH := /cm/shared/apps/netcdf/gcc/64/4.1.1
+     NETCDF_PATH := /var/scratch/jason/netcdf/netcdf-3.6.3-bin
 endif
 INC_NETCDF    := $(NETCDF_PATH)/include
 LIB_NETCDF    := $(NETCDF_PATH)/lib
@@ -60,13 +60,13 @@ LIB_PNETCDF   :=
 LAPACK_LIBDIR := 
 #=====================================================
 
-CFLAGS        := $(CPPDEFS) -g
+CFLAGS        := $(CPPDEFS) -O3
 FIXEDFLAGS    := 
 FREEFLAGS     := 
-FFLAGS        := $(CPPDEFS) -g -fno-range-check -ffree-line-length-none -fconvert=swap -fcray-pointer -ffpe-trap=invalid,zero,overflow
+FFLAGS        := $(CPPDEFS) -g -fno-range-check -ffree-line-length-none -fconvert=swap -fcray-pointer -ffpe-trap=invalid,zero,overflow -fmax-stack-var-size=262144
 FFLAGS_NOOPT  := $(FFLAGS) -O0
-FFLAGS_OPT    := -O2
-LDFLAGS       := -L/var/scratch/jason/climate-modelling/mpibis -lmpibis -lcurl -lssl -lcrypto -lz
+FFLAGS_OPT    := -O3
+LDFLAGS       := -L/var/scratch/jason/climate-modelling/mpibis -lcurl -lssl -lcrypto -lz
 AR            := ar
 MOD_SUFFIX    := mod
 CONFIG_SHELL  :=
@@ -125,7 +125,7 @@ endif
 
 ifeq ($(MODEL),mct)
         #add arguments for mct configure here
-  CONFIG_ARGS += CC="$(CC)" FC="$(FC)" F90="$(FC)" INCLUDEPATH="-I$(INC_MPI)"
+  CONFIG_ARGS += CC="$(CC)" FC="$(FC)" F90="$(FC)" INCLUDEPATH="-I$(INC_MPI)" FCFLAGS="$(FFLAGS)" F90FLAGS="$(FFLAGS)"
 endif
 
 ifeq ($(MODEL),pio)
@@ -134,7 +134,7 @@ ifeq ($(MODEL),pio)
   endif 
 
 # JASON: What about the other options ? 
-  CONFIG_ARGS += CC="$(CC)" F90="$(FC)" NETCDF_PATH="$(NETCDF_PATH)" MPI_INC="-I$(INC_MPI)" FFLAGS="-ffree-line-length-none"
+  CONFIG_ARGS += CC="$(CC)" F90="$(FC)" NETCDF_PATH="$(NETCDF_PATH)" MPI_INC="-I$(INC_MPI)" FFLAGS="$(FFLAGS)" CFLAGS="$(CFLAGS)"
 endif
 #=====================================================
 
