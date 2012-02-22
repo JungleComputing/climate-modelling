@@ -54,7 +54,12 @@ static message_buffer *probe_wa(communicator *c, int source, int tag, int blocki
          return NULL;
       }
 
-      DEBUG(5, "PROBE_WA: Message received from source=%d tag=%d", m->header.source, m->header.tag);
+      if (*error != MPI_SUCCESS) { 
+         ERROR(1, "PROBE_WA: Failed to receive message error=%d", error);
+         return NULL;
+      }
+
+      DEBUG(5, "PROBE_WA: Message received from source=%d tag=%d count=%d bytes=%d", m->header.source, m->header.tag, m->header.count, m->header.bytes);
 
       if (match_message(m, c->number, source, tag)) {
          // we have a match!

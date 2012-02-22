@@ -576,6 +576,8 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
    int error, local, flag, flags = REQUEST_FLAG_RECEIVE;
    request *r;
 
+   error = MPI_SUCCESS;
+
    inc_communicator_statistics(comm, STATS_IRECV);
 
    if (count < 0) {
@@ -616,11 +618,13 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
       return MPI_ERR_INTERN;
    }
 
-   // Post the ireceive.
+   // Post the ireceive if it is local
    if (local == 1) {
       // If the source is guarenteed to be local, we directly use MPI.
       error = PMPI_Irecv(buf, count, datatype, source, tag, c->comm, &(r->req));
+   }
 
+/****
    } else if (source != MPI_ANY_SOURCE) {
       // If the source is guarenteed to be remote, we directly use the WA link.
       error = messaging_probe_receive(r, 0);
@@ -645,6 +649,8 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
          error = messaging_probe_receive(r, 0);
       }
    }
+
+***/
 
    if (error != MPI_SUCCESS) {
       ERROR(1, "IRecv failed!");
@@ -747,7 +753,8 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
       return MPI_SUCCESS;
    }
 
-   DEBUG(1, "PROBE_REQUEST: request=(index=%d, flags=%d, srcdest=%d, count=%d, tag=%d) blocking=%d", r->index, r->flags, r->source_or_dest, r->count, r->tag, blocking);
+   DEBUG(1, "PROBE_REQUEST: request=(index=%d, flags=%d, srcdest=%d, count=%d, tag=%d type=%s) blocking=%d", 
+	r->index, r->flags, r->source_or_dest, r->count, r->tag, type_to_string(r->type), blocking);
 
    // We don't support persistent request yet!
    if (request_persistent(r)) {
@@ -839,13 +846,16 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
                r->error = messaging_probe_receive(r, 0 /*blocking*/);
 
                if (request_completed(r)) {
+                  DEBUG(3, "PROBE_REQUEST: request=WA_RECEIVE_ANY performed WA receive");
 
-                  DEBUG(3, "PROBE_REQUEST: request=WA_RECEIVE_ANY perfored WA receive");
-
+                  if (r->error == MPI_SUCCESS) {
+                     r->error = messaging_finalize_receive(r, status);
+                  } else {
+                     status->MPI_SOURCE = r->source_or_dest;
+                     status->MPI_TAG = r->tag;
+                     status->MPI_ERROR = r->error;
+                  }
                   *flag = 1;
-                  status->MPI_SOURCE = r->source_or_dest;
-                  status->MPI_TAG = r->tag;
-                  status->MPI_ERROR = r->error;
                }
             }
 
@@ -854,12 +864,15 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
    }
 
    if (*flag == 1) {
+
+   DEBUG(1, "PROBE_REQUEST: received data %d", ((int *)r->buf)[0]);
+
       error = r->error;
       free_request(r);
       *req = MPI_REQUEST_NULL;
    }
 
-   DEBUG(1, "PROBE_REQUEST: done error=%d", error);
+   DEBUG(1, "PROBE_REQUEST: done error=%d");
 
    return error;
 }

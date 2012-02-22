@@ -33,7 +33,7 @@
 #define SET_PID(X, Y) ((X & 0xFF) << 24 | (Y & 0xFFFFFF))  
 
 // Maximum number of communicators that can be created (in total, shared by all processes).
-#define MAX_COMMUNICATORS 256
+#define MAX_COMMUNICATORS 1024
 
 // Maximum number of groups that can be created (at once, for each individual process).
 #define MAX_GROUPS 1024

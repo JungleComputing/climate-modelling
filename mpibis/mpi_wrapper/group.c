@@ -394,32 +394,49 @@ static int get_range(group *in, int *dst, int *next, int first, int last, int st
    index = *next;
 
    if (stride == 0 || first < 0 || first >= in->size || last < 0 || last >= in->size) {
+
+      ERROR(2, "GET_RANGE: Illegal rank first=%d last=%d stride=%d in->size=%d)!",
+                                first, last, stride, in->size);
+
       return MPI_ERR_RANK;
    }
 
-   if (first < last && stride > 0) {
+// FIXME: Is this <= OK ??? 2 times!
+
+   if (first <= last && stride > 0) {
       // forward range
       for (i=first;(i<in->size && i<=last);i+=stride) {
 
          if (index >= in->size) {
+ 
+            ERROR(2, "GET_RANGE: Illegal arg (1) index=%d first=%d last=%d stride=%d in->size=%d)!",
+                                 index, first, last, stride, in->size);
+
             return MPI_ERR_ARG;
          }
 
          dst[index++] = in->members[i];
       }
 
-   } else if (last < first && stride < 0) {
+   } else if (last <= first && stride < 0) {
       // backward range
       for (i=first;(i>=0 && i>=last);i+=stride) {
 
          if (index >= in->size) {
+ 
+            ERROR(2, "GET_RANGE: Illegal arg (2) index=%d first=%d last=%d stride=%d in->size=%d)!",
+                                 index, first, last, stride, in->size);
+
             return MPI_ERR_ARG;
          }
 
          dst[index++] = in->members[i];
       }
 
-   } else {
+   } else { 
+      ERROR(2, "GET_RANGE: Illegal request first=%d last=%d stride=%d in->size=%d)!",
+                                 first, last, stride, in->size);
+
       return MPI_ERR_RANK;
    }
 
