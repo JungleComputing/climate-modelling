@@ -128,6 +128,8 @@ public class Server {
             }
         }
 
+        Logging.println("Signup complete -- all processes are connected!");
+        
         // If we reach this point all cluster have signed up!
         ArrayList<Connection> c = new ArrayList<Connection>();
 

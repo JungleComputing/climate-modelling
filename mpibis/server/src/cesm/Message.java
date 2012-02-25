@@ -11,9 +11,6 @@ public abstract class Message {
     public final int source;
 
     protected Message(int opcode, DataInputStream in) throws IOException {
-
-        System.out.println("Reading generic message header"); 
-
         this.opcode = opcode;
         comm   = in.readInt();
         source = in.readInt();
