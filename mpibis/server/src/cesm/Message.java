@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public abstract class Message { 
+public abstract class Message {
 
     public final int opcode;
     public final int comm;
@@ -22,25 +22,25 @@ public abstract class Message {
         this.source = source;
     }
 
-    void write(DataOutputStream out) throws IOException { 
+    void write(DataOutputStream out) throws IOException {
         out.writeInt(opcode);
         out.writeInt(comm);
         out.writeInt(source);
     }
-    
-    public long dataSize() { 
+
+    public long dataSize() {
         return 0;
     }
-    
-    public long headerSize() { 
+
+    public long headerSize() {
         return 3*4;
     }
-    
-    public boolean isData() { 
+
+    public boolean isData() {
         return false;
     }
-    
-    public long size() { 
+
+    public long size() {
         return headerSize() + dataSize();
     }
 }
