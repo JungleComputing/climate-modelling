@@ -7,11 +7,12 @@ import java.io.DataOutputStream;
 import java.net.Socket;
 import java.util.LinkedList;
 
-import cesm2.messages.CommMessage;
+import cesm2.messages.SplitRequest;
 import cesm2.messages.DataMessage;
 import cesm2.messages.DupMessage;
 import cesm2.messages.GroupMessage;
 import cesm2.messages.ApplicationMessage;
+import cesm2.messages.Message;
 import cesm2.messages.TerminateMessage;
 
 public class Connection extends Thread implements Protocol {
@@ -48,7 +49,7 @@ public class Connection extends Thread implements Protocol {
     public final long pid;
     public final String pidAsString;
 
-    private final LinkedList<ApplicationMessage> incoming = new LinkedList<ApplicationMessage>();
+    private final LinkedList<Message> incoming = new LinkedList<Message>();
     private boolean done = false;
 
     public long bytesSend;
@@ -158,7 +159,7 @@ public class Connection extends Thread implements Protocol {
         }
     }
 
-    void enqueue(ApplicationMessage m, boolean tail) {
+    void enqueue(Message m, boolean tail) {
         synchronized (incoming) {
 
             if (tail) {
@@ -171,7 +172,7 @@ public class Connection extends Thread implements Protocol {
         }
     }
 
-    ApplicationMessage dequeue() {
+    Message dequeue() {
         synchronized (incoming) {
 
             while (!done && incoming.size() == 0) {
@@ -233,7 +234,7 @@ public class Connection extends Thread implements Protocol {
 
         case OPCODE_COMM:
             Logging.println(pidAsString + " - Reading COMM message");
-            m = new CommMessage(in);
+            m = new SplitRequest(in);
             break;
 
         case OPCODE_GROUP:

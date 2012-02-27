@@ -6,8 +6,10 @@ import java.io.IOException;
 
 import cesm2.Protocol;
 
-public class GroupMessage extends ApplicationMessage {
+public class GroupMessage extends CommunicatorRequest {
 
+    private static final long serialVersionUID = -6300107887174713579L;
+    
     public final int [] pids;
 
     GroupMessage(DataInputStream in) throws IOException {

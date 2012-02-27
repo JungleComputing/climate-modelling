@@ -4,6 +4,7 @@ import java.net.ServerSocket;
 import java.net.SocketTimeoutException;
 
 import cesm2.messages.ApplicationMessage;
+import cesm2.messages.Message;
 
 public class NodeServer {
 
@@ -34,9 +35,9 @@ public class NodeServer {
         this.connections = new Connection[processes];
     }
 
-    protected void deliver(ApplicationMessage m) {
+    protected void deliver(Message m) {
 
-        int dest = m.destinationPID;
+        long dest = m.destinationPID;
 
         for (int i=0;i<connections.length;i++) {
             if (dest == connections[i].pid) {

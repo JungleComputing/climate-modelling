@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import cesm2.messages.CommMessage;
+import cesm2.messages.SplitRequest;
 import cesm2.messages.CommReply;
 import cesm2.messages.DataMessage;
 import cesm2.messages.DupReply;
@@ -65,10 +65,10 @@ public class Communicator {
         }
     }
     
-    private class ColorComparator implements Comparator<CommMessage> {
+    private class ColorComparator implements Comparator<SplitRequest> {
 
         @Override
-        public int compare(CommMessage o1, CommMessage o2) {
+        public int compare(SplitRequest o1, SplitRequest o2) {
 
             if (o1.key < o2.key) {
                 return -1;
@@ -196,19 +196,19 @@ public class Communicator {
     private void split() {
 
         // First gather all messages sharing a colors together in a list.
-        HashMap<Integer, LinkedList<CommMessage>> tmp =
-                new HashMap<Integer, LinkedList<CommMessage>>();
+        HashMap<Integer, LinkedList<SplitRequest>> tmp =
+                new HashMap<Integer, LinkedList<SplitRequest>>();
 
         for (int i=0;i<size;i++) {
 
-            CommMessage m = (CommMessage) messages[i];
+            SplitRequest m = (SplitRequest) messages[i];
 
             Integer color = m.color;
 
-            LinkedList<CommMessage> l = tmp.get(color);
+            LinkedList<SplitRequest> l = tmp.get(color);
 
             if (l == null) {
-                l = new LinkedList<CommMessage>();
+                l = new LinkedList<SplitRequest>();
                 tmp.put(color, l);
             }
 
@@ -220,7 +220,7 @@ public class Communicator {
         // participate.
         for (Integer color : tmp.keySet()) {
 
-            LinkedList<CommMessage> l = tmp.get(color);
+            LinkedList<SplitRequest> l = tmp.get(color);
 
             if (l == null || l.isEmpty()) {
                 Logging.error("Split created empty list!");
@@ -238,7 +238,7 @@ public class Communicator {
 
                     int i=0;
 
-                    for (CommMessage m : l) {
+                    for (SplitRequest m : l) {
                         procs[i++] = processes[m.source];
                     }
 
@@ -293,7 +293,7 @@ public class Communicator {
                     // We must also send a reply to all participants with color -1.
                     // As these will not actually create a new virtual communicator,
                     // we can send a simplified reply.
-                    for (CommMessage m : l) {
+                    for (SplitRequest m : l) {
                         CommReply reply = new CommReply(communicator, -1, -1, 0, -1, 0, 0, 0, null, null, null);                        
                         processes[m.source].enqueue(reply, false);
                         
