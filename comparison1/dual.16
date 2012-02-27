@@ -1,0 +1,148 @@
+
+---------------- CCSM TIMING PROFILE ---------------------
+
+  Case        : GCC_WA4
+  LID         : 120224-114222
+  Machine     : DAS4_WA_gnu
+  Caseroot    : /var/scratch/jason/climate-modelling/experiments/GCC_WA4
+  Timeroot    : /var/scratch/jason/climate-modelling/experiments/GCC_WA4/Tools
+  CCSM User   : jason
+  CCSM Tag    : cesm1_0_3  (best guess)
+  Curr Date   : Fri Feb 24 11:54:26 CET 2012
+
+  grid        : 0.9x1.25_gx1v6
+  compset     : B_2000 (B)
+  run_type    : startup, continue_run = FALSE (inittype = TRUE)
+  stop_option : ndays, stop_n = 5
+  run_length  : 5 days (4 for ocean)
+
+
+
+  component       comp_pes    root_pe   tasks  x threads (stride) 
+  ---------        ------     -------   ------   ------   ------  
+  cpl = cpl        64          0        64     x 1       (1     ) 
+  glc = sglc       1           0        1      x 1       (1     ) 
+  lnd = clm        32          0        32     x 1       (1     ) 
+  ice = cice       32          32       32     x 1       (1     ) 
+  atm = cam        64          0        64     x 1       (1     ) 
+  ocn = pop2       16          64       16     x 1       (1     ) 
+
+  total pes active           : 80 
+  pe count for cost estimate : 80 
+
+  Overall Metrics: 
+    Model Cost:            1006.29   pe-hrs/simulated_year (scale= 1.00) 
+    Model Throughput:         1.91   simulated_years/day 
+
+    Init Time   :      80.861 seconds 
+    Run Time    :     620.316 seconds      124.063 seconds/day 
+    Final Time  :       0.129 seconds 
+
+    Actual Ocn Init Wait Time     :     124.465 seconds 
+    Estimated Ocn Init Run Time   :      84.609 seconds 
+    Estimated Run Time Correction :       0.000 seconds 
+      (This correction has been applied to the ocean and total run times) 
+
+Runs Time in total seconds, seconds/model-day, and model-years/wall-day 
+CPL Run Time represents time in CPL pes alone, not including time associated with data exchange with other components 
+
+    TOT Run Time:     620.316 seconds      124.063 seconds/mday         1.91 myears/wday 
+    LND Run Time:      61.366 seconds       12.273 seconds/mday        19.29 myears/wday 
+    ICE Run Time:     168.814 seconds       33.763 seconds/mday         7.01 myears/wday 
+    ATM Run Time:     366.795 seconds       73.359 seconds/mday         3.23 myears/wday 
+    OCN Run Time:     423.043 seconds       84.609 seconds/mday         2.80 myears/wday 
+    GLC Run Time:       0.000 seconds        0.000 seconds/mday         0.00 myears/wday 
+    CPL Run Time:      71.205 seconds       14.241 seconds/mday        16.62 myears/wday 
+
+
+---------------- DRIVER TIMING FLOWCHART --------------------- 
+
+   NOTE: min:max driver timers (seconds/day):   
+                            CPL (pes 0 to 63) 
+                                                                                       OCN (pes 64 to 79) 
+                                                LND (pes 0 to 31) 
+                                                                   ICE (pes 32 to 63) 
+                                                ATM (pes 0 to 63) 
+                                                GLC (pes 0 to 0) 
+
+  DRIVER_CLOCK_ADVANCE        0.003:   0.006 
+  DRIVER_OCNPREP              2.197:   7.745 
+  DRIVER_C2O                     <---->                                                  0.021:  28.605 
+  DRIVER_LNDPREP              0.076:   1.165 
+  DRIVER_C2L                     <---->           0.915:   2.244 
+  DRIVER_ICEPREP              0.041:   0.057 
+  DRIVER_C2I                     <---->                              0.943:   1.680 
+  DRIVER_OCN_RUN                                                                        84.589:  84.609 
+  DRIVER_ICE_RUN                                                    31.665:  33.763 
+  DRIVER_LND_RUN                                 11.581:  12.273 
+  DRIVER_ATMOCNP              0.071:   0.153 
+  DRIVER_L2C                     <---->           0.004:   1.291 
+  DRIVER_LNDPOST              0.000:   0.001 
+  DRIVER_BUDGET1              0.011:   0.026 
+  DRIVER_I2C                     <---->                              1.399:  22.177 
+  DRIVER_ICEPOST              0.000:   0.000 
+  DRIVER_FRACSET              0.019:   0.936 
+  DRIVER_ATMPREP              4.205:   7.546 
+  DRIVER_C2A                     <---->           0.056:   2.627 
+  DRIVER_ATM_RUN                                 61.064:  73.359 
+  DRIVER_A2C                     <---->           0.030:  14.171 
+  DRIVER_ATMPOST              0.000:   0.003 
+  DRIVER_BUDGET2              0.010:   0.013 
+  DRIVER_BUDGET3              0.000:   0.000 
+  DRIVER_BUDGETF              0.000:   0.000 
+  DRIVER_O2C                     <---->                                                  0.000:   0.004 
+  DRIVER_HISTORY              0.000:   0.000 
+  DRIVER_TSTAMP_WRITE         0.000:   0.000 
+  DRIVER_TPROF_WRITE          0.000:   0.000 
+  DRIVER_RUN_LOOP_BSTOP       0.000:   8.599 
+
+
+More info on coupler timing:
+
+  DRIVER_OCNPREP              2.197:   7.745 
+  driver_ocnprep_atm2ocn      2.196:   7.558 
+  driver_ocnprep_avg          0.000:   0.001 
+  driver_ocnprep_ravg         0.000:   0.000 
+  driver_ocnprep_rof2ocn      0.000:   0.215 
+  driver_ocnprep_rofcopy      0.000:   0.000 
+
+  DRIVER_LNDPREP              0.076:   1.165 
+  driver_lndprep_atm2lnd      0.073:   1.162 
+  driver_lndprep_mrgx2l       0.002:   0.007 
+
+  DRIVER_ICEPREP              0.041:   0.057 
+  driver_iceprep_ocn2ice      0.004:   0.008 
+  driver_iceprep_atm2ice      0.015:   0.025 
+  driver_iceprep_mrgx2i       0.021:   0.024 
+
+
+  DRIVER_ATMOCNP              0.071:   0.153 
+  driver_atmocnp_ice2ocn      0.007:   0.012 
+  driver_atmocnp_mrgx2o       0.025:   0.040 
+  driver_atmocnp_accum        0.007:   0.016 
+
+  DRIVER_LNDPOST              0.000:   0.001 
+  driver_lndpost_raccum       0.000:   0.001 
+
+
+  DRIVER_ICEPOST              0.000:   0.000 
+
+
+  DRIVER_ATMPREP              4.205:   7.546 
+  driver_atmprep_ocn2atm1     1.350:   3.098 
+  driver_atmprep_ocn2atm2     0.752:   2.414 
+  driver_atmprep_ice2atm      0.896:   2.080 
+  driver_atmprep_lnd2atm      0.021:   3.233 
+  driver_atmprep_mrgx2a       0.011:   0.027 
+
+
+  DRIVER_ATMPOST              0.000:   0.003 
+
+
+  DRIVER_BUDGET               0.023:   0.040 
+  DRIVER_BUDGET1              0.011:   0.026 
+  DRIVER_BUDGET2              0.010:   0.013 
+  DRIVER_BUDGET3              0.000:   0.000 
+  DRIVER_BUDGETF              0.000:   0.000 
+
+
