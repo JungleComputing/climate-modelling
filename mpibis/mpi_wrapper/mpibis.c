@@ -1685,7 +1685,7 @@ int IMPI_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
    if (c->global_rank == root) {
       // I am root
       error = WA_Gatherv_root(c, sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype);
-   } else if (c->global_rank == c->local_coordinator) {
+   } else if (c->global_rank == c->my_coordinator) {
       // I am not root, and not in roots cluster, but I am a cluster coordinator.
       error = WA_Gatherv_nonroot_coordinator(c, root, sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype);
    } else if (root_cluster == local_cluster) {
@@ -1693,7 +1693,7 @@ int IMPI_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
       error = WA_Gatherv_nonroot(c, GET_PROCESS_RANK(c->members[root]), sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype);
    } else {
       // I am not root, and not in roots cluster, and not a cluster coordinator.
-      error = WA_Gatherv_nonroot(c, GET_PROCESS_RANK(c->local_coordinator), sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype);
+      error = WA_Gatherv_nonroot(c, GET_PROCESS_RANK(c->my_coordinator), sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype);
    }
 
    return error;
@@ -1875,7 +1875,7 @@ int IMPI_Allgatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
       return MPI_ERR_INTERN;
    }
 
-   if (c->global_rank == c->local_coordinator) {
+   if (c->global_rank == c->my_coordinator) {
 
       // I am the local coordinator!
 
@@ -1921,7 +1921,7 @@ int IMPI_Allgatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
    } else {
 
       // I am NOT a coordinator, so just send my data to the local coordinator.
-      error = PMPI_Send(sendbuf, sendcount, sendtype, GET_PROCESS_RANK(c->members[c->local_coordinator]), 999 /*FIXME*/, c->comm);
+      error = PMPI_Send(sendbuf, sendcount, sendtype, GET_PROCESS_RANK(c->members[c->my_coordinator]), 999 /*FIXME*/, c->comm);
 
       if (error != MPI_SUCCESS) {
          ERROR(1, "WA_AllGatherv_noncoordinator: Failed to send data from %d to local root for gatherv (in communicator %d)!", c->global_rank, c->number);
@@ -1931,7 +1931,7 @@ int IMPI_Allgatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
    }
 
    // Bcast the resulting data locally
-   error = PMPI_Bcast(buffer, sum, recvtype, GET_PROCESS_RANK(c->members[c->local_coordinator]), c->comm);
+   error = PMPI_Bcast(buffer, sum, recvtype, GET_PROCESS_RANK(c->members[c->my_coordinator]), c->comm);
 
    if (error != MPI_SUCCESS) {
       ERROR(1, "WA_AllGatherv_coordinator: Local broadcast of result failed (in communicator %d)!", c->number);
