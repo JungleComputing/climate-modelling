@@ -298,7 +298,7 @@ int comm_get_cluster_index(communicator *c, int cluster_rank)
 
    // FIXME: ouch!
    for (i=0;i<c->cluster_count;i++) {
-      if (GET_CLUSTER_RANK(c->members[c->coordinators[i]]) === cluster_rank) {
+      if (GET_CLUSTER_RANK(c->members[c->coordinators[i]]) == cluster_rank) {
          return i;
       }
    }
