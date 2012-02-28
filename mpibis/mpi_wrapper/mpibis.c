@@ -1880,7 +1880,7 @@ int IMPI_Allgatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
       // I am the local coordinator!
 
       // First, receive all local data
-      offset = offsets[c->cluster_rank];
+      offset = offsets[c->member_cluster_index[c->global_rank]];
 
       for (i=0;i<c->global_size;i++) {
          if (GET_CLUSTER_RANK(c->members[i]) == cluster_rank) {
@@ -1902,14 +1902,14 @@ int IMPI_Allgatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
 
          if (c->coordinators[i] == c->global_rank) {
             // bcast the local result to all other coordinators
-            error = messaging_bcast(buffer + (offsets[i]*extent), sum[i], recvtype, c->global_rank, c);
+            error = messaging_bcast(buffer + (offsets[i]*extent), sums[i], recvtype, c->global_rank, c);
 
             if (error != MPI_SUCCESS) {
                ERROR(1, "WA_AllGatherv_coordinator: Failed to send bcast data from %d for gather (in communicator %d)!", c->global_rank, c->number);
                return error;
             }
          } else {
-            error = messaging_bcast_receive(buffer + (offsets[i]*extent), sum[i], recvtype, c->coordinators[i], c);
+            error = messaging_bcast_receive(buffer + (offsets[i]*extent), sums[i], recvtype, c->coordinators[i], c);
 
             if (error != MPI_SUCCESS) {
                ERROR(1, "WA_AllGatherv_coordinator: Failed to receive bcast data on %d for gather (in communicator %d)!", c->global_rank, c->number);
