@@ -34,6 +34,8 @@ static char *statistic_names[STATS_TOTAL] = {
 
 #endif
 
+extern uint32_t cluster_rank;
+
 static communicator *comms[MAX_COMMUNICATORS];
 
 static int add_communicator(MPI_Comm comm, int number, int initial,
@@ -82,6 +84,13 @@ static int add_communicator(MPI_Comm comm, int number, int initial,
    c->coordinators = coordinators;
    c->cluster_sizes = cluster_sizes;
    c->members = members;
+
+   for (i=0;i<c->cluster_count;i++) {
+      if (GET_CLUSTER_RANK(c->members[c->coordinators[i]]) == cluster_rank) {
+         c->local_coordinator = c->coordinators[i];
+         break;
+      }
+   }
 
    comms[number] = c;
 
@@ -281,6 +290,20 @@ int rank_is_local(communicator *c, int rank, int *result)
    *result = (GET_CLUSTER_RANK(c->members[rank]) == cluster_rank);
 
    return MPI_SUCCESS;
+}
+
+int comm_get_cluster_index(int cluster_rank)
+{
+   int i;
+
+   // FIXME: ouch!
+   for (i=0;i<c->cluster_count;i++) {
+      if (GET_CLUSTER_RANK(c->members[c->coordinators[i]]) === cluster_rank) {
+         return i;
+      }
+   }
+
+   return -1;
 }
 
 int comm_is_world(communicator* c)
