@@ -573,7 +573,7 @@ int IMPI_Irsend(void *buf, int count, MPI_Datatype datatype,
 int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
                      int source, int tag, MPI_Comm comm, MPI_Request *req)
 {
-   int error, local, flag, flags = REQUEST_FLAG_RECEIVE;
+   int error, local, flags = REQUEST_FLAG_RECEIVE;
    request *r;
 
    error = MPI_SUCCESS;
