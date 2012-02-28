@@ -1490,7 +1490,7 @@ static int WA_Gatherv_root(communicator *c,
                            void *sendbuf, int sendcount, MPI_Datatype sendtype,
                            void *recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype)
 {
-   int my_cluster, tmp_cluster, tmp_rank, error, i, j, sum, offset;
+   int my_cluster, tmp_cluster, tmp_rank, error, i, j, sum, offset, tmp;
    int *sums;
    int *offsets;
    unsigned char *buffer;
