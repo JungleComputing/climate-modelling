@@ -108,7 +108,7 @@ static int add_communicator(MPI_Comm comm, int number, int initial,
    }
 
    for (i=0;i<c->global_size;i++) {
-      c->member_cluster_index[i] = (unsigned char) comm_cluster_rank_to_cluster_index(GET_CLUSTER_RANK(c->members[i]));
+      c->member_cluster_index[i] = (unsigned char) comm_cluster_rank_to_cluster_index(c, GET_CLUSTER_RANK(c->members[i]));
    }
 
    comms[number] = c;
