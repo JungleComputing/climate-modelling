@@ -1456,6 +1456,9 @@ int IMPI_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
                                 void *recvbuf, int *recvcounts, int *displs,
                                 MPI_Datatype recvtype, int root, MPI_Comm comm)
 {
+   int error, root_cluster, local_cluster, i, tmp_rank, tmp_cluster;
+   MPI_Aint extent;
+
    communicator *c = get_communicator(comm);
 
    if (c == NULL) {
@@ -1468,6 +1471,75 @@ int IMPI_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
      inc_communicator_statistics(comm, STATS_GATHER);
      return PMPI_Gatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, c->comm);
    }
+
+   // We need to do a WA gather.
+
+   // Retrieve the cluster of the gather root and the local process.
+   root_cluster = GET_CLUSTER_RANK(c->members[root]);
+   local_cluster = GET_CLUSTER_RANK(c->members[c->global_rank]);
+
+   // FIXME: Slow ?
+   if (c->global_rank == root) {
+
+      // If we are the root, we simple receive the data in-order from all other processes.
+
+      // Retrieve the data size.
+      error = MPI_Type_extent(sendtype, &extent);
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "Failed to retrieve data size for gather (in communicator %d)!\n", c->number);
+         return error;
+      }
+
+      // Receive all data.
+      for (i=0;i<c->global_size;i++) {
+
+         // Test is the data is send locally or over the WA link
+         tmp_cluster = GET_CLUSTER_RANK(c->members[i]);
+
+         if (tmp_cluster == root_cluster) {
+            // The data is send locally.
+            if (i == c->global_rank) {
+               // Our own data is simply copied.
+               memcpy(recvbuf + (displs[i] * extent), sendbuf, recvcounts[i]*extent);
+               error = MPI_SUCCESS;
+            } else {
+               // All other local data directly used MPI
+               tmp_rank = GET_PROCESS_RANK(c->members[i]);
+               error = PMPI_Recv(recvbuf + (displs[i] * extent), recvcounts[i], recvtype, tmp_rank, 999 /*FIXME*/, c->comm, MPI_STATUS_IGNORE);
+            }
+         } else {
+            // The data is send remotely
+            error = messaging_receive(recvbuf + (displs[i] * extent), recvcounts[i], recvtype, i, GATHER_TAG, MPI_STATUS_IGNORE, c);
+         }
+
+         if (error != MPI_SUCCESS) {
+            ERROR(1, "Failed to receive data from %d for gather (in communicator %d)!\n", i, c->number);
+            return error;
+         }
+      }
+
+   } else {
+
+      // We need to send some data
+      if (local_cluster == root_cluster) {
+         // Send within the cluster
+         tmp_rank = GET_PROCESS_RANK(c->members[root]);
+         error = PMPI_Send(sendbuf, sendcount, sendtype, tmp_rank, 999 /*FIXME*/, c->comm);
+      } else {
+         // Send between clusters
+         error = messaging_send(sendbuf, sendcount, sendtype, root, GATHER_TAG, c);
+      }
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "Failed to send data (in communicator %d)!\n", c->number);
+         return error;
+      }
+   }
+
+   return MPI_SUCCESS;
+
+
 
    IERROR(0, "WA MPI_Gatherv not implemented yet!");
    return MPI_ERR_INTERN;
