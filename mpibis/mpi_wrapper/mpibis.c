@@ -1574,7 +1574,7 @@ static int WA_Gatherv_root(communicator *c,
    // We have now collected all data in "buffer". This data is grouped by cluster and relative global rank. We now need to copy it to the destination buffer.
 
    for (i=0;i<c->global_size;i++) {
-      tmp = comm_get_cluster_index(c, GET_CLUSTER_RANK(c->members[i]));
+      tmp = c->member_cluster_index[i];
 
       memcpy(recvbuf + (displs[i] * extent), buffer + (offsets[tmp] * extent), recvcounts[i] * extent);
 
@@ -1941,7 +1941,7 @@ int IMPI_Allgatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
    // We have now collected all data in "buffer". This data is grouped by cluster and relative global rank. We now need to copy it to the destination buffer.
 
    for (i=0;i<c->global_size;i++) {
-      tmp = comm_get_cluster_index(GET_CLUSTER_RANK(c->members[i]));
+      tmp = c->member_cluster_index[i];
 
       memcpy(recvbuf + (displs[i] * extent), buffer + (offsets[tmp] * extent), recvcounts[i] * extent);
 
