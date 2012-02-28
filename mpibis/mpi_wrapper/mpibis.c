@@ -1450,6 +1450,252 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype, void* recvb
 }
 */
 
+static int get_count_sum(communicator *c, int cluster, int *recvcounts)
+{
+   int i, sum = 0;
+
+   for (i=0;i<c->global_size;i++) {
+      if (cluster == GET_CLUSTER_RANK(c->members[i)) {
+          sum += recvcounts[i];
+      }
+   }
+
+   return sum;
+}
+
+static int get_count_sums(communicator *c, int *recvcounts, int *sums)
+{
+   int i, tmp_cluster, sum = 0;
+
+   for (i=0;i<c->cluster_count;i++) {
+      susms[i] = 0;
+   }
+
+   for (i=0;i<c->global_size;i++) {
+      tmp_cluster = GET_CLUSTER_RANK(c->members[i);
+
+      sums[tmp_cluster] += recvcounts[i];
+      sum += recvcounts[i];
+   }
+
+   return sum;
+}
+
+static int WA_Gatherv_root(communicator *c,
+                           void *sendbuf, int sendcount, MPI_Datatype sendtype,
+                           void *recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype)
+{
+   int my_cluster, tmp_cluster, tmp_rank, error, i, j, sum, offset;
+   int *sums;
+   int *offsets;
+   unsigned char *buffer;
+
+   MPI_Aint extent;
+
+   // First retrieve the data element size
+   error = MPI_Type_extent(recvtype, &extent);
+
+   if (error != MPI_SUCCESS) {
+      ERROR(1, "WA_Gatherv_root: Failed to retrieve data size (in communicator %d)!\n", c->number);
+      return error;
+   }
+
+   // Next, get the number of elements sent per cluster and in their sum.
+   sums = malloc(c->cluster_count * sizeof(int));
+
+   if (sums == NULL) {
+      ERROR(1, "WA_Gatherv_root: Failed to allocated space for local buffer (in communicator %d)!\n", c->number);
+      return MPI_ERR_INTERN;
+   }
+
+   sum = get_count_sums(c, recvcounts);
+
+   // Allocate a buffer large enough to receive all data
+   buffer = malloc(sum * extent);
+
+   if (buffer == NULL) {
+      ERROR(1, "WA_Gatherv_root: Failed to allocated space for local buffer (in communicator %d)!\n", c->number);
+      return MPI_ERR_INTERN;
+   }
+
+   // Next, receive all data from our local cluster.
+   my_cluster = GET_CLUSTER_RANK(c->members[c->global_rank]);
+
+   offset = 0;
+
+   // Next, receive all data
+   for (i=0;i<c->cluster_count;i++) {
+
+      if (i == my_cluster) {
+
+         // Receive from local processes.
+         for (j=0;j<c->global_size;j++) {
+            tmp_cluster = GET_CLUSTER_RANK(c->members[j]);
+
+            if (tmp_cluster == my_cluster) {
+               tmp_rank = GET_PROCESS_RANK(c->members[j]);
+               error = PMPI_Recv(buffer + (offset * extent), recvcounts[j], recvtype, tmp_rank, 999 /*FIXME*/, c->comm, MPI_STATUS_IGNORE);
+
+               if (error != MPI_SUCCESS) {
+                  ERROR(1, "WA_Gatherv_root: Failed to receive data from %d for gather (in communicator %d)!\n", c->members[j], c->number);
+                  return error;
+               }
+
+               offset += recvcounts[j];
+            }
+         }
+
+      } else {
+
+         // Receive from the remote cluster coordinator.
+         error = messaging_receive(buffer + (offset * extent), sums[i], recvtype, c->coordinator[i], GATHER_TAG, MPI_STATUS_IGNORE, c);
+
+         if (error != MPI_SUCCESS) {
+            ERROR(1, "WA_Gatherv_root: Failed to receive data from remote coordinator %d (in communicator %d)!\n", c->coordinators[i], c->number);
+            return error;
+         }
+
+         offset += sums[i];
+      }
+   }
+
+   // We have now collected all data in "buffer". This data is grouped by cluster and relative global rank. We now need to copy it to the destination buffer.
+
+   // Create an array of counters, and fill them with the start offsets in the buffer of each cluster.
+   offsets = calloc(c->cluster_count * sizeof(int));
+
+   for (i=1;i<c->global_size;i++) {
+      offsets[i] = offsets[i-1] + sums[i-1];
+   }
+
+   for (i=0;i<c->global_size;i++) {
+      tmp_cluster = GET_CLUSTER_RANK(c->members[i]);
+
+      memcpy(recvbuf + (displs[i] * extent), buffer + (offsets[tmp_cluster] * extent), recvcounts[i] * extent);
+
+      offsets[tmp_cluster] += recvcounts[i];
+   }
+
+   // Free all temp buffers
+   free(offsets);
+   free(sums);
+   free(buffer);
+   return MPI_SUCCESS;
+}
+
+static int WA_Gatherv_nonroot_coordinator(communicator *c, int root,
+                           void *sendbuf, int sendcount, MPI_Datatype sendtype,
+                           void *recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype)
+{
+   int local_cluster, sum, error, i, offset;
+   void *buffer;
+   MPI_Aint extent;
+
+   local_cluster = GET_CLUSTER_RANK(c->members[c->global_rank]);
+
+   sum = get_count_sum(c, local_cluster, recvcounts);
+
+   error = MPI_Type_extent(recvtype, &extent);
+
+   if (error != MPI_SUCCESS) {
+      ERROR(1, "WA_Gatherv_nonroot_coordinator: Failed to retrieve data size for gather (in communicator %d)!\n", c->number);
+      return error;
+   }
+
+   buffer = malloc(sum * extent);
+
+   if (buffer == NULL) {
+      ERROR(1, "WA_Gatherv_nonroot_coordinator: Failed to allocated space for local buffer!");
+      return MPI_ERR_INTERN;
+   }
+
+   offset = 0;
+
+   for (i=0;i<c->global_size;i++) {
+      if (GET_CLUSTER_RANK(c->members[i]) == local_cluster) {
+         tmp_rank = GET_PROCESS_RANK(c->members[i]);
+         error = PMPI_Recv(buffer + (offset * extent), recvcounts[i], recvtype, tmp_rank, 999 /*FIXME*/, c->comm, MPI_STATUS_IGNORE);
+
+         if (error != MPI_SUCCESS) {
+            ERROR(1, "WA_Gatherv_nonroot_coordinator: Failed to receive data from %d for gather (in communicator %d)!\n", i, c->number);
+            return error;
+         }
+
+         offset += recvcounts[i];
+      }
+   }
+
+   // Send all our data to root and free the buffer
+   error = messaging_send(buffer, sum, recvtype, root, GATHER_TAG, c);
+
+   free(buffer);
+
+   if (error != MPI_SUCCESS) {
+      ERROR(1, "WA_Gatherv_nonroot_coordinator: Failed to send data from %d to (WA) root for gather (in communicator %d)!\n", c->coordinators[local_cluster], c->number);
+      return error;
+   }
+
+   return MPI_SUCCESS;
+}
+
+static int WA_Gatherv_nonroot(communicator *c, int local_root,
+                           void *sendbuf, int sendcount, MPI_Datatype sendtype,
+                           void *recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype)
+{
+      error = PMPI_Send(sendbuf, sendcount, sendtype, local_root, 999 /*FIXME*/, c->comm);
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "WA_Gatherv_nonroot: Failed to send data from %d to local root for gatherv (in communicator %d)!\n", c->global_rank, c->number);
+         return error;
+      }
+}
+
+#define __IMPI_Gatherv
+int IMPI_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
+                                void *recvbuf, int *recvcounts, int *displs,
+                                MPI_Datatype recvtype, int root, MPI_Comm comm)
+{
+   int error, root_cluster, local_cluster, i, tmp_rank, tmp_cluster;
+   int *local_sums;
+
+   MPI_Aint extent;
+
+   communicator *c = get_communicator(comm);
+
+   if (c == NULL) {
+      ERROR(1, "Communicator not found!");
+      return MPI_ERR_COMM;
+   }
+
+   if (comm_is_local(c)) {
+     // simply perform a gatherv in local cluster
+     inc_communicator_statistics(comm, STATS_GATHER);
+     return PMPI_Gatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, c->comm);
+   }
+
+   // We need to do a WA gather.
+   root_cluster = GET_CLUSTER_RANK(c->members[root]);
+   local_cluster = GET_CLUSTER_RANK(c->members[c->global_rank]);
+
+   // We now have four case here:
+   if (c->global_rank == root) {
+      // I am root
+      error = WA_Gatherv_root(c, sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype);
+   } else if (root_cluster == local_cluster) {
+      // I am not root, but part of root's local cluster
+      error = WA_Gatherv_nonroot(c, GET_PROCESS_RANK(c->members[root]), sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype);
+   } else if (c->coordinators[local_cluster] == c->global_rank) {
+      // I am not root, and not in roots cluster, but I am a cluster coordinator.
+      error = WA_Gatherv_nonroot_coordinator(c, root, sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype);
+   } else {
+      // I am not root, and not in roots cluster, and not a cluster coordinator.
+      error = WA_Gatherv_nonroot(c, GET_PROCESS_RANK(c->coordinators[local_cluster]), sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype);
+   }
+
+   return error;
+}
+
+#if 0
 
 #define __IMPI_Gatherv
 int IMPI_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
@@ -1538,12 +1784,9 @@ int IMPI_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
    }
 
    return MPI_SUCCESS;
-
-
-
-   IERROR(0, "WA MPI_Gatherv not implemented yet!");
-   return MPI_ERR_INTERN;
 }
+
+#endif
 
 #define __IMPI_Allgather
 int IMPI_Allgather(void* sendbuf, int sendcount, MPI_Datatype sendtype,
