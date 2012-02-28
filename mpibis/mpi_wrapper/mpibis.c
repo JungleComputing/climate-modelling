@@ -2004,6 +2004,10 @@ int IMPI_Scatterv(void* sendbuf, int *sendcounts, int *displs,
 int IMPI_Reduce(void* sendbuf, void* recvbuf, int count,
                       MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm)
 {
+   int local_root, root_cluster, local_cluster, i, error;
+   unsigned char *buffer;
+   MPI_Aint extent; 
+
    communicator *c = get_communicator(comm);
 
    if (c == NULL) {
@@ -2013,7 +2017,7 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count,
    operation *o = get_operation(op);
 
    if (o == NULL) {
-      ERROR(1, "Operation not found!");
+      ERROR(1, "IMPI_REDUCE: Operation not found!");
       return MPI_ERR_OP;
    }
 
@@ -2023,13 +2027,86 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count,
      return PMPI_Reduce(sendbuf, recvbuf, count, datatype, o->op, root, c->comm);
    }
 
-   IERROR(0, "WA MPI_Reduce not implemented yet!");
-   return MPI_ERR_INTERN;
+   // We need to perform a WA Reduce. We do this by performing a reduce
+   // to our local cluster coordinator. This result is then forwarded to the
+   // root, which merges all partial results locally.
+
+   root_cluster = GET_CLUSTER_RANK(c->members[root]);
+   local_cluster = GET_CLUSTER_RANK(c->members[c->global_rank]);
+
+   if (root_cluster == local_cluster) {
+      local_root = root;
+   } else {
+      local_root = c->my_coordinator;
+   }
+
+   if (c->global_rank == root || c->global_rank == c->my_coordinator) {
+
+      error = PMPI_Type_extent(datatype, &extent);
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "IMPI_Reduce: Failed to retrieve data size for allreduce (in communicator %d)!\n", c->number);
+         return error;
+      }
+
+      buffer = malloc(count * extent);
+
+      if (buffer == NULL) {
+         ERROR(1, "IMPI_Reduce: Failed to allocate space for WA Allreduce (in communicator %d)!\n", c->number);
+         return MPI_ERR_INTERN;
+      }
+   }
+
+   INFO(1, "JASON IMPI_REDUCE", "START LOCAL REDUCE root=%d lroot=%d grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
+                       root, lroot, c->global_rank, c->local_rank, count, ((int *)sendbuf)[0], ((int *)recvbuf)[0]);
+
+   error = PMPI_Reduce(sendbuf, buffer, count, datatype, o->op, GET_PROCESS_RANK(c->members[local_root]), c->comm);
+
+   if (error != MPI_SUCCESS) {
+      ERROR(1, "IMPI_REDUCE: Failed to perform local reduce in communicator %d!\n", c->number);
+      return error;
+   }
+
+   if (c->global_rank == root) {
+      // The global root now receive the partial result from each cluster
+      // coordinator (except from his own cluster).
+
+      // Copy local result to target buffer
+      memcpy(recvbuf, buffer, count * extent);
+
+      // Receive partial results from remote coordinators
+      for (i=0;i<c->cluster_count;i++) {
+         if (c->global_rank != c->coordinators[i]) {
+            error = messaging_receive(buffer, count, datatype, c->coordinator[i], REDUCE_TAG, MPI_STATUS_IGNORE, c);
+
+            if (error != MPI_SUCCESS) {
+               ERROR(1, "IMPI_Reduce: Root %d failed to receive local reduce result from coordinator %d (in communicator %d) error=%d!",
+		        c->global_rank, c->coordinator[i], c->number, error);
+               return error;
+            }
+
+            // FIXME: no error checking here ??
+            (*(o->function))((void*)buffer, recvbuf, &count, &datatype);
+         }
+      }
+
+   } else if (c->global_rank == c->my_coordinator) {
+      // The local coordinator now sends the partial result to the global root.
+      error = messaging_send(buffer, count, datatype, root, REDUCE_TAG, c);
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "IMPI_Reduce: Local coordinator %d failed to send local reduce result to root (in communicator %d) error=%d!", 
+		c->global_rank, c->number, error);
+         return error;
+      }
+   }
+
+   return MPI_SUCCESS;
 }
 
 #define __IMPI_Accumulate
-int IMPI_Accumulate (void *origin_addr, int origin_count, MPI_Datatype origin_datatype, 
-                     int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, 
+int IMPI_Accumulate (void *origin_addr, int origin_count, MPI_Datatype origin_datatype,
+                     int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype,
                      MPI_Op op, MPI_Win win)
 {
    operation *o = get_operation(op);
@@ -2039,8 +2116,8 @@ int IMPI_Accumulate (void *origin_addr, int origin_count, MPI_Datatype origin_da
       return MPI_ERR_OP;
    }
 
-   return PMPI_Accumulate(origin_addr, origin_count, origin_datatype, 
-                          target_rank, target_disp, target_count, target_datatype, 
+   return PMPI_Accumulate(origin_addr, origin_count, origin_datatype,
+                          target_rank, target_disp, target_count, target_datatype,
                           o->op, win);
 }
 
