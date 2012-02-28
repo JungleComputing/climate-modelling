@@ -1648,6 +1648,8 @@ static int WA_Gatherv_nonroot(communicator *c, int local_root,
       ERROR(1, "WA_Gatherv_nonroot: Failed to send data from %d to local root for gatherv (in communicator %d)!\n", c->global_rank, c->number);
       return error;
    }
+
+   return MPI_SUCCESS;
 }
 
 #define __IMPI_Gatherv
