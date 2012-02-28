@@ -1455,7 +1455,7 @@ static int get_count_sum(communicator *c, int cluster, int *recvcounts)
    int i, sum = 0;
 
    for (i=0;i<c->global_size;i++) {
-      if (cluster == GET_CLUSTER_RANK(c->members[i)) {
+      if (cluster == GET_CLUSTER_RANK(c->members[i]) {
           sum += recvcounts[i];
       }
    }
@@ -1472,7 +1472,7 @@ static int get_count_sums(communicator *c, int *recvcounts, int *sums)
    }
 
    for (i=0;i<c->global_size;i++) {
-      tmp_cluster = GET_CLUSTER_RANK(c->members[i);
+      tmp_cluster = GET_CLUSTER_RANK(c->members[i]);
 
       sums[tmp_cluster] += recvcounts[i];
       sum += recvcounts[i];
