@@ -1587,7 +1587,7 @@ static int WA_Gatherv_nonroot_coordinator(communicator *c, int root,
                            void *sendbuf, int sendcount, MPI_Datatype sendtype,
                            void *recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype)
 {
-   int local_cluster, tmp_rank, sum, error, i, offset, error;
+   int local_cluster, tmp_rank, sum, error, i, offset;
    void *buffer;
    MPI_Aint extent;
 
@@ -1642,7 +1642,7 @@ static int WA_Gatherv_nonroot(communicator *c, int local_root,
                            void *sendbuf, int sendcount, MPI_Datatype sendtype,
                            void *recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype)
 {
-   error = PMPI_Send(sendbuf, sendcount, sendtype, local_root, 999 /*FIXME*/, c->comm);
+   int error = PMPI_Send(sendbuf, sendcount, sendtype, local_root, 999 /*FIXME*/, c->comm);
 
    if (error != MPI_SUCCESS) {
       ERROR(1, "WA_Gatherv_nonroot: Failed to send data from %d to local root for gatherv (in communicator %d)!\n", c->global_rank, c->number);
