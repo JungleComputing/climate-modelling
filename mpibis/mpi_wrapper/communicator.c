@@ -292,7 +292,7 @@ int rank_is_local(communicator *c, int rank, int *result)
    return MPI_SUCCESS;
 }
 
-int comm_get_cluster_index(int cluster_rank)
+int comm_get_cluster_index(communicator *c, int cluster_rank)
 {
    int i;
 

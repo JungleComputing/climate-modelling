@@ -102,7 +102,7 @@ void set_communicator_ptr(MPI_Comm *dst, communicator *src);
 
 int comm_dup(communicator *in, communicator **out);
 
-int comm_get_cluster_index(int cluster_rank);
+int comm_get_cluster_index(communicator *c, int cluster_rank);
 
 int rank_is_local(communicator *c, int rank, int *result);
 int comm_is_world(communicator* c);
