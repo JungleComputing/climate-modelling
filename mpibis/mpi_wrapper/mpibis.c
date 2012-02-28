@@ -2058,7 +2058,7 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count,
    }
 
    INFO(1, "JASON IMPI_REDUCE", "START LOCAL REDUCE root=%d lroot=%d grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
-                       root, lroot, c->global_rank, c->local_rank, count, ((int *)sendbuf)[0], ((int *)recvbuf)[0]);
+                       root, local_root, c->global_rank, c->local_rank, count, ((int *)sendbuf)[0], ((int *)recvbuf)[0]);
 
    error = PMPI_Reduce(sendbuf, buffer, count, datatype, o->op, GET_PROCESS_RANK(c->members[local_root]), c->comm);
 
@@ -2077,11 +2077,11 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count,
       // Receive partial results from remote coordinators
       for (i=0;i<c->cluster_count;i++) {
          if (c->global_rank != c->coordinators[i]) {
-            error = messaging_receive(buffer, count, datatype, c->coordinator[i], REDUCE_TAG, MPI_STATUS_IGNORE, c);
+            error = messaging_receive(buffer, count, datatype, c->coordinators[i], REDUCE_TAG, MPI_STATUS_IGNORE, c);
 
             if (error != MPI_SUCCESS) {
                ERROR(1, "IMPI_Reduce: Root %d failed to receive local reduce result from coordinator %d (in communicator %d) error=%d!",
-		        c->global_rank, c->coordinator[i], c->number, error);
+		        c->global_rank, c->coordinators[i], c->number, error);
                return error;
             }
 
