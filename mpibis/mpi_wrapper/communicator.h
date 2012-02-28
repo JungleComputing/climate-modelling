@@ -65,12 +65,15 @@ struct s_communicator {
    int global_rank;
    int global_size;
 
-   int cluster_count;
-   int local_coordinator;
-
+   int my_coordinator;
    int *coordinators;
+
+   int cluster_count;
+   unsigned char *cluster_ranks;
    int *cluster_sizes;
+
    uint32_t *members;
+   unsigned char *member_cluster_index;
 
 //   unsigned char *bitmap;
 
@@ -102,7 +105,7 @@ void set_communicator_ptr(MPI_Comm *dst, communicator *src);
 
 int comm_dup(communicator *in, communicator **out);
 
-int comm_get_cluster_index(communicator *c, int cluster_rank);
+int comm_cluster_rank_to_cluster_index(communicator *c, int cluster_rank);
 
 int rank_is_local(communicator *c, int rank, int *result);
 int comm_is_world(communicator* c);

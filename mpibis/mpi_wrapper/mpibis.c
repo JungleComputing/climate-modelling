@@ -1821,7 +1821,6 @@ int IMPI_Allgatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
                          int *displs, MPI_Datatype recvtype, MPI_Comm comm)
 {
    int tmp, tmp_rank, sum, error, i, offset;
-   void *buffer;
    int *sums;
    int *offsets;
    unsigned char *buffer;

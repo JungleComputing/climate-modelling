@@ -85,11 +85,30 @@ static int add_communicator(MPI_Comm comm, int number, int initial,
    c->cluster_sizes = cluster_sizes;
    c->members = members;
 
+   c->cluster_ranks = malloc(c->cluster_count * sizeof(unsigned char));
+
+   if (c->cluster_ranks == NULL) {
+      ERROR(1, "Failed to allocate space for communicator (%d)!", number);
+      return MPI_ERR_INTERN;
+   }
+
    for (i=0;i<c->cluster_count;i++) {
-      if (GET_CLUSTER_RANK(c->members[c->coordinators[i]]) == cluster_rank) {
-         c->local_coordinator = c->coordinators[i];
-         break;
+      c->cluster_ranks[i] = (unsigned char) GET_CLUSTER_RANK(c->members[c->coordinators[i]]);
+
+      if (c->cluster_ranks[i] == cluster_rank) {
+         c->my_coordinator = c->coordinators[i];
       }
+   }
+
+   c->member_cluster_index = malloc(c->global_size * sizeof(unsigned char));
+
+   if (c->cluster_ranks == NULL) {
+      ERROR(1, "Failed to allocate space for communicator (%d)!", number);
+      return MPI_ERR_INTERN;
+   }
+
+   for (i=0;i<c->global_size;i++) {
+      c->member_cluster_index[i] = (unsigned char) comm_cluster_rank_to_cluster_index(GET_CLUSTER_RANK(c->members[i]));
    }
 
    comms[number] = c;
@@ -292,13 +311,13 @@ int rank_is_local(communicator *c, int rank, int *result)
    return MPI_SUCCESS;
 }
 
-int comm_get_cluster_index(communicator *c, int cluster_rank)
+int comm_cluster_rank_to_cluster_index(communicator *c, int cluster_rank)
 {
    int i;
 
    // FIXME: ouch!
    for (i=0;i<c->cluster_count;i++) {
-      if (GET_CLUSTER_RANK(c->members[c->coordinators[i]]) == cluster_rank) {
+      if (c->cluster_ranks[i] == cluster_rank) {
          return i;
       }
    }
