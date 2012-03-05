@@ -1984,16 +1984,77 @@ int IMPI_Allgatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
    return MPI_SUCCESS;
 }
 
+int WA_Scatterv(void* sendbuf, int *sendcounts, int *displs,
+                MPI_Datatype sendtype, void* recvbuf, int recvcount,
+                MPI_Datatype recvtype, int root, communicator *c)
+{
+   int tmp_cluster, root_cluster, i;
+   MPI_Aint extend;
+
+   // FIXME: can be optimized by message combining and async sends!
+
+   // We implement a WA Scatterv using simple send/receive primitives
+   root_cluster = GET_CLUSTER_RANK(c->members[root]);
+
+   if (c->global_rank == root) {
+
+      // First retrieve the data element size
+      error = MPI_Type_extent(sendtype, &extent);
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "WA_Scatterv: Failed to retrieve data size (in communicator %d)!\n", c->number);
+         return error;
+      }
+
+      for (i=0;i<c->global_size;i++) {
+         tmp_cluster = GET_CLUSTER_RANK(c->members[i]);
+
+         if (root_cluster == tmp_cluster) {
+            error = PMPI_Send(sendbuf + (displs[i] * extent), sendcounts[i], sendtype, GET_PROCESS_RANK(c->members[i]), 999 /*FIXME*/, c->comm);
+         } else {
+            error = messaging_send(sendbuf + (displs[i] * extent), sendcounts[i], sendtype, i, SCATTERV_TAG, c);
+         }
+
+         if (error != MPI_SUCCESS) {
+            ERROR(1, "WA_Scatterv: Root %d (in cluster %d) failed to send data to %d (in cluster %d) (in communicator %d)!\n", root, root_cluster, i, tmp_cluster, c->number);
+            return error;
+         }
+      }
+
+   } else {
+      tmp_cluster = GET_CLUSTER_RANK(c->members[c->global_rank]);
+
+      if (root_cluster == tmp_cluster) {
+         // local receive
+         error = PMPI_Recv(recvbuf, recvcount, recvtype, GET_PROCESS_RANK(c->members[root]), 999 /*FIXME*/, c->comm);
+      } else {
+         // remote receive
+         error = messaging_receive(recvbuf, recvcount, recvtype, root, SCATTERV_TAG, MPI_STATUS_IGNORE, c);
+      }
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "WA_Scatterv: Process %d (in cluster %d) failed to receive data from root %d (in cluster %d) (in communicator %d)!\n", c->global_rank, tmp_cluster, root, root_cluster, c->number);
+         return error;
+      }
+   }
+
+   return MPI_SUCCESS;
+}
+
 
 #define __IMPI_Scatter
 int IMPI_Scatter( void* sendbuf, int sendcount, MPI_Datatype sendtype,
                         void* recvbuf, int recvcount, MPI_Datatype recvtype,
                         int root, MPI_Comm comm)
 {
+   int i;
+   int *displs;
+   int *sendcounts;
+
    communicator *c = get_communicator(comm);
 
    if (c == NULL) {
-      ERROR(1, "Communicator not found!");
+      ERROR(1, "MPI_Scatter: Communicator not found!");
       return MPI_ERR_COMM;
    }
 
@@ -2003,8 +2064,33 @@ int IMPI_Scatter( void* sendbuf, int sendcount, MPI_Datatype sendtype,
      return PMPI_Scatter(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, c->comm);
    }
 
-   IERROR(0, "WA MPI_Scatter not implemented yet!");
-   return MPI_ERR_INTERN;
+   // We implement a WA Scatter using the WA Scatterv
+   displs = malloc(c->global_size * sizeof(int));
+
+   if (displs == NULL) {
+      ERROR(1, "MPI_Scatter: Failed to allocate buffer (in communnicator %d)!", c->number);
+      return MPI_ERR_INTERN;
+   }
+
+   sendcounts = malloc(c->global_size * sizeof(int));
+
+   if (sendcounts == NULL) {
+      ERROR(1, "MPI_Scatter: Failed to allocate buffer (in communnicator %d)!", c->number);
+      free(displs);
+      return MPI_ERR_INTERN;
+   }
+
+   for (int i=0;i<0;i++) {
+      sendcounts[i] = sendcount;
+      displs[i] = sendcount * i;
+   }
+
+   error = WA_Scatter(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, c);
+
+   free(displs);
+   free(sendcounts);
+
+   return error;
 }
 
 #define __IMPI_Scatterv
@@ -2012,7 +2098,8 @@ int IMPI_Scatterv(void* sendbuf, int *sendcounts, int *displs,
                         MPI_Datatype sendtype, void* recvbuf, int recvcount,
                         MPI_Datatype recvtype, int root, MPI_Comm comm)
 {
-   int local_cluster, root_cluster;
+   int tmp_cluster, root_cluster, i;
+   MPI_Aint extend;
 
    communicator *c = get_communicator(comm);
 
@@ -2027,33 +2114,7 @@ int IMPI_Scatterv(void* sendbuf, int *sendcounts, int *displs,
      return PMPI_Scatterv(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, c->comm);
    }
 
-   // FIXME: can be optimized by message combining!
-
-   // We implement a WA Scatter using simple send/receive primitives
-   root_cluster = GET_CLUSTER_RANK(c->members[root]);
-
-   if (c->global_rank == root) {
-
-
-
-   } else {
-      local_cluster = GET_CLUSTER_RANK(c->members[c->global_rank]);
-
-      if (root_cluster == local_cluster) {
-         // local receive
-         error = PMPI_Recv(recvbuf, recvcount, recvtype, GET_PROCESS_RANK(c->members[root]), 999 /*FIXME*/, c->comm);
-      } else {
-         // remote receive
-         error = messaging_receive(recvbuf, recvcount, recvtype, root, SCATTERV_TAG, MPI_STATUS_IGNORE, c);
-      }
-   }
-
-
-HIERO
-
-
-   IERROR(0, "WA MPI_Scatterv not implemented yet!");
-   return MPI_ERR_INTERN;
+   return WA_Scatterv(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, c);
 }
 
 #define __IMPI_Reduce
