@@ -1797,6 +1797,10 @@ int IMPI_Allgather(void* sendbuf, int sendcount, MPI_Datatype sendtype,
                          void* recvbuf, int recvcount, MPI_Datatype recvtype,
                          MPI_Comm comm)
 {
+   int *displ;
+   int *recvcount;
+   int i, error;
+
    communicator *c = get_communicator(comm);
 
    if (c == NULL) {
@@ -1810,10 +1814,35 @@ int IMPI_Allgather(void* sendbuf, int sendcount, MPI_Datatype sendtype,
      return PMPI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, c->comm);
    }
 
-   IERROR(0, "WA MPI_Allgather not implemented yet!");
-   return MPI_ERR_INTERN;
-}
+   // We implements a Allgather on top of a Allgatherv.
 
+   displ = malloc(c->global_size * sizeof(int));
+
+   if (displ == NULL) {
+      ERROR(0, "IMPI_Allgather: failed to allocate local buffer (communicator %d)!", c->number);
+      return MPI_ERR_INTERN;
+   }
+
+   recvcount = malloc(c->global_size * sizeof(int));
+
+   if (recvcount == NULL) {
+      ERROR(0, "IMPI_Allgather: failed to allocate local buffer (communicator %d)!", c->number);
+      free(displ);
+      return MPI_ERR_INTERN;
+   }
+
+   for (i=0;i<c->global_size;i++) {
+      displ[i] = i*recvcount;
+      recvcount[i] = recvcount
+   }
+
+   error = IMPI_Allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm);
+
+   free(displ);
+   free(recvcount);
+
+   return error;
+}
 
 #define __IMPI_Allgatherv
 int IMPI_Allgatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
@@ -1983,6 +2012,8 @@ int IMPI_Scatterv(void* sendbuf, int *sendcounts, int *displs,
                         MPI_Datatype sendtype, void* recvbuf, int recvcount,
                         MPI_Datatype recvtype, int root, MPI_Comm comm)
 {
+   int local_cluster, root_cluster;
+
    communicator *c = get_communicator(comm);
 
    if (c == NULL) {
@@ -1995,6 +2026,31 @@ int IMPI_Scatterv(void* sendbuf, int *sendcounts, int *displs,
      inc_communicator_statistics(comm, STATS_SCATTER);
      return PMPI_Scatterv(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, c->comm);
    }
+
+   // FIXME: can be optimized by message combining!
+
+   // We implement a WA Scatter using simple send/receive primitives
+   root_cluster = GET_CLUSTER_RANK(c->members[root]);
+
+   if (c->global_rank == root) {
+
+
+
+   } else {
+      local_cluster = GET_CLUSTER_RANK(c->members[c->global_rank]);
+
+      if (root_cluster == local_cluster) {
+         // local receive
+         error = PMPI_Recv(recvbuf, recvcount, recvtype, GET_PROCESS_RANK(c->members[root]), 999 /*FIXME*/, c->comm);
+      } else {
+         // remote receive
+         error = messaging_receive(recvbuf, recvcount, recvtype, root, SCATTERV_TAG, MPI_STATUS_IGNORE, c);
+      }
+   }
+
+
+HIERO
+
 
    IERROR(0, "WA MPI_Scatterv not implemented yet!");
    return MPI_ERR_INTERN;
