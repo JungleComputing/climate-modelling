@@ -85,8 +85,7 @@ static int read_config_file()
    config = fopen(file, "r");
 
    if (config == NULL) {
-      ERROR(1, "MPIBIS failed to open config file %s", file);
-      return retval;
+      return EERROR(1, 0, "read_config_file", "Failed to open config file %s", file);
    }
 
    INFO(0, "MPIBIS", "config file %s opened.", file);
@@ -94,17 +93,15 @@ static int read_config_file()
    error = fscanf(config, "%s", buffer);
 
    if (error == EOF || error == 0) {
-      ERROR(1, "Failed to read server adres from %s", file);
       fclose(config);
-      return 0;
+      return EERROR(1, 0, "read_config_file", "Failed to read server adres from %s", file);
    }
 
    server = malloc(strlen(buffer+1));
 
    if (server == NULL) {
-      ERROR(1, "Failed to allocate space for server adres %s", buffer);
       fclose(config);
-      return 0;
+      return EERROR(1, 0, "read_config_file", "Failed to allocate space for server adres %s", buffer);
    }
 
    strcpy(server, buffer);
@@ -112,25 +109,22 @@ static int read_config_file()
    error = fscanf(config, "%hu", &port);
 
    if (error == EOF || error == 0) {
-      ERROR(1, "Failed to read server port from %s", file);
       fclose(config);
-      return 0;
+      return EERROR(1, 0, "read_config_file", "Failed to read server port from %s", file);
    }
 
    error = fscanf(config, "%s", buffer);
 
    if (error == EOF || error == 0) {
-      ERROR(1, "Failed to read cluster name from %s", file);
       fclose(config);
-      return 0;
+      return ERROR(1, 0, "read_config_file", "Failed to read cluster name from %s", file);
    }
 
    cluster_name = malloc(strlen(buffer)+1);
 
    if (cluster_name == NULL) {
-      ERROR(1, "Failed to allocate space for cluster name %s", buffer);
       fclose(config);
-      return 0;
+      return EERROR(1, 0, "read_config_file", "Failed to allocate space for cluster name %s", buffer);
    }
 
    strcpy(cluster_name, buffer);
@@ -138,17 +132,15 @@ static int read_config_file()
    error = fscanf(config, "%d", &cluster_rank);
 
    if (error == EOF || error == 0) {
-      ERROR(1, "Failed to read cluster rank from %s", file);
       fclose(config);
-      return 0;
+      return ERROR(1, 0, "read_config_file", "Failed to read cluster rank from %s", file);
    }
 
    error = fscanf(config, "%d", &cluster_count);
 
    if (error == EOF || error == 0) {
-      ERROR(1, "Failed to read cluster rank from %s", file);
       fclose(config);
-      return 0;
+      return EERROR(1, 0, "read_config_file", "Failed to read cluster rank from %s", file);
    }
 
    fclose(config);

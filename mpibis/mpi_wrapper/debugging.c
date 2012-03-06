@@ -329,8 +329,6 @@ static void println(int indent, const char * header, const char *fmt, va_list ar
    fprintf(stderr, "\n");
 }
 
-#if VERBOSE > 2
-
 static void println2(int indent, const char * header, const char * func, const char *fmt, va_list argp)
 {
    if (indent < 0) {
@@ -343,8 +341,6 @@ static void println2(int indent, const char * header, const char * func, const c
    vfprintf(stderr, fmt, argp);
    fprintf(stderr, "\n");
 }
-
-#endif
 
 void DEBUG(int indent, const char *fmt, ...)
 {
@@ -389,6 +385,23 @@ void ERROR(int indent, const char *fmt, ...)
    ptr = NULL;
    *ptr = 1;
 #endif
+}
+
+int EERROR(int indent, int errorcode, const char *func, const char *fmt, ...)
+{
+#if VERBOSE > 0
+   int *ptr;
+
+   va_list argp;
+   va_start(argp, fmt);
+   println2(indent, "ERROR", func, fmt, argp);
+   va_end(argp);
+
+   ptr = NULL;
+   *ptr = 1;
+#endif
+
+   return errorcode;
 }
 
 void IERROR(int indent, const char *fmt, ...)
