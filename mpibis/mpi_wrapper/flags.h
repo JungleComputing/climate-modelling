@@ -38,6 +38,16 @@
 // Macro to catch derived datatypes.
 #define CHECK_TYPE(T) (catch_derived_datatype(T))
 
+// Macro to extract communicator
+#define EXTRACT_COMMUNICATOR(F, C, X) {
+   C = get_communicator(X);
+
+   if (C == NULL) {
+      return ERROR(1, MPI_ERR_COMM, F, "Communicator not found!");
+   }
+}
+
+
 // Maximum number of communicators that can be created (in total, shared by all processes).
 #define MAX_COMMUNICATORS 1024
 
