@@ -38,14 +38,27 @@
 // Macro to catch derived datatypes.
 #define CHECK_TYPE(T) (catch_derived_datatype(T))
 
-// Macro to extract communicator
-#define EXTRACT_COMMUNICATOR(M, I) { \
+// Macro to translate MPI communicator to MPIbis communicator
+#define TRANSLATE_COMMUNICATOR(M, I) { \
    I = get_communicator(M); \
    if (I == NULL) { \
       return LERROR(1, MPI_ERR_COMM, __FUNCTION__, "Communicator not found!"); \
    } \
 }
 
+// Macro to check buffer count
+#define CHECK_COUNT(C) { \
+   if (C < 0) { \
+      return LERROR(1, MPI_ERR_COUNT, func, "Invalid count! (%d)", C); \
+   } \
+}
+
+// Macro to check rank
+#define CHECK_RANK(R) { \
+   if (R < 0 || R > c->global_size) { \
+      return LERROR(1, MPI_ERR_RANK, func, "Invalid rank! (%d)", R); \
+   } \
+}
 
 // Maximum number of communicators that can be created (in total, shared by all processes).
 #define MAX_COMMUNICATORS 1024

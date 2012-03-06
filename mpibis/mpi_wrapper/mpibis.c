@@ -416,18 +416,6 @@ static int do_send(char *func, void* buf, int count, MPI_Datatype datatype, int 
 {
    int error;
 
-#ifdef CHECK_PARAMS
-
-   if (count < 0) {
-      return LERROR(1, MPI_ERR_COUNT, func, "Invalid count! (%d)", count);
-   }
-
-   if (dest < 0 || dest > c->global_size) {
-      return LERROR(1, MPI_ERR_RANK, func, "Invalid destination rank! (%d)", dest);
-   }
-
-#endif
-
    if (cluster_rank == GET_CLUSTER_RANK(c->members[dest])) {
       error = PMPI_Send(buf, count, datatype, GET_PROCESS_RANK(c->members[dest]), tag, c->comm);
    } else {
@@ -446,7 +434,10 @@ int IMPI_Send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, MP
 {
    communicator *c;
 
-   EXTRACT_COMMUNICATOR(comm, c);
+   TRANSLATE_COMMUNICATOR(comm, c);
+
+   CHECK_COUNT(count);
+   CHECK_RANK(dest);
 
    inc_communicator_statistics(comm, STATS_SEND);
 
@@ -473,6 +464,7 @@ int IMPI_Rsend(void* buf, int count, MPI_Datatype datatype,
 int IMPI_Isend(void *buf, int count, MPI_Datatype datatype,
                      int dest, int tag, MPI_Comm comm, MPI_Request *req)
 {
+   communicator *c;
    int error, local, flags = REQUEST_FLAG_SEND;
    request *r;
 
@@ -480,20 +472,8 @@ int IMPI_Isend(void *buf, int count, MPI_Datatype datatype,
       ERROR(1, "Invalid count!");
       return MPI_ERR_COUNT;
    }
-/*
-   if (tag < 0 || tag > MPI_TAG_UB) {
-      if (tag != MPI_ANY_TAG) {
-         ERROR(1, "Illegal tag! (2) %d %d", tag, MPI_TAG_UB);
-         return MPI_ERR_TAG;
-      }
-   }
-*/
-   communicator *c = get_communicator(comm);
 
-   if (c == NULL) {
-      ERROR(1, "Communicator not found! (%p)", (void*) comm);
-      return MPI_ERR_COMM;
-   }
+   TRANSLATE_COMMUNICATOR(comm, c);
 
    if (rank_is_local(c, dest, &local) != MPI_SUCCESS) {
       ERROR(1, "Illegal destination! (%d)", dest);
@@ -514,13 +494,9 @@ int IMPI_Isend(void *buf, int count, MPI_Datatype datatype,
    inc_communicator_statistics(comm, STATS_ISEND);
 
    if (local == 1) {
-//      DEBUG(1, "Performing local isend!");
       error = PMPI_Isend(buf, count, datatype, dest, tag, c->comm, &(r->req));
-//      DEBUG(1, "Local isend done %d %p!", error, (void *) r->req);
    } else {
-//      DEBUG(1, "Performing WA isend !");
       error = messaging_send(buf, count, datatype, dest, tag, c);
-//      DEBUG(1, "WA isend done %d %p!", error, (void *) r->req);
    }
 
    if (error != MPI_SUCCESS) {
@@ -550,6 +526,7 @@ int IMPI_Irsend(void *buf, int count, MPI_Datatype datatype,
 int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
                      int source, int tag, MPI_Comm comm, MPI_Request *req)
 {
+   communicator *c;
    int error, local, flags = REQUEST_FLAG_RECEIVE;
    request *r;
 
@@ -563,12 +540,7 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
    }
 
    // We first unpack the communicator.
-   communicator *c = get_communicator(comm);
-
-   if (c == NULL) {
-      ERROR(1, "Communicator not found! (%p)", (void *)comm);
-      return MPI_ERR_COMM;
-   }
+   TRANSLATE_COMMUNICATOR(comm, c);
 
    // Next, we check if the source is local or not.
    if (source == MPI_ANY_SOURCE) {
