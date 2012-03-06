@@ -1,4 +1,4 @@
-#include "flags.h"
+\#include "flags.h"
 
 #ifdef IBIS_INTERCEPT
 
@@ -85,7 +85,7 @@ static int read_config_file()
    config = fopen(file, "r");
 
    if (config == NULL) {
-      return ERROR(1, 0, "read_config_file", "Failed to open config file %s", file);
+      return LERROR(1, 0, "read_config_file", "Failed to open config file %s", file);
    }
 
    INFO(0, "MPIBIS", "config file %s opened.", file);
@@ -94,14 +94,14 @@ static int read_config_file()
 
    if (error == EOF || error == 0) {
       fclose(config);
-      return ERROR(1, 0, "read_config_file", "Failed to read server adres from %s", file);
+      return LERROR(1, 0, "read_config_file", "Failed to read server adres from %s", file);
    }
 
    server = malloc(strlen(buffer+1));
 
    if (server == NULL) {
       fclose(config);
-      return ERROR(1, 0, "read_config_file", "Failed to allocate space for server adres %s", buffer);
+      return LERROR(1, 0, "read_config_file", "Failed to allocate space for server adres %s", buffer);
    }
 
    strcpy(server, buffer);
@@ -110,21 +110,21 @@ static int read_config_file()
 
    if (error == EOF || error == 0) {
       fclose(config);
-      return ERROR(1, 0, "read_config_file", "Failed to read server port from %s", file);
+      return LERROR(1, 0, "read_config_file", "Failed to read server port from %s", file);
    }
 
    error = fscanf(config, "%s", buffer);
 
    if (error == EOF || error == 0) {
       fclose(config);
-      return ERROR(1, 0, "read_config_file", "Failed to read cluster name from %s", file);
+      return LERROR(1, 0, "read_config_file", "Failed to read cluster name from %s", file);
    }
 
    cluster_name = malloc(strlen(buffer)+1);
 
    if (cluster_name == NULL) {
       fclose(config);
-      return ERROR(1, 0, "read_config_file", "Failed to allocate space for cluster name %s", buffer);
+      return LERROR(1, 0, "read_config_file", "Failed to allocate space for cluster name %s", buffer);
    }
 
    strcpy(cluster_name, buffer);
@@ -133,14 +133,14 @@ static int read_config_file()
 
    if (error == EOF || error == 0) {
       fclose(config);
-      return ERROR(1, 0, "read_config_file", "Failed to read cluster rank from %s", file);
+      return LERROR(1, 0, "read_config_file", "Failed to read cluster rank from %s", file);
    }
 
    error = fscanf(config, "%d", &cluster_count);
 
    if (error == EOF || error == 0) {
       fclose(config);
-      return ERROR(1, 0, "read_config_file", "Failed to read cluster rank from %s", file);
+      return LERROR(1, 0, "read_config_file", "Failed to read cluster rank from %s", file);
    }
 
    fclose(config);
@@ -160,22 +160,22 @@ static int init_mpibis(int *argc, char ***argv)
 
    // Check sizes of opaque datatypes to make sure that we can replace them
    if (sizeof(MPI_Comm) < sizeof(communicator *)) {
-      return IERROR(1, 0, "init_mpibis", "Cannot replace MPI_Comm, handle too small! (%lu < %lu)", sizeof(MPI_Comm), sizeof(communicator *));
+      return LIERROR(1, 0, "init_mpibis", "Cannot replace MPI_Comm, handle too small! (%lu < %lu)", sizeof(MPI_Comm), sizeof(communicator *));
    }
 
    if (sizeof(MPI_Group) < sizeof(group *)) {
-      return IERROR(1, 0, "init_mpibis", "Cannot replace MPI_Group, handle too small! (%lu < %lu)", sizeof(MPI_Group), sizeof(group *));
+      return LIERROR(1, 0, "init_mpibis", "Cannot replace MPI_Group, handle too small! (%lu < %lu)", sizeof(MPI_Group), sizeof(group *));
    }
 
    if (sizeof(MPI_Request) < sizeof(request *)) {
-      return IERROR(1, 0, "init_mpibis", "Cannot replace MPI_Request, handle too small! (%lu < %lu)", sizeof(MPI_Request), sizeof(request *));
+      return LIERROR(1, 0, "init_mpibis", "Cannot replace MPI_Request, handle too small! (%lu < %lu)", sizeof(MPI_Request), sizeof(request *));
    }
 
    // Check the value of COMM_WORLD. This may be a pointer, index or
    // something else. Whatever it is, we must make sure that its value
    // cannot be confused with one of our indexes.
    if (((long) MPI_COMM_WORLD >= 0) && ((long) MPI_COMM_WORLD < MAX_COMMUNICATORS)) {
-      return IERROR(1, 0, "init_mpibis", "Cannot detect MPI_COMM_WORLD, as it is within my communicator range (%lu 0-%d)",
+      return LIERROR(1, 0, "init_mpibis", "Cannot detect MPI_COMM_WORLD, as it is within my communicator range (%lu 0-%d)",
                (unsigned long)MPI_COMM_WORLD, MAX_COMMUNICATORS);
    }
 
@@ -201,7 +201,7 @@ static int init_mpibis(int *argc, char ***argv)
             strcpy(server, (*argv)[i+1]);
             DELETE_ARG;
          } else {
-            return ERROR(1, 0, "init_mpibis", "Missing option for --wa-server");
+            return LERROR(1, 0, "init_mpibis", "Missing option for --wa-server");
          }
          DELETE_ARG;
 
@@ -210,7 +210,7 @@ static int init_mpibis(int *argc, char ***argv)
             port = (unsigned short) atoi((*argv)[i+1]);
             DELETE_ARG;
          } else {
-            return ERROR(1, 0, "init_mpibis", "Missing option for --wa-server-port");
+            return LERROR(1, 0, "init_mpibis", "Missing option for --wa-server-port");
          }
          DELETE_ARG;
 
@@ -220,14 +220,14 @@ static int init_mpibis(int *argc, char ***argv)
             len = strlen((*argv)[i+1]);
 
             if (len >= MAX_LENGTH_CLUSTER_NAME) {
-               return ERROR(1, 0, "init_mpibis", "Cluster name too long (%d)", len);
+               return LERROR(1, 0, "init_mpibis", "Cluster name too long (%d)", len);
             } else {
                cluster_name = malloc(len+1);
                strcpy(cluster_name, (*argv)[i+1]);
             }
             DELETE_ARG;
          } else {
-            return ERROR(1, 0, "init_mpibis", "Missing option for --wa-cluster-name");
+            return LERROR(1, 0, "init_mpibis", "Missing option for --wa-cluster-name");
          }
          DELETE_ARG;
 
@@ -236,7 +236,7 @@ static int init_mpibis(int *argc, char ***argv)
             cluster_rank = atoi((*argv)[i+1]);
             DELETE_ARG;
          } else {
-            return ERROR(1, 0, "init_mpibis", "Missing option for --wa-cluster-rank");
+            return LERROR(1, 0, "init_mpibis", "Missing option for --wa-cluster-rank");
          }
          DELETE_ARG;
 
@@ -245,7 +245,7 @@ static int init_mpibis(int *argc, char ***argv)
             cluster_count = atoi((*argv)[i+1]);
             DELETE_ARG;
          } else {
-            return ERROR(1, 0, "init_mpibis", "Missing option for --wa-cluster-rank");
+            return LERROR(1, 0, "init_mpibis", "Missing option for --wa-cluster-rank");
          }
          DELETE_ARG;
       }
@@ -254,17 +254,17 @@ static int init_mpibis(int *argc, char ***argv)
    }
 
    if (server == NULL || port <= 0) {
-      return ERROR(1, 0, "init_mpibis", "WA server not (correctly) set (%s %d)!", server, port);
+      return LERROR(1, 0, "init_mpibis", "WA server not (correctly) set (%s %d)!", server, port);
    }
 
    INFO(1, "init_mpibis", "WA server at %s %d", server, port);
 
    if (local_rank < 0 || local_count <= 0 || local_rank >= local_count) {
-      return ERROR(1, 0, "init_mpibis", "Local cluster info not set correctly (%d, %d)!", local_rank, local_count);
+      return LERROR(1, 0, "init_mpibis", "Local cluster info not set correctly (%d, %d)!", local_rank, local_count);
    }
 
    if (cluster_name == NULL || cluster_rank < 0 || cluster_count <= 0 || cluster_rank >= cluster_count) {
-      return ERROR(1, 0, "init_mpibis", "Cluster info not set correctly (%s, %d, %d)!", cluster_name, cluster_rank, cluster_count);
+      return LERROR(1, 0, "init_mpibis", "Cluster info not set correctly (%s, %d, %d)!", cluster_name, cluster_rank, cluster_count);
    }
 
    INFO(1, "init_mpibis", "I am %d of %d in cluster %s", local_rank, local_count, cluster_name);
@@ -329,28 +329,28 @@ int IMPI_Init(int *argc, char **argv[])
 
       if (status != MPI_SUCCESS) {
          PMPI_Finalize();
-         return IERROR(1, status, "IMPI_Init", "Failed to initialize groups!");
+         return LIERROR(1, status, "IMPI_Init", "Failed to initialize groups!");
       }
 
       status = init_request();
 
       if (status != MPI_SUCCESS) {
          PMPI_Finalize();
-         return IERROR(1, status, "IMPI_Init", "Failed to initialize requests!");
+         return LIERROR(1, status, "IMPI_Init", "Failed to initialize requests!");
       }
 
       status = init_operations();
 
       if (status != MPI_SUCCESS) {
          PMPI_Finalize();
-         return IERROR(1, status, "IMPI_Init", "Failed to initialize operations!");
+         return LIERROR(1, status, "IMPI_Init", "Failed to initialize operations!");
       }
 
       status = init_mpibis(argc, argv);
 
       if (status == 0) {
          PMPI_Finalize();
-         return IERROR(1, MPI_ERR_INTERN, "IMPI_Init", "Failed to initialize mpibis!");
+         return LIERROR(1, MPI_ERR_INTERN, "IMPI_Init", "Failed to initialize mpibis!");
       }
 
       status = wa_init(server, port, local_rank, local_count,
@@ -359,7 +359,7 @@ int IMPI_Init(int *argc, char **argv[])
 
       if (status == 0) {
          PMPI_Finalize();
-         return IERROR(1, MPI_ERR_INTERN, "IMPI_Init", "Failed to initialize wide area communication!");
+         return LIERROR(1, MPI_ERR_INTERN, "IMPI_Init", "Failed to initialize wide area communication!");
       }
 
       status = init_communicators(cluster_rank, cluster_count,
@@ -368,7 +368,7 @@ int IMPI_Init(int *argc, char **argv[])
       if (status != MPI_SUCCESS) {
          wa_finalize();
          PMPI_Finalize();
-         return IERROR(1, status, "IMPI_Init", "Failed to initialize communicators!");
+         return LIERROR(1, status, "IMPI_Init", "Failed to initialize communicators!");
       }
    }
 
@@ -386,7 +386,7 @@ int IMPI_Finalize(void)
    error = messaging_send_terminate_request(get_communicator(MPI_COMM_WORLD));
 
    if (error != MPI_SUCCESS) {
-      return IERROR(1, MPI_ERR_INTERN, "IMPI_Finalize", "Failed to terminate MPI_COMM_WORLD!");
+      return LIERROR(1, MPI_ERR_INTERN, "IMPI_Finalize", "Failed to terminate MPI_COMM_WORLD!");
    }
 
    wa_finalize();
@@ -400,7 +400,7 @@ int IMPI_Abort(MPI_Comm comm, int errorcode)
    communicator *c = get_communicator(comm);
 
    if (c == NULL) {
-      return ERROR(1, MPI_ERR_COMM, "IMPI_Abort", "Communicator not found!");
+      return LERROR(1, MPI_ERR_COMM, "IMPI_Abort", "Communicator not found!");
    }
 
    print_all_communicator_statistics();
@@ -419,11 +419,11 @@ static int do_send(char *func, void* buf, int count, MPI_Datatype datatype, int 
 #ifdef CHECK_PARAMS
 
    if (count < 0) {
-      return ERROR(1, MPI_ERR_COUNT, func, "Invalid count! (%d)", count);
+      return LERROR(1, MPI_ERR_COUNT, func, "Invalid count! (%d)", count);
    }
 
    if (dest < 0 || dest > c->global_size) {
-      return ERROR(1, MPI_ERR_RANK, func, "Invalid destination rank! (%d)", dest);
+      return LERROR(1, MPI_ERR_RANK, func, "Invalid destination rank! (%d)", dest);
    }
 
 #endif
@@ -435,7 +435,7 @@ static int do_send(char *func, void* buf, int count, MPI_Datatype datatype, int 
    }
 
    if (error != MPI_SUCCESS) {
-      return ERROR(1, error, func, "Rank %d (in cluster %d) failed to send data to %d (in cluster %d) (in communicator %d)!\n", c->global_rank, cluster_rank, dest, GET_CLUSTER_RANK(c->members[dest]), c->number);
+      return LERROR(1, error, func, "Rank %d (in cluster %d) failed to send data to %d (in cluster %d) (in communicator %d)!\n", c->global_rank, cluster_rank, dest, GET_CLUSTER_RANK(c->members[dest]), c->number);
    }
 
    return MPI_SUCCESS;
@@ -452,7 +452,7 @@ int IMPI_Send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, MP
    c = get_communicator(comm);
 
    if (c == NULL) {
-      return ERROR(1, MPI_ERR_COMM, "IMPI_Send", "Communicator not found!");
+      return LERROR(1, MPI_ERR_COMM, "IMPI_Send", "Communicator not found!");
    }
 */
 

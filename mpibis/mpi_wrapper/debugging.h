@@ -29,11 +29,14 @@ char *group_to_string(MPI_Group g);
 
 void DEBUG(int indent, const char *fmt, ...);
 void INFO(int indent, const char *func, const char *fmt, ...);
-//void ERROR(int indent, const char *fmt, ...);
+
+void ERROR(int indent, const char *fmt, ...);
+void IERROR(int indent, const char *fmt, ...);
+
 void WARN(int indent, const char *fmt, ...);
 
-int IERROR(int indent,  int errorcode, const char *func, const char *fmt, ...);
-int ERROR(int indent, int errorcode, const char *func, const char *fmt, ...);
+int LIERROR(int indent,  int errorcode, const char *func, const char *fmt, ...);
+int LERROR(int indent, int errorcode, const char *func, const char *fmt, ...);
 
 #ifdef CATCH_DERIVED_TYPES
 
