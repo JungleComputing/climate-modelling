@@ -40,7 +40,7 @@
 
 // Macro to extract communicator
 #define EXTRACT_COMMUNICATOR { \
-   communicator *c = get_communicator(comm); \
+   c = get_communicator(comm); \
    if (c == NULL) { \
       return ERROR(1, MPI_ERR_COMM, __FUNCTION__, "Communicator not found!"); \
    } \
