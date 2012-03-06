@@ -424,7 +424,7 @@ int LERROR(int indent, int errorcode, const char *func, const char *fmt, ...)
 
    va_list argp;
    va_start(argp, fmt);
-   print_error(indent, "ERROR", errorcode, func, fmt, argp);
+   print_error(indent, errorcode, "ERROR", func, fmt, argp);
    va_end(argp);
 
    ptr = NULL;
@@ -441,7 +441,7 @@ int LIERROR(int indent, int errorcode,  const char *func, const char *fmt, ...)
 
    va_list argp;
    va_start(argp, fmt);
-   print_error(indent, "INTERNAL ERROR", errorcode, func, fmt, argp);
+   print_error(indent, errorcode, "INTERNAL ERROR", func, fmt, argp);
    va_end(argp);
 
    ptr = NULL;
