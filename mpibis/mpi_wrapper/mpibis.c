@@ -2167,7 +2167,7 @@ static int WA_Scatterv(void *sendbuf, int *sendcounts, int *displs, MPI_Datatype
 
       if (root_cluster == tmp_cluster) {
          // local receive
-         error = PMPI_Recv(recvbuf, recvcount, recvtype, GET_PROCESS_RANK(c->members[root]), SCATTERV_TAG, MPI_STATUS_IGNORE, c->comm);
+         error = PMPI_Recv(recvbuf, recvcount, recvtype, GET_PROCESS_RANK(c->members[root]), SCATTERV_TAG, c->comm, MPI_STATUS_IGNORE);
       } else {
          // remote receive
          error = messaging_receive(recvbuf, recvcount, recvtype, root, SCATTERV_TAG, MPI_STATUS_IGNORE, c);
@@ -2562,7 +2562,7 @@ int IMPI_Scan(void* sendbuf, void* recvbuf, int count,
 
          // Must receive from i.
          if (tmp_cluster == cluster_rank) {
-            error = PMPI_Recv(buffer, count, datatype, GET_PROCESS_RANK(c->members[i]), SCAN_TAG, MPI_STATUS_IGNORE, c->comm);
+            error = PMPI_Recv(buffer, count, datatype, GET_PROCESS_RANK(c->members[i]), SCAN_TAG, c->comm, MPI_STATUS_IGNORE);
          } else {
             error = messaging_receive(buffer, count, datatype, i, SCAN_TAG, MPI_STATUS_IGNORE, c);
          }
@@ -2585,7 +2585,7 @@ static int WA_Alltoallv(void *sendbuf, int *sendcounts, int *sdispls, MPI_Dataty
                         void *recvbuf, int *recvcounts, int *rdispls, MPI_Datatype recvtype,
                         communicator *c)
 {
-   int tmp_cluster, i, j;
+   int tmp_cluster, i, j, error;
    MPI_Aint sextent, rextent;
 
    // We implement a WA Alltoallv using simple send/receive primitives
@@ -2624,7 +2624,7 @@ static int WA_Alltoallv(void *sendbuf, int *sendcounts, int *sdispls, MPI_Dataty
                tmp_cluster = GET_CLUSTER_RANK(c->members[j]);
 
                if (tmp_cluster == cluster_rank) {
-                  error = PMPI_Recv(recvbuf + (rextent * rdispls[j]), recvcounts[j], recvtype, GET_PROCESS_RANK(c->members[j]), ALLTOALLV_TAG, c->comm);
+                  error = PMPI_Recv(recvbuf + (rextent * rdispls[j]), recvcounts[j], recvtype, GET_PROCESS_RANK(c->members[j]), ALLTOALLV_TAG, c->comm, MPI_STATUS_IGNORE);
                } else {
                   error = messaging_receive(recvbuf + (rextent + rdispls[j]), recvcounts[j], recvtype, j, ALLTOALLV_TAG, MPI_STATUS_IGNORE, c);
                }

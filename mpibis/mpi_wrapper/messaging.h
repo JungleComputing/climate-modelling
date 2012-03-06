@@ -19,7 +19,7 @@
 #define GATHERV_TAG    (MAX_TAG-5)
 #define SCATTERV_TAG   (MAX_TAG-6)
 #define ALLGATHERV_TAG (MAX_TAG-7)
-#define ALLTOALL_TAG   (MAX_TAG-8)
+#define ALLTOALLV_TAG  (MAX_TAG-8)
 
 // requests
 
