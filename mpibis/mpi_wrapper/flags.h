@@ -39,10 +39,10 @@
 #define CHECK_TYPE(T) (catch_derived_datatype(T))
 
 // Macro to print error
-#define SERROR(indent, error, message, ...) LERROR(indent, error, __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__)
+#define SERROR(indent, error, message, ...) XERROR(indent, error, __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__)
 
 // Macro to print internal error
-#define SIERROR(indent, error, message, ...) LIERROR(indent, error, __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__)
+#define SIERROR(indent, error, message, ...) XIERROR(indent, error, __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__)
 
 // Macro to translate MPI communicator to MPIbis communicator
 #define TRANSLATE_COMMUNICATOR(M, I) { \
