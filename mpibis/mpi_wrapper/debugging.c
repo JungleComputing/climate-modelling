@@ -329,6 +329,8 @@ static void println(int indent, const char * header, const char *fmt, va_list ar
    fprintf(stderr, "\n");
 }
 
+#if VERBOSE > 2
+
 static void println2(int indent, const char * header, const char * func, const char *fmt, va_list argp)
 {
    if (indent < 0) {
@@ -341,6 +343,8 @@ static void println2(int indent, const char * header, const char * func, const c
    vfprintf(stderr, fmt, argp);
    fprintf(stderr, "\n");
 }
+
+#endif
 
 void DEBUG(int indent, const char *fmt, ...)
 {
