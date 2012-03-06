@@ -356,6 +356,19 @@ static void print_error(int indent, int errorcode, const char * header, const ch
    fprintf(stderr, "\n");
 }
 
+static void print_error2(int indent, int errorcode, const char *header, const char * func, const char *file, const int line, const char *fmt, va_list argp)
+{
+   if (indent < 0) {
+      indent = 0;
+   } else if (indent > 9) {
+      indent = 9;
+   }
+
+   fprintf(stderr, "%s%s [%d] %s : ", indents[indent], header, errorcode, func);
+   vfprintf(stderr, fmt, argp);
+   fprintf(stderr, " (at %s:%d)\n", file, line);
+}
+
 void DEBUG(int indent, const char *fmt, ...)
 {
 #if VERBOSE > 3
@@ -442,6 +455,24 @@ int LIERROR(int indent, int errorcode,  const char *func, const char *fmt, ...)
    va_list argp;
    va_start(argp, fmt);
    print_error(indent, errorcode, "INTERNAL ERROR", func, fmt, argp);
+   va_end(argp);
+
+   ptr = NULL;
+   *ptr = 1;
+
+#endif
+
+   return errorcode;
+}
+
+int XERROR(int indent, int errorcode, const char *header, const char *func, const char *file, const int line, const char *fmt, ...);
+{
+#if VERBOSE > 0
+   int *ptr;
+
+   va_list argp;
+   va_start(argp, fmt);
+   print_error2(indent, errorcode, header, func, file, line, fmt, argp);
    va_end(argp);
 
    ptr = NULL;

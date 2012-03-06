@@ -38,6 +38,8 @@ void WARN(int indent, const char *fmt, ...);
 int LIERROR(int indent,  int errorcode, const char *func, const char *fmt, ...);
 int LERROR(int indent, int errorcode, const char *func, const char *fmt, ...);
 
+int XERROR(int indent, int errorcode, const char *header, const char *func, const char *file, const int line, const char *fmt, ...);
+
 #ifdef CATCH_DERIVED_TYPES
 
 void catch_derived_datatype(MPI_Datatype type);
