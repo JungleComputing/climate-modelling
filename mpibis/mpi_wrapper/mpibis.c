@@ -117,7 +117,7 @@ static int read_config_file()
 
    if (error == EOF || error == 0) {
       fclose(config);
-      return ERROR(1, 0, "read_config_file", "Failed to read cluster name from %s", file);
+      return EERROR(1, 0, "read_config_file", "Failed to read cluster name from %s", file);
    }
 
    cluster_name = malloc(strlen(buffer)+1);
@@ -133,7 +133,7 @@ static int read_config_file()
 
    if (error == EOF || error == 0) {
       fclose(config);
-      return ERROR(1, 0, "read_config_file", "Failed to read cluster rank from %s", file);
+      return EERROR(1, 0, "read_config_file", "Failed to read cluster rank from %s", file);
    }
 
    error = fscanf(config, "%d", &cluster_count);
