@@ -61,6 +61,11 @@ int MPI_Accumulate ( void *origin_addr, int origin_count, MPI_Datatype origin_da
    INFO(0, "MPI_Accumulate","(void *origin_addr=%p, int origin_count=%d, MPI_Datatype origin_datatype=%s, int target_rank=%d, MPI_Aint target_disp=%p, int target_count=%d, MPI_Datatype target_datatype=%s, MPI_Op op=%s, MPI_Win win=%s)", origin_addr, origin_count, type_to_string(origin_datatype), target_rank, (void *) target_disp, target_count, type_to_string(target_datatype), op_to_string(op), win_to_string(win));
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(origin_datatype);
+   CHECK_TYPE(target_datatype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Accumulate(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, op, win);
 #else
@@ -166,6 +171,11 @@ int MPI_Allgather ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *r
    INFO(0, "MPI_Allgather","(void *sendbuf=%p, int sendcount=%d, MPI_Datatype sendtype=%s, void *recvbuf=%p, int recvcount=%d, MPI_Datatype recvtype=%s, MPI_Comm comm=%s)", sendbuf, sendcount, type_to_string(sendtype), recvbuf, recvcount, type_to_string(recvtype), comm_to_string(comm));
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(sendtype);
+   CHECK_TYPE(recvtype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #else
@@ -186,6 +196,11 @@ int MPI_Allgatherv ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Allgatherv","(void *sendbuf=%p, int sendcount=%d, MPI_Datatype sendtype=%s, void *recvbuf=%p, int *recvcounts=%p, int *displs=%p, MPI_Datatype recvtype=%s, MPI_Comm comm=%s)", sendbuf, sendcount, type_to_string(sendtype), recvbuf, recvcounts, displs, type_to_string(recvtype), comm_to_string(comm));
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(sendtype);
+   CHECK_TYPE(recvtype);
+#endif
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm);
@@ -229,7 +244,11 @@ int MPI_Allreduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype dataty
    INFO(0, "MPI_Allreduce","(void *sendbuf=%p, void *recvbuf=%p, int count=%d, MPI_Datatype datatype=%s, MPI_Op op=%s, MPI_Comm comm=%s)", sendbuf, recvbuf, count, type_to_string(datatype), op_to_string(op), comm_to_string(comm));
 #endif // TRACE_CALLS
 
-INFO(1, "JASON### MPI_Allreduce IN:", "%d %d\n", count, *((int*) sendbuf));
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
+//INFO(1, "JASON### MPI_Allreduce IN:", "%d %d\n", count, *((int*) sendbuf));
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm);
@@ -237,7 +256,7 @@ INFO(1, "JASON### MPI_Allreduce IN:", "%d %d\n", count, *((int*) sendbuf));
    int error = PMPI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm);
 #endif // IBIS_INTERCEPT
 
-INFO(1, "JASON### MPI_Allreduce OUT:", "%d %d %d\n", count, *((int*) recvbuf), error);
+//INFO(1, "JASON### MPI_Allreduce OUT:", "%d %d %d\n", count, *((int*) recvbuf), error);
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
@@ -253,6 +272,11 @@ int MPI_Alltoall ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *re
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Alltoall","(void *sendbuf=%p, int sendcount=%d, MPI_Datatype sendtype=%s, void *recvbuf=%p, int recvcount=%d, MPI_Datatype recvtype=%s, MPI_Comm comm=%s)", sendbuf, sendcount, type_to_string(sendtype), recvbuf, recvcount, type_to_string(recvtype), comm_to_string(comm));
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(sendtype);
+   CHECK_TYPE(recvtype);
+#endif
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
@@ -275,6 +299,11 @@ int MPI_Alltoallv ( void *sendbuf, int *sendcnts, int *sdispls, MPI_Datatype sen
    INFO(0, "MPI_Alltoallv","(void *sendbuf=%p, int *sendcnts=%p, int *sdispls=%p, MPI_Datatype sendtype=%s, void *recvbuf=%p, int *recvcnts=%p, int *rdispls=%p, MPI_Datatype recvtype=%s, MPI_Comm comm=%s)", sendbuf, sendcnts, sdispls, type_to_string(sendtype), recvbuf, recvcnts, rdispls, type_to_string(recvtype), comm_to_string(comm));
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(sendtype);
+   CHECK_TYPE(recvtype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Alltoallv(sendbuf, sendcnts, sdispls, sendtype, recvbuf, recvcnts, rdispls, recvtype, comm);
 #else
@@ -289,7 +318,7 @@ int MPI_Alltoallv ( void *sendbuf, int *sendcnts, int *sdispls, MPI_Datatype sen
    return error;
 }
 
-
+// NOT IN MPI-1?
 int MPI_Alltoallw ( void *sendbuf, int *sendcnts, int *sdispls, MPI_Datatype *sendtypes, void *recvbuf, int *recvcnts, int *rdispls, MPI_Datatype *recvtypes, MPI_Comm comm )
 {
 #ifdef TRACE_CALLS
@@ -401,9 +430,13 @@ int MPI_Bcast ( void *buffer, int count, MPI_Datatype datatype, int root, MPI_Co
    INFO(0, "MPI_Bcast","(void *buffer=%p, int count=%d, MPI_Datatype datatype=%s, int root=%d, MPI_Comm comm=%s)", buffer, count, type_to_string(datatype), root, comm_to_string(comm));
 #endif // TRACE_CALLS
 
-if (count <= 0) { 
-   ERROR(0, "Bcast count = 0!!");
-}
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
+//if (count <= 0) { 
+//   ERROR(0, "Bcast count = 0!!");
+//}
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Bcast(buffer, count, datatype, root, comm);
@@ -426,6 +459,10 @@ int MPI_Bsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
    INFO(0, "MPI_Bsend","(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm));
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Bsend(buf, count, datatype, dest, tag, comm);
 #else
@@ -446,6 +483,10 @@ int MPI_Bsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int 
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Bsend_init","(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Bsend_init(buf, count, datatype, dest, tag, comm, request);
@@ -1475,6 +1516,10 @@ int MPI_Exscan ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Exscan","(void *sendbuf=%p, void *recvbuf=%p, int count=%d, MPI_Datatype datatype=%s, MPI_Op op=%s, MPI_Comm comm=%s)", sendbuf, recvbuf, count, type_to_string(datatype), op_to_string(op), comm_to_string(comm));
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Exscan(sendbuf, recvbuf, count, datatype, op, comm);
@@ -2715,6 +2760,11 @@ int MPI_Gather ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvbu
    INFO(0, "MPI_Gather","(void *sendbuf=%p, int sendcnt=%d, MPI_Datatype sendtype=%s, void *recvbuf=%p, int recvcnt=%d, MPI_Datatype recvtype=%s, int root=%d, MPI_Comm comm=%s)", sendbuf, sendcnt, type_to_string(sendtype), recvbuf, recvcnt, type_to_string(recvtype), root, comm_to_string(comm));
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(sendtype);
+   CHECK_TYPE(recvtype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Gather(sendbuf, sendcnt, sendtype, recvbuf, recvcnt, recvtype, root, comm);
 #else
@@ -2735,6 +2785,11 @@ int MPI_Gatherv ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvb
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Gatherv","(void *sendbuf=%p, int sendcnt=%d, MPI_Datatype sendtype=%s, void *recvbuf=%p, int *recvcnts=%p, int *displs=%p, MPI_Datatype recvtype=%s, int root=%d, MPI_Comm comm=%s)", sendbuf, sendcnt, type_to_string(sendtype), recvbuf, recvcnts, displs, type_to_string(recvtype), root, comm_to_string(comm));
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(sendtype);
+   CHECK_TYPE(recvtype);
+#endif
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Gatherv(sendbuf, sendcnt, sendtype, recvbuf, recvcnts, displs, recvtype, root, comm);
@@ -2778,6 +2833,10 @@ int MPI_Get_count ( MPI_Status *status, MPI_Datatype datatype, int *count )
    INFO(0, "MPI_Get_count","(MPI_Status *status=%p, MPI_Datatype datatype=%s, int *count=%p)", status, type_to_string(datatype), count);
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Get_count(status, datatype, count);
 #else
@@ -2792,12 +2851,16 @@ int MPI_Get_count ( MPI_Status *status, MPI_Datatype datatype, int *count )
    return error;
 }
 
-
 int MPI_Get_elements ( MPI_Status *status, MPI_Datatype datatype, int *elements )
 {
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Get_elements","(MPI_Status *status=%p, MPI_Datatype datatype=%s, int *elements=%p)", status, type_to_string(datatype), elements);
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Get_elements(status, datatype, elements);
@@ -2813,7 +2876,7 @@ int MPI_Get_elements ( MPI_Status *status, MPI_Datatype datatype, int *elements 
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Get ( void *origin_addr, int origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, MPI_Win win )
 {
 #ifdef TRACE_CALLS
@@ -3303,6 +3366,10 @@ int MPI_Ibsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
    INFO(0, "MPI_Ibsend","(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Ibsend(buf, count, datatype, dest, tag, comm, request);
 #else
@@ -3618,6 +3685,10 @@ int MPI_Irecv ( void *buf, int count, MPI_Datatype datatype, int source, int tag
    INFO(0, "MPI_Irecv","(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int source=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), source, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Irecv(buf, count, datatype, source, tag, comm, request);
 #else
@@ -3638,6 +3709,10 @@ int MPI_Irsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Irsend","(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Irsend(buf, count, datatype, dest, tag, comm, request);
@@ -3660,6 +3735,10 @@ int MPI_Isend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
    INFO(0, "MPI_Isend","(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Isend(buf, count, datatype, dest, tag, comm, request);
 #else
@@ -3680,6 +3759,10 @@ int MPI_Issend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Issend","(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Issend(buf, count, datatype, dest, tag, comm, request);
@@ -3842,12 +3925,13 @@ int MPI_Op_free ( MPI_Op *op )
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Pack_external ( char *datarep, void *inbuf, int incount, MPI_Datatype datatype, void *outbuf, MPI_Aint outcount, MPI_Aint *position )
 {
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Pack_external","(char *datarep=%p, void *inbuf=%p, int incount=%d, MPI_Datatype datatype=%s, void *outbuf=%p, MPI_Aint outcount=%p, MPI_Aint *position=%p)", datarep, inbuf, incount, type_to_string(datatype), outbuf, (void *) outcount, position);
 #endif // TRACE_CALLS
+
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Pack_external(datarep, inbuf, incount, datatype, outbuf, outcount, position);
@@ -3863,7 +3947,7 @@ int MPI_Pack_external ( char *datarep, void *inbuf, int incount, MPI_Datatype da
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Pack_external_size ( char *datarep, int incount, MPI_Datatype datatype, MPI_Aint *size )
 {
 #ifdef TRACE_CALLS
@@ -3891,6 +3975,10 @@ int MPI_Pack ( void *inbuf, int incount, MPI_Datatype datatype, void *outbuf, in
    INFO(0, "MPI_Pack","(void *inbuf=%p, int incount=%d, MPI_Datatype datatype=%s, void *outbuf=%p, int outcount=%d, int *position=%p, MPI_Comm comm=%s)", inbuf, incount, type_to_string(datatype), outbuf, outcount, position, comm_to_string(comm));
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Pack(inbuf, incount, datatype, outbuf, outcount, position, comm);
 #else
@@ -3911,6 +3999,10 @@ int MPI_Pack_size ( int incount, MPI_Datatype datatype, MPI_Comm comm, int *size
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Pack_size","(int incount=%d, MPI_Datatype datatype=%s, MPI_Comm comm=%s, int *size=%p)", incount, type_to_string(datatype), comm_to_string(comm), size);
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Pack_size(incount, datatype, comm, size);
@@ -3989,7 +4081,7 @@ int MPI_Publish_name ( char *service_name, MPI_Info info, char *port_name )
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Put ( void *origin_addr, int origin_count, MPI_Datatype origin_datatype, int target_rank, MPI_Aint target_disp, int target_count, MPI_Datatype target_datatype, MPI_Win win )
 {
 #ifdef TRACE_CALLS
@@ -4038,6 +4130,10 @@ int MPI_Recv ( void *buf, int count, MPI_Datatype datatype, int source, int tag,
    INFO(0, "MPI_Recv","(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int source=%d, int tag=%d, MPI_Comm comm=%s, MPI_Status *status=%p)", buf, count, type_to_string(datatype), source, tag, comm_to_string(comm), status);
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Recv(buf, count, datatype, source, tag, comm, status);
 #else
@@ -4058,6 +4154,10 @@ int MPI_Recv_init ( void *buf, int count, MPI_Datatype datatype, int source, int
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Recv_init","(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int source=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), source, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Recv_init(buf, count, datatype, source, tag, comm, request);
@@ -4080,6 +4180,10 @@ int MPI_Reduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
    INFO(0, "MPI_Reduce","(void *sendbuf=%p, void *recvbuf=%p, int count=%d, MPI_Datatype datatype=%s, MPI_Op op=%s, int root=%d, MPI_Comm comm=%s)", sendbuf, recvbuf, count, type_to_string(datatype), op_to_string(op), root, comm_to_string(comm));
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Reduce(sendbuf, recvbuf, count, datatype, op, root, comm);
 #else
@@ -4101,6 +4205,10 @@ int MPI_Reduce_scatter ( void *sendbuf, void *recvbuf, int *recvcnts, MPI_Dataty
    INFO(0, "MPI_Reduce_scatter","(void *sendbuf=%p, void *recvbuf=%p, int *recvcnts=%p, MPI_Datatype datatype=%s, MPI_Op op=%s, MPI_Comm comm=%s)", sendbuf, recvbuf, recvcnts, type_to_string(datatype), op_to_string(op), comm_to_string(comm));
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Reduce_scatter(sendbuf, recvbuf, recvcnts, datatype, op, comm);
 #else
@@ -4115,7 +4223,7 @@ int MPI_Reduce_scatter ( void *sendbuf, void *recvbuf, int *recvcnts, MPI_Dataty
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Register_datarep ( char *name, MPI_Datarep_conversion_function *read_conv_fn, MPI_Datarep_conversion_function *write_conv_fn, MPI_Datarep_extent_function *extent_fn, void *state )
 {
 #ifdef TRACE_CALLS
@@ -4185,6 +4293,10 @@ int MPI_Rsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
    INFO(0, "MPI_Rsend","(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm));
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Rsend(buf, count, datatype, dest, tag, comm);
 #else
@@ -4205,6 +4317,10 @@ int MPI_Rsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int 
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Rsend_init","(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Rsend_init(buf, count, datatype, dest, tag, comm, request);
@@ -4227,6 +4343,10 @@ int MPI_Scan ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, M
    INFO(0, "MPI_Scan","(void *sendbuf=%p, void *recvbuf=%p, int count=%d, MPI_Datatype datatype=%s, MPI_Op op=%s, MPI_Comm comm=%s)", sendbuf, recvbuf, count, type_to_string(datatype), op_to_string(op), comm_to_string(comm));
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Scan(sendbuf, recvbuf, count, datatype, op, comm);
 #else
@@ -4247,6 +4367,11 @@ int MPI_Scatter ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvb
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Scatter","(void *sendbuf=%p, int sendcnt=%d, MPI_Datatype sendtype=%s, void *recvbuf=%p, int recvcnt=%d, MPI_Datatype recvtype=%s, int root=%d, MPI_Comm comm=%s)", sendbuf, sendcnt, type_to_string(sendtype), recvbuf, recvcnt, type_to_string(recvtype), root, comm_to_string(comm));
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(sendtype);
+   CHECK_TYPE(recvtype);
+#endif
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Scatter(sendbuf, sendcnt, sendtype, recvbuf, recvcnt, recvtype, root, comm);
@@ -4269,6 +4394,11 @@ int MPI_Scatterv ( void *sendbuf, int *sendcnts, int *displs, MPI_Datatype sendt
    INFO(0, "MPI_Scatterv","(void *sendbuf=%p, int *sendcnts=%p, int *displs=%p, MPI_Datatype sendtype=%s, void *recvbuf=%p, int recvcnt=%d, MPI_Datatype recvtype=%s, int root=%d, MPI_Comm comm=%s)", sendbuf, sendcnts, displs, type_to_string(sendtype), recvbuf, recvcnt, type_to_string(recvtype), root, comm_to_string(comm));
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(sendtype);
+   CHECK_TYPE(recvtype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Scatterv(sendbuf, sendcnts, displs, sendtype, recvbuf, recvcnt, recvtype, root, comm);
 #else
@@ -4289,6 +4419,10 @@ int MPI_Send ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, M
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Send","(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm));
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Send(buf, count, datatype, dest, tag, comm);
@@ -4311,6 +4445,10 @@ int MPI_Send_init ( void *buf, int count, MPI_Datatype datatype, int dest, int t
    INFO(0, "MPI_Send_init","(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Send_init(buf, count, datatype, dest, tag, comm, request);
 #else
@@ -4331,6 +4469,11 @@ int MPI_Sendrecv ( void *sendbuf, int sendcount, MPI_Datatype sendtype, int dest
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Sendrecv","(void *sendbuf=%p, int sendcount=%d, MPI_Datatype sendtype=%s, int dest=%d, int sendtag=%d, void *recvbuf=%p, int recvcount=%d, MPI_Datatype recvtype=%s, int source=%d, int recvtag=%d, MPI_Comm comm=%s, MPI_Status *status=%p)", sendbuf, sendcount, type_to_string(sendtype), dest, sendtag, recvbuf, recvcount, type_to_string(recvtype), source, recvtag, comm_to_string(comm), status);
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(sendtype);
+   CHECK_TYPE(recvtype);
+#endif
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Sendrecv(sendbuf, sendcount, sendtype, dest, sendtag, recvbuf, recvcount, recvtype, source, recvtag, comm, status);
@@ -4353,6 +4496,11 @@ int MPI_Sendrecv_replace ( void *buf, int count, MPI_Datatype datatype, int dest
    INFO(0, "MPI_Sendrecv_replace","(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int sendtag=%d, int source=%d, int recvtag=%d, MPI_Comm comm=%s, MPI_Status *status=%p)", buf, count, type_to_string(datatype), dest, sendtag, source, recvtag, comm_to_string(comm), status);
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(sendtype);
+   CHECK_TYPE(recvtype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Sendrecv_replace(buf, count, datatype, dest, sendtag, source, recvtag, comm, status);
 #else
@@ -4374,6 +4522,10 @@ int MPI_Ssend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
    INFO(0, "MPI_Ssend","(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm));
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Ssend(buf, count, datatype, dest, tag, comm);
 #else
@@ -4394,6 +4546,10 @@ int MPI_Ssend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int 
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Ssend_init","(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Ssend_init(buf, count, datatype, dest, tag, comm, request);
@@ -4451,7 +4607,7 @@ int MPI_Start ( MPI_Request *request )
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Status_set_cancelled ( MPI_Status *status, int flag )
 {
 #ifdef TRACE_CALLS
@@ -4472,12 +4628,16 @@ int MPI_Status_set_cancelled ( MPI_Status *status, int flag )
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Status_set_elements ( MPI_Status *status, MPI_Datatype datatype, int count )
 {
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Status_set_elements","(MPI_Status *status=%p, MPI_Datatype datatype=%s, int count=%d)", status, type_to_string(datatype), count);
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Status_set_elements(status, datatype, count);
@@ -4892,7 +5052,7 @@ int MPI_Type_create_subarray ( int ndims, int array_of_sizes[], int array_of_sub
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Type_delete_attr ( MPI_Datatype type, int type_keyval )
 {
 #ifdef TRACE_CALLS
@@ -4941,6 +5101,10 @@ int MPI_Type_extent ( MPI_Datatype datatype, MPI_Aint *extent )
    INFO(0, "MPI_Type_extent","(MPI_Datatype datatype=%s, MPI_Aint *extent=%p)", type_to_string(datatype), extent);
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Type_extent(datatype, extent);
 #else
@@ -4976,7 +5140,7 @@ int MPI_Type_free ( MPI_Datatype *datatype )
    return error;
 }
 
-
+// NO in MPI-1?
 int MPI_Type_free_keyval ( int *type_keyval )
 {
 #ifdef TRACE_CALLS
@@ -4997,7 +5161,7 @@ int MPI_Type_free_keyval ( int *type_keyval )
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Type_get_attr ( MPI_Datatype type, int type_keyval, void *attribute_val, int *flag )
 {
 #ifdef TRACE_CALLS
@@ -5018,7 +5182,7 @@ int MPI_Type_get_attr ( MPI_Datatype type, int type_keyval, void *attribute_val,
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Type_get_contents ( MPI_Datatype datatype, int max_integers, int max_addresses, int max_datatypes, int array_of_integers[], MPI_Aint array_of_addresses[], MPI_Datatype array_of_datatypes[] )
 {
 #ifdef TRACE_CALLS
@@ -5039,7 +5203,7 @@ int MPI_Type_get_contents ( MPI_Datatype datatype, int max_integers, int max_add
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Type_get_envelope ( MPI_Datatype datatype, int *num_integers, int *num_addresses, int *num_datatypes, int *combiner )
 {
 #ifdef TRACE_CALLS
@@ -5060,7 +5224,7 @@ int MPI_Type_get_envelope ( MPI_Datatype datatype, int *num_integers, int *num_a
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Type_get_extent ( MPI_Datatype datatype, MPI_Aint *lb, MPI_Aint *extent )
 {
 #ifdef TRACE_CALLS
@@ -5081,7 +5245,7 @@ int MPI_Type_get_extent ( MPI_Datatype datatype, MPI_Aint *lb, MPI_Aint *extent 
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Type_get_name ( MPI_Datatype datatype, char *type_name, int *resultlen )
 {
 #ifdef TRACE_CALLS
@@ -5102,7 +5266,7 @@ int MPI_Type_get_name ( MPI_Datatype datatype, char *type_name, int *resultlen )
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Type_get_true_extent ( MPI_Datatype datatype, MPI_Aint *true_lb, MPI_Aint *true_extent )
 {
 #ifdef TRACE_CALLS
@@ -5207,7 +5371,7 @@ int MPI_Type_lb ( MPI_Datatype datatype, MPI_Aint *displacement )
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Type_match_size ( int typeclass, int size, MPI_Datatype *datatype )
 {
 #ifdef TRACE_CALLS
@@ -5228,7 +5392,7 @@ int MPI_Type_match_size ( int typeclass, int size, MPI_Datatype *datatype )
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Type_set_attr ( MPI_Datatype type, int type_keyval, void *attribute_val )
 {
 #ifdef TRACE_CALLS
@@ -5249,7 +5413,7 @@ int MPI_Type_set_attr ( MPI_Datatype type, int type_keyval, void *attribute_val 
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Type_set_name ( MPI_Datatype type, char *type_name )
 {
 #ifdef TRACE_CALLS
@@ -5276,6 +5440,10 @@ int MPI_Type_size ( MPI_Datatype datatype, int *size )
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Type_size","(MPI_Datatype datatype=%s, int *size=%p)", type_to_string(datatype), size);
 #endif // TRACE_CALLS
+
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Type_size(datatype, size);
@@ -5354,7 +5522,7 @@ int MPI_Type_vector ( int count, int blocklength, int stride, MPI_Datatype old_t
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Unpack_external ( char *datarep, void *inbuf, MPI_Aint insize, MPI_Aint *position, void *outbuf, int outcount, MPI_Datatype datatype )
 {
 #ifdef TRACE_CALLS
@@ -5382,6 +5550,10 @@ int MPI_Unpack ( void *inbuf, int insize, int *position, void *outbuf, int outco
    INFO(0, "MPI_Unpack","(void *inbuf=%p, int insize=%d, int *position=%p, void *outbuf=%p, int outcount=%d, MPI_Datatype datatype=%s, MPI_Comm comm=%s)", inbuf, insize, position, outbuf, outcount, type_to_string(datatype), comm_to_string(comm));
 #endif // TRACE_CALLS
 
+#ifdef CATCH_DERIVED_TYPES
+   CHECK_TYPE(datatype);
+#endif
+
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Unpack(inbuf, insize, position, outbuf, outcount, datatype, comm);
 #else
@@ -5396,7 +5568,7 @@ int MPI_Unpack ( void *inbuf, int insize, int *position, void *outbuf, int outco
    return error;
 }
 
-
+// NOT in MPI-1?
 int MPI_Unpublish_name ( char *service_name, MPI_Info info, char *port_name )
 {
 #ifdef TRACE_CALLS

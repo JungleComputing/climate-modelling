@@ -1,21 +1,31 @@
 TODO
 ----
 
+CHECK on MPI_TYPE* + MPI_TYPE_EXTENT + MPI_TYPE_SIZE
+
+CORRECTLY IMPLEMENT synchronous sending
+
+ENDIANESS CONVERSION for heterogeneous systems (ie. combining DAS-Huygens)
+
 MERGE if (bla) MPI_Send else messaging_send 
 REFACTOR  return ERROR(level, func, errorcode, message)  
 REFACTOR  return IERROR(level, func, messsage)
-ADD/FIX various special tags
-
-
 
 mpi_group_difference
 mpi_group_intersection
 mpi_initialized
-mpi_ssend
+
+
+INCORRECT-ish
+-------------
+
+mpi_ssend 
 
 
 UNTESTED
 --------
+
+ADD/FIX various special tags
 
 mpi_sendrecv
 mpi_scan

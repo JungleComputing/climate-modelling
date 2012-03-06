@@ -5,9 +5,21 @@
 
 #ifdef IBIS_INTERCEPT
 
-
 #include "mpi.h"
 #include "types.h"
+
+// special message tags
+
+#define MAX_TAG 32768
+
+#define BCAST_TAG      (MAX_TAG-1)
+#define BARRIER_TAG    (MAX_TAG-2)
+#define REDUCE_TAG     (MAX_TAG-3)
+#define SCAN_TAG       (MAX_TAG-4)
+#define GATHERV_TAG    (MAX_TAG-5)
+#define SCATTERV_TAG   (MAX_TAG-6)
+#define ALLGATHERV_TAG (MAX_TAG-7)
+#define ALLTOALL_TAG   (MAX_TAG-8)
 
 // requests
 

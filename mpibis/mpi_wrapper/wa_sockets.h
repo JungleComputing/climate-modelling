@@ -50,12 +50,6 @@
 
 #define OPCODE_CLOSE_LINK                127
 
-#define BCAST_TAG                         -1
-#define ALLREDUCE_TAG                     -2
-#define GATHER_TAG                        -3
-#define BARRIER_TAG                       -4
-#define REDUCE_TAG                        -5
-
 #define MAX_LENGTH_CLUSTER_NAME          128
 #define MAX_COMMUNICATOR_BYTES             1
 #define MAX_REQUEST_BYTES   (sizeof (int *))
