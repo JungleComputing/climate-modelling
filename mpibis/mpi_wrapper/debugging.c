@@ -448,6 +448,8 @@ int LIERROR(int indent, int errorcode,  const char *func, const char *fmt, ...)
    *ptr = 1;
 
 #endif
+
+   return errorcode;
 }
 
 
