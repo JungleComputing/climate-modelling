@@ -342,6 +342,20 @@ static void println2(int indent, const char * header, const char * func, const c
    fprintf(stderr, "\n");
 }
 
+
+static void print_error(int indent, int errorcode, const char * header, const char * func, const char *fmt, va_list argp)
+{
+   if (indent < 0) {
+      indent = 0;
+   } else if (indent > 9) {
+      indent = 9;
+   }
+
+   fprintf(stderr, "%s%s [%d] %s : ", indents[indent], header, errorcode, func);
+   vfprintf(stderr, fmt, argp);
+   fprintf(stderr, "\n");
+}
+
 void DEBUG(int indent, const char *fmt, ...)
 {
 #if VERBOSE > 3
@@ -372,6 +386,7 @@ void WARN(int indent, const char *fmt, ...)
 #endif
 }
 
+/*
 void ERROR(int indent, const char *fmt, ...)
 {
 #if VERBOSE > 0
@@ -386,15 +401,16 @@ void ERROR(int indent, const char *fmt, ...)
    *ptr = 1;
 #endif
 }
+*/
 
-int EERROR(int indent, int errorcode, const char *func, const char *fmt, ...)
+int ERROR(int indent, int errorcode, const char *func, const char *fmt, ...)
 {
 #if VERBOSE > 0
    int *ptr;
 
    va_list argp;
    va_start(argp, fmt);
-   println2(indent, "ERROR", func, fmt, argp);
+   print_error(indent, "ERROR", errorcode, func, fmt, argp);
    va_end(argp);
 
    ptr = NULL;
@@ -404,14 +420,14 @@ int EERROR(int indent, int errorcode, const char *func, const char *fmt, ...)
    return errorcode;
 }
 
-void IERROR(int indent, const char *fmt, ...)
+int IERROR(int indent, int errorcode,  const char *func, const char *fmt, ...)
 {
 #if VERBOSE > 0
    int *ptr;
 
    va_list argp;
    va_start(argp, fmt);
-   println(indent, "INTERNAL ERROR", fmt, argp);
+   print_error(indent, "INTERNAL ERROR", errorcode, func, fmt, argp);
    va_end(argp);
 
    ptr = NULL;
