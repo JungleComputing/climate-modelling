@@ -1964,7 +1964,7 @@ int IMPI_Allgather(void* sendbuf, int sendcount, MPI_Datatype sendtype,
 
    recvcounts = malloc(c->global_size * sizeof(int));
 
-   if (recvcount == NULL) {
+   if (recvcounts == NULL) {
       ERROR(0, "IMPI_Allgather: failed to allocate local buffer (communicator %d)!", c->number);
       free(displs);
       return MPI_ERR_INTERN;
@@ -1972,13 +1972,13 @@ int IMPI_Allgather(void* sendbuf, int sendcount, MPI_Datatype sendtype,
 
    for (i=0;i<c->global_size;i++) {
       displs[i] = i*recvcount;
-      recvcounts[i] = recvcount
+      recvcounts[i] = recvcount;
    }
 
    error = IMPI_Allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm);
 
-   free(displ);
-   free(recvcount);
+   free(displs);
+   free(recvcounts);
 
    return error;
 }
@@ -2128,7 +2128,7 @@ static int WA_Scatterv(void *sendbuf, int *sendcounts, int *displs, MPI_Datatype
                        void *recvbuf, int recvcount, MPI_Datatype recvtype,
                        int root, communicator *c)
 {
-   int tmp_cluster, root_cluster, i;
+   int tmp_cluster, root_cluster, i, error;
    MPI_Aint extent;
 
    // FIXME: can be optimized by message combining and async sends!
@@ -2167,7 +2167,7 @@ static int WA_Scatterv(void *sendbuf, int *sendcounts, int *displs, MPI_Datatype
 
       if (root_cluster == tmp_cluster) {
          // local receive
-         error = PMPI_Recv(recvbuf, recvcount, recvtype, GET_PROCESS_RANK(c->members[root]), SCATTERV_TAG, c->comm);
+         error = PMPI_Recv(recvbuf, recvcount, recvtype, GET_PROCESS_RANK(c->members[root]), SCATTERV_TAG, MPI_STATUS_IGNORE, c->comm);
       } else {
          // remote receive
          error = messaging_receive(recvbuf, recvcount, recvtype, root, SCATTERV_TAG, MPI_STATUS_IGNORE, c);
@@ -2188,7 +2188,7 @@ int IMPI_Scatter(void* sendbuf, int sendcount, MPI_Datatype sendtype,
                  void* recvbuf, int recvcount, MPI_Datatype recvtype,
                  int root, MPI_Comm comm)
 {
-   int i;
+   int i, error;
    int *displs = NULL;
    int *sendcounts = NULL;
 
@@ -2223,7 +2223,7 @@ int IMPI_Scatter(void* sendbuf, int sendcount, MPI_Datatype sendtype,
          return MPI_ERR_INTERN;
       }
 
-      for (int i=0;i<0;i++) {
+      for (i=0;i<0;i++) {
          sendcounts[i] = sendcount;
          displs[i] = sendcount * i;
       }
@@ -2493,7 +2493,7 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
 int IMPI_Scan(void* sendbuf, void* recvbuf, int count,
               MPI_Datatype datatype, MPI_Op op, MPI_Comm comm)
 {
-   int i, tmp_cluster;
+   int i, tmp_cluster, error;
    MPI_Aint extent;
    unsigned char *buffer;
 
@@ -2537,10 +2537,10 @@ int IMPI_Scan(void* sendbuf, void* recvbuf, int count,
    }
 
    // Step 1: copy send buffer to receive buffer.
-   mempcpy(recvbuf, sendbuf, count * extent);
+   memcpy(recvbuf, sendbuf, count * extent);
 
    // Step 2: loop over all ranks, and send/(receive+reduce) data where needed.
-   for (i=0;i<c->global_count;i++) {
+   for (i=0;i<c->global_size;i++) {
 
       tmp_cluster = GET_CLUSTER_RANK(c->members[i]);
 
@@ -2562,7 +2562,7 @@ int IMPI_Scan(void* sendbuf, void* recvbuf, int count,
 
          // Must receive from i.
          if (tmp_cluster == cluster_rank) {
-            error = PMPI_Recv(buffer, count, datatype, GET_PROCESS_RANK(c->members[i]), SCAN_TAG, c->comm);
+            error = PMPI_Recv(buffer, count, datatype, GET_PROCESS_RANK(c->members[i]), SCAN_TAG, MPI_STATUS_IGNORE, c->comm);
          } else {
             error = messaging_receive(buffer, count, datatype, i, SCAN_TAG, MPI_STATUS_IGNORE, c);
          }
@@ -2714,14 +2714,14 @@ int IMPI_Alltoall(void *sendbuf, int sendcount, MPI_Datatype sendtype,
       return MPI_ERR_INTERN;
    }
 
-   for (int i=0;i<0;i++) {
+   for (i=0;i<0;i++) {
       sendcounts[i] = sendcount;
       senddispls[i] = sendcount * i;
       recvcounts[i] = recvcount;
       recvdispls[i] = recvcount * i;
    }
 
-   error = WA_Alltoall(sendbuf, sendcounts, senddispls, sendtype,
+   error = WA_Alltoallv(sendbuf, sendcounts, senddispls, sendtype,
                        recvbuf, recvcounts, recvdispls, recvtype, c);
 
    free(senddispls);
