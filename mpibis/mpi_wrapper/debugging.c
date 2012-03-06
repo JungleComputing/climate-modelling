@@ -386,7 +386,6 @@ void WARN(int indent, const char *fmt, ...)
 #endif
 }
 
-/*
 void ERROR(int indent, const char *fmt, ...)
 {
 #if VERBOSE > 0
@@ -401,9 +400,24 @@ void ERROR(int indent, const char *fmt, ...)
    *ptr = 1;
 #endif
 }
-*/
 
-int ERROR(int indent, int errorcode, const char *func, const char *fmt, ...)
+void IERROR(int indent, const char *fmt, ...)
+{
+#if VERBOSE > 0
+   int *ptr;
+
+   va_list argp;
+   va_start(argp, fmt);
+   println(indent, "INTERNAL ERROR", fmt, argp);
+   va_end(argp);
+
+   ptr = NULL;
+   *ptr = 1;
+#endif
+}
+
+
+int LERROR(int indent, int errorcode, const char *func, const char *fmt, ...)
 {
 #if VERBOSE > 0
    int *ptr;
@@ -420,7 +434,7 @@ int ERROR(int indent, int errorcode, const char *func, const char *fmt, ...)
    return errorcode;
 }
 
-int IERROR(int indent, int errorcode,  const char *func, const char *fmt, ...)
+int LIERROR(int indent, int errorcode,  const char *func, const char *fmt, ...)
 {
 #if VERBOSE > 0
    int *ptr;
