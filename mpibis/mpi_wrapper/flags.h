@@ -39,9 +39,9 @@
 #define CHECK_TYPE(T) (catch_derived_datatype(T))
 
 // Macro to extract communicator
-#define EXTRACT_COMMUNICATOR { \
-   c = get_communicator(comm); \
-   if (c == NULL) { \
+#define EXTRACT_COMMUNICATOR(M, I) { \
+   I = get_communicator(M); \
+   if (I == NULL) { \
       return LERROR(1, MPI_ERR_COMM, __FUNCTION__, "Communicator not found!"); \
    } \
 }

@@ -446,15 +446,7 @@ int IMPI_Send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, MP
 {
    communicator *c;
 
-   EXTRACT_COMMUNICATOR;
-
-/*
-   c = get_communicator(comm);
-
-   if (c == NULL) {
-      return LERROR(1, MPI_ERR_COMM, "IMPI_Send", "Communicator not found!");
-   }
-*/
+   EXTRACT_COMMUNICATOR(comm, c);
 
    inc_communicator_statistics(comm, STATS_SEND);
 
