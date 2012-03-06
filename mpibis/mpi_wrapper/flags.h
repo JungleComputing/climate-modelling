@@ -34,8 +34,6 @@
 
 // Macro to create process ID.
 #define SET_PID(X, Y) ((X & 0xFF) << 24 | (Y & 0xFFFFFF))
-   CHECK_TYPE(datatype);
-#endif
 
 // Macro to catch derived datatypes.
 #define CHECK_TYPE(T) (catch_derived_datatype(T))

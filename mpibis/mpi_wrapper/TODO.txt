@@ -5,6 +5,12 @@ CHECK on MPI_TYPE* + MPI_TYPE_EXTENT + MPI_TYPE_SIZE
 
 CORRECTLY IMPLEMENT synchronous sending
 
+    send  -> mpi decides on buffering and sync.
+    ssend -> uses rendezvous, send wait until receive is posted before starting communication
+    rsend -> similar to ssend, but user guarentees receive is already posted, so skip rendezvous
+    bsend -> buffer data locally before sending
+
+
 ENDIANESS CONVERSION for heterogeneous systems (ie. combining DAS-Huygens)
 
 MERGE if (bla) MPI_Send else messaging_send 

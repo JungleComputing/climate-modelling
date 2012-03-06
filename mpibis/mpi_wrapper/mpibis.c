@@ -546,9 +546,9 @@ int IMPI_Rsend(void* buf, int count, MPI_Datatype datatype,
    // receive has not been posted, however, the program is erroneous
    // and may crash.
    //
-   // In this implementation we simply replace rsend by send, which
+   // In this implementation we simply replace rsend by ssend, which
    // offers a stricter (less efficient) contract.
-   return IMPI_Send(buf, count, datatype, dest, tag, comm);
+   return IMPI_Ssend(buf, count, datatype, dest, tag, comm);
 }
 
 #define __IMPI_Isend
