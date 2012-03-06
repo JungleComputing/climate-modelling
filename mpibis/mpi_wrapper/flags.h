@@ -38,25 +38,31 @@
 // Macro to catch derived datatypes.
 #define CHECK_TYPE(T) (catch_derived_datatype(T))
 
+// Macro to print error
+#define SERROR(indent, error, message, ...) LERROR(indent, error, __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__)
+
+// Macro to print internal error
+#define SIERROR(indent, error, message, ...) LIERROR(indent, error, __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__)
+
 // Macro to translate MPI communicator to MPIbis communicator
 #define TRANSLATE_COMMUNICATOR(M, I) { \
    I = get_communicator(M); \
    if (I == NULL) { \
-      return LERROR(1, MPI_ERR_COMM, __FUNCTION__, "Communicator not found!"); \
+      return SERROR(1, MPI_ERR_COMM, "Communicator not found!");\
    } \
 }
 
 // Macro to check buffer count
 #define CHECK_COUNT(C) { \
    if (C < 0) { \
-      return LERROR(1, MPI_ERR_COUNT, func, "Invalid count! (%d)", C); \
+      return SERROR(1, MPI_ERR_COUNT, "Invalid count! (%d)", C); \
    } \
 }
 
 // Macro to check rank
 #define CHECK_RANK(R) { \
    if (R < 0 || R > c->global_size) { \
-      return LERROR(1, MPI_ERR_RANK, func, "Invalid rank! (%d)", R); \
+      return SERROR(1, MPI_ERR_RANK, "Invalid rank! (%d)", R);  \
    } \
 }
 

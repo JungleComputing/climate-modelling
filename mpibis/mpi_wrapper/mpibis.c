@@ -468,17 +468,12 @@ int IMPI_Isend(void *buf, int count, MPI_Datatype datatype,
    int error, local, flags = REQUEST_FLAG_SEND;
    request *r;
 
-   if (count < 0) {
-      ERROR(1, "Invalid count!");
-      return MPI_ERR_COUNT;
-   }
-
    TRANSLATE_COMMUNICATOR(comm, c);
 
-   if (rank_is_local(c, dest, &local) != MPI_SUCCESS) {
-      ERROR(1, "Illegal destination! (%d)", dest);
-      return MPI_ERR_RANK;
-   }
+   CHECK_COUNT(count);
+   CHECK_RANK(dest);
+
+   local = (GET_CLUSTER_RANK(c->members[dest]) == cluster_rank);
 
    if (local) {
       flags |= REQUEST_FLAG_LOCAL;
@@ -487,8 +482,7 @@ int IMPI_Isend(void *buf, int count, MPI_Datatype datatype,
    r = create_request(flags, buf, count, datatype, dest, tag, c);
 
    if (r == NULL) {
-      IERROR(1, "Failed to create request!");
-      return MPI_ERR_INTERN;
+      return LIERROR(1, MPI_ERR_INTERN, "IMPI_Isend", "Failed to create request!");
    }
 
    inc_communicator_statistics(comm, STATS_ISEND);
@@ -500,15 +494,15 @@ int IMPI_Isend(void *buf, int count, MPI_Datatype datatype,
    }
 
    if (error != MPI_SUCCESS) {
-      ERROR(1, "Isend failed! (%d)", error);
       free_request(r);
       *req = MPI_REQUEST_NULL;
-   } else {
-      // We stuff our own data into the users request pointer here...
-      set_request_ptr(req, r);
+      return LERROR(1, error, "IMPI_Isend", "Failed to send data!");
    }
 
-   return error;
+   // We stuff our own data into the users request pointer here...
+   set_request_ptr(req, r);
+
+   return MPI_SUCCESS;
 }
 
 #define __IMPI_Irsend
