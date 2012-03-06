@@ -808,7 +808,7 @@ int IMPI_Sendrecv(void *sendbuf, int sendcount, MPI_Datatype sendtype, int dest,
 
       if (GET_CLUSTER_RANK(c->members[dest]) == cluster_rank) {
          // local send
-         error = PMPI_Send(sendbuf, sendcount, sendtype, GET_PROCESSOR_RANK(c->members[dest]), sendtag, c->comm);
+         error = PMPI_Send(sendbuf, sendcount, sendtype, GET_PROCESS_RANK(c->members[dest]), sendtag, c->comm);
       } else {
          // remote send
          error = messaging_send(sendbuf, sendcount, sendtype, dest, sendtag, c);
@@ -821,7 +821,7 @@ int IMPI_Sendrecv(void *sendbuf, int sendcount, MPI_Datatype sendtype, int dest,
 
       if (GET_CLUSTER_RANK(c->members[source]) == cluster_rank) {
          // local recv
-         error = PMPI_Recv(recvbuf, recvcount, recvtype, GET_PROCESSOR_RANK(c->members[source]), recvtag, c->comm, status);
+         error = PMPI_Recv(recvbuf, recvcount, recvtype, GET_PROCESS_RANK(c->members[source]), recvtag, c->comm, status);
       } else {
          // remote recv
          error = messaging_receive(recvbuf, recvcount, recvtype, source, recvtag, status, c);
@@ -836,7 +836,7 @@ int IMPI_Sendrecv(void *sendbuf, int sendcount, MPI_Datatype sendtype, int dest,
 
       if (GET_CLUSTER_RANK(c->members[source]) == cluster_rank) {
          // local recv
-         error = PMPI_Recv(recvbuf, recvcount, recvtype, GET_PROCESSOR_RANK(c->members[source]), recvtag, c->comm, status);
+         error = PMPI_Recv(recvbuf, recvcount, recvtype, GET_PROCESS_RANK(c->members[source]), recvtag, c->comm, status);
       } else {
          // remote recv
          error = messaging_receive(recvbuf, recvcount, recvtype, source, recvtag, status, c);
@@ -849,7 +849,7 @@ int IMPI_Sendrecv(void *sendbuf, int sendcount, MPI_Datatype sendtype, int dest,
 
       if (GET_CLUSTER_RANK(c->members[dest]) == cluster_rank) {
          // local send
-         error = PMPI_Send(sendbuf, sendcount, sendtype, GET_PROCESSOR_RANK(c->members[dest]), sendtag, c->comm);
+         error = PMPI_Send(sendbuf, sendcount, sendtype, GET_PROCESS_RANK(c->members[dest]), sendtag, c->comm);
       } else {
          // remote send
          error = messaging_send(sendbuf, sendcount, sendtype, dest, sendtag, c);
@@ -881,7 +881,7 @@ int IMPI_Ssend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 
    if (GET_CLUSTER_RANK(c->members[dest]) == cluster_rank) {
       // local send
-     return PMPI_Ssend(buf, count, datatype, GET_PROCESSOR_RANK(c->members[dest]), tag, comm);
+     return PMPI_Ssend(buf, count, datatype, GET_PROCESS_RANK(c->members[dest]), tag, comm);
    } else {
      // remote send
      WARN(1, "MPI_Ssend: incorrect WA ssend implementation (in communicator %c)!", c->number);
@@ -1799,7 +1799,7 @@ static int WA_Gatherv_nonroot_coordinator(communicator *c, int root,
    }
 
    // Send all our data to root and free the buffer
-   error = messaging_send(buffer, sum, recvtype, root, GATHER_TAGV, c);
+   error = messaging_send(buffer, sum, recvtype, root, GATHERV_TAG, c);
 
    free(buffer);
 
@@ -1817,7 +1817,7 @@ static int WA_Gatherv_nonroot(communicator *c, int dest, void *buf, int count, M
 
    if (GET_CLUSTER_RANK(c->members[dest]) == cluster_rank) {
       // local send
-      error = PMPI_Send(buf, count, datatype, GET_PROCESSOR_RANK(c->members[dest]), GATHERV_TAG, c->comm);
+      error = PMPI_Send(buf, count, datatype, GET_PROCESS_RANK(c->members[dest]), GATHERV_TAG, c->comm);
    } else {
       // remote send
       error = messaging_send(buf, count, datatype, dest, GATHERV_TAG, c);
@@ -1844,10 +1844,10 @@ static int WA_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
       return WA_Gatherv_nonroot_coordinator(c, root, sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype);
    } else if (GET_CLUSTER_RANK(c->members[root]) == cluster_rank) {
       // I am not root, but part of root's local cluster
-      return WA_Gatherv_nonroot(c, root, sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype);
+      return WA_Gatherv_nonroot(c, root, sendbuf, sendcount, sendtype);
    } else {
       // I am not root, and not in roots cluster, and not a cluster coordinator.
-      return WA_Gatherv_nonroot(c, c->my_coordinator, sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype);
+      return WA_Gatherv_nonroot(c, c->my_coordinator, sendbuf, sendcount, sendtype);
    }
 }
 
@@ -1877,7 +1877,7 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype,
                 void* recvbuf, int recvcount, MPI_Datatype recvtype,
                 int root, MPI_Comm comm)
 {
-   int i;
+   int i, error;
    int *displs = NULL;
    int *counts = NULL;
 
@@ -1910,13 +1910,13 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype,
 
       if (counts == NULL) {
          ERROR(0, "IMPI_Gather: failed to allocate local buffer (communicator %d)!", c->number);
-         free(displ);
+         free(displs);
          return MPI_ERR_INTERN;
       }
 
       for (i=0;i<c->global_size;i++) {
          displs[i] = i*recvcount;
-         counts[i] = recvcount
+         counts[i] = recvcount;
       }
    }
 
@@ -1936,8 +1936,8 @@ int IMPI_Allgather(void* sendbuf, int sendcount, MPI_Datatype sendtype,
                          void* recvbuf, int recvcount, MPI_Datatype recvtype,
                          MPI_Comm comm)
 {
-   int *displ;
-   int *recvcount;
+   int *displs;
+   int *recvcounts;
    int i, error;
 
    communicator *c = get_communicator(comm);
@@ -1955,24 +1955,24 @@ int IMPI_Allgather(void* sendbuf, int sendcount, MPI_Datatype sendtype,
 
    // We implements a Allgather on top of a Allgatherv.
 
-   displ = malloc(c->global_size * sizeof(int));
+   displs = malloc(c->global_size * sizeof(int));
 
-   if (displ == NULL) {
+   if (displs == NULL) {
       ERROR(0, "IMPI_Allgather: failed to allocate local buffer (communicator %d)!", c->number);
       return MPI_ERR_INTERN;
    }
 
-   recvcount = malloc(c->global_size * sizeof(int));
+   recvcounts = malloc(c->global_size * sizeof(int));
 
    if (recvcount == NULL) {
       ERROR(0, "IMPI_Allgather: failed to allocate local buffer (communicator %d)!", c->number);
-      free(displ);
+      free(displs);
       return MPI_ERR_INTERN;
    }
 
    for (i=0;i<c->global_size;i++) {
-      displ[i] = i*recvcount;
-      recvcount[i] = recvcount
+      displs[i] = i*recvcount;
+      recvcounts[i] = recvcount
    }
 
    error = IMPI_Allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm);
