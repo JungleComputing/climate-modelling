@@ -429,9 +429,9 @@ static int do_send(char *func, void* buf, int count, MPI_Datatype datatype, int 
 #endif
 
    if (cluster_rank == GET_CLUSTER_RANK(c->members[dest])) {
-      error = PMPI_Send(sendbuf, count, datatype, GET_PROCESS_RANK(c->members[dest]), tag, c->comm);
+      error = PMPI_Send(buf, count, datatype, GET_PROCESS_RANK(c->members[dest]), tag, c->comm);
    } else {
-      error = messaging_send(sendbuf, count, datatype, dets, tag, c);
+      error = messaging_send(buf, count, datatype, dest, tag, c);
    }
 
    if (error != MPI_SUCCESS) {

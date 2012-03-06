@@ -42,7 +42,7 @@
 #define EXTRACT_COMMUNICATOR { \
    c = get_communicator(comm); \
    if (c == NULL) { \
-      return ERROR(1, MPI_ERR_COMM, __FUNCTION__, "Communicator not found!"); \
+      return LERROR(1, MPI_ERR_COMM, __FUNCTION__, "Communicator not found!"); \
    } \
 }
 
