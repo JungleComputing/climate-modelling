@@ -33,6 +33,13 @@ void ERROR(int indent, const char *fmt, ...);
 void IERROR(int indent, const char *fmt, ...);
 void WARN(int indent, const char *fmt, ...);
 
+#ifdef CATCH_DERIVED_TYPES
+
+void catch_derived_datatype(MPI_Datatype type);
+
+#endif
+
+
 #endif
 
 
