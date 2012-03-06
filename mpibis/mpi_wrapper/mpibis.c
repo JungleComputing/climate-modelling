@@ -61,7 +61,7 @@ int FORTRAN_TRUE;
 
 #ifdef CATCH_DERIVED_TYPES
 
-#define PRIMITIVE_TYPES 38
+#define PRIMITIVE_TYPES 37
 
 static MPI_Datatype primitive_types[PRIMITIVE_TYPES] = {
    MPI_CHAR,
@@ -98,7 +98,6 @@ static MPI_Datatype primitive_types[PRIMITIVE_TYPES] = {
    MPI_INTEGER1,
    MPI_INTEGER2,
    MPI_INTEGER4,
-   MPI_REAL2,
    MPI_REAL4,
    MPI_REAL8,
    MPI_LONG_LONG_INT };

@@ -2,10 +2,10 @@
 
 #ifdef ENABLE_INTERCEPT
 
-
 #include "debugging.h"
 #include "mpi.h"
 #include "generated_header.h"
+
 
 int MPI_Init ( int *argc, char ***argv )
 {
@@ -4497,8 +4497,7 @@ int MPI_Sendrecv_replace ( void *buf, int count, MPI_Datatype datatype, int dest
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
-   CHECK_TYPE(sendtype);
-   CHECK_TYPE(recvtype);
+   CHECK_TYPE(datatype);
 #endif
 
 #ifdef IBIS_INTERCEPT
