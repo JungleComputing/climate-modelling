@@ -24,8 +24,8 @@
 #define FATAL(message, ...) (XERROR(0, 1, "FATAL", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__))
 
 #if VERBOSE > 0
-#define ERROR(indent, error, message, ...) XERROR(indent, ERRORS_ARE_FATAL, "ERROR", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__)
-#define IERROR(indent, error, message, ...) XERROR(indent, 1, "INTERNAL ERROR", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__)
+#define ERROR(indent, message, ...) XERROR(indent, ERRORS_ARE_FATAL, "ERROR", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__)
+#define IERROR(indent, message, ...) XERROR(indent, 1, "INTERNAL ERROR", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #else
 #define ERROR(indent, error, message, ...)
 #define IERROR(indent, error, message, ...)
