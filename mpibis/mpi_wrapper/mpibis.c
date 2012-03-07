@@ -1274,6 +1274,7 @@ int IMPI_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
                  int root, MPI_Comm comm)
 {
    int error, i;
+   MPI_Aint extent;
 
    communicator *c = get_communicator(comm);
 
@@ -1291,17 +1292,29 @@ int IMPI_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
    // seems, since only the root knows exactly how much data each process sends...
 
    if (c->global_rank == root) {
-      for (i=0;i<c->global_size;i++) {
-         error = do_recv(buffer + (displs[i] * extent), recvcounts[i], recvtype, i, GATHERV_TAG, c, MPI_STATUS_IGNORE);
 
-         if (error != MPI_SUCCESS) {
-            ERROR(1, "Failed to receive data from %d for gather! (comm=%d, error=%d)", i, c->number, error);
-            return error;
+      error = PMPI_Type_extent(recvtype, &extent);
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "Failed to retrieve data size! (comm=%d, error=%d)", c->number, error);
+         return error;
+      }
+
+      for (i=0;i<c->global_size;i++) {
+         if (i == root) {
+            memcpy(recvbuf + (displs[i] * extent), sendbuf, (recvcounts[i]*extent));
+         } else {
+            error = do_recv(recvbuf + (displs[i] * extent), recvcounts[i], recvtype, i, GATHERV_TAG, c, MPI_STATUS_IGNORE);
+
+            if (error != MPI_SUCCESS) {
+               ERROR(1, "Failed to receive data from %d for gather! (comm=%d, error=%d)", i, c->number, error);
+               return error;
+            }
          }
       }
 
    } else {
-      error = do_send(buf, count, datatype, dest, GATHERV_TAG, c);
+      error = do_send(sendbuf, sendcount, sendtype, root, GATHERV_TAG, c);
 
       if (error != MPI_SUCCESS) {
          ERROR(1, "Failed to send data from %d to root for gatherv! (comm=%d, error=%)", c->global_rank, c->number, error);
