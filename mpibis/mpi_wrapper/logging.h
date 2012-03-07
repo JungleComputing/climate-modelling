@@ -21,11 +21,11 @@
 
 // Define several macros to print errors
 
-#define FATAL(message, ...) (XERROR(0, 0, 1, "FATAL", __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__))
+#define FATAL(message, ...) (XERROR(0, 0, 1, "FATAL", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__))
 
 #if VERBOSE > 0
-#define ERROR(indent, error, message, ...) XERROR(indent, error, ERRORS_ARE_FATAL, "ERROR", __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__)
-#define IERROR(indent, error, message, ...) XERROR(indent, error, 1, "INTERNAL ERROR", __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__)
+#define ERROR(indent, error, message, ...) XERROR(indent, error, ERRORS_ARE_FATAL, "ERROR", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__)
+#define IERROR(indent, error, message, ...) XERROR(indent, error, 1, "INTERNAL ERROR", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #else
 #define ERROR(indent, error, message, ...)
 #define IERROR(indent, error, message, ...)
@@ -34,7 +34,7 @@
 
 // Define macro to print warning
 #if VERBOSE > 1
-#define WARN(indent, message, ...) XLOG(indent, 1, "WARN", __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__)
+#define WARN(indent, message, ...) XLOG(indent, 1, "WARN", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #else
 #define WARN(indent, message, ...)
 #endif
@@ -42,7 +42,7 @@
 
 // Define macro to print info
 #if VERBOSE > 2
-#define INFO(indent, message, ...) XLOG(indent, 0, "INFO", __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__)
+#define INFO(indent, message, ...) XLOG(indent, 0, "INFO", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #else
 #define INFO(indent, message, ...)
 #endif
@@ -50,7 +50,7 @@
 
 // Define macro to print debug
 #if VERBOSE > 3
-#define DEBUG(indent, message, ...) XLOG(indent, 1, "DEBUG", __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__)
+#define DEBUG(indent, message, ...) XLOG(indent, 1, "DEBUG", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #else
 #define DEBUG(indent, message, ...)
 #endif
