@@ -72,7 +72,7 @@ struct s_communicator {
    unsigned char *cluster_ranks;
    int *cluster_sizes;
 
-   uint32_t *members;
+   unsigned int *members;
    unsigned char *member_cluster_index;
 
 //   unsigned char *bitmap;
