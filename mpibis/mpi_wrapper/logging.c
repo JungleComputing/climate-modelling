@@ -277,7 +277,6 @@ static void println2(int indent, const char * header, const char * func, const c
    fprintf(stderr, "\n");
 }
 
-/*
 void DEBUG(int indent, const char *fmt, ...)
 {
 #if VERBOSE > 3
