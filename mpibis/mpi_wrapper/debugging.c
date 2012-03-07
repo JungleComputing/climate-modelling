@@ -77,7 +77,7 @@ void check_count(int count)
 }
 
 
-int check_rank(communicator *c, int rank)
+void check_rank(communicator *c, int rank)
 {
    if (rank < 0 || rank >= c->global_size) { \
       FATAL("Invalid rank %d in communicator %d", rank, c->number);
