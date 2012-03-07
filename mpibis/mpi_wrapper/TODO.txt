@@ -10,7 +10,6 @@ CORRECTLY IMPLEMENT synchronous sending
     rsend -> similar to ssend, but user guarentees receive is already posted, so skip rendezvous
     bsend -> buffer data locally before sending
 
-
 ENDIANESS CONVERSION for heterogeneous systems (ie. combining DAS-Huygens)
 
 MERGE if (bla) MPI_Send else messaging_send 

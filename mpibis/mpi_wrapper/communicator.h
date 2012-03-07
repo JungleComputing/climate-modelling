@@ -101,18 +101,13 @@ int free_communicator(communicator * c);
 communicator *get_communicator(MPI_Comm comm);
 communicator *get_communicator_with_index(int index);
 
-void set_communicator_ptr(MPI_Comm *dst, communicator *src);
 
 int comm_dup(communicator *in, communicator **out);
 
 int comm_cluster_rank_to_cluster_index(communicator *c, int cluster_rank);
 
-int rank_is_local(communicator *c, int rank, int *result);
-int comm_is_world(communicator* c);
-int comm_is_self(communicator* c);
-int comm_is_local(communicator* c);
-int comm_is_wa(communicator* c);
-int comm_is_mixed(communicator* c);
+//int rank_is_local(communicator *c, int rank, int *result);
+
 void store_message(message_buffer *m);
 message_buffer *find_pending_message(communicator *c, int source, int tag);
 int match_message(message_buffer *m, int comm, int source, int tag);
@@ -120,6 +115,47 @@ int match_message(message_buffer *m, int comm, int source, int tag);
 int inc_communicator_statistics(MPI_Comm comm, int field);
 int print_communicator_statistics(MPI_Comm comm);
 int print_all_communicator_statistics();
+
+// These are all inlined (used as type checked alternative to macros).
+static inline void set_communicator_ptr(MPI_Comm *dst, communicator *src)
+{
+   memcpy(dst, &src, sizeof(communicator *));
+}
+
+static inline int comm_is_world(communicator* c)
+{
+   return (c->flags & COMM_FLAG_WORLD) != 0;
+}
+
+static inline int comm_is_self(communicator* c)
+{
+   return (c->flags & COMM_FLAG_SELF) != 0;
+}
+
+static inline int comm_is_local(communicator* c)
+{
+   return ((c->flags & COMM_FLAG_LOCAL) != 0) && ((c->flags & COMM_FLAG_REMOTE) == 0);
+}
+
+static inline int comm_is_wa(communicator* c)
+{
+   return ((c->flags & COMM_FLAG_LOCAL) == 0) && ((c->flags & COMM_FLAG_REMOTE) != 0);
+}
+
+static inline int comm_is_mixed(communicator* c)
+{
+   return ((c->flags & COMM_FLAG_LOCAL) != 0) && ((c->flags & COMM_FLAG_REMOTE) != 0);
+}
+
+static inline int rank_is_local(communicator *c, int rank)
+{
+   return (GET_CLUSTER_RANK(c->members[rank]) == cluster_rank);
+}
+
+static inline int rank_is_remote(communicator *c, int rank)
+{
+   return (GET_CLUSTER_RANK(c->members[rank]) != cluster_rank);
+}
 
 #endif // IBIS_INTERCEPT
 

@@ -295,22 +295,6 @@ communicator *get_communicator_with_index(int index)
    return comms[index];
 }
 
-void set_communicator_ptr(MPI_Comm *dst, communicator *src)
-{
-   memcpy(dst, &src, sizeof(communicator *));
-}
-
-int rank_is_local(communicator *c, int rank, int *result)
-{
-   if (rank < 0 || rank >= c->global_size) {
-      return MPI_ERR_RANK;
-   }
-
-   *result = (GET_CLUSTER_RANK(c->members[rank]) == cluster_rank);
-
-   return MPI_SUCCESS;
-}
-
 int comm_cluster_rank_to_cluster_index(communicator *c, int cluster_rank)
 {
    int i;
@@ -325,6 +309,13 @@ int comm_cluster_rank_to_cluster_index(communicator *c, int cluster_rank)
    return -1;
 }
 
+/*
+
+void set_communicator_ptr(MPI_Comm *dst, communicator *src)
+{
+   memcpy(dst, &src, sizeof(communicator *));
+}
+
 int comm_is_world(communicator* c)
 {
    return (c->flags & COMM_FLAG_WORLD) != 0;
@@ -337,10 +328,7 @@ int comm_is_self(communicator* c)
 
 int comm_is_local(communicator* c)
 {
-   int result = ((c->flags & COMM_FLAG_LOCAL) != 0) && ((c->flags & COMM_FLAG_REMOTE) == 0);
-//   fprintf(stderr, "   JASON: comm_is_local: comm: %d local: %d remote: %d -> result: %d \n", 
-//	c->number, (c->flags & COMM_FLAG_LOCAL), (c->flags & COMM_FLAG_REMOTE), result);
-   return result;
+   return ((c->flags & COMM_FLAG_LOCAL) != 0) && ((c->flags & COMM_FLAG_REMOTE) == 0);
 }
 
 int comm_is_wa(communicator* c)
@@ -352,6 +340,20 @@ int comm_is_mixed(communicator* c)
 {
    return ((c->flags & COMM_FLAG_LOCAL) != 0) && ((c->flags & COMM_FLAG_REMOTE) != 0);
 }
+
+int rank_is_local(communicator *c, int rank)
+{
+   return (GET_CLUSTER_RANK(c->members[rank]) == cluster_rank);
+}
+
+int rank_is_remote(communicator *c, int rank)
+{
+   return (GET_CLUSTER_RANK(c->members[rank]) != cluster_rank);
+}
+
+*/
+
+
 
 void store_message(message_buffer *m)
 {

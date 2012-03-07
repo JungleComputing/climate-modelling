@@ -329,28 +329,28 @@ int IMPI_Init(int *argc, char **argv[])
 
       if (status != MPI_SUCCESS) {
          PMPI_Finalize();
-         return LIERROR(1, status, "IMPI_Init", "Failed to initialize groups!");
+         return SIERROR(1, status, "Failed to initialize groups!");
       }
 
       status = init_request();
 
       if (status != MPI_SUCCESS) {
          PMPI_Finalize();
-         return LIERROR(1, status, "IMPI_Init", "Failed to initialize requests!");
+         return SIERROR(1, status, "Failed to initialize requests!");
       }
 
       status = init_operations();
 
       if (status != MPI_SUCCESS) {
          PMPI_Finalize();
-         return LIERROR(1, status, "IMPI_Init", "Failed to initialize operations!");
+         return SIERROR(1, status, "Failed to initialize operations!");
       }
 
       status = init_mpibis(argc, argv);
 
       if (status == 0) {
          PMPI_Finalize();
-         return LIERROR(1, MPI_ERR_INTERN, "IMPI_Init", "Failed to initialize mpibis!");
+         return SIERROR(1, MPI_ERR_INTERN, "Failed to initialize mpibis!");
       }
 
       status = wa_init(server, port, local_rank, local_count,
@@ -359,7 +359,7 @@ int IMPI_Init(int *argc, char **argv[])
 
       if (status == 0) {
          PMPI_Finalize();
-         return LIERROR(1, MPI_ERR_INTERN, "IMPI_Init", "Failed to initialize wide area communication!");
+         return SIERROR(1, MPI_ERR_INTERN, "Failed to initialize wide area communication!");
       }
 
       status = init_communicators(cluster_rank, cluster_count,
@@ -368,7 +368,7 @@ int IMPI_Init(int *argc, char **argv[])
       if (status != MPI_SUCCESS) {
          wa_finalize();
          PMPI_Finalize();
-         return LIERROR(1, status, "IMPI_Init", "Failed to initialize communicators!");
+         return SIERROR(1, status, "Failed to initialize communicators!");
       }
    }
 
@@ -386,7 +386,7 @@ int IMPI_Finalize(void)
    error = messaging_send_terminate_request(get_communicator(MPI_COMM_WORLD));
 
    if (error != MPI_SUCCESS) {
-      return LIERROR(1, MPI_ERR_INTERN, "IMPI_Finalize", "Failed to terminate MPI_COMM_WORLD!");
+      return SIERROR(1, MPI_ERR_INTERN, "Failed to terminate MPI_COMM_WORLD!");
    }
 
    wa_finalize();
@@ -400,7 +400,7 @@ int IMPI_Abort(MPI_Comm comm, int errorcode)
    communicator *c = get_communicator(comm);
 
    if (c == NULL) {
-      return LERROR(1, MPI_ERR_COMM, "IMPI_Abort", "Communicator not found!");
+      return SERROR(1, MPI_ERR_COMM, "Communicator not found!");
    }
 
    print_all_communicator_statistics();
@@ -423,7 +423,7 @@ static int do_send(char *func, void* buf, int count, MPI_Datatype datatype, int 
    }
 
    if (error != MPI_SUCCESS) {
-      return LERROR(1, error, func, "Rank %d (in cluster %d) failed to send data to %d (in cluster %d) (in communicator %d)!\n", c->global_rank, cluster_rank, dest, GET_CLUSTER_RANK(c->members[dest]), c->number);
+      return SERROR(1, error, "Rank %d (in cluster %d) failed to send data to %d (in cluster %d) (in communicator %d)!\n", c->global_rank, cluster_rank, dest, GET_CLUSTER_RANK(c->members[dest]), c->number);
    }
 
    return MPI_SUCCESS;
@@ -482,7 +482,7 @@ int IMPI_Isend(void *buf, int count, MPI_Datatype datatype,
    r = create_request(flags, buf, count, datatype, dest, tag, c);
 
    if (r == NULL) {
-      return LIERROR(1, MPI_ERR_INTERN, "IMPI_Isend", "Failed to create request!");
+      return SIERROR(1, MPI_ERR_INTERN, "Failed to create request!");
    }
 
    inc_communicator_statistics(comm, STATS_ISEND);
@@ -496,7 +496,7 @@ int IMPI_Isend(void *buf, int count, MPI_Datatype datatype,
    if (error != MPI_SUCCESS) {
       free_request(r);
       *req = MPI_REQUEST_NULL;
-      return LERROR(1, error, "IMPI_Isend", "Failed to send data!");
+      return SERROR(1, error, "Failed to send data!");
    }
 
    // We stuff our own data into the users request pointer here...
@@ -528,25 +528,18 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
 
    inc_communicator_statistics(comm, STATS_IRECV);
 
-   if (count < 0) {
-      ERROR(1, "Invalid count! (%d)", count);
-      return MPI_ERR_COUNT;
-   }
-
    // We first unpack the communicator.
    TRANSLATE_COMMUNICATOR(comm, c);
+
+   CHECK_COUNT(count);
+   CHECK_RANK(source);
 
    // Next, we check if the source is local or not.
    if (source == MPI_ANY_SOURCE) {
       // if source is any, the local flag is determined by the distribution of the communicator.
       local = comm_is_local(c);
    } else {
-      error = rank_is_local(c, source, &local);
-
-      if (error != MPI_SUCCESS) {
-         ERROR(1, "Illegal source! (%d)", source);
-         return MPI_ERR_RANK;
-      }
+      local = rank_is_local(c, source);
    }
 
    // Next, we create the request struct.
