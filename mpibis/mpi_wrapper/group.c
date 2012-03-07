@@ -12,7 +12,7 @@
 #include "types.h"
 #include "group.h"
 #include "communicator.h"
-#include "debugging.h"
+#include "logging.h"
 
 
 static group *groups[MAX_GROUPS];

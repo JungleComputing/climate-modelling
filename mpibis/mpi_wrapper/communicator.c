@@ -13,7 +13,7 @@
 #include "types.h"
 #include "communicator.h"
 #include "messaging.h"
-#include "debugging.h"
+#include "logging.h"
 
 #if 0 // GATHER_STATISTICS
 

@@ -17,7 +17,7 @@
 
 #include "wa_sockets.h"
 #include "util.h"
-#include "debugging.h"
+#include "logging.h"
 
 // The filedescriptor of the socket connected to the 'server'
 static int socketfd = 0;

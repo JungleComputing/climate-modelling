@@ -19,7 +19,7 @@
 #include "group.h"
 #include "request.h"
 #include "wa_sockets.h"
-#include "debugging.h"
+#include "logging.h"
 
 #define BYTE_ORDER_UNDEFINED 0
 #define BYTE_ORDER_HOST      1

@@ -2,7 +2,7 @@
 
 #ifdef ENABLE_INTERCEPT
 
-#include "debugging.h"
+#include "logging.h"
 #include "mpi.h"
 #include "generated_header.h"
 

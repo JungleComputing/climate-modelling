@@ -11,7 +11,7 @@
 
 #include "shared.h"
 #include "types.h"
-#include "debugging.h"
+#include "logging.h"
 #include "operation.h"
 #include "reduce_ops.h"
 

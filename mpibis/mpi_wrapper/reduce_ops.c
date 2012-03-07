@@ -2,7 +2,7 @@
 
 #ifdef IBIS_INTERCEPT
 
-#include "debugging.h"
+#include "logging.h"
 #include "reduce_ops.h"
 
 typedef struct {

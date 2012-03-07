@@ -14,6 +14,7 @@
 #include "mpi.h"
 #include "generated_header.h"
 
+#include "logging.h"
 #include "types.h"
 #include "request.h"
 #include "communicator.h"
