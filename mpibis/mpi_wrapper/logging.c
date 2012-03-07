@@ -377,7 +377,6 @@ int XERROR(int indent, int errorcode, int fatal, const char *header, const char 
 
 void XLOG(int indent, int verbose, const char *header, const char *func, const char *file, const int line, const char *fmt, ...)
 {
-   int *ptr;
    va_list argp;
 
    va_start(argp, fmt);
