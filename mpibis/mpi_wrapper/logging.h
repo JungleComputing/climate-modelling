@@ -21,7 +21,7 @@
 
 // Define several macros to print errors
 
-#define FATAL(message, ...) XERROR(0, 0, 1, "FATAL", __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__)
+#define FATAL(message, ...) (XERROR(0, 0, 1, "FATAL", __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__))
 
 #if VERBOSE > 0
 #define ERROR(indent, error, message, ...) XERROR(indent, error, ERRORS_ARE_FATAL, "ERROR", __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__)
