@@ -66,7 +66,7 @@ void catch_derived_datatype(MPI_Datatype datatype)
       }
    }
 
-   FATAL("Attempt to communicate using a derived datatype!", 0);
+//   FATAL("Attempt to communicate using a derived datatype!", 0);
 }
 
 void check_count(int count)
