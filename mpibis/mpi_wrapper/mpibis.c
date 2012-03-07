@@ -1268,24 +1268,13 @@ int IMPI_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Com
    return PMPI_Bcast(buffer, count, datatype, 0, c->comm);
 }
 
-#define __IMPI_Gatherv
-int IMPI_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
-                 void *recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype,
-                 int root, MPI_Comm comm)
+
+static int WA_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
+                      void *recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype,
+                      int root, communicator *c)
 {
    int error, i;
    MPI_Aint extent;
-
-   communicator *c = get_communicator(comm);
-
-   CHECK_COUNT(sendcount);
-
-   inc_communicator_statistics(comm, STATS_GATHER);
-
-   if (comm_is_local(c)) {
-     // simply perform a gatherv in local cluster
-     return PMPI_Gatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, c->comm);
-   }
 
    // We implement a WA gather using simple send and receive primitives. This could be optimized by using
    // Async send and receives. NOTE: optimizing using message combining between clusters is harder than it
@@ -1304,7 +1293,7 @@ int IMPI_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
          if (i == root) {
             memcpy(recvbuf + (displs[i] * extent), sendbuf, (recvcounts[i]*extent));
          } else {
-            error = do_recv(recvbuf + (displs[i] * extent), recvcounts[i], recvtype, i, GATHERV_TAG, c, MPI_STATUS_IGNORE);
+            error = do_recv(recvbuf + (displs[i] * extent), recvcounts[i], recvtype, i, GATHERV_TAG, MPI_STATUS_IGNORE, c);
 
             if (error != MPI_SUCCESS) {
                ERROR(1, "Failed to receive data from %d for gather! (comm=%d, error=%d)", i, c->number, error);
@@ -1323,6 +1312,26 @@ int IMPI_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
    }
 
    return MPI_SUCCESS;
+}
+
+
+#define __IMPI_Gatherv
+int IMPI_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
+                 void *recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype,
+                 int root, MPI_Comm comm)
+{
+   communicator *c = get_communicator(comm);
+
+   CHECK_COUNT(sendcount);
+
+   inc_communicator_statistics(comm, STATS_GATHER);
+
+   if (comm_is_local(c)) {
+     // simply perform a gatherv in local cluster
+     return PMPI_Gatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, c->comm);
+   }
+
+   return WA_Gatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, c);
 }
 
 #define __IMPI_Gather
