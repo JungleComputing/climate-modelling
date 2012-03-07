@@ -1855,8 +1855,8 @@ int IMPI_Scatterv(void* sendbuf, int *sendcounts, int *displs, MPI_Datatype send
 #define __IMPI_Reduce
 int IMPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm)
 {
-   int local_root, root_cluster, i, error;
-   unsigned char *buffer;
+   int local_root, i, error;
+   unsigned char *buffer = NULL;
    MPI_Aint extent;
 
    inc_communicator_statistics(comm, STATS_REDUCE);
@@ -1879,9 +1879,7 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, 
    // to our local cluster coordinator. This result is then forwarded to the
    // root, which merges all partial results locally.
 
-   root_cluster = GET_CLUSTER_RANK(c->members[root]);
-
-   if (root_cluster == cluster_rank) {
+   if (rank_is_local(root)) {
       local_root = root;
    } else {
       local_root = c->my_coordinator;
