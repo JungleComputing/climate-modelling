@@ -1,5 +1,5 @@
-#ifndef _DEBUGGING_H_
-#define _DEBUGGING_H_
+#ifndef _LOGGING_H_
+#define _LOGGING_H_
 
 #include "mpi.h"
 
@@ -80,6 +80,6 @@ char *group_to_string(MPI_Group g);
 int XERROR(int indent, int errorcode, int fatal, const char *header, const char *func, const char *file, const int line, const char *fmt, ...);
 void XLOG(int indent, int verbose, const char *header, const char *func, const char *file, const int line, const char *fmt, ...);
 
-#endif
+#endif // _LOGGING_H_
 
 
