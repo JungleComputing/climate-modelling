@@ -86,7 +86,7 @@ static int read_config_file()
    config = fopen(file, "r");
 
    if (config == NULL) {
-      return ERROR(1, "Failed to open config file %s", file);
+      ERROR(1, "Failed to open config file %s", file);
       return 0;
    }
 
@@ -386,7 +386,7 @@ int IMPI_Init(int *argc, char **argv[])
 
       if (status == 0) {
          PMPI_Finalize();
-         ERROR(1, MPI_ERR_INTERN, "Failed to initialize wide area communication!");
+         ERROR(1, "Failed to initialize wide area communication!");
          return MPI_ERR_INTERN;
       }
 
@@ -658,12 +658,7 @@ int IMPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
       // if source is any, the local flag is determined by the distribution of the communicator.
       local = comm_is_local(c);
    } else {
-      error = rank_is_local(c, source, &local);
-
-      if (error != MPI_SUCCESS) {
-         ERROR(1, "Failed to determine location of source! (%d)", source);
-         return MPI_ERR_RANK;
-      }
+      local = rank_is_local(c, source);
    }
 
    if (local == 1) {
@@ -753,7 +748,7 @@ int IMPI_Ssend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 
    if (rank_is_local(c, dest)) {
       // local send
-     return PMPI_Ssend(buf, count, datatype, get_local_rank(dest), tag, comm);
+     return PMPI_Ssend(buf, count, datatype, get_local_rank(c, dest), tag, comm);
    } else {
      // remote send
      WARN(1, "Incorrect WA ssend implementation (in communicator %c)!", c->number);
@@ -1310,7 +1305,7 @@ static int WA_Gatherv_root(communicator *c,
                            void *sendbuf, int sendcount, MPI_Datatype sendtype,
                            void *recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype)
 {
-   int tmp_cluster, tmp_rank, error, i, j, sum, offset, tmp;
+   int error, i, j, sum, offset, tmp;
    int *sums;
    int *offsets;
    unsigned char *buffer;
@@ -1408,7 +1403,7 @@ static int WA_Gatherv_nonroot_coordinator(communicator *c, int root,
                            void *sendbuf, int sendcount, MPI_Datatype sendtype,
                            void *recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype)
 {
-   int tmp_rank, sum, error, i, offset;
+   int sum, error, i, offset;
    void *buffer;
    MPI_Aint extent;
 
@@ -1615,7 +1610,7 @@ int IMPI_Allgatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
                          void *recvbuf, int *recvcounts,
                          int *displs, MPI_Datatype recvtype, MPI_Comm comm)
 {
-   int tmp, tmp_rank, sum, error, i, offset;
+   int tmp, sum, error, i, offset;
    int *sums;
    int *offsets;
    unsigned char *buffer;
@@ -1777,7 +1772,7 @@ static int WA_Scatterv(void *sendbuf, int *sendcounts, int *displs, MPI_Datatype
       }
 
    } else {
-      error = do_receive(recvbuf, recvcount, recvtype, root, SCATTERV_TAG, MPI_STATUS_IGNORE, c);
+      error = do_recv(recvbuf, recvcount, recvtype, root, SCATTERV_TAG, MPI_STATUS_IGNORE, c);
 
       if (error != MPI_SUCCESS) {
          ERROR(1, "WA_Scatterv: Process %d (in cluster %d) failed to receive data from root %d (in cluster %d) (in communicator %d)!\n", c->global_rank, tmp_cluster, root, root_cluster, c->number);
@@ -2144,7 +2139,7 @@ int IMPI_Scan(void* sendbuf, void* recvbuf, int count,
          error = do_receive(buffer, count, datatype, i, SCAN_TAG, MPI_STATUS_IGNORE, c);
 
          if (error != MPI_SUCCESS) {
-            ERROR(1, "Rank %d (in cluster %d) failed to receive data from %d (in cluster %d)! (comm=%d, error=%d)", c->global_rank, cluster_rank, i, tmp_cluster, c->number, rank);
+            ERROR(1, "Rank %d (in cluster %d) failed to receive data from %d (in cluster %d)! (comm=%d, error=%d)", c->global_rank, cluster_rank, i, tmp_cluster, c->number, error);
             return error;
          }
 
@@ -2171,7 +2166,7 @@ static int WA_Alltoallv(void *sendbuf, int *sendcounts, int *sdispls, MPI_Dataty
    error = PMPI_Type_extent(sendtype, &sextent);
 
    if (error != MPI_SUCCESS) {
-      ERROR(1, "Failed to retrieve send data size! (comm=%d, error=%d)", c->number, rank);
+      ERROR(1, "Failed to retrieve send data size! (comm=%d, error=%d)", c->number, error);
       return error;
    }
 
@@ -2180,7 +2175,7 @@ static int WA_Alltoallv(void *sendbuf, int *sendcounts, int *sdispls, MPI_Dataty
    error = PMPI_Type_extent(recvtype, &rextent);
 
    if (error != MPI_SUCCESS) {
-      ERROR(1, "Failed to retrieve receive data size! (comm=%d, error=%d)", c->number, rank);
+      ERROR(1, "Failed to retrieve receive data size! (comm=%d, error=%d)", c->number, error);
       return error;
    }
 
