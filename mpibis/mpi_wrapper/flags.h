@@ -12,11 +12,14 @@
 // Intercept every call and forward it to MPIbis ?
 #define IBIS_INTERCEPT
 
-// Print error and terminate when an MPI_ERRORS is caught ?
+// Print error and terminate when an MPI_ERROR is caught ?
 #define TRACE_ERRORS
 
-// Print error when a derived datatype is send. This is not supported yet.
+// Print error when a derived datatype is send (which is not supported yet).
 #define CATCH_DERIVED_TYPES
+
+// Switch on Macros used to check function parameters
+#define CHECK_PARAMETERS
 
 // These constants determine various maxima used in the MPIbis library.
 
@@ -34,37 +37,6 @@
 
 // Macro to create process ID.
 #define SET_PID(X, Y) ((X & 0xFF) << 24 | (Y & 0xFFFFFF))
-
-// Macro to catch derived datatypes.
-#define CHECK_TYPE(T) (catch_derived_datatype(T))
-
-// Macro to print error
-#define SERROR(indent, error, message, ...) XERROR(indent, error, "ERROR", __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__)
-
-// Macro to print internal error
-#define SIERROR(indent, error, message, ...) XIERROR(indent, error, "INTERNAL ERROR", __FUNCTION__, __FILE__, __LINE__, message, __VA_ARGS__)
-
-// Macro to translate MPI communicator to MPIbis communicator
-#define TRANSLATE_COMMUNICATOR(M, I) { \
-   I = get_communicator(M); \
-   if (I == NULL) { \
-      return SERROR(1, MPI_ERR_COMM, "Communicator not found!");\
-   } \
-}
-
-// Macro to check buffer count
-#define CHECK_COUNT(C) { \
-   if (C < 0) { \
-      return SERROR(1, MPI_ERR_COUNT, "Invalid count! (%d)", C); \
-   } \
-}
-
-// Macro to check rank
-#define CHECK_RANK(R) { \
-   if (R < 0 || R > c->global_size) { \
-      return SERROR(1, MPI_ERR_RANK, "Invalid rank! (%d)", R);  \
-   } \
-}
 
 // Maximum number of communicators that can be created (in total, shared by all processes).
 #define MAX_COMMUNICATORS 1024

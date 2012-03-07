@@ -116,7 +116,7 @@ int inc_communicator_statistics(MPI_Comm comm, int field);
 int print_communicator_statistics(MPI_Comm comm);
 int print_all_communicator_statistics();
 
-// These are all inlined (used as type checked alternative to macros).
+// These are all inlined for performance reasons (used as type checked alternative to macros).
 static inline void set_communicator_ptr(MPI_Comm *dst, communicator *src)
 {
    memcpy(dst, &src, sizeof(communicator *));

@@ -432,12 +432,10 @@ static int do_send(char *func, void* buf, int count, MPI_Datatype datatype, int 
 #define __IMPI_Send
 int IMPI_Send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm)
 {
-   communicator *c;
-
-   TRANSLATE_COMMUNICATOR(comm, c);
+   communicator *c = get_communicator(comm);
 
    CHECK_COUNT(count);
-   CHECK_RANK(dest);
+   CHECK_RANK(c, dest);
 
    inc_communicator_statistics(comm, STATS_SEND);
 

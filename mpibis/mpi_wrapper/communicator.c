@@ -270,11 +270,11 @@ int free_communicator(communicator * c)
 communicator* get_communicator(MPI_Comm comm)
 {
    if (comm == MPI_COMM_WORLD) {
-      return comms[0];
+      return comms[FORTRAN_MPI_COMM_WORLD];
    } else if (comm == MPI_COMM_SELF) {
-      return comms[1];
+      return comms[FORTRAN_MPI_COMM_SELF];
    } else if (comm == MPI_COMM_NULL) {
-      return NULL;
+      return comms[FORTRAN_MPI_COMM_NULL];
    }
 
    return (communicator *) comm;

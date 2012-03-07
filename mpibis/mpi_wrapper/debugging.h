@@ -1,51 +1,29 @@
 #ifndef _DEBUGGING_H_
 #define _DEBUGGING_H_
 
-#include "mpi.h"
+#include "flags.h"
+#include "communicator.h"
 
-// VERBOSE must be defined and >= 0. Usual values are:
-//
-// 0 no prints
-// 1 only print errors
-// 2 print errors and warnings
-// 3 print errors, warnings and info
-// 4+ print all
-
-#define VERBOSE 1
-
-void init_debug();
-
-char *comm_to_string(MPI_Comm comm);
-char *type_to_string(MPI_Datatype type);
-char *request_to_string(MPI_Request r);
-char *op_to_string(MPI_Op o);
-char *info_to_string(MPI_Info i);
-char *file_to_string(MPI_File f);
-
-char *win_to_string(MPI_Win w);
-char *ranks_to_string(int *ranks, int n);
-char *ranges_to_string(int range[][3], int n);
-char *group_to_string(MPI_Group g);
-
-void DEBUG(int indent, const char *fmt, ...);
-void INFO(int indent, const char *func, const char *fmt, ...);
-
-void ERROR(int indent, const char *fmt, ...);
-void IERROR(int indent, const char *fmt, ...);
-
-void WARN(int indent, const char *fmt, ...);
-
-int LIERROR(int indent,  int errorcode, const char *func, const char *fmt, ...);
-int LERROR(int indent, int errorcode, const char *func, const char *fmt, ...);
-
-int XERROR(int indent, int errorcode, const char *header, const char *func, const char *file, const int line, const char *fmt, ...);
-
+// Macro to catch derived datatypes.
 #ifdef CATCH_DERIVED_TYPES
-
-void catch_derived_datatype(MPI_Datatype type);
-
+#define CHECK_TYPE(T) (catch_derived_datatype(T))
+#else
+#define CHECK_TYPE(T)
 #endif
 
+// Macros to check parameters
+#ifdef CHECK_PARAMETERS
+#define CHECK_COUNT(C)  (check_count(C))
+#define CHECK_RANK(C,R) (check_rank(C, R))
+#else
+#define CHECK_COUNT(C)
+#define CHECK_RANK(C,R)
+#endif
+
+// Function definitions
+void catch_derived_datatype(MPI_Datatype type);
+void check_count(int count);
+void check_rank(communicator *c, int rank);
 
 #endif
 
