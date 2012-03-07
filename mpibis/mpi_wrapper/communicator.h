@@ -7,6 +7,7 @@
 
 #include "mpi.h"
 #include "types.h"
+#include "stdint.h"
 
 #define GATHER_STATISTICS 1
 
