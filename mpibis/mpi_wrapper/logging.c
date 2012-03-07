@@ -364,7 +364,7 @@ int XERROR(int indent, int errorcode, int fatal, const char *header, const char 
 
 #if PRINT_STACK_TRACE > 0
    size = backtrace(array, 5);
-   backtrace_symbols_fd(array, size, stderr);
+   backtrace_symbols_fd(array, size, 2);
 #endif
 
    if (fatal) {
