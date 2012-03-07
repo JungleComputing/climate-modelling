@@ -338,7 +338,7 @@ void IERROR(int indent, const char *fmt, ...)
 }
 */
 
-int XERROR(int indent, int fatal, const char *header, const char *func, const char *file, const int line, const char *fmt, ...)
+void XERROR(int indent, int fatal, const char *header, const char *func, const char *file, const int line, const char *fmt, ...)
 {
 #if PRINT_STACK_TRACE > 0
    size_t size;
@@ -371,8 +371,6 @@ int XERROR(int indent, int fatal, const char *header, const char *func, const ch
       ptr = NULL;
       *ptr = 1;
    }
-
-   return errorcode;
 }
 
 void XLOG(int indent, int verbose, const char *header, const char *func, const char *file, const int line, const char *fmt, ...)
