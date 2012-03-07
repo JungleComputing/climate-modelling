@@ -1744,14 +1744,12 @@ static int WA_Scatterv(void *sendbuf, int *sendcounts, int *displs, MPI_Datatype
                        void *recvbuf, int recvcount, MPI_Datatype recvtype,
                        int root, communicator *c)
 {
-   int tmp_cluster, root_cluster, i, error;
+   int i, error;
    MPI_Aint extent;
 
    // FIXME: can be optimized by message combining and async sends!
 
    // We implement a WA Scatterv using simple send/receive primitives
-   root_cluster = GET_CLUSTER_RANK(c->members[root]);
-
    if (c->global_rank == root) {
 
       // First retrieve the data element size
@@ -1767,7 +1765,7 @@ static int WA_Scatterv(void *sendbuf, int *sendcounts, int *displs, MPI_Datatype
          error = do_send(sendbuf + (displs[i] * extent), sendcounts[i], sendtype, i, SCATTERV_TAG, c);
 
          if (error != MPI_SUCCESS) {
-            ERROR(1, "WA_Scatterv: Root %d (in cluster %d) failed to send data to %d (in cluster %d) (in communicator %d)!\n", root, root_cluster, i, tmp_cluster, c->number);
+            ERROR(1, "WA_Scatterv: Root %d (in cluster %d) failed to send data to %d (in cluster %d) (in communicator %d)!\n", root, get_cluster_rank(c, root), i, get_cluster_rank(c, i), c->number);
             return error;
          }
       }
@@ -1776,7 +1774,7 @@ static int WA_Scatterv(void *sendbuf, int *sendcounts, int *displs, MPI_Datatype
       error = do_recv(recvbuf, recvcount, recvtype, root, SCATTERV_TAG, MPI_STATUS_IGNORE, c);
 
       if (error != MPI_SUCCESS) {
-         ERROR(1, "WA_Scatterv: Process %d (in cluster %d) failed to receive data from root %d (in cluster %d) (in communicator %d)!\n", c->global_rank, tmp_cluster, root, root_cluster, c->number);
+         ERROR(1, "WA_Scatterv: Process %d (in cluster %d) failed to receive data from root %d (in cluster %d) (in communicator %d)!\n", c->global_rank, cluster_rank, root, get_cluster_rank(c, root), c->number);
          return error;
       }
    }
