@@ -644,7 +644,6 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
 #define __IMPI_Recv
 int IMPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status)
 {
-   int error;
    int local = 0;
 
    inc_communicator_statistics(comm, STATS_RECV);
@@ -664,6 +663,8 @@ int IMPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
    if (local == 1) {
       return PMPI_Recv(buf, count, datatype, source, tag, c->comm, status);
    } else {
+
+// FIXME: CHECK IF STILL TRUE!!!
       if (source == MPI_ANY_SOURCE) {
          IERROR(0, "MPI_Recv from MIXED MPI_ANY_SOURCE not implemented!");
          return MPI_ERR_RANK;
@@ -2136,7 +2137,7 @@ int IMPI_Scan(void* sendbuf, void* recvbuf, int count,
       } else if (i < c->global_rank) {
 
          // Must receive from i.
-         error = do_receive(buffer, count, datatype, i, SCAN_TAG, MPI_STATUS_IGNORE, c);
+         error = do_recv(buffer, count, datatype, i, SCAN_TAG, MPI_STATUS_IGNORE, c);
 
          if (error != MPI_SUCCESS) {
             ERROR(1, "Rank %d (in cluster %d) failed to receive data from %d (in cluster %d)! (comm=%d, error=%d)", c->global_rank, cluster_rank, i, tmp_cluster, c->number, error);
@@ -2156,7 +2157,7 @@ static int WA_Alltoallv(void *sendbuf, int *sendcounts, int *sdispls, MPI_Dataty
                         void *recvbuf, int *recvcounts, int *rdispls, MPI_Datatype recvtype,
                         communicator *c)
 {
-   int tmp_cluster, i, j, error;
+   int i, j, error;
    MPI_Aint sextent, rextent;
 
    // We implement a WA Alltoallv using simple send/receive primitives
