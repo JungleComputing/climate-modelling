@@ -34,7 +34,7 @@ static char *copy_to_debug_buf(const char *tmp, int len)
 
    if (len > DEBUG_BUF_SIZE) {
       // Cannot store this string!
-      IERROR(0, "Debug buffer overflow!");
+      WARN(0, "Debug buffer overflow!");
       return &debug_buf[debug_buf_pos];
    }
 
