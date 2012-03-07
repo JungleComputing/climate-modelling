@@ -1,6 +1,8 @@
 #ifndef _DEBUGGING_H_
 #define _DEBUGGING_H_
 
+#include <stdlib.h>
+
 #include "flags.h"
 #include "communicator.h"
 
