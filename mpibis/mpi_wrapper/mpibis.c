@@ -1436,6 +1436,29 @@ int IMPI_Allgather(void* sendbuf, int sendcount, MPI_Datatype sendtype,
    return error;
 }
 
+static int get_count_sums(communicator *c, int *recvcounts, int *sums, int *offsets)
+{
+   int i, tmp_cluster, sum = 0;
+
+   for (i=0;i<c->cluster_count;i++) {
+      sums[i] = 0;
+      offsets[i] = 0;
+   }
+
+   for (i=0;i<c->global_size;i++) {
+      tmp_cluster = GET_CLUSTER_RANK(c->members[i]);
+
+      sums[tmp_cluster] += recvcounts[i];
+      sum += recvcounts[i];
+
+      if (i > 0) {
+         offsets[i] = offsets[i-1] + sums[i-1];
+      }
+   }
+
+   return sum;
+}
+
 #define __IMPI_Allgatherv
 int IMPI_Allgatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
                          void *recvbuf, int *recvcounts,
