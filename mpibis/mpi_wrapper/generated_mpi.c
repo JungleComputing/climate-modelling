@@ -3736,7 +3736,8 @@ int MPI_Isend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
-   CHECK_TYPE(datatype);
+//   Isend should work with derived types.
+//   CHECK_TYPE(datatype);
 #endif
 
 #ifdef IBIS_INTERCEPT
