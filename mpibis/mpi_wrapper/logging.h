@@ -77,7 +77,7 @@ char *group_to_string(MPI_Group g);
 //void WARN(int indent, const char *fmt, ...);
 
 // New format...
-int XERROR(int indent, int errorcode, const char *header, const char *func, const char *file, const int line, const char *fmt, ...);
+int XERROR(int indent, int errorcode, int fatal, const char *header, const char *func, const char *file, const int line, const char *fmt, ...);
 int XLOG(int indent, int verbose, const char *header, const char *func, const char *file, const int line, const char *fmt, ...);
 
 #endif
