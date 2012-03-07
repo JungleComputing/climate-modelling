@@ -28,27 +28,27 @@ extern int FORTRAN_TRUE;
 void MAGPIE_MAX(void *invec, void *inoutvec, int *len, MPI_Datatype *type) {
   int i;
 
-INFO(2, "MAGPIE_MAX", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
+INFO(2, "MAGPIE_MAX invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
 
   if ( *type == MPI_INTEGER ){
 
-//INFO(2, "MAGPIE_MAX ", "PERFORMING MPI_INTEGER MAX!\n");
+//INFO(2, "MAGPIE_MAX  PERFORMING MPI_INTEGER MAX!\n");
 
     int *a = (int*)inoutvec;
     int *b = (int*)invec;
     for (i=0; i < *len; i++) {
-      INFO(2, "MAGPIE_MAX ", "MAX(%d, %d) = %d\n", b[i], a[i], MACRO_MAX(b[i],a[i]));
+      INFO(2, "MAGPIE_MAX  MAX(%d, %d) = %d\n", b[i], a[i], MACRO_MAX(b[i],a[i]));
       a[i] = MACRO_MAX(b[i],a[i]);
     }
     return;
   } else if ( *type == MPI_INT ){
 
-//INFO(2, "MAGPIE_MAX ", "PERFORMING MPI_INT MAX!\n");
+//INFO(2, "MAGPIE_MAX  PERFORMING MPI_INT MAX!\n");
 
     int *a = (int*)inoutvec;
     int *b = (int*)invec;
     for (i=0; i < *len; i++) {
-      INFO(2, "MAGPIE_MAX ", "MAX(%d, %d) = %d\n", b[i], a[i], MACRO_MAX(b[i],a[i]));
+      INFO(2, "MAGPIE_MAX  MAX(%d, %d) = %d\n", b[i], a[i], MACRO_MAX(b[i],a[i]));
       a[i] = MACRO_MAX(b[i],a[i]);
     }
     return;
@@ -136,7 +136,7 @@ INFO(2, "MAGPIE_MAX", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0],
 #endif
   else {
 
-INFO(2, "MAGPIE_MAX ", "FAILED TO FIND CORRECT TYPE!\n");
+INFO(2, "MAGPIE_MAX  FAILED TO FIND CORRECT TYPE!\n");
 
     MAGPIE_Op_errno = MPI_ERR_OP;
   }
@@ -149,7 +149,7 @@ INFO(2, "MAGPIE_MAX ", "FAILED TO FIND CORRECT TYPE!\n");
 void MAGPIE_MIN(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
   int i;
 
-INFO(2, "MAGPIE_MIN", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
+INFO(2, "MAGPIE_MIN invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
 
   if ( *type == MPI_INT ){
     int *a = (int*)inoutvec;
@@ -252,7 +252,7 @@ INFO(2, "MAGPIE_MIN", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0],
 void MAGPIE_SUM(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
   int i;
 
-INFO(2, "MAGPIE_SUM", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
+INFO(2, "MAGPIE_SUM invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
 
   if ( *type == MPI_INT ){
     int *a = (int*)inoutvec;
@@ -375,7 +375,7 @@ INFO(2, "MAGPIE_SUM", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0],
 void MAGPIE_PROD(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
   int i;
 
-INFO(2, "MAGPIE_PROD", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
+INFO(2, "MAGPIE_PROD invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
 
   if ( *type == MPI_INT ){
     int *a = (int*)inoutvec;
@@ -502,7 +502,7 @@ INFO(2, "MAGPIE_PROD", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0]
 void MAGPIE_LAND(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
   int i;
 
-INFO(2, "MAGPIE_LAND", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
+INFO(2, "MAGPIE_LAND invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
 
   if ( *type == MPI_INT ){
     int *a = (int*)inoutvec;
@@ -615,7 +615,7 @@ INFO(2, "MAGPIE_LAND", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0]
 void MAGPIE_LOR(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
   int i;
 
-INFO(2, "MAGPIE_LOR", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
+INFO(2, "MAGPIE_LOR invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
 
   if ( *type == MPI_INT ){
     int *a = (int*)inoutvec;
@@ -728,7 +728,7 @@ INFO(2, "MAGPIE_LOR", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0],
 void MAGPIE_LXOR(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
   int i;
 
-INFO(2, "MAGPIE_LXOR", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
+INFO(2, "MAGPIE_LXOR invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
 
   if ( *type == MPI_INT ){
     int *a = (int*)inoutvec;
@@ -840,7 +840,7 @@ INFO(2, "MAGPIE_LXOR", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0]
 void MAGPIE_BAND(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
   int i;
 
-INFO(2, "MAGPIE_BAND", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
+INFO(2, "MAGPIE_BAND invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
 
   if ( *type == MPI_INT ){
     int *a = (int*)inoutvec;
@@ -928,7 +928,7 @@ INFO(2, "MAGPIE_BAND", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0]
 void MAGPIE_BOR(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
   int i;
 
-INFO(2, "MAGPIE_BOR", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
+INFO(2, "MAGPIE_BOR invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
 
   if ( *type == MPI_INT ){
     int *a = (int*)inoutvec;
@@ -1015,7 +1015,7 @@ INFO(2, "MAGPIE_BOR", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0],
 void MAGPIE_BXOR(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
   int i;
 
-INFO(2, "MAGPIE_BXOR", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
+INFO(2, "MAGPIE_BXOR invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
 
   if ( *type == MPI_INT ){
     int *a = (int*)inoutvec;
@@ -1127,7 +1127,7 @@ typedef struct {
 void MAGPIE_MAXLOC(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
   int i;
 
-INFO(2, "MAGPIE_MAXLOC", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
+INFO(2, "MAGPIE_MAXLOC invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
 
   if ( *type == MPI_2INT ){
     magpie_2int_type *a = (magpie_2int_type*)inoutvec;
@@ -1214,7 +1214,7 @@ INFO(2, "MAGPIE_MAXLOC", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[
 void MAGPIE_MINLOC(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
   int i;
 
-INFO(2, "MAGPIE_MINLOC", "invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
+INFO(2, "MAGPIE_MINLOC invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
 
   if ( *type == MPI_2INT ){
     magpie_2int_type *a = (magpie_2int_type*)inoutvec;

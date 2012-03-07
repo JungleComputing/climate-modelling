@@ -81,7 +81,7 @@ static int read_config_file()
       retval = 0;
    }
 
-   INFO(0, "MPIBIS", "looking for config file %s", file);
+   INFO(0, "looking for config file %s", file);
 
    config = fopen(file, "r");
 
@@ -90,7 +90,7 @@ static int read_config_file()
       return 0;
    }
 
-   INFO(0, "MPIBIS", "config file %s opened.", file);
+   INFO(0, "config file %s opened.", file);
 
    error = fscanf(config, "%s", buffer);
 

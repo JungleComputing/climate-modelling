@@ -169,10 +169,10 @@ static int handshake(int local_rank, int local_count, int cluster_rank, int clus
 
    if (local_rank == 0) {
       for (i=0;i<cluster_count;i++) {
-        INFO(0, "HANDSHAKE", "Cluster %d %d %d", i, cluster_sizes[i], cluster_offsets[i]);
+        INFO(0, "Cluster %d %d %d", i, cluster_sizes[i], cluster_offsets[i]);
       }
 
-      INFO(0, "HANDHAKE", "Total size %d", cluster_offsets[cluster_count]);
+      INFO(0, "Total size %d", cluster_offsets[cluster_count]);
    }
 
    return CONNECT_OK;
