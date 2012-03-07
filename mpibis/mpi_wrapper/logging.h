@@ -11,7 +11,7 @@
 // 3 print errors, warnings and info
 // 4+ print all
 
-#define VERBOSE 1
+#define VERBOSE 4
 
 // Crash application when an error is printed ?
 #define ERRORS_ARE_FATAL 1
