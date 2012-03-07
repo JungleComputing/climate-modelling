@@ -2,12 +2,16 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <unistd.h>
+#include <errno.h>
 
 #include "flags.h"
 
 #ifdef ENABLE_INTERCEPT
 
 #include "mpi.h"
+
+#include "communicator.h"
 #include "debugging.h"
 #include "logging.h"
 
