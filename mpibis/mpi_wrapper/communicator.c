@@ -309,8 +309,6 @@ int comm_cluster_rank_to_cluster_index(communicator *c, int cluster_rank)
    return -1;
 }
 
-/*
-
 void set_communicator_ptr(MPI_Comm *dst, communicator *src)
 {
    memcpy(dst, &src, sizeof(communicator *));
@@ -350,9 +348,6 @@ int rank_is_remote(communicator *c, int rank)
 {
    return (GET_CLUSTER_RANK(c->members[rank]) != cluster_rank);
 }
-
-*/
-
 
 
 void store_message(message_buffer *m)

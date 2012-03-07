@@ -116,46 +116,14 @@ int inc_communicator_statistics(MPI_Comm comm, int field);
 int print_communicator_statistics(MPI_Comm comm);
 int print_all_communicator_statistics();
 
-// These are all inlined for performance reasons (used as type checked alternative to macros).
-static inline void set_communicator_ptr(MPI_Comm *dst, communicator *src)
-{
-   memcpy(dst, &src, sizeof(communicator *));
-}
-
-static inline int comm_is_world(communicator* c)
-{
-   return (c->flags & COMM_FLAG_WORLD) != 0;
-}
-
-static inline int comm_is_self(communicator* c)
-{
-   return (c->flags & COMM_FLAG_SELF) != 0;
-}
-
-static inline int comm_is_local(communicator* c)
-{
-   return ((c->flags & COMM_FLAG_LOCAL) != 0) && ((c->flags & COMM_FLAG_REMOTE) == 0);
-}
-
-static inline int comm_is_wa(communicator* c)
-{
-   return ((c->flags & COMM_FLAG_LOCAL) == 0) && ((c->flags & COMM_FLAG_REMOTE) != 0);
-}
-
-static inline int comm_is_mixed(communicator* c)
-{
-   return ((c->flags & COMM_FLAG_LOCAL) != 0) && ((c->flags & COMM_FLAG_REMOTE) != 0);
-}
-
-static inline int rank_is_local(communicator *c, int rank)
-{
-   return (GET_CLUSTER_RANK(c->members[rank]) == cluster_rank);
-}
-
-static inline int rank_is_remote(communicator *c, int rank)
-{
-   return (GET_CLUSTER_RANK(c->members[rank]) != cluster_rank);
-}
+void set_communicator_ptr(MPI_Comm *dst, communicator *src);
+int comm_is_world(communicator* c);
+int comm_is_self(communicator* c);
+int comm_is_local(communicator* c);
+int comm_is_wa(communicator* c);
+int comm_is_mixed(communicator* c);
+int rank_is_local(communicator *c, int rank);
+int rank_is_remote(communicator *c, int rank);
 
 #endif // IBIS_INTERCEPT
 
