@@ -31,7 +31,7 @@ static int wa_connect(char *server, unsigned short port)
    error = getaddrinfo(server, NULL, NULL, &result);
 
    if (error != 0) {
-       ERROR(1, CONNECT_ERROR_SERVER_NOT_FOUND, "getaddrinfo failed: %s", gai_strerror(error));
+       ERROR(1, "getaddrinfo failed: %s", gai_strerror(error));
        return CONNECT_ERROR_SERVER_NOT_FOUND;
    }
 
@@ -46,7 +46,7 @@ static int wa_connect(char *server, unsigned short port)
    socketfd = socket(AF_INET, SOCK_STREAM, 0);
 
    if (socketfd < 0) {
-      ERROR(1, CONNECT_ERROR_CANNOT_CREATE_SOCKET, "Failed to create socket!");
+      ERROR(1, "Failed to create socket!");
       return CONNECT_ERROR_CANNOT_CREATE_SOCKET;
    }
 
@@ -56,7 +56,7 @@ static int wa_connect(char *server, unsigned short port)
 
    if (error != 0) {
       close(socketfd);
-      ERROR(1, CONNECT_ERROR_CANNOT_CONNECT, "Failed to connect to server!");
+      ERROR(1, "Failed to connect to server!");
       return CONNECT_ERROR_CANNOT_CONNECT;
    }
 
