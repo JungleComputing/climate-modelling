@@ -1879,7 +1879,7 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, 
    // to our local cluster coordinator. This result is then forwarded to the
    // root, which merges all partial results locally.
 
-   if (rank_is_local(root)) {
+   if (rank_is_local(c, root)) {
       local_root = root;
    } else {
       local_root = c->my_coordinator;
