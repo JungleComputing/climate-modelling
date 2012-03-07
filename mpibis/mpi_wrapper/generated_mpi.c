@@ -23,7 +23,7 @@ int MPI_Init ( int *argc, char ***argv )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Init failed (%d)!", error);
+      ERROR(0, error, "MPI_Init failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -48,7 +48,7 @@ int MPI_Abort ( MPI_Comm comm, int errorcode )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Abort failed (%d)!", error);
+      ERROR(0, error, "MPI_Abort failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -74,7 +74,7 @@ int MPI_Accumulate ( void *origin_addr, int origin_count, MPI_Datatype origin_da
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Accumulate failed (%d)!", error);
+      ERROR(0, error, "MPI_Accumulate failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -95,7 +95,7 @@ int MPI_Add_error_class ( int *errorclass )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Add_error_class failed (%d)!", error);
+      ERROR(0, error, "MPI_Add_error_class failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -116,7 +116,7 @@ int MPI_Add_error_code ( int errorclass, int *errorcode )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Add_error_code failed (%d)!", error);
+      ERROR(0, error, "MPI_Add_error_code failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -137,7 +137,7 @@ int MPI_Add_error_string ( int errorcode, char *string )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Add_error_string failed (%d)!", error);
+      ERROR(0, error, "MPI_Add_error_string failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -158,7 +158,7 @@ int MPI_Address ( void *location, MPI_Aint *address )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Address failed (%d)!", error);
+      ERROR(0, error, "MPI_Address failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -184,7 +184,7 @@ int MPI_Allgather ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *r
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Allgather failed (%d)!", error);
+      ERROR(0, error, "MPI_Allgather failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -210,7 +210,7 @@ int MPI_Allgatherv ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Allgatherv failed (%d)!", error);
+      ERROR(0, error, "MPI_Allgatherv failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -231,7 +231,7 @@ int MPI_Alloc_mem ( MPI_Aint size, MPI_Info info, void *baseptr )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Alloc_mem failed (%d)!", error);
+      ERROR(0, error, "MPI_Alloc_mem failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -260,7 +260,7 @@ int MPI_Allreduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype dataty
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Allreduce failed (%d)!", error);
+      ERROR(0, error, "MPI_Allreduce failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -286,7 +286,7 @@ int MPI_Alltoall ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *re
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Alltoall failed (%d)!", error);
+      ERROR(0, error, "MPI_Alltoall failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -312,7 +312,7 @@ int MPI_Alltoallv ( void *sendbuf, int *sendcnts, int *sdispls, MPI_Datatype sen
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Alltoallv failed (%d)!", error);
+      ERROR(0, error, "MPI_Alltoallv failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -333,7 +333,7 @@ int MPI_Alltoallw ( void *sendbuf, int *sendcnts, int *sdispls, MPI_Datatype *se
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Alltoallw failed (%d)!", error);
+      ERROR(0, error, "MPI_Alltoallw failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -354,7 +354,7 @@ int MPI_Attr_delete ( MPI_Comm comm, int keyval )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Attr_delete failed (%d)!", error);
+      ERROR(0, error, "MPI_Attr_delete failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -375,7 +375,7 @@ int MPI_Attr_get ( MPI_Comm comm, int keyval, void *attr_value, int *flag )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Attr_get failed (%d)!", error);
+      ERROR(0, error, "MPI_Attr_get failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -396,7 +396,7 @@ int MPI_Attr_put ( MPI_Comm comm, int keyval, void *attr_value )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Attr_put failed (%d)!", error);
+      ERROR(0, error, "MPI_Attr_put failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -417,7 +417,7 @@ int MPI_Barrier ( MPI_Comm comm )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Barrier failed (%d)!", error);
+      ERROR(0, error, "MPI_Barrier failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -435,7 +435,7 @@ int MPI_Bcast ( void *buffer, int count, MPI_Datatype datatype, int root, MPI_Co
 #endif
 
 //if (count <= 0) { 
-//   ERROR(0, "Bcast count = 0!!");
+//   ERROR(0, error, "Bcast count = 0!!");
 //}
 
 #ifdef IBIS_INTERCEPT
@@ -446,7 +446,7 @@ int MPI_Bcast ( void *buffer, int count, MPI_Datatype datatype, int root, MPI_Co
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Bcast failed (%d)!", error);
+      ERROR(0, error, "MPI_Bcast failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -471,7 +471,7 @@ int MPI_Bsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Bsend failed (%d)!", error);
+      ERROR(0, error, "MPI_Bsend failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -496,7 +496,7 @@ int MPI_Bsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Bsend_init failed (%d)!", error);
+      ERROR(0, error, "MPI_Bsend_init failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -517,7 +517,7 @@ int MPI_Buffer_attach ( void *buffer, int size )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Buffer_attach failed (%d)!", error);
+      ERROR(0, error, "MPI_Buffer_attach failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -538,7 +538,7 @@ int MPI_Buffer_detach ( void *buffer, int *size )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Buffer_detach failed (%d)!", error);
+      ERROR(0, error, "MPI_Buffer_detach failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -559,7 +559,7 @@ int MPI_Cancel ( MPI_Request *request )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Cancel failed (%d)!", error);
+      ERROR(0, error, "MPI_Cancel failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -580,7 +580,7 @@ int MPI_Cart_coords ( MPI_Comm comm, int rank, int maxdims, int *coords )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Cart_coords failed (%d)!", error);
+      ERROR(0, error, "MPI_Cart_coords failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -601,7 +601,7 @@ int MPI_Cart_create ( MPI_Comm comm_old, int ndims, int *dims, int *periods, int
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Cart_create failed (%d)!", error);
+      ERROR(0, error, "MPI_Cart_create failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -622,7 +622,7 @@ int MPI_Cartdim_get ( MPI_Comm comm, int *ndims )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Cartdim_get failed (%d)!", error);
+      ERROR(0, error, "MPI_Cartdim_get failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -643,7 +643,7 @@ int MPI_Cart_get ( MPI_Comm comm, int maxdims, int *dims, int *periods, int *coo
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Cart_get failed (%d)!", error);
+      ERROR(0, error, "MPI_Cart_get failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -664,7 +664,7 @@ int MPI_Cart_map ( MPI_Comm comm_old, int ndims, int *dims, int *periods, int *n
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Cart_map failed (%d)!", error);
+      ERROR(0, error, "MPI_Cart_map failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -685,7 +685,7 @@ int MPI_Cart_rank ( MPI_Comm comm, int *coords, int *rank )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Cart_rank failed (%d)!", error);
+      ERROR(0, error, "MPI_Cart_rank failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -706,7 +706,7 @@ int MPI_Cart_shift ( MPI_Comm comm, int direction, int displ, int *source, int *
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Cart_shift failed (%d)!", error);
+      ERROR(0, error, "MPI_Cart_shift failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -727,7 +727,7 @@ int MPI_Cart_sub ( MPI_Comm comm, int *remain_dims, MPI_Comm *comm_new )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Cart_sub failed (%d)!", error);
+      ERROR(0, error, "MPI_Cart_sub failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -748,7 +748,7 @@ int MPI_Close_port ( char *port_name )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Close_port failed (%d)!", error);
+      ERROR(0, error, "MPI_Close_port failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -769,7 +769,7 @@ int MPI_Comm_accept ( char *port_name, MPI_Info info, int root, MPI_Comm comm, M
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_accept failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_accept failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -790,7 +790,7 @@ int MPI_Comm_call_errhandler ( MPI_Comm comm, int errorcode )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_call_errhandler failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_call_errhandler failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -811,7 +811,7 @@ int MPI_Comm_compare ( MPI_Comm comm1, MPI_Comm comm2, int *result )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_compare failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_compare failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -832,7 +832,7 @@ int MPI_Comm_connect ( char *port_name, MPI_Info info, int root, MPI_Comm comm, 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_connect failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_connect failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -853,7 +853,7 @@ int MPI_Comm_create_errhandler ( MPI_Comm_errhandler_fn *function, MPI_Errhandle
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_create_errhandler failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_create_errhandler failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -874,7 +874,7 @@ int MPI_Comm_create ( MPI_Comm comm, MPI_Group group, MPI_Comm *newcomm )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_create failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_create failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -895,7 +895,7 @@ int MPI_Comm_create_keyval ( MPI_Comm_copy_attr_function *comm_copy_attr_fn, MPI
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_create_keyval failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_create_keyval failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -916,7 +916,7 @@ int MPI_Comm_delete_attr ( MPI_Comm comm, int comm_keyval )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_delete_attr failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_delete_attr failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -937,7 +937,7 @@ int MPI_Comm_disconnect ( MPI_Comm *comm )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_disconnect failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_disconnect failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -958,7 +958,7 @@ int MPI_Comm_dup ( MPI_Comm comm, MPI_Comm *newcomm )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_dup failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_dup failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -979,7 +979,7 @@ int MPI_Comm_free ( MPI_Comm *comm )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_free failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_free failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1000,7 +1000,7 @@ int MPI_Comm_free_keyval ( int *comm_keyval )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_free_keyval failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_free_keyval failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1021,7 +1021,7 @@ int MPI_Comm_get_attr ( MPI_Comm comm, int comm_keyval, void *attribute_val, int
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_get_attr failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_get_attr failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1042,7 +1042,7 @@ int MPI_Comm_get_errhandler ( MPI_Comm comm, MPI_Errhandler *errhandler )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_get_errhandler failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_get_errhandler failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1063,7 +1063,7 @@ int MPI_Comm_get_name ( MPI_Comm comm, char *comm_name, int *resultlen )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_get_name failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_get_name failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1084,7 +1084,7 @@ int MPI_Comm_get_parent ( MPI_Comm *parent )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_get_parent failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_get_parent failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1105,7 +1105,7 @@ int MPI_Comm_group ( MPI_Comm comm, MPI_Group *group )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_group failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_group failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1126,7 +1126,7 @@ int MPI_Comm_join ( int fd, MPI_Comm *intercomm )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_join failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_join failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1147,7 +1147,7 @@ int MPI_Comm_rank ( MPI_Comm comm, int *rank )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_rank failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_rank failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1168,7 +1168,7 @@ int MPI_Comm_remote_group ( MPI_Comm comm, MPI_Group *group )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_remote_group failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_remote_group failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1189,7 +1189,7 @@ int MPI_Comm_remote_size ( MPI_Comm comm, int *size )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_remote_size failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_remote_size failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1210,7 +1210,7 @@ int MPI_Comm_set_attr ( MPI_Comm comm, int comm_keyval, void *attribute_val )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_set_attr failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_set_attr failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1231,7 +1231,7 @@ int MPI_Comm_set_errhandler ( MPI_Comm comm, MPI_Errhandler errhandler )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_set_errhandler failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_set_errhandler failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1252,7 +1252,7 @@ int MPI_Comm_set_name ( MPI_Comm comm, char *comm_name )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_set_name failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_set_name failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1273,7 +1273,7 @@ int MPI_Comm_size ( MPI_Comm comm, int *size )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_size failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_size failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1294,7 +1294,7 @@ int MPI_Comm_spawn ( char *command, char *argv[], int maxprocs, MPI_Info info, i
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_spawn failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_spawn failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1315,7 +1315,7 @@ int MPI_Comm_spawn_multiple ( int count, char *array_of_commands[], char* *array
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_spawn_multiple failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_spawn_multiple failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1336,7 +1336,7 @@ int MPI_Comm_split ( MPI_Comm comm, int color, int key, MPI_Comm *newcomm )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_split failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_split failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1357,7 +1357,7 @@ int MPI_Comm_test_inter ( MPI_Comm comm, int *flag )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Comm_test_inter failed (%d)!", error);
+      ERROR(0, error, "MPI_Comm_test_inter failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1378,7 +1378,7 @@ int MPI_Dims_create ( int nnodes, int ndims, int *dims )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Dims_create failed (%d)!", error);
+      ERROR(0, error, "MPI_Dims_create failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1399,7 +1399,7 @@ int MPI_Errhandler_create ( MPI_Handler_function *function, MPI_Errhandler *errh
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Errhandler_create failed (%d)!", error);
+      ERROR(0, error, "MPI_Errhandler_create failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1420,7 +1420,7 @@ int MPI_Errhandler_free ( MPI_Errhandler *errhandler )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Errhandler_free failed (%d)!", error);
+      ERROR(0, error, "MPI_Errhandler_free failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1441,7 +1441,7 @@ int MPI_Errhandler_get ( MPI_Comm comm, MPI_Errhandler *errhandler )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Errhandler_get failed (%d)!", error);
+      ERROR(0, error, "MPI_Errhandler_get failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1462,7 +1462,7 @@ int MPI_Errhandler_set ( MPI_Comm comm, MPI_Errhandler errhandler )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Errhandler_set failed (%d)!", error);
+      ERROR(0, error, "MPI_Errhandler_set failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1483,7 +1483,7 @@ int MPI_Error_class ( int errorcode, int *errorclass )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Error_class failed (%d)!", error);
+      ERROR(0, error, "MPI_Error_class failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1504,7 +1504,7 @@ int MPI_Error_string ( int errorcode, char *string, int *resultlen )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Error_string failed (%d)!", error);
+      ERROR(0, error, "MPI_Error_string failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1529,7 +1529,7 @@ int MPI_Exscan ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Exscan failed (%d)!", error);
+      ERROR(0, error, "MPI_Exscan failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1550,7 +1550,7 @@ int MPI_File_call_errhandler ( MPI_File fh, int errorcode )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_call_errhandler failed (%d)!", error);
+      ERROR(0, error, "MPI_File_call_errhandler failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1571,7 +1571,7 @@ int MPI_File_close ( MPI_File *mpi_fh )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_close failed (%d)!", error);
+      ERROR(0, error, "MPI_File_close failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1592,7 +1592,7 @@ int MPI_File_create_errhandler ( MPI_File_errhandler_fn *function, MPI_Errhandle
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_create_errhandler failed (%d)!", error);
+      ERROR(0, error, "MPI_File_create_errhandler failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1613,7 +1613,7 @@ int MPI_File_delete ( char *filename, MPI_Info info )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_delete failed (%d)!", error);
+      ERROR(0, error, "MPI_File_delete failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1634,7 +1634,7 @@ int MPI_File_get_amode ( MPI_File mpi_fh, int *amode )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_get_amode failed (%d)!", error);
+      ERROR(0, error, "MPI_File_get_amode failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1655,7 +1655,7 @@ int MPI_File_get_atomicity ( MPI_File mpi_fh, int *flag )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_get_atomicity failed (%d)!", error);
+      ERROR(0, error, "MPI_File_get_atomicity failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1676,7 +1676,7 @@ int MPI_File_get_byte_offset ( MPI_File mpi_fh, MPI_Offset offset, MPI_Offset *d
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_get_byte_offset failed (%d)!", error);
+      ERROR(0, error, "MPI_File_get_byte_offset failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1697,7 +1697,7 @@ int MPI_File_get_errhandler ( MPI_File file, MPI_Errhandler *errhandler )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_get_errhandler failed (%d)!", error);
+      ERROR(0, error, "MPI_File_get_errhandler failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1718,7 +1718,7 @@ int MPI_File_get_group ( MPI_File mpi_fh, MPI_Group *group )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_get_group failed (%d)!", error);
+      ERROR(0, error, "MPI_File_get_group failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1739,7 +1739,7 @@ int MPI_File_get_info ( MPI_File mpi_fh, MPI_Info *info_used )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_get_info failed (%d)!", error);
+      ERROR(0, error, "MPI_File_get_info failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1760,7 +1760,7 @@ int MPI_File_get_position ( MPI_File mpi_fh, MPI_Offset *offset )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_get_position failed (%d)!", error);
+      ERROR(0, error, "MPI_File_get_position failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1781,7 +1781,7 @@ int MPI_File_get_position_shared ( MPI_File mpi_fh, MPI_Offset *offset )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_get_position_shared failed (%d)!", error);
+      ERROR(0, error, "MPI_File_get_position_shared failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1802,7 +1802,7 @@ int MPI_File_get_size ( MPI_File mpi_fh, MPI_Offset *size )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_get_size failed (%d)!", error);
+      ERROR(0, error, "MPI_File_get_size failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1823,7 +1823,7 @@ int MPI_File_get_type_extent ( MPI_File mpi_fh, MPI_Datatype datatype, MPI_Aint 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_get_type_extent failed (%d)!", error);
+      ERROR(0, error, "MPI_File_get_type_extent failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1844,7 +1844,7 @@ int MPI_File_get_view ( MPI_File mpi_fh, MPI_Offset *disp, MPI_Datatype *etype, 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_get_view failed (%d)!", error);
+      ERROR(0, error, "MPI_File_get_view failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1865,7 +1865,7 @@ int MPI_File_iread_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int count
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_iread_at failed (%d)!", error);
+      ERROR(0, error, "MPI_File_iread_at failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1886,7 +1886,7 @@ int MPI_File_iread ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatyp
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_iread failed (%d)!", error);
+      ERROR(0, error, "MPI_File_iread failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1907,7 +1907,7 @@ int MPI_File_iread_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_iread_shared failed (%d)!", error);
+      ERROR(0, error, "MPI_File_iread_shared failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1928,7 +1928,7 @@ int MPI_File_iwrite_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int coun
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_iwrite_at failed (%d)!", error);
+      ERROR(0, error, "MPI_File_iwrite_at failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1949,7 +1949,7 @@ int MPI_File_iwrite ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype dataty
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_iwrite failed (%d)!", error);
+      ERROR(0, error, "MPI_File_iwrite failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1970,7 +1970,7 @@ int MPI_File_iwrite_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_iwrite_shared failed (%d)!", error);
+      ERROR(0, error, "MPI_File_iwrite_shared failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -1991,7 +1991,7 @@ int MPI_File_open ( MPI_Comm comm, char *filename, int amode, MPI_Info info, MPI
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_open failed (%d)!", error);
+      ERROR(0, error, "MPI_File_open failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2012,7 +2012,7 @@ int MPI_File_preallocate ( MPI_File mpi_fh, MPI_Offset size )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_preallocate failed (%d)!", error);
+      ERROR(0, error, "MPI_File_preallocate failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2033,7 +2033,7 @@ int MPI_File_read_all_begin ( MPI_File mpi_fh, void *buf, int count, MPI_Datatyp
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_read_all_begin failed (%d)!", error);
+      ERROR(0, error, "MPI_File_read_all_begin failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2054,7 +2054,7 @@ int MPI_File_read_all_end ( MPI_File mpi_fh, void *buf, MPI_Status *status )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_read_all_end failed (%d)!", error);
+      ERROR(0, error, "MPI_File_read_all_end failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2075,7 +2075,7 @@ int MPI_File_read_all ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype data
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_read_all failed (%d)!", error);
+      ERROR(0, error, "MPI_File_read_all failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2096,7 +2096,7 @@ int MPI_File_read_at_all_begin ( MPI_File mpi_fh, MPI_Offset offset, void *buf, 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_read_at_all_begin failed (%d)!", error);
+      ERROR(0, error, "MPI_File_read_at_all_begin failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2117,7 +2117,7 @@ int MPI_File_read_at_all_end ( MPI_File mpi_fh, void *buf, MPI_Status *status )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_read_at_all_end failed (%d)!", error);
+      ERROR(0, error, "MPI_File_read_at_all_end failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2138,7 +2138,7 @@ int MPI_File_read_at_all ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int co
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_read_at_all failed (%d)!", error);
+      ERROR(0, error, "MPI_File_read_at_all failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2159,7 +2159,7 @@ int MPI_File_read_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int count,
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_read_at failed (%d)!", error);
+      ERROR(0, error, "MPI_File_read_at failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2180,7 +2180,7 @@ int MPI_File_read ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatype
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_read failed (%d)!", error);
+      ERROR(0, error, "MPI_File_read failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2201,7 +2201,7 @@ int MPI_File_read_ordered_begin ( MPI_File mpi_fh, void *buf, int count, MPI_Dat
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_read_ordered_begin failed (%d)!", error);
+      ERROR(0, error, "MPI_File_read_ordered_begin failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2222,7 +2222,7 @@ int MPI_File_read_ordered_end ( MPI_File mpi_fh, void *buf, MPI_Status *status )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_read_ordered_end failed (%d)!", error);
+      ERROR(0, error, "MPI_File_read_ordered_end failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2243,7 +2243,7 @@ int MPI_File_read_ordered ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_read_ordered failed (%d)!", error);
+      ERROR(0, error, "MPI_File_read_ordered failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2264,7 +2264,7 @@ int MPI_File_read_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype d
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_read_shared failed (%d)!", error);
+      ERROR(0, error, "MPI_File_read_shared failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2285,7 +2285,7 @@ int MPI_File_seek ( MPI_File mpi_fh, MPI_Offset offset, int whence )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_seek failed (%d)!", error);
+      ERROR(0, error, "MPI_File_seek failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2306,7 +2306,7 @@ int MPI_File_seek_shared ( MPI_File mpi_fh, MPI_Offset offset, int whence )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_seek_shared failed (%d)!", error);
+      ERROR(0, error, "MPI_File_seek_shared failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2327,7 +2327,7 @@ int MPI_File_set_atomicity ( MPI_File mpi_fh, int flag )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_set_atomicity failed (%d)!", error);
+      ERROR(0, error, "MPI_File_set_atomicity failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2348,7 +2348,7 @@ int MPI_File_set_errhandler ( MPI_File file, MPI_Errhandler errhandler )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_set_errhandler failed (%d)!", error);
+      ERROR(0, error, "MPI_File_set_errhandler failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2369,7 +2369,7 @@ int MPI_File_set_info ( MPI_File mpi_fh, MPI_Info info )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_set_info failed (%d)!", error);
+      ERROR(0, error, "MPI_File_set_info failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2390,7 +2390,7 @@ int MPI_File_set_size ( MPI_File mpi_fh, MPI_Offset size )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_set_size failed (%d)!", error);
+      ERROR(0, error, "MPI_File_set_size failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2411,7 +2411,7 @@ int MPI_File_set_view ( MPI_File mpi_fh, MPI_Offset disp, MPI_Datatype etype, MP
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_set_view failed (%d)!", error);
+      ERROR(0, error, "MPI_File_set_view failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2432,7 +2432,7 @@ int MPI_File_sync ( MPI_File mpi_fh )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_sync failed (%d)!", error);
+      ERROR(0, error, "MPI_File_sync failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2453,7 +2453,7 @@ int MPI_File_write_all_begin ( MPI_File mpi_fh, void *buf, int count, MPI_Dataty
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_write_all_begin failed (%d)!", error);
+      ERROR(0, error, "MPI_File_write_all_begin failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2474,7 +2474,7 @@ int MPI_File_write_all_end ( MPI_File mpi_fh, void *buf, MPI_Status *status )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_write_all_end failed (%d)!", error);
+      ERROR(0, error, "MPI_File_write_all_end failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2495,7 +2495,7 @@ int MPI_File_write_all ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype dat
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_write_all failed (%d)!", error);
+      ERROR(0, error, "MPI_File_write_all failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2516,7 +2516,7 @@ int MPI_File_write_at_all_begin ( MPI_File mpi_fh, MPI_Offset offset, void *buf,
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_write_at_all_begin failed (%d)!", error);
+      ERROR(0, error, "MPI_File_write_at_all_begin failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2537,7 +2537,7 @@ int MPI_File_write_at_all_end ( MPI_File mpi_fh, void *buf, MPI_Status *status )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_write_at_all_end failed (%d)!", error);
+      ERROR(0, error, "MPI_File_write_at_all_end failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2558,7 +2558,7 @@ int MPI_File_write_at_all ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int c
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_write_at_all failed (%d)!", error);
+      ERROR(0, error, "MPI_File_write_at_all failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2579,7 +2579,7 @@ int MPI_File_write_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int count
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_write_at failed (%d)!", error);
+      ERROR(0, error, "MPI_File_write_at failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2600,7 +2600,7 @@ int MPI_File_write ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatyp
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_write failed (%d)!", error);
+      ERROR(0, error, "MPI_File_write failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2621,7 +2621,7 @@ int MPI_File_write_ordered_begin ( MPI_File mpi_fh, void *buf, int count, MPI_Da
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_write_ordered_begin failed (%d)!", error);
+      ERROR(0, error, "MPI_File_write_ordered_begin failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2642,7 +2642,7 @@ int MPI_File_write_ordered_end ( MPI_File mpi_fh, void *buf, MPI_Status *status 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_write_ordered_end failed (%d)!", error);
+      ERROR(0, error, "MPI_File_write_ordered_end failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2663,7 +2663,7 @@ int MPI_File_write_ordered ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_write_ordered failed (%d)!", error);
+      ERROR(0, error, "MPI_File_write_ordered failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2684,7 +2684,7 @@ int MPI_File_write_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_File_write_shared failed (%d)!", error);
+      ERROR(0, error, "MPI_File_write_shared failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2705,7 +2705,7 @@ int MPI_Finalized ( int *flag )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Finalized failed (%d)!", error);
+      ERROR(0, error, "MPI_Finalized failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2726,7 +2726,7 @@ int MPI_Finalize (  )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Finalize failed (%d)!", error);
+      ERROR(0, error, "MPI_Finalize failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2747,7 +2747,7 @@ int MPI_Free_mem ( void *base )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Free_mem failed (%d)!", error);
+      ERROR(0, error, "MPI_Free_mem failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2773,7 +2773,7 @@ int MPI_Gather ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvbu
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Gather failed (%d)!", error);
+      ERROR(0, error, "MPI_Gather failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2799,7 +2799,7 @@ int MPI_Gatherv ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvb
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Gatherv failed (%d)!", error);
+      ERROR(0, error, "MPI_Gatherv failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2820,7 +2820,7 @@ int MPI_Get_address ( void *location, MPI_Aint *address )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Get_address failed (%d)!", error);
+      ERROR(0, error, "MPI_Get_address failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2845,7 +2845,7 @@ int MPI_Get_count ( MPI_Status *status, MPI_Datatype datatype, int *count )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Get_count failed (%d)!", error);
+      ERROR(0, error, "MPI_Get_count failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2870,7 +2870,7 @@ int MPI_Get_elements ( MPI_Status *status, MPI_Datatype datatype, int *elements 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Get_elements failed (%d)!", error);
+      ERROR(0, error, "MPI_Get_elements failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2891,7 +2891,7 @@ int MPI_Get ( void *origin_addr, int origin_count, MPI_Datatype origin_datatype,
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Get failed (%d)!", error);
+      ERROR(0, error, "MPI_Get failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2912,7 +2912,7 @@ int MPI_Get_processor_name ( char *name, int *resultlen )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Get_processor_name failed (%d)!", error);
+      ERROR(0, error, "MPI_Get_processor_name failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2933,7 +2933,7 @@ int MPI_Get_version ( int *version, int *subversion )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Get_version failed (%d)!", error);
+      ERROR(0, error, "MPI_Get_version failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2954,7 +2954,7 @@ int MPI_Graph_create ( MPI_Comm comm_old, int nnodes, int *indx, int *edges, int
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Graph_create failed (%d)!", error);
+      ERROR(0, error, "MPI_Graph_create failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2975,7 +2975,7 @@ int MPI_Graphdims_get ( MPI_Comm comm, int *nnodes, int *nedges )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Graphdims_get failed (%d)!", error);
+      ERROR(0, error, "MPI_Graphdims_get failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -2996,7 +2996,7 @@ int MPI_Graph_get ( MPI_Comm comm, int maxindex, int maxedges, int *indx, int *e
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Graph_get failed (%d)!", error);
+      ERROR(0, error, "MPI_Graph_get failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3017,7 +3017,7 @@ int MPI_Graph_map ( MPI_Comm comm_old, int nnodes, int *indx, int *edges, int *n
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Graph_map failed (%d)!", error);
+      ERROR(0, error, "MPI_Graph_map failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3038,7 +3038,7 @@ int MPI_Graph_neighbors_count ( MPI_Comm comm, int rank, int *nneighbors )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Graph_neighbors_count failed (%d)!", error);
+      ERROR(0, error, "MPI_Graph_neighbors_count failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3059,7 +3059,7 @@ int MPI_Graph_neighbors ( MPI_Comm comm, int rank, int maxneighbors, int *neighb
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Graph_neighbors failed (%d)!", error);
+      ERROR(0, error, "MPI_Graph_neighbors failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3080,7 +3080,7 @@ int MPI_Grequest_complete ( MPI_Request request )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Grequest_complete failed (%d)!", error);
+      ERROR(0, error, "MPI_Grequest_complete failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3101,7 +3101,7 @@ int MPI_Grequest_start ( MPI_Grequest_query_function *query_fn, MPI_Grequest_fre
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Grequest_start failed (%d)!", error);
+      ERROR(0, error, "MPI_Grequest_start failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3122,7 +3122,7 @@ int MPI_Group_compare ( MPI_Group group1, MPI_Group group2, int *result )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Group_compare failed (%d)!", error);
+      ERROR(0, error, "MPI_Group_compare failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3143,7 +3143,7 @@ int MPI_Group_difference ( MPI_Group group1, MPI_Group group2, MPI_Group *newgro
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Group_difference failed (%d)!", error);
+      ERROR(0, error, "MPI_Group_difference failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3164,7 +3164,7 @@ int MPI_Group_excl ( MPI_Group group, int n, int *ranks, MPI_Group *newgroup )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Group_excl failed (%d)!", error);
+      ERROR(0, error, "MPI_Group_excl failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3185,7 +3185,7 @@ int MPI_Group_free ( MPI_Group *group )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Group_free failed (%d)!", error);
+      ERROR(0, error, "MPI_Group_free failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3206,7 +3206,7 @@ int MPI_Group_incl ( MPI_Group group, int n, int *ranks, MPI_Group *newgroup )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Group_incl failed (%d)!", error);
+      ERROR(0, error, "MPI_Group_incl failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3227,7 +3227,7 @@ int MPI_Group_intersection ( MPI_Group group1, MPI_Group group2, MPI_Group *newg
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Group_intersection failed (%d)!", error);
+      ERROR(0, error, "MPI_Group_intersection failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3248,7 +3248,7 @@ int MPI_Group_range_excl ( MPI_Group group, int n, int ranges[][3], MPI_Group *n
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Group_range_excl failed (%d)!", error);
+      ERROR(0, error, "MPI_Group_range_excl failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3269,7 +3269,7 @@ int MPI_Group_range_incl ( MPI_Group group, int n, int ranges[][3], MPI_Group *n
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Group_range_incl failed (%d)!", error);
+      ERROR(0, error, "MPI_Group_range_incl failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3290,7 +3290,7 @@ int MPI_Group_rank ( MPI_Group group, int *rank )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Group_rank failed (%d)!", error);
+      ERROR(0, error, "MPI_Group_rank failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3311,7 +3311,7 @@ int MPI_Group_size ( MPI_Group group, int *size )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Group_size failed (%d)!", error);
+      ERROR(0, error, "MPI_Group_size failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3332,7 +3332,7 @@ int MPI_Group_translate_ranks ( MPI_Group group1, int n, int *ranks1, MPI_Group 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Group_translate_ranks failed (%d)!", error);
+      ERROR(0, error, "MPI_Group_translate_ranks failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3353,7 +3353,7 @@ int MPI_Group_union ( MPI_Group group1, MPI_Group group2, MPI_Group *newgroup )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Group_union failed (%d)!", error);
+      ERROR(0, error, "MPI_Group_union failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3378,7 +3378,7 @@ int MPI_Ibsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Ibsend failed (%d)!", error);
+      ERROR(0, error, "MPI_Ibsend failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3399,7 +3399,7 @@ int MPI_Info_create ( MPI_Info *info )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Info_create failed (%d)!", error);
+      ERROR(0, error, "MPI_Info_create failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3420,7 +3420,7 @@ int MPI_Info_delete ( MPI_Info info, char *key )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Info_delete failed (%d)!", error);
+      ERROR(0, error, "MPI_Info_delete failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3441,7 +3441,7 @@ int MPI_Info_dup ( MPI_Info info, MPI_Info *newinfo )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Info_dup failed (%d)!", error);
+      ERROR(0, error, "MPI_Info_dup failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3462,7 +3462,7 @@ int MPI_Info_free ( MPI_Info *info )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Info_free failed (%d)!", error);
+      ERROR(0, error, "MPI_Info_free failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3483,7 +3483,7 @@ int MPI_Info_get ( MPI_Info info, char *key, int valuelen, char *value, int *fla
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Info_get failed (%d)!", error);
+      ERROR(0, error, "MPI_Info_get failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3504,7 +3504,7 @@ int MPI_Info_get_nkeys ( MPI_Info info, int *nkeys )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Info_get_nkeys failed (%d)!", error);
+      ERROR(0, error, "MPI_Info_get_nkeys failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3525,7 +3525,7 @@ int MPI_Info_get_nthkey ( MPI_Info info, int n, char *key )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Info_get_nthkey failed (%d)!", error);
+      ERROR(0, error, "MPI_Info_get_nthkey failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3546,7 +3546,7 @@ int MPI_Info_get_valuelen ( MPI_Info info, char *key, int *valuelen, int *flag )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Info_get_valuelen failed (%d)!", error);
+      ERROR(0, error, "MPI_Info_get_valuelen failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3567,7 +3567,7 @@ int MPI_Info_set ( MPI_Info info, char *key, char *value )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Info_set failed (%d)!", error);
+      ERROR(0, error, "MPI_Info_set failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3588,7 +3588,7 @@ int MPI_Initialized ( int *flag )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Initialized failed (%d)!", error);
+      ERROR(0, error, "MPI_Initialized failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3609,7 +3609,7 @@ int MPI_Init_thread ( int *argc, char ***argv, int required, int *provided )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Init_thread failed (%d)!", error);
+      ERROR(0, error, "MPI_Init_thread failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3630,7 +3630,7 @@ int MPI_Intercomm_create ( MPI_Comm local_comm, int local_leader, MPI_Comm peer_
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Intercomm_create failed (%d)!", error);
+      ERROR(0, error, "MPI_Intercomm_create failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3651,7 +3651,7 @@ int MPI_Intercomm_merge ( MPI_Comm intercomm, int high, MPI_Comm *newintracomm )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Intercomm_merge failed (%d)!", error);
+      ERROR(0, error, "MPI_Intercomm_merge failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3672,7 +3672,7 @@ int MPI_Iprobe ( int source, int tag, MPI_Comm comm, int *flag, MPI_Status *stat
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Iprobe failed (%d)!", error);
+      ERROR(0, error, "MPI_Iprobe failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3697,7 +3697,7 @@ int MPI_Irecv ( void *buf, int count, MPI_Datatype datatype, int source, int tag
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Irecv failed (%d)!", error);
+      ERROR(0, error, "MPI_Irecv failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3722,7 +3722,7 @@ int MPI_Irsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Irsend failed (%d)!", error);
+      ERROR(0, error, "MPI_Irsend failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3747,7 +3747,7 @@ int MPI_Isend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Isend failed (%d)!", error);
+      ERROR(0, error, "MPI_Isend failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3772,7 +3772,7 @@ int MPI_Issend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Issend failed (%d)!", error);
+      ERROR(0, error, "MPI_Issend failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3793,7 +3793,7 @@ int MPI_Is_thread_main ( int *flag )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Is_thread_main failed (%d)!", error);
+      ERROR(0, error, "MPI_Is_thread_main failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3814,7 +3814,7 @@ int MPI_Keyval_create ( MPI_Copy_function *copy_fn, MPI_Delete_function *delete_
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Keyval_create failed (%d)!", error);
+      ERROR(0, error, "MPI_Keyval_create failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3835,7 +3835,7 @@ int MPI_Keyval_free ( int *keyval )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Keyval_free failed (%d)!", error);
+      ERROR(0, error, "MPI_Keyval_free failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3856,7 +3856,7 @@ int MPI_Lookup_name ( char *service_name, MPI_Info info, char *port_name )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Lookup_name failed (%d)!", error);
+      ERROR(0, error, "MPI_Lookup_name failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3877,7 +3877,7 @@ int MPI_Op_create ( MPI_User_function *function, int commute, MPI_Op *op )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Op_create failed (%d)!", error);
+      ERROR(0, error, "MPI_Op_create failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3898,7 +3898,7 @@ int MPI_Open_port ( MPI_Info info, char *port_name )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Open_port failed (%d)!", error);
+      ERROR(0, error, "MPI_Open_port failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3919,7 +3919,7 @@ int MPI_Op_free ( MPI_Op *op )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Op_free failed (%d)!", error);
+      ERROR(0, error, "MPI_Op_free failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3941,7 +3941,7 @@ int MPI_Pack_external ( char *datarep, void *inbuf, int incount, MPI_Datatype da
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Pack_external failed (%d)!", error);
+      ERROR(0, error, "MPI_Pack_external failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3962,7 +3962,7 @@ int MPI_Pack_external_size ( char *datarep, int incount, MPI_Datatype datatype, 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Pack_external_size failed (%d)!", error);
+      ERROR(0, error, "MPI_Pack_external_size failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -3987,7 +3987,7 @@ int MPI_Pack ( void *inbuf, int incount, MPI_Datatype datatype, void *outbuf, in
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Pack failed (%d)!", error);
+      ERROR(0, error, "MPI_Pack failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4012,7 +4012,7 @@ int MPI_Pack_size ( int incount, MPI_Datatype datatype, MPI_Comm comm, int *size
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Pack_size failed (%d)!", error);
+      ERROR(0, error, "MPI_Pack_size failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4033,7 +4033,7 @@ int MPI_Pcontrol ( const int, level ... )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Pcontrol failed (%d)!", error);
+      ERROR(0, error, "MPI_Pcontrol failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4054,7 +4054,7 @@ int MPI_Probe ( int source, int tag, MPI_Comm comm, MPI_Status *status )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Probe failed (%d)!", error);
+      ERROR(0, error, "MPI_Probe failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4075,7 +4075,7 @@ int MPI_Publish_name ( char *service_name, MPI_Info info, char *port_name )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Publish_name failed (%d)!", error);
+      ERROR(0, error, "MPI_Publish_name failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4096,7 +4096,7 @@ int MPI_Put ( void *origin_addr, int origin_count, MPI_Datatype origin_datatype,
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Put failed (%d)!", error);
+      ERROR(0, error, "MPI_Put failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4117,7 +4117,7 @@ int MPI_Query_thread ( int *provided )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Query_thread failed (%d)!", error);
+      ERROR(0, error, "MPI_Query_thread failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4142,7 +4142,7 @@ int MPI_Recv ( void *buf, int count, MPI_Datatype datatype, int source, int tag,
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Recv failed (%d)!", error);
+      ERROR(0, error, "MPI_Recv failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4167,7 +4167,7 @@ int MPI_Recv_init ( void *buf, int count, MPI_Datatype datatype, int source, int
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Recv_init failed (%d)!", error);
+      ERROR(0, error, "MPI_Recv_init failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4192,7 +4192,7 @@ int MPI_Reduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Reduce failed (%d)!", error);
+      ERROR(0, error, "MPI_Reduce failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4217,7 +4217,7 @@ int MPI_Reduce_scatter ( void *sendbuf, void *recvbuf, int *recvcnts, MPI_Dataty
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Reduce_scatter failed (%d)!", error);
+      ERROR(0, error, "MPI_Reduce_scatter failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4238,7 +4238,7 @@ int MPI_Register_datarep ( char *name, MPI_Datarep_conversion_function *read_con
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Register_datarep failed (%d)!", error);
+      ERROR(0, error, "MPI_Register_datarep failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4259,7 +4259,7 @@ int MPI_Request_free ( MPI_Request *request )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Request_free failed (%d)!", error);
+      ERROR(0, error, "MPI_Request_free failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4280,7 +4280,7 @@ int MPI_Request_get_status ( MPI_Request request, int *flag, MPI_Status *status 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Request_get_status failed (%d)!", error);
+      ERROR(0, error, "MPI_Request_get_status failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4305,7 +4305,7 @@ int MPI_Rsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Rsend failed (%d)!", error);
+      ERROR(0, error, "MPI_Rsend failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4330,7 +4330,7 @@ int MPI_Rsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Rsend_init failed (%d)!", error);
+      ERROR(0, error, "MPI_Rsend_init failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4355,7 +4355,7 @@ int MPI_Scan ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, M
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Scan failed (%d)!", error);
+      ERROR(0, error, "MPI_Scan failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4381,7 +4381,7 @@ int MPI_Scatter ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvb
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Scatter failed (%d)!", error);
+      ERROR(0, error, "MPI_Scatter failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4407,7 +4407,7 @@ int MPI_Scatterv ( void *sendbuf, int *sendcnts, int *displs, MPI_Datatype sendt
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Scatterv failed (%d)!", error);
+      ERROR(0, error, "MPI_Scatterv failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4432,7 +4432,7 @@ int MPI_Send ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, M
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Send failed (%d)!", error);
+      ERROR(0, error, "MPI_Send failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4457,7 +4457,7 @@ int MPI_Send_init ( void *buf, int count, MPI_Datatype datatype, int dest, int t
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Send_init failed (%d)!", error);
+      ERROR(0, error, "MPI_Send_init failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4483,7 +4483,7 @@ int MPI_Sendrecv ( void *sendbuf, int sendcount, MPI_Datatype sendtype, int dest
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Sendrecv failed (%d)!", error);
+      ERROR(0, error, "MPI_Sendrecv failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4508,7 +4508,7 @@ int MPI_Sendrecv_replace ( void *buf, int count, MPI_Datatype datatype, int dest
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Sendrecv_replace failed (%d)!", error);
+      ERROR(0, error, "MPI_Sendrecv_replace failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4533,7 +4533,7 @@ int MPI_Ssend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Ssend failed (%d)!", error);
+      ERROR(0, error, "MPI_Ssend failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4558,7 +4558,7 @@ int MPI_Ssend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Ssend_init failed (%d)!", error);
+      ERROR(0, error, "MPI_Ssend_init failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4579,7 +4579,7 @@ int MPI_Startall ( int count, MPI_Request array_of_requests[] )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Startall failed (%d)!", error);
+      ERROR(0, error, "MPI_Startall failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4600,7 +4600,7 @@ int MPI_Start ( MPI_Request *request )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Start failed (%d)!", error);
+      ERROR(0, error, "MPI_Start failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4621,7 +4621,7 @@ int MPI_Status_set_cancelled ( MPI_Status *status, int flag )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Status_set_cancelled failed (%d)!", error);
+      ERROR(0, error, "MPI_Status_set_cancelled failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4646,7 +4646,7 @@ int MPI_Status_set_elements ( MPI_Status *status, MPI_Datatype datatype, int cou
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Status_set_elements failed (%d)!", error);
+      ERROR(0, error, "MPI_Status_set_elements failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4667,7 +4667,7 @@ int MPI_Testall ( int count, MPI_Request array_of_requests[], int *flag, MPI_Sta
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Testall failed (%d)!", error);
+      ERROR(0, error, "MPI_Testall failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4688,7 +4688,7 @@ int MPI_Testany ( int count, MPI_Request array_of_requests[], int *index, int *f
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Testany failed (%d)!", error);
+      ERROR(0, error, "MPI_Testany failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4709,7 +4709,7 @@ int MPI_Test_cancelled ( MPI_Status *status, int *flag )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Test_cancelled failed (%d)!", error);
+      ERROR(0, error, "MPI_Test_cancelled failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4730,7 +4730,7 @@ int MPI_Test ( MPI_Request *request, int *flag, MPI_Status *status )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Test failed (%d)!", error);
+      ERROR(0, error, "MPI_Test failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4751,7 +4751,7 @@ int MPI_Testsome ( int incount, MPI_Request array_of_requests[], int *outcount, 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Testsome failed (%d)!", error);
+      ERROR(0, error, "MPI_Testsome failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4772,7 +4772,7 @@ int MPI_Topo_test ( MPI_Comm comm, int *topo_type )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Topo_test failed (%d)!", error);
+      ERROR(0, error, "MPI_Topo_test failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4793,7 +4793,7 @@ int MPI_Type_commit ( MPI_Datatype *datatype )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_commit failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_commit failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4814,7 +4814,7 @@ int MPI_Type_contiguous ( int count, MPI_Datatype old_type, MPI_Datatype *new_ty
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_contiguous failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_contiguous failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4835,7 +4835,7 @@ int MPI_Type_create_darray ( int size, int rank, int ndims, int array_of_gsizes[
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_create_darray failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_create_darray failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4856,7 +4856,7 @@ int MPI_Type_create_f90_complex ( int p, int r, MPI_Datatype *newtype )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_create_f90_complex failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_create_f90_complex failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4877,7 +4877,7 @@ int MPI_Type_create_f90_integer ( int r, MPI_Datatype *newtype )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_create_f90_integer failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_create_f90_integer failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4898,7 +4898,7 @@ int MPI_Type_create_f90_real ( int p, int r, MPI_Datatype *newtype )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_create_f90_real failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_create_f90_real failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4919,7 +4919,7 @@ int MPI_Type_create_hindexed ( int count, int blocklengths[], MPI_Aint displacem
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_create_hindexed failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_create_hindexed failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4940,7 +4940,7 @@ int MPI_Type_create_hvector ( int count, int blocklength, MPI_Aint stride, MPI_D
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_create_hvector failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_create_hvector failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4961,7 +4961,7 @@ int MPI_Type_create_indexed_block ( int count, int blocklength, int array_of_dis
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_create_indexed_block failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_create_indexed_block failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -4982,7 +4982,7 @@ int MPI_Type_create_keyval ( MPI_Type_copy_attr_function *type_copy_attr_fn, MPI
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_create_keyval failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_create_keyval failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5003,7 +5003,7 @@ int MPI_Type_create_resized ( MPI_Datatype oldtype, MPI_Aint lb, MPI_Aint extent
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_create_resized failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_create_resized failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5024,7 +5024,7 @@ int MPI_Type_create_struct ( int count, int array_of_blocklengths[], MPI_Aint ar
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_create_struct failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_create_struct failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5045,7 +5045,7 @@ int MPI_Type_create_subarray ( int ndims, int array_of_sizes[], int array_of_sub
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_create_subarray failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_create_subarray failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5066,7 +5066,7 @@ int MPI_Type_delete_attr ( MPI_Datatype type, int type_keyval )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_delete_attr failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_delete_attr failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5087,7 +5087,7 @@ int MPI_Type_dup ( MPI_Datatype datatype, MPI_Datatype *newtype )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_dup failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_dup failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5112,7 +5112,7 @@ int MPI_Type_extent ( MPI_Datatype datatype, MPI_Aint *extent )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_extent failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_extent failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5133,7 +5133,7 @@ int MPI_Type_free ( MPI_Datatype *datatype )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_free failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_free failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5154,7 +5154,7 @@ int MPI_Type_free_keyval ( int *type_keyval )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_free_keyval failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_free_keyval failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5175,7 +5175,7 @@ int MPI_Type_get_attr ( MPI_Datatype type, int type_keyval, void *attribute_val,
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_get_attr failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_get_attr failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5196,7 +5196,7 @@ int MPI_Type_get_contents ( MPI_Datatype datatype, int max_integers, int max_add
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_get_contents failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_get_contents failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5217,7 +5217,7 @@ int MPI_Type_get_envelope ( MPI_Datatype datatype, int *num_integers, int *num_a
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_get_envelope failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_get_envelope failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5238,7 +5238,7 @@ int MPI_Type_get_extent ( MPI_Datatype datatype, MPI_Aint *lb, MPI_Aint *extent 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_get_extent failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_get_extent failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5259,7 +5259,7 @@ int MPI_Type_get_name ( MPI_Datatype datatype, char *type_name, int *resultlen )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_get_name failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_get_name failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5280,7 +5280,7 @@ int MPI_Type_get_true_extent ( MPI_Datatype datatype, MPI_Aint *true_lb, MPI_Ain
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_get_true_extent failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_get_true_extent failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5301,7 +5301,7 @@ int MPI_Type_hindexed ( int count, int blocklens[], MPI_Aint indices[], MPI_Data
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_hindexed failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_hindexed failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5322,7 +5322,7 @@ int MPI_Type_hvector ( int count, int blocklen, MPI_Aint stride, MPI_Datatype ol
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_hvector failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_hvector failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5343,7 +5343,7 @@ int MPI_Type_indexed ( int count, int blocklens[], int indices[], MPI_Datatype o
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_indexed failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_indexed failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5364,7 +5364,7 @@ int MPI_Type_lb ( MPI_Datatype datatype, MPI_Aint *displacement )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_lb failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_lb failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5385,7 +5385,7 @@ int MPI_Type_match_size ( int typeclass, int size, MPI_Datatype *datatype )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_match_size failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_match_size failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5406,7 +5406,7 @@ int MPI_Type_set_attr ( MPI_Datatype type, int type_keyval, void *attribute_val 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_set_attr failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_set_attr failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5427,7 +5427,7 @@ int MPI_Type_set_name ( MPI_Datatype type, char *type_name )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_set_name failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_set_name failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5452,7 +5452,7 @@ int MPI_Type_size ( MPI_Datatype datatype, int *size )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_size failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_size failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5473,7 +5473,7 @@ int MPI_Type_struct ( int count, int blocklens[], MPI_Aint indices[], MPI_Dataty
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_struct failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_struct failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5494,7 +5494,7 @@ int MPI_Type_ub ( MPI_Datatype datatype, MPI_Aint *displacement )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_ub failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_ub failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5515,7 +5515,7 @@ int MPI_Type_vector ( int count, int blocklength, int stride, MPI_Datatype old_t
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Type_vector failed (%d)!", error);
+      ERROR(0, error, "MPI_Type_vector failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5536,7 +5536,7 @@ int MPI_Unpack_external ( char *datarep, void *inbuf, MPI_Aint insize, MPI_Aint 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Unpack_external failed (%d)!", error);
+      ERROR(0, error, "MPI_Unpack_external failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5561,7 +5561,7 @@ int MPI_Unpack ( void *inbuf, int insize, int *position, void *outbuf, int outco
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Unpack failed (%d)!", error);
+      ERROR(0, error, "MPI_Unpack failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5582,7 +5582,7 @@ int MPI_Unpublish_name ( char *service_name, MPI_Info info, char *port_name )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Unpublish_name failed (%d)!", error);
+      ERROR(0, error, "MPI_Unpublish_name failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5603,7 +5603,7 @@ int MPI_Waitall ( int count, MPI_Request array_of_requests[], MPI_Status array_o
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Waitall failed (%d)!", error);
+      ERROR(0, error, "MPI_Waitall failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5624,7 +5624,7 @@ int MPI_Waitany ( int count, MPI_Request array_of_requests[], int *index, MPI_St
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Waitany failed (%d)!", error);
+      ERROR(0, error, "MPI_Waitany failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5645,7 +5645,7 @@ int MPI_Wait ( MPI_Request *request, MPI_Status *status )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Wait failed (%d)!", error);
+      ERROR(0, error, "MPI_Wait failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5666,7 +5666,7 @@ int MPI_Waitsome ( int incount, MPI_Request array_of_requests[], int *outcount, 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Waitsome failed (%d)!", error);
+      ERROR(0, error, "MPI_Waitsome failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5687,7 +5687,7 @@ int MPI_Win_call_errhandler ( MPI_Win win, int errorcode )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_call_errhandler failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_call_errhandler failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5708,7 +5708,7 @@ int MPI_Win_complete ( MPI_Win win )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_complete failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_complete failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5729,7 +5729,7 @@ int MPI_Win_create_errhandler ( MPI_Win_errhandler_fn *function, MPI_Errhandler 
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_create_errhandler failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_create_errhandler failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5750,7 +5750,7 @@ int MPI_Win_create ( void *base, MPI_Aint size, int disp_unit, MPI_Info info, MP
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_create failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_create failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5771,7 +5771,7 @@ int MPI_Win_create_keyval ( MPI_Win_copy_attr_function *win_copy_attr_fn, MPI_Wi
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_create_keyval failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_create_keyval failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5792,7 +5792,7 @@ int MPI_Win_delete_attr ( MPI_Win win, int win_keyval )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_delete_attr failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_delete_attr failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5813,7 +5813,7 @@ int MPI_Win_fence ( int assert, MPI_Win win )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_fence failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_fence failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5834,7 +5834,7 @@ int MPI_Win_free ( MPI_Win *win )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_free failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_free failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5855,7 +5855,7 @@ int MPI_Win_free_keyval ( int *win_keyval )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_free_keyval failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_free_keyval failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5876,7 +5876,7 @@ int MPI_Win_get_attr ( MPI_Win win, int win_keyval, void *attribute_val, int *fl
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_get_attr failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_get_attr failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5897,7 +5897,7 @@ int MPI_Win_get_errhandler ( MPI_Win win, MPI_Errhandler *errhandler )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_get_errhandler failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_get_errhandler failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5918,7 +5918,7 @@ int MPI_Win_get_group ( MPI_Win win, MPI_Group *group )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_get_group failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_get_group failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5939,7 +5939,7 @@ int MPI_Win_get_name ( MPI_Win win, char *win_name, int *resultlen )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_get_name failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_get_name failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5960,7 +5960,7 @@ int MPI_Win_lock ( int lock_type, int rank, int assert, MPI_Win win )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_lock failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_lock failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -5981,7 +5981,7 @@ int MPI_Win_post ( MPI_Group group, int assert, MPI_Win win )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_post failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_post failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -6002,7 +6002,7 @@ int MPI_Win_set_attr ( MPI_Win win, int win_keyval, void *attribute_val )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_set_attr failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_set_attr failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -6023,7 +6023,7 @@ int MPI_Win_set_errhandler ( MPI_Win win, MPI_Errhandler errhandler )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_set_errhandler failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_set_errhandler failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -6044,7 +6044,7 @@ int MPI_Win_set_name ( MPI_Win win, char *win_name )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_set_name failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_set_name failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -6065,7 +6065,7 @@ int MPI_Win_start ( MPI_Group group, int assert, MPI_Win win )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_start failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_start failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -6086,7 +6086,7 @@ int MPI_Win_test ( MPI_Win win, int *flag )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_test failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_test failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -6107,7 +6107,7 @@ int MPI_Win_unlock ( int rank, MPI_Win win )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_unlock failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_unlock failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
@@ -6128,7 +6128,7 @@ int MPI_Win_wait ( MPI_Win win )
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Win_wait failed (%d)!", error);
+      ERROR(0, error, "MPI_Win_wait failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
    return error;
