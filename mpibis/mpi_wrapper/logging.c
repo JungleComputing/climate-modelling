@@ -362,7 +362,7 @@ int XERROR(int indent, int errorcode, int fatal, const char *header, const char 
 
    va_end(argp);
 
-#ifdef PRINT_STACK_TRACE > 0
+#if PRINT_STACK_TRACE > 0
    size = backtrace(array, 5);
    backtrace_symbols_fd(array, size, stderr);
 #endif
@@ -399,6 +399,5 @@ void XLOG(int indent, int verbose, const char *header, const char *func, const c
 
    va_end(argp);
 }
-
 
 #endif // ENABLE_INTERCEPT
