@@ -21,11 +21,11 @@
 
 // Define several macros to print errors
 
-#define FATAL(message, ...) (XERROR(0, 0, 1, "FATAL", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__))
+#define FATAL(message, ...) (XERROR(0, 1, "FATAL", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__))
 
 #if VERBOSE > 0
-#define ERROR(indent, error, message, ...) XERROR(indent, error, ERRORS_ARE_FATAL, "ERROR", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__)
-#define IERROR(indent, error, message, ...) XERROR(indent, error, 1, "INTERNAL ERROR", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__)
+#define ERROR(indent, error, message, ...) XERROR(indent, ERRORS_ARE_FATAL, "ERROR", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__)
+#define IERROR(indent, error, message, ...) XERROR(indent, 1, "INTERNAL ERROR", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__)
 #else
 #define ERROR(indent, error, message, ...)
 #define IERROR(indent, error, message, ...)
@@ -77,7 +77,7 @@ char *group_to_string(MPI_Group g);
 //void WARN(int indent, const char *fmt, ...);
 
 // New format...
-int XERROR(int indent, int errorcode, int fatal, const char *header, const char *func, const char *file, const int line, const char *fmt, ...);
+void XERROR(int indent, int fatal, const char *header, const char *func, const char *file, const int line, const char *fmt, ...);
 void XLOG(int indent, int verbose, const char *header, const char *func, const char *file, const int line, const char *fmt, ...);
 
 #endif // _LOGGING_H_

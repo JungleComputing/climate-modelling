@@ -338,7 +338,7 @@ void IERROR(int indent, const char *fmt, ...)
 }
 */
 
-int XERROR(int indent, int errorcode, int fatal, const char *header, const char *func, const char *file, const int line, const char *fmt, ...)
+int XERROR(int indent, int fatal, const char *header, const char *func, const char *file, const int line, const char *fmt, ...)
 {
 #if PRINT_STACK_TRACE > 0
    size_t size;
@@ -356,7 +356,7 @@ int XERROR(int indent, int errorcode, int fatal, const char *header, const char 
       indent = 9;
    }
 
-   fprintf(stderr, "%s%s [%d] %s : ", indents[indent], header, errorcode, func);
+   fprintf(stderr, "%s%s %s : ", indents[indent], header, func);
    vfprintf(stderr, fmt, argp);
    fprintf(stderr, " (at %s:%d)\n", file, line);
 
