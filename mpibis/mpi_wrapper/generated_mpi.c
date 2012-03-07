@@ -3,9 +3,9 @@
 #ifdef ENABLE_INTERCEPT
 
 #include "logging.h"
+#include "debugging.h"
 #include "mpi.h"
 #include "generated_header.h"
-
 
 int MPI_Init ( int *argc, char ***argv )
 {
