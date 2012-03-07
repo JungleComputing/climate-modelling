@@ -1220,7 +1220,7 @@ int IMPI_Barrier(MPI_Comm comm)
 #define __IMPI_Bcast
 int IMPI_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm)
 {
-   int error, root_cluster;
+   int error;
 
    inc_communicator_statistics(comm, STATS_BCAST);
 
@@ -1245,16 +1245,10 @@ int IMPI_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Com
       return PMPI_Bcast(buffer, count, datatype, c->local_rank, c->comm);
    }
 
-   // Retrieve the cluster of the bcast root and the local process.
-   root_cluster = get_cluster_rank(c, root);
-
-   // Check if we are in the same cluster as the root. If so, just receive it's bcast.
-   if (cluster_rank == root_cluster) {
+   // Check if we are in the same cluster as the root. If so, just receive its bcast.
+   if (get_cluster_rank(c, root) == cluster_rank) {
       return PMPI_Bcast(buffer, count, datatype, get_local_rank(c, root), c->comm);
    }
-
-   // If we are not in the same cluster AND we are the root of the local communicator
-   // we first receive the WA message.
 
    // If we are in a different cluster from the root and we are the local coordinator
    // we first receive the WA bcast and then forward this bcast locally
@@ -1267,7 +1261,7 @@ int IMPI_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Com
       }
    }
 
-   return PMPI_Bcast(buffer, count, datatype, 0, c->comm);
+   return PMPI_Bcast(buffer, count, datatype, get_local_rank(c, c->my_coordinator), c->comm);
 }
 
 
