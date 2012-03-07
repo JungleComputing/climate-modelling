@@ -338,7 +338,7 @@ void IERROR(int indent, const char *fmt, ...)
 }
 */
 
-int XERROR(int indent, int errorcode, int fatal, const char *header, const char *func, const char *file, const int line, const char *fmt, ...);
+int XERROR(int indent, int errorcode, int fatal, const char *header, const char *func, const char *file, const int line, const char *fmt, ...)
 {
 #if PRINT_STACK_TRACE > 0
    size_t size;
@@ -375,7 +375,7 @@ int XERROR(int indent, int errorcode, int fatal, const char *header, const char 
    return errorcode;
 }
 
-void XLOG(int indent, int verbose, const char *header, const char *func, const char *file, const int line, const char *fmt, ...);
+void XLOG(int indent, int verbose, const char *header, const char *func, const char *file, const int line, const char *fmt, ...)
 {
    int *ptr;
    va_list argp;
