@@ -1256,7 +1256,7 @@ int IMPI_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Com
 
    // If we are in a different cluster from the root and we are the local coordinator
    // we first receive the WA bcast and then forward this bcast locally
-   if (c->globa_rank == c->my_coordinator) {
+   if (c->global_rank == c->my_coordinator) {
       error = messaging_bcast_receive(buffer, count, datatype, root, c);
 
       if (error != MPI_SUCCESS) {
