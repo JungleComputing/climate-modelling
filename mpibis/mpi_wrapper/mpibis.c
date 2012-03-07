@@ -664,9 +664,11 @@ int IMPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
       return PMPI_Recv(buf, count, datatype, source, tag, c->comm, status);
    } else {
 
-// FIXME: CHECK IF STILL TRUE!!!
+
+// FIXME: messaging_receive will block on the WA, which is NOT what we want!
+
       if (source == MPI_ANY_SOURCE) {
-         IERROR(0, "MPI_Recv from MIXED MPI_ANY_SOURCE not implemented!");
+         IERROR(0, "MPI_Recv from MIXED MPI_ANY_SOURCE not implemented yet (buggerit!)");
          return MPI_ERR_RANK;
       }
 

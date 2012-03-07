@@ -84,7 +84,7 @@ static int unpack_message(void *buf, int count, MPI_Datatype type, MPI_Comm comm
   int position = 0;
 
   if (m->header.count != count) {
-      ERROR(1, "Message size mismatch! (expected %d got %d)", 
+      ERROR(1, "Message size mismatch! (expected %d got %d)",
                   count, m->header.count);
 
       if (m->header.count < count) {

@@ -3686,7 +3686,8 @@ int MPI_Irecv ( void *buf, int count, MPI_Datatype datatype, int source, int tag
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
-   CHECK_TYPE(datatype);
+// OK
+//    CHECK_TYPE(datatype);
 #endif
 
 #ifdef IBIS_INTERCEPT
@@ -3711,7 +3712,8 @@ int MPI_Irsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
-   CHECK_TYPE(datatype);
+// OK
+//   CHECK_TYPE(datatype);
 #endif
 
 #ifdef IBIS_INTERCEPT
@@ -4132,7 +4134,8 @@ int MPI_Recv ( void *buf, int count, MPI_Datatype datatype, int source, int tag,
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
-   CHECK_TYPE(datatype);
+// OK
+//   CHECK_TYPE(datatype);
 #endif
 
 #ifdef IBIS_INTERCEPT
@@ -4295,7 +4298,8 @@ int MPI_Rsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
-   CHECK_TYPE(datatype);
+// Rsend is OK
+//   CHECK_TYPE(datatype);
 #endif
 
 #ifdef IBIS_INTERCEPT
@@ -4422,7 +4426,8 @@ int MPI_Send ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, M
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
-   CHECK_TYPE(datatype);
+// Send can handle derived types
+//   CHECK_TYPE(datatype);
 #endif
 
 #ifdef IBIS_INTERCEPT

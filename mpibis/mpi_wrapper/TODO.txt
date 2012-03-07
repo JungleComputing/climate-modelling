@@ -1,6 +1,8 @@
 TODO
 ----
 
+FIX!!! -> MPI_Recv cannot handle MPI_ANY_SOURCE yet!
+
 CHECK on MPI_TYPE* + MPI_TYPE_EXTENT + MPI_TYPE_SIZE
 
 CORRECTLY IMPLEMENT synchronous sending
@@ -15,7 +17,6 @@ ENDIANESS CONVERSION for heterogeneous systems (ie. combining DAS-Huygens)
 mpi_group_difference
 mpi_group_intersection
 mpi_initialized
-
 
 INCORRECT-ish
 -------------
