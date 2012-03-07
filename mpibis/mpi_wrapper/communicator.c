@@ -61,7 +61,7 @@ static int add_communicator(MPI_Comm comm, int number, int initial,
       return MPI_ERR_INTERN;
    }
 
-   INFO(0, "add_communicator", "Creating communicator %d : local(%d %d) | global(%d %d)",
+   INFO(0, "Creating communicator %d : local(%d %d) | global(%d %d)",
            number, local_rank, local_size, global_rank, global_size);
 
    communicator *c = malloc(sizeof(communicator));
