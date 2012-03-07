@@ -44,35 +44,35 @@ static message_buffer *probe_wa(communicator *c, int source, int tag, int blocki
 {
    message_buffer *m;
 
-   DEBUG(4, "PROBE_WA: Probing socket for incoming messages from source=%d tag=%d blocking=%d", source, tag, blocking);
+   DEBUG(4, "Probing socket for incoming messages from source=%d tag=%d blocking=%d", source, tag, blocking);
 
    do {
       m = receive_message(blocking, error);
 
       if (m == NULL) {
-         DEBUG(5, "PROBE_WA: No message received");
+         DEBUG(5, "No message received");
          return NULL;
       }
 
       if (*error != MPI_SUCCESS) { 
-         ERROR(1, "PROBE_WA: Failed to receive message error=%d", error);
+         ERROR(1, "Failed to receive message error=%d", error);
          return NULL;
       }
 
-      DEBUG(5, "PROBE_WA: Message received from source=%d tag=%d count=%d bytes=%d", m->header.source, m->header.tag, m->header.count, m->header.bytes);
+      DEBUG(5, "Message received from source=%d tag=%d count=%d bytes=%d", m->header.source, m->header.tag, m->header.count, m->header.bytes);
 
       if (match_message(m, c->number, source, tag)) {
          // we have a match!
-         DEBUG(5, "PROBE_WA: Match! Returning message");
+         DEBUG(5, "Match! Returning message");
          return m;
       } else {
-         DEBUG(5, "PROBE_WA: No match. Storing message");
+         DEBUG(5, "No match. Storing message");
          store_message(m);
       }
 
    } while (blocking);
 
-   DEBUG(4, "PROBE_WA: No message received");
+   DEBUG(4, "No message received");
 
    return NULL;
 }
@@ -84,7 +84,7 @@ static int unpack_message(void *buf, int count, MPI_Datatype type, MPI_Comm comm
   int position = 0;
 
   if (m->header.count != count) {
-      ERROR(1, "message size mismatch! (expected %d got %d\n", 
+      ERROR(1, "Message size mismatch! (expected %d got %d)", 
                   count, m->header.count);
 
       if (m->header.count < count) {
@@ -130,7 +130,7 @@ static int create_data_buffer(message_buffer *m, int max_size)
    m->data_buffer = malloc(max_size);
 
    if (m->data_buffer == NULL) {
-       ERROR(1, "Failed to allocate message buffer of size %d\n", max_size);
+       ERROR(1, "Failed to allocate message buffer of size %d", max_size);
        return CONNECT_ERROR_ALLOCATE;
    }
 
@@ -200,7 +200,7 @@ static int ensure_byte_order(message_buffer *m, int order)
       return CONNECT_OK;
    }
 
-   ERROR(1, "Failed to convert byte order %d to %d\n", order, m->byte_order);
+   ERROR(1, "Failed to convert byte order %d to %d", order, m->byte_order);
    return CONNECT_ERROR_BYTE_ORDER;
 }
 
@@ -218,14 +218,14 @@ static int send_message(message_buffer *m)
    error = wa_sendfully((unsigned char *) &(m->header), MSG_HEADER_SIZE);
 
    if (error != CONNECT_OK) {
-      ERROR(1, "Failed to send message header!\n");
+      ERROR(1, "Failed to send message header!");
       return MPI_ERR_INTERN;
    }
 
    error = wa_sendfully(m->data_buffer, size);
 
    if (error != CONNECT_OK) {
-      ERROR(1, "Failed to send message body!\n");
+      ERROR(1, "Failed to send message body!");
       return MPI_ERR_INTERN;
    }
 
@@ -234,11 +234,11 @@ static int send_message(message_buffer *m)
 
 static int receive_opcode(int* opcode, int *error, int blocking)
 {
-   DEBUG(1, "RECEIVE_OPCODE: Receiving from socket (blocking=%d)", blocking);
+   DEBUG(1, "Receiving from socket (blocking=%d)", blocking);
 
    int result = wa_wait_for_data(blocking);
 
-   DEBUG(1, "RECEIVE_OPCODE: Result of receive: result=%d error=%d", result, *error);
+   DEBUG(1, "Result of receive: result=%d error=%d", result, *error);
 
    if (result == -1) {
       *error = MPI_ERR_INTERN;
@@ -257,7 +257,7 @@ static int receive_opcode(int* opcode, int *error, int blocking)
    result = wa_receivefully((unsigned char *) opcode, 4);
 
    if (result != CONNECT_OK) {
-      ERROR(1, "RECEIVE_OPCODE: Failed to receive message opcode!");
+      ERROR(1, "Failed to receive message opcode!");
       *error = MPI_ERR_INTERN;
       return 0;
    }
@@ -333,11 +333,11 @@ static message_buffer *receive_message(int blocking, int *error)
 {
    int opcode;
 
-   DEBUG(4, "RECEIVE_MESSAGE: Receiving message from socket (blocking=%d)", blocking);
+   DEBUG(4, "Receiving message from socket (blocking=%d)", blocking);
 
    int result = receive_opcode(&opcode, error, blocking);
 
-   DEBUG(4, "RECEIVE_MESSAGE: Result of receive: result=%d error=%d", result, *error);
+   DEBUG(4, "Result of receive: result=%d error=%d", result, *error);
 
    if (result == 0) {
       // Note: error will be set correctly if blocking was true
@@ -348,7 +348,7 @@ static message_buffer *receive_message(int blocking, int *error)
       return receive_data_message(error);
    }
 
-   ERROR(1, "unexpected message opcode (RM) %d", opcode);
+   ERROR(1, "Unexpected message opcode (RM) %d", opcode);
    *error = MPI_ERR_INTERN;
    return NULL;	
 }
@@ -537,16 +537,16 @@ static int queue_pending_messages(int *next_opcode)
 
    while (result == 0) {
 
-      DEBUG(1, "QUEUE_PENDING_MESSAGES: start blocking receive for opcode");
+      DEBUG(1, "Start blocking receive for opcode");
 
       result = receive_opcode(&opcode, &error, 1);
 
       if (result == 0) {
-         ERROR(1, "INTERNAL ERROR: Failed to receive opcode! (%d)", error);
+         ERROR(1, "Failed to receive opcode! (%d)", error);
          return error;
       }
 
-      DEBUG(1, "QUEUE_PENDING_MESSAGES: Result of receive result=%d error=%d", result, error);
+      DEBUG(1, "Result of receive result=%d error=%d", result, error);
 
       if (opcode == OPCODE_DATA || opcode == OPCODE_COLLECTIVE_BCAST) {
          // There is a message blocking the stream!
@@ -557,12 +557,12 @@ static int queue_pending_messages(int *next_opcode)
             return error;
          }
 
-         DEBUG(1, "QUEUE_PENDING_MESSAGES: Message received from src: %d opcode: %d tag: %d", m->header.source, opcode, m->header.tag);
+         DEBUG(1, "Message received from src: %d opcode: %d tag: %d", m->header.source, opcode, m->header.tag);
 
          store_message(m);
          result = 0;
       } else {
-         DEBUG(1, "QUEUE_PENDING_MESSAGES: Received non-message opcode %d", opcode);
+         DEBUG(1, "Received non-message opcode %d", opcode);
          *next_opcode = opcode;
          result = 1;
       }
