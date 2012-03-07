@@ -12,10 +12,6 @@ CORRECTLY IMPLEMENT synchronous sending
 
 ENDIANESS CONVERSION for heterogeneous systems (ie. combining DAS-Huygens)
 
-MERGE if (bla) MPI_Send else messaging_send 
-REFACTOR  return ERROR(level, func, errorcode, message)  
-REFACTOR  return IERROR(level, func, messsage)
-
 mpi_group_difference
 mpi_group_intersection
 mpi_initialized
@@ -29,6 +25,10 @@ mpi_ssend
 
 UNTESTED
 --------
+
+MERGE if (bla) MPI_Send else messaging_send 
+REFACTOR  return ERROR(level, func, errorcode, message)  
+REFACTOR  return IERROR(level, func, messsage)
 
 ADD/FIX various special tags
 
