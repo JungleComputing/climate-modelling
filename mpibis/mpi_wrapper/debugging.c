@@ -76,11 +76,17 @@ void check_count(int count)
    }
 }
 
-
-void check_rank(communicator *c, int rank)
+void check_source(communicator *c, int source)
 {
-   if (rank < 0 || rank >= c->global_size) { \
-      FATAL("Invalid rank %d in communicator %d", rank, c->number);
+   if (source != MPI_ANY_SOURCE && (source < 0 || source >= c->global_size)) {
+      FATAL("Invalid source rank %d for communicator %d", source, c->number);
+   }
+}
+
+void check_destination(communicator *c, int dest)
+{
+   if (dest < 0 || dest >= c->global_size) { \
+      FATAL("Invalid destination rank %d for communicator %d", dest, c->number);
    }
 }
 

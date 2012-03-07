@@ -117,6 +117,8 @@ int inc_communicator_statistics(MPI_Comm comm, int field);
 int print_communicator_statistics(MPI_Comm comm);
 int print_all_communicator_statistics();
 
+
+// FIXME: These are all one-liners that should be inlined ?
 void set_communicator_ptr(MPI_Comm *dst, communicator *src);
 int comm_is_world(communicator* c);
 int comm_is_self(communicator* c);
@@ -125,6 +127,9 @@ int comm_is_wa(communicator* c);
 int comm_is_mixed(communicator* c);
 int rank_is_local(communicator *c, int rank);
 int rank_is_remote(communicator *c, int rank);
+
+int get_local_rank(communicator *c, int rank);
+int get_cluster_rank(communicator *c, int rank);
 
 #endif // IBIS_INTERCEPT
 

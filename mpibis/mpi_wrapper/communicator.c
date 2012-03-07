@@ -349,6 +349,15 @@ int rank_is_remote(communicator *c, int rank)
    return (GET_CLUSTER_RANK(c->members[rank]) != cluster_rank);
 }
 
+int get_local_rank(communicator *c, int rank)
+{
+   return GET_PROCESS_RANK(c->members[rank]);
+}
+
+int get_cluster_rank(communicator *c, int rank)
+{
+   return GET_CLUSTER_RANK(c->members[rank]);
+}
 
 void store_message(message_buffer *m)
 {

@@ -15,17 +15,20 @@
 
 // Macros to check parameters
 #ifdef CHECK_PARAMETERS
-#define CHECK_COUNT(C)  (check_count(C))
-#define CHECK_RANK(C,R) (check_rank(C, R))
+#define CHECK_COUNT(C)         (check_count(C))
+#define CHECK_SOURCE(C,R)      (check_source(C, R))
+#define CHECK_DESTINATION(C,R) (check_destination(C, R))
 #else
 #define CHECK_COUNT(C)
-#define CHECK_RANK(C,R)
+#define CHECK_SOURCE(C,R)
+#define CHECK_DESTINATION(C,R)
 #endif
 
 // Function definitions
 void catch_derived_datatype(MPI_Datatype type);
 void check_count(int count);
-void check_rank(communicator *c, int rank);
+void check_source(communicator *c, int rank);
+void check_destination(communicator *c, int rank);
 
 #endif
 
