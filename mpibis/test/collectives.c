@@ -162,8 +162,8 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Half split succeeded: I am now process %d of %d on %s\n", newrank, newsize, processor_name);
 
     // Split odd-even
-    color = rank / 2;
-    key = rank % 2;
+    color = rank % 2;
+    key = rank / 2;
 
     fprintf(stderr, "Testing odd-even split: rank=%d size=%d color=%d key=%d\n", rank, size, color, key);
 
