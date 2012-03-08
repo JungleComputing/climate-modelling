@@ -195,16 +195,15 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "\n****************************************************\n\n");
 
-
     fprintf(stderr, "Starting GATHER tests\n");
 
-    error = test_bcast(MPI_COMM_WORLD, "MPI_COMM_WORLD");
+    error = test_gather(MPI_COMM_WORLD, "MPI_COMM_WORLD");
     if (error != 0) return error;
 
-    error = test_bcast(half, "world half");
+    error = test_gather(half, "world half");
     if (error != 0) return error;
 
-    error = test_bcast(oddeven, "world odd/even");
+    error = test_gather(oddeven, "world odd/even");
     if (error != 0) return error;
 
     fprintf(stderr, "\n****************************************************\n\n");
