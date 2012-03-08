@@ -1,6 +1,8 @@
 TODO
 ----
 
+FIX!!! -> local_comm_create
+
 FIX!!! -> MPI_Recv cannot handle MPI_ANY_SOURCE yet!
 
 CHECK on MPI_TYPE* + MPI_TYPE_EXTENT + MPI_TYPE_SIZE

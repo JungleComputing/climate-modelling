@@ -1741,14 +1741,19 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, 
    operation *o = get_operation(op);
 
    if (o == NULL) {
-      ERROR(1, "IMPI_REDUCE: Operation not found!");
+      ERROR(1, "Operation not found!");
       return MPI_ERR_OP;
    }
 
    if (comm_is_local(c)) {
+
+DEBUG(1, "Local reduce");
+
      // simply perform a reduce in local cluster
      return PMPI_Reduce(sendbuf, recvbuf, count, datatype, o->op, root, c->comm);
    }
+
+DEBUG(1, "WA reduce");
 
    // We need to perform a WA Reduce. We do this by performing a reduce
    // to our local cluster coordinator. This result is then forwarded to the
@@ -1760,7 +1765,11 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, 
       local_root = c->my_coordinator;
    }
 
+DEBUG(1, "Local root is %d (root=%d)", local_root, root);
+
    if (c->global_rank == root || c->global_rank == c->my_coordinator) {
+
+DEBUG(1, "I am root or coordinator (rank=%d root=%d coordinator=%d)", c->global_rank, root, c->my_coordinator);
 
       // FIXME: use size?
       error = PMPI_Type_extent(datatype, &extent);
@@ -1781,7 +1790,7 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, 
 //   INFO(1, "JASON IMPI_REDUCE", "START LOCAL REDUCE root=%d lroot=%d grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
 //                       root, local_root, c->global_rank, c->local_rank, count, ((int *)sendbuf)[0], ((int *)recvbuf)[0]);
 
-   error = PMPI_Reduce(sendbuf, buffer, count, datatype, o->op, GET_PROCESS_RANK(c->members[local_root]), c->comm);
+   error = PMPI_Reduce(sendbuf, buffer, count, datatype, o->op, get_local_rank(c, local_root), c->comm);
 
    if (error != MPI_SUCCESS) {
       ERROR(1, "Failed to perform local reduce in communicator! (comm=%d, error=%d)", c->number, error);
@@ -2349,6 +2358,7 @@ static int local_comm_create(communicator *c, group *g, MPI_Comm *newcomm)
 
    for (i=0;i<g->size;i++) {
       if (GET_CLUSTER_RANK(g->members[i]) == cluster_rank) {
+// FIXME: is this correct ?????
          local_members[local_count++] = (int) GET_PROCESS_RANK(g->members[i]);
       }
    }
