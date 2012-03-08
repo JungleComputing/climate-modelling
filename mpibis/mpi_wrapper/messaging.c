@@ -648,11 +648,32 @@ int messaging_receive_comm_reply(comm_reply *reply)
       return MPI_ERR_INTERN;
    }
 
+   reply->cluster_ranks = alloc_and_receive_int_array(reply->cluster_count);
+
+   if (reply->cluster_ranks == NULL) {
+      ERROR(1, "Failed to allocate or receive cluster ranks");
+      return MPI_ERR_INTERN;
+   }
+
    if (reply->size > 0) {
       reply->members = (uint32_t *) alloc_and_receive_int_array(reply->size);
 
       if (reply->members == NULL) {
          ERROR(1, "Failed to allocate or receive communicator members");
+         return MPI_ERR_INTERN;
+      }
+
+      reply->member_cluster_index = (uint32_t *) alloc_and_receive_int_array(reply->size);
+
+      if (reply->member_cluster_index == NULL) {
+         ERROR(1, "Failed to allocate or receive communicator member cluster index");
+         return MPI_ERR_INTERN;
+      }
+
+      reply->local_ranks = (uint32_t *) alloc_and_receive_int_array(reply->size);
+
+      if (reply->local_ranks == NULL) {
+         ERROR(1, "Failed to allocate or receive communicator member local ranks");
          return MPI_ERR_INTERN;
       }
    }
@@ -769,11 +790,32 @@ DEBUG(1, "*Received group reply (comm=%d src=%d newComm=%d rank=%d size=%d type=
          return MPI_ERR_INTERN;
       }
 
+      reply->cluster_ranks = alloc_and_receive_int_array(reply->cluster_count);
+
+      if (reply->cluster_ranks == NULL) {
+         ERROR(1, "Failed to allocate or receive cluster ranks");
+         return MPI_ERR_INTERN;
+      }
+
       if (reply->size > 0) {
          reply->members = (uint32_t *) alloc_and_receive_int_array(reply->size);
 
          if (reply->members == NULL) {
             ERROR(1, "Failed to allocate or receive communicator members");
+            return MPI_ERR_INTERN;
+         }
+
+         reply->member_cluster_index = (uint32_t *) alloc_and_receive_int_array(reply->size);
+
+         if (reply->member_cluster_index == NULL) {
+            ERROR(1, "Failed to allocate or receive communicator member cluster index");
+            return MPI_ERR_INTERN;
+         }
+
+         reply->local_ranks = (uint32_t *) alloc_and_receive_int_array(reply->size);
+
+         if (reply->local_ranks == NULL) {
+            ERROR(1, "Failed to allocate or receive communicator member local ranks");
             return MPI_ERR_INTERN;
          }
       }

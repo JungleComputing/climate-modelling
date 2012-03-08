@@ -78,7 +78,10 @@ typedef struct s_comm_reply {
     int flags;          // flags of new communicator
     int *coordinators;  // cluster coordinators
     int *cluster_sizes; // cluster sizes
+    int *cluster_ranks; // cluster ranks
     uint32_t *members;  // communicator members
+    uint32_t *member_cluster_index; // members cluster indeces
+    uint32_t *local_ranks; // members local ranks
 } comm_reply;
 
 
@@ -96,7 +99,10 @@ typedef struct s_group_reply {
     int flags;          // flags of new communicator
     int *coordinators;  // cluster coordinators
     int *cluster_sizes; // cluster sizes
+    int *cluster_ranks; // cluster ranks
     uint32_t *members;  // communicator members
+    uint32_t *member_cluster_index; // members cluster indeces
+    uint32_t *local_ranks; // members local ranks
 } group_reply;
 
 

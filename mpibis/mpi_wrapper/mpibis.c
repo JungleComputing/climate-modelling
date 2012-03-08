@@ -2219,6 +2219,10 @@ int IMPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm)
    uint32_t *members;
    int *coordinators;
    int *cluster_sizes;
+   int *cluster_ranks;
+   uint32_t *member_cluster_index;
+   uint32_t *local_ranks;
+
    communicator *dup;
 
    communicator *c = get_communicator(comm);
@@ -2261,10 +2265,43 @@ int IMPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm)
 
    cluster_sizes = copy_int_array(c->cluster_sizes, c->cluster_count);
 
-   if (coordinators == NULL) {
+   if (cluster_sizes == NULL) {
       IERROR(1, "MPI_Comm_dup cluster_sizes copy failed! (comm=%d)", c->number);
       free(members);
       free(coordinators);
+      return error;
+   }
+
+   cluster_ranks = copy_int_array(c->cluster_ranks, c->cluster_count);
+
+   if (cluster_ranks == NULL) {
+      IERROR(1, "MPI_Comm_dup cluster_ranks copy failed! (comm=%d)", c->number);
+      free(members);
+      free(coordinators);
+      free(cluster_sizes);
+      return error;
+   }
+
+   member_cluster_index = (uint32_t *) copy_int_array((int*)c->member_cluster_index, c->global_size);
+
+   if (member_cluster_index == NULL) {
+      IERROR(1, "MPI_Comm_dup member_cluster_index copy failed! (comm=%d)", c->number);
+      free(members);
+      free(coordinators);
+      free(cluster_sizes);
+      free(cluster_ranks);
+      return error;
+   }
+
+   local_ranks = (uint32_t *) copy_int_array((int*)c->local_ranks, c->global_size);
+
+   if (local_ranks == NULL) {
+      IERROR(1, "MPI_Comm_dup local_ranks copy failed! (comm=%d)", c->number);
+      free(members);
+      free(coordinators);
+      free(cluster_sizes);
+      free(cluster_ranks);
+      free(member_cluster_index);
       return error;
    }
 
@@ -2272,7 +2309,9 @@ int IMPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm)
                  c->local_rank, c->local_size,
                  c->global_rank, c->global_size,
                  c->cluster_count, coordinators, cluster_sizes,
-                 c->flags, members, &dup);
+                 c->flags, members,
+                 cluster_ranks, member_cluster_index, local_ranks,
+                 &dup);
 
    if (error != MPI_SUCCESS) {
       IERROR(1, "MPI_Comm_dup create communicator failed! (comm=%d, error=%d)", c->number, error);
@@ -2414,6 +2453,7 @@ int IMPI_Comm_create(MPI_Comm mc, MPI_Group mg, MPI_Comm *newcomm)
                  local_rank, local_size, reply.rank, reply.size,
                  reply.cluster_count, reply.coordinators, reply.cluster_sizes,
                  reply.flags, reply.members,
+                 reply.cluster_ranks, reply.member_cluster_index, reply.local_ranks,
                  &result);
 
       if (error != MPI_SUCCESS) {
@@ -2489,6 +2529,7 @@ int IMPI_Comm_split(MPI_Comm comm, int color, int key, MPI_Comm *newcomm)
                  local_rank, local_size, reply.rank, reply.size,
                  reply.cluster_count, reply.coordinators, reply.cluster_sizes,
                  reply.flags, reply.members,
+                 reply.cluster_ranks, reply.member_cluster_index, reply.local_ranks,
                  &result);
 
       if (error != MPI_SUCCESS) {

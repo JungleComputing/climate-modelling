@@ -42,9 +42,11 @@ static int add_communicator(MPI_Comm comm, int number, int initial,
                            int local_rank, int local_size, int global_rank, int global_size,
                            int cluster_count, int *coordinators, int *cluster_sizes,
                            int flags, uint32_t *members,
+                           int *cluster_ranks, uint32_t *member_cluster_index, uint32_t *local_ranks,
                            communicator **out)
 {
    int i; //, start, end, local, remote;
+   int *tmp;
 
    if (number < 0 || number >= MAX_COMMUNICATORS) {
       ERROR(1, "Ran out of communicator storage (%d)!", number);
@@ -84,41 +86,69 @@ static int add_communicator(MPI_Comm comm, int number, int initial,
    c->coordinators = coordinators;
    c->cluster_sizes = cluster_sizes;
    c->members = members;
+   c->cluster_ranks = cluster_ranks;
+   c->member_cluster_index = member_cluster_index;
+   c->local_ranks = local_ranks;
 
    if (c->cluster_count > 0) {
+/*
       c->cluster_ranks = malloc(c->cluster_count * sizeof(unsigned char));
 
       if (c->cluster_ranks == NULL) {
          ERROR(1, "Failed to allocate space for communicator (%d)!", number);
          return MPI_ERR_INTERN;
       }
-
+*/
       for (i=0;i<c->cluster_count;i++) {
-         c->cluster_ranks[i] = (unsigned char) GET_CLUSTER_RANK(c->members[c->coordinators[i]]);
+//         c->cluster_ranks[i] = (unsigned char) GET_CLUSTER_RANK(c->members[c->coordinators[i]]);
 
          if (c->cluster_ranks[i] == cluster_rank) {
             c->my_coordinator = c->coordinators[i];
          }
       }
+
    } else {
-      c->cluster_ranks = NULL;
+//      c->cluster_ranks = NULL;
       c->my_coordinator = 0;
    }
 
+/*
    if (c->global_size > 0) {
-      c->member_cluster_index = malloc(c->global_size * sizeof(unsigned char));
+
+      c->member_cluster_index = malloc(c->global_size * sizeof(uint8_t));
 
       if (c->member_cluster_index == NULL) {
          ERROR(1, "Failed to allocate space for communicator (%d)!", number);
          return MPI_ERR_INTERN;
       }
 
-      for (i=0;i<c->global_size;i++) {
-         c->member_cluster_index[i] = (unsigned char) comm_cluster_rank_to_cluster_index(c, GET_CLUSTER_RANK(c->members[i]));
+      c->local_ranks = malloc(c->global_size * sizeof(uint32_t));
+
+      if (c->local_ranks == NULL) {
+         ERROR(1, "Failed to allocate space for communicator (%d)!", number);
+         return MPI_ERR_INTERN;
       }
+
+      tmp = malloc(c->cluster_count * sizeof(int));
+
+      if (tmp == NULL) {
+         ERROR(1, "Failed to allocate space for communicator (%d)!", number);
+         return MPI_ERR_INTERN;
+      }
+
+      for (i=0;i<c->global_size;i++) {
+
+
+
+         c->member_cluster_index[i] = (uint8_t) comm_cluster_rank_to_cluster_index(c, GET_CLUSTER_RANK(c->members[i]));
+      }
+
+      free(tmp);
+
    } else {
       c->member_cluster_index = NULL;
    }
+*/
 
    comms[number] = c;
 
@@ -218,7 +248,7 @@ int init_communicators(int cluster_rank, int cluster_count,
    cluster_sizes = malloc(sizeof(int));
 
    if (coordinators == NULL) {
-      ERROR(1, "Failed to allocate space for communicator (coordinators -- self)!");     
+      ERROR(1, "Failed to allocate space for communicator (coordinators -- self)!");
       return MPI_ERR_INTERN;
    }
 
@@ -250,12 +280,16 @@ int init_communicators(int cluster_rank, int cluster_count,
 int create_communicator(MPI_Comm comm, int number,
          int local_rank, int local_size, int global_rank, int global_size,
          int cluster_count, int *coordinators, int *cluster_sizes,
-         int flags, uint32_t *members, communicator **out)
+         int flags, uint32_t *members,
+         int *cluster_ranks, uint32_t *member_cluster_index, uint32_t *local_ranks,
+         communicator **out)
 {
    return add_communicator(comm, number, 0,
                     local_rank, local_size, global_rank, global_size,
                     cluster_count, coordinators, cluster_sizes,
-                    flags, members, out);
+                    flags, members,
+                    cluster_ranks, member_cluster_index, local_ranks,
+                    out);
 }
 
 int free_communicator(communicator * c)

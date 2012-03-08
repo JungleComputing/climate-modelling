@@ -70,11 +70,16 @@ struct s_communicator {
    int *coordinators;
 
    int cluster_count;
-   unsigned char *cluster_ranks;
+
+   // FIXME: Merge cluster ranks + sizes into single cluster info field ?
+   int *cluster_ranks;
    int *cluster_sizes;
 
    uint32_t *members;
-   unsigned char *member_cluster_index;
+
+   // FIXME: Merge member_cluster_index + local_ranks into single local pid array ?
+   uint32_t *member_cluster_index;
+   uint32_t *local_ranks;
 
 //   unsigned char *bitmap;
 
