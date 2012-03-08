@@ -18,10 +18,16 @@ public class Communicator {
     private final int communicator;
     private final Connection [] processes;
     private final int [] coordinatorRanks;
+
+    private final int [] clusterRanks;
     private final int [] clusterSizes;
-    
+
+    private final int [] members;
+    private final int [] localRanks;
+    private final int [] memberClusterIndex;
+
     private final HashMap<Integer, Connection> pids;
-    
+
     private final int size;
     private final Server parent;
 
@@ -29,21 +35,21 @@ public class Communicator {
     private int participants = 0;
 
     private long commMessages;
-    private long commReplies;    
+    private long commReplies;
     private long dataMessages;
     private long bcastMessages;
-    
+
     private long commBytes;
     private long commReplyBytes;
     private long dataBytes;
     private long bcastBytes;
-    
-    private class ClusterInfo { 
+
+    private class ClusterInfo {
         final String name;
         final int clusterRank;
         final int coordinatorRank;
         int size;
-        
+
         public ClusterInfo(String name, int clusterRank, int coordinatorRank) {
             super();
             this.name = name;
@@ -51,12 +57,12 @@ public class Communicator {
             this.coordinatorRank = coordinatorRank;
             size = 1;
         }
- 
-        public void increaseSize() { 
-            size++;
+
+        public int increaseSize() {
+            return size++;
         }
     }
-    
+
     private class ColorComparator implements Comparator<CommMessage> {
 
         @Override
@@ -83,72 +89,97 @@ public class Communicator {
     private final ColorComparator colorComparator = new ColorComparator();
 
     Communicator(Server parent, int communicator, Connection [] processes) {
-        
-        if (SANITY) { 
+
+        if (SANITY) {
             // Make sure the processes array doesn't contain any holes!
-            if (processes == null) { 
+            if (processes == null) {
                 Logging.println("ERROR: processes array null at communicator creation!");
                 throw new IllegalArgumentException("Processes array null at communicator creation");
             }
-           
-            for (int i=0;i<processes.length;i++) { 
-                if (processes[i] == null) { 
+
+            for (int i=0;i<processes.length;i++) {
+                if (processes[i] == null) {
                     Logging.println("ERROR: processes array entry " + i + " null at communicator creation!");
                     throw new IllegalArgumentException("Processes array entry " + i + " null at communicator creation");
                 }
-            } 
+            }
         }
-        
+
         this.communicator = communicator;
         this.processes = processes;
         this.parent = parent;
         this.size = processes.length;
         this.messages = new Message[size];
 
+        this.members = new int[size];
+        this.localRanks = new int[size];
+        this.memberClusterIndex = new int[size];
+
         pids = new HashMap<Integer, Connection>();
-       
+
         ArrayList<ClusterInfo> info = new ArrayList<ClusterInfo>();
         HashMap<Integer, ClusterInfo> infoMap = new HashMap<Integer, ClusterInfo>();
-        
+
         for (int i=0;i<size;i++) {
-            int pid = processes[i].pid;
-            pids.put(pid, processes[i]);
-            
-            int clusterRank = processes[i].clusterRank; 
-            
+            members[i] = processes[i].pid;
+            pids.put(members[i], processes[i]);
+
+            int clusterRank = processes[i].clusterRank;
+
             ClusterInfo tmp = infoMap.get(clusterRank);
-            
-            if (tmp == null) { 
+
+            if (tmp == null) {
                 tmp = new ClusterInfo(processes[i].clusterName, clusterRank, i);
                 info.add(tmp);
                 infoMap.put(clusterRank, tmp);
-            } else { 
-                tmp.increaseSize();
+                localRanks[i] = 0;
+            } else {
+                localRanks[i] = tmp.increaseSize();
             }
+
+            memberClusterIndex[i] = info.size()-1;
         }
-      
+
         this.coordinatorRanks = new int[info.size()];
+        this.clusterRanks = new int[info.size()];
         this.clusterSizes = new int[info.size()];
-        
-        for (int i=0;i<info.size();i++) { 
+
+        for (int i=0;i<info.size();i++) {
             ClusterInfo tmp = info.get(i);
             this.coordinatorRanks[i] = tmp.coordinatorRank;
+            this.clusterRanks[i] = tmp.clusterRank;
             this.clusterSizes[i] = tmp.size;
         }
     }
 
-    public int getNumber() { 
+    public int getNumber() {
         return communicator;
     }
 
     public int [] getCoordinatorRanks() {
         return coordinatorRanks;
     }
-  
+
     private int [] getClusterSizes() {
         return clusterSizes;
     }
-    
+
+    private int [] getClusterRanks() {
+        return clusterRanks;
+    }
+
+    private int [] getMembers() {
+        return members;
+    }
+
+    private int [] getLocalRanks() {
+        return localRanks;
+    }
+
+    private int [] getMemberClusterIndex() {
+        return memberClusterIndex;
+    }
+
     private int generateFlags(Connection [] procs) {
 
         if (procs == null || procs.length == 0) {
@@ -166,7 +197,7 @@ public class Communicator {
 
         return COMM_FLAG_LOCAL;
     }
-    
+
     private int [] generateMembers(Connection [] procs) {
 
         if (procs == null || procs.length == 0) {
@@ -181,8 +212,8 @@ public class Communicator {
         }
 
         return members;
-    }   
-    
+    }
+
     // This implements the split operation. Note that dup and create are just
     // special cases of split, and therefore handled by the same code.
     private void split() {
@@ -241,43 +272,47 @@ public class Communicator {
                     // and their new rank. In addition, we need to send a color and rank for the split that needs to be performed
                     // on the 'real communicator', and a flag and member set needed by the virtual communicator on the MPI side.
 
-                    // Use a hash map to keep track of the desired local ranks in each of the clusters for each of the 
+                    // Use a hash map to keep track of the desired local ranks in each of the clusters for each of the
                     // participants. These are needed to perform the local split.
-                    HashMap<String, Integer> localRanks = new HashMap<String, Integer>();
+//                    HashMap<String, Integer> localRanks = new HashMap<String, Integer>();
 
                     // Generate the flags needed by the virtual communicator.
                     int flags = generateFlags(procs);
 
                     int number = com.getNumber();
-                    
+
+                    // TODO: fold these into constructor invocation!
                     int [] coordinators = com.getCoordinatorRanks();
-                
                     int [] clusterSizes = com.getClusterSizes();
-                    
-                    int [] members = generateMembers(procs);
-                    
+                    int [] clusterRanks = com.getClusterRanks();
+                    int [] members = com.getMembers();
+                    int [] localRanks = com.getLocalRanks();
+                    int [] memberClusterIndex = com.getMemberClusterIndex();
+
                     // Send a reply to each participant, generating the appropriate local rank for each participant.
                     for (int j=0;j<size;j++) {
 
                         // Get the connection and cluster name we are sending to
                         Connection c = procs[j];
-                        String name = c.getClusterName();
 
-                        // Generate a correct local for this specific cluster.
-                        Integer key = localRanks.get(name);
+//                        String name = c.getClusterName();
 
-                        if (key == null) {
-                            key = 0;
-                        }
+//                        // Generate a correct local for this specific cluster.
+//                        Integer key = localRanks.get(name);
 
-                        localRanks.put(c.getClusterName(), key+1);
-                      
-                        CommReply reply = new CommReply(communicator, number, j, size, color, key, coordinators.length, flags, 
-                                coordinators, clusterSizes, members);
-                                                
+//                        if (key == null) {
+//                            key = 0;
+//                        }
+
+//                        localRanks.put(c.getClusterName(), key+1);
+
+                        CommReply reply = new CommReply(communicator, number, j, size, color, /*key*/ localRanks[j],
+                                coordinators.length, flags, coordinators, clusterSizes, members,
+                                clusterRanks, memberClusterIndex, localRanks);
+
                         // Send the reply.
                         c.enqueue(reply, false);
-                        
+
                         commReplies++;
                         commReplyBytes += reply.size();
                     }
@@ -286,9 +321,9 @@ public class Communicator {
                     // As these will not actually create a new virtual communicator,
                     // we can send a simplified reply.
                     for (CommMessage m : l) {
-                        CommReply reply = new CommReply(communicator, -1, -1, 0, -1, 0, 0, 0, null, null, null);                        
+                        CommReply reply = new CommReply(communicator, -1, -1, 0, -1, 0, 0, 0, null, null, null, null, null, null);
                         processes[m.source].enqueue(reply, false);
-                        
+
                         commReplies++;
                         commReplyBytes += reply.size();
                     }
@@ -297,29 +332,29 @@ public class Communicator {
         }
     }
 
-  
-    private String printPID(int pid) { 
-        return ((pid & 0xFF000000) >> 24) + ":" + (pid & 0xFFFFFF); 
+
+    private String printPID(int pid) {
+        return ((pid & 0xFF000000) >> 24) + ":" + (pid & 0xFFFFFF);
     }
-        
-    private String printPIDs(int [] pids) { 
-        
+
+    private String printPIDs(int [] pids) {
+
         StringBuilder sb = new StringBuilder("[ ");
-        
-        for (int i=0;i<pids.length;i++) { 
-            
+
+        for (int i=0;i<pids.length;i++) {
+
             sb.append(printPID(pids[i]));
-            
-            if (i != pids.length-1) { 
+
+            if (i != pids.length-1) {
                 sb.append(", ");
             }
         }
-        
+
         sb.append(" ]");
-  
+
         return sb.toString();
     }
-    
+
     private void group() {
 
         Logging.println("Creating new group from communicator " + communicator);
@@ -343,20 +378,20 @@ public class Communicator {
         // to the machines that do not participate.
         HashMap<Integer, Connection> tmp = new HashMap<Integer, Connection>();
         tmp.putAll(pids);
-        
+
         Connection [] used = new Connection[group.length];
 
         for (int i=0;i<group.length;i++) {
             used[i] = tmp.remove(group[i]);
         }
-        
+
         // We now send a reply to all processes. Note that some may not participate in the new communicator.
 
         // We generate a new 'virtual' communicator.
         Communicator com = parent.createCommunicator(used);
 
         int number = com.getNumber();
-                     
+
         Logging.println("   new communicator: " + number);
 
         // Next, we send a reply to all participants, providing them with the new virtual communicator, its size,
@@ -368,37 +403,40 @@ public class Communicator {
         Logging.println("   flags: " + flags);
 
         // Generate a correct members array for this cluster.
-        int [] members = generateMembers(used);
+        int [] members = com.getMembers();
         int [] coordinators = com.getCoordinatorRanks();
         int [] clusterSizes = com.getClusterSizes();
-        
-        Logging.println("   group reply: " + number + " " + flags + " " 
-                + coordinators.length + " " + Arrays.toString(coordinators) 
+        int [] clusterRanks = com.getClusterRanks();
+        int [] localRanks = com.getLocalRanks();
+        int [] memberClusterIndex = com.getMemberClusterIndex();
+
+        Logging.println("   group reply: " + number + " " + flags + " "
+                + coordinators.length + " " + Arrays.toString(coordinators)
                 + " " + Arrays.toString(clusterSizes)
                 + members.length + " " + flags + " " + printPIDs(members));
-        
-        // We need to figure out which cluster do and which don't participate. Those that don't do not need to create a local 
+
+        // We need to figure out which cluster do and which don't participate. Those that don't do not need to create a local
         // communicator.
         HashSet<String> participatingCluster = new HashSet<String>();
-        
+
         // Send a reply to each participant, generating the appropriate keys and bitmaps for each participant.
-        for (int j=0;j<used.length;j++) {        
-            
+        for (int j=0;j<used.length;j++) {
+
             // Get the connection and cluster name we are sending to
             Connection c = used[j];
             String name = c.getClusterName();
-        
+
             // Add the cluster to the set of participants.
             participatingCluster.add(name);
-            
+
             Logging.println("        sending group info to " + j + " " + printPID(c.pid) + " at " + name);
-            
-            GroupReply reply = new GroupReply(communicator, number, j, members.length, coordinators.length, flags, 
-                    coordinators, clusterSizes, members); 
-            
+
+            GroupReply reply = new GroupReply(communicator, number, j, members.length, coordinators.length, flags,
+                    coordinators, clusterSizes, members, clusterRanks, memberClusterIndex, localRanks);
+
             // Create and send the reply.
             c.enqueue(reply, false);
-            
+
             commReplies++;
             commReplyBytes += reply.size();
         }
@@ -407,18 +445,18 @@ public class Communicator {
         // We check in bitmaps to see if (part of) a cluster is participating in the communicators. We store this result in
         // the size field of the GroupReply
         int j=0;
-        
+
         for (Connection c : tmp.values()) {
             if (c != null) {
                 String name = c.getClusterName();
                 boolean participant = participatingCluster.contains(name);
-            
-                Logging.println("        sending participant info to " + j++ + " " + printPID(c.pid) + " at " + name 
+
+                Logging.println("        sending participant info to " + j++ + " " + printPID(c.pid) + " at " + name
                         + "(" + participant + ")");
-                
-                
+
+
                 GroupReply reply = new GroupReply(communicator, participant);
-                
+
                 c.enqueue(reply, false);
 
                 commReplies++;
@@ -442,7 +480,7 @@ public class Communicator {
         for (int j=0;j<processes.length;j++) {
             processes[j].enqueue(reply, false);
         }
-        
+
         commReplies += processes.length;
         commReplyBytes += processes.length * reply.size();
     }
@@ -450,7 +488,7 @@ public class Communicator {
     public void terminate() {
         Logging.println("Terminating communicator " + communicator + ": " + printStatistics());
     }
-    
+
     private void processMessages() {
 
         int opcode = messages[0].opcode;
@@ -480,10 +518,10 @@ public class Communicator {
 
         case Protocol.OPCODE_TERMINATE:
             terminate();
-            parent.terminateCommunicator(this);        
+            parent.terminateCommunicator(this);
             break;
 
-        
+
         default:
             Logging.error("unknown opcode collective communicator operation! " + opcode);
             return; // FIXME: This return will hang the program!
@@ -499,7 +537,7 @@ public class Communicator {
 
         commMessages++;
         commBytes += m.size();
-        
+
         messages[m.source] = m;
         participants++;
 
@@ -517,7 +555,7 @@ public class Communicator {
     }
 
     private void deliver(DataMessage m) {
-        
+
         // Simply enqueue the message at the destination
         if (m.dest > processes.length) {
             Logging.error("Unable to deliver message to " + m.dest + " on comm " + communicator);
@@ -525,52 +563,52 @@ public class Communicator {
         }
 
         processes[m.dest].enqueue(m, true);
-        
+
         dataMessages++;
-        dataBytes += m.size();        
+        dataBytes += m.size();
     }
 
     private void bcast(DataMessage m) {
-        
-        // Enqueue the message at each of the cluster coordinators, 
+
+        // Enqueue the message at each of the cluster coordinators,
         // but exclude the cluster of the root.
-        
+
         // FIXME: shouldn't we always use pids here?
         Connection source = processes[m.dest]; // pids.get(m.dest);
-        
+
         if (source == null) {
             Logging.println("ERROR: bcast target " + m.dest + " not found! -- DROPPING MESSAGE!!");
             return;
         }
-        
+
         for (int i=0;i<coordinatorRanks.length;i++) {
-            
+
             Connection c = processes[coordinatorRanks[i]];
-            
-            if (c.clusterRank != source.clusterRank) { 
+
+            if (c.clusterRank != source.clusterRank) {
                 Logging.println("Enqueuing BCAST at cluster coordinator " + printPID(c.pid) + " of comm " + communicator);
-                c.enqueue(m, true); 
-            } else { 
+                c.enqueue(m, true);
+            } else {
                 Logging.println("SKIP Enqueuing BCAST at cluster coordinator " + printPID(c.pid) + " of comm " + communicator);
             }
         }
-        
+
         bcastMessages++;
-        bcastBytes += m.size();        
+        bcastBytes += m.size();
     }
-    
+
     public void deliver(Message m) {
 
         switch (m.opcode) {
         case Protocol.OPCODE_COMM:
         case Protocol.OPCODE_GROUP:
         case Protocol.OPCODE_DUP:
-        case Protocol.OPCODE_TERMINATE:                        
+        case Protocol.OPCODE_TERMINATE:
             process(m);
             break;
         case Protocol.OPCODE_DATA:
             deliver((DataMessage)m);
-            break; 
+            break;
         case Protocol.OPCODE_COLLECTIVE_BCAST:
             bcast((DataMessage)m);
             break;
@@ -578,14 +616,14 @@ public class Communicator {
             Logging.error("unknown message type " + m.opcode);
         }
     }
-    
-    private String printStatistics() {         
+
+    private String printStatistics() {
 
         StringBuilder sb = new StringBuilder("size: " + size);
         sb.append(" data: " + dataMessages + " / " + dataBytes);
         sb.append(" bcast: " + bcastMessages + " / " + bcastBytes);
         sb.append(" commIn: " + commMessages + " / " + commBytes);
-        sb.append(" commOut: " + commReplies + " / " + commReplyBytes);        
+        sb.append(" commOut: " + commReplies + " / " + commReplyBytes);
         return sb.toString();
     }
 }

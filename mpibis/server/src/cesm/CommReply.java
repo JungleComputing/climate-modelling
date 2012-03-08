@@ -17,12 +17,22 @@ public class CommReply extends Message {
     // These contain info about the distribution of the virtual communicator.
     public final int clusterCount;
     public final int flags;
+
+    // TODO: merge clusterRanks + clusterSizes and memberClusterIndex+localRanks
     public final int [] coordinators;
     public final int [] clusterSizes;
     public final int [] members;
-    
-    CommReply(int comm, int newComm, int rank, int size, int color, int key, int clusterCount, int flags, 
-            int [] coordinators, int [] clusterSizes, int [] members) {
+
+    public final int [] clusterRanks;
+    public final int [] memberClusterIndex;
+    public final int [] localRanks;
+
+    CommReply(int comm, int newComm,
+              int rank, int size,
+              int color, int key,
+              int clusterCount, int flags,
+              int [] coordinators, int [] clusterSizes, int [] members,
+              int [] clusterRanks, int [] memberClusterIndex, int [] localRanks) {
 
         super(Protocol.OPCODE_COMM_REPLY, comm, -1);
 
@@ -37,6 +47,10 @@ public class CommReply extends Message {
         this.coordinators = coordinators;
         this.clusterSizes = clusterSizes;
         this.members = members;
+
+        this.clusterRanks = clusterRanks;
+        this.memberClusterIndex = memberClusterIndex;
+        this.localRanks = localRanks;
     }
 
     void write(DataOutputStream out) throws IOException {
@@ -49,21 +63,33 @@ public class CommReply extends Message {
         out.writeInt(clusterCount);
         out.writeInt(flags);
 
-        for (int i=0;i<clusterCount;i++) { 
+        for (int i=0;i<clusterCount;i++) {
             out.writeInt(coordinators[i]);
         }
-       
-        for (int i=0;i<clusterCount;i++) { 
+
+        for (int i=0;i<clusterCount;i++) {
             out.writeInt(clusterSizes[i]);
         }
-        
+
+        for (int i=0;i<clusterCount;i++) {
+            out.writeInt(clusterRanks[i]);
+        }
+
         // NOTE: size may be 0!
-        for (int i=0;i<size;i++) { 
+        for (int i=0;i<size;i++) {
             out.writeInt(members[i]);
         }
+
+        for (int i=0;i<size;i++) {
+            out.writeInt(memberClusterIndex[i]);
+        }
+
+        for (int i=0;i<size;i++) {
+            out.writeInt(localRanks[i]);
+        }
     }
-    
-    public long dataSize() { 
+
+    public long dataSize() {
         return 4*7 + clusterCount*4*2 + size*4;
     }
 }

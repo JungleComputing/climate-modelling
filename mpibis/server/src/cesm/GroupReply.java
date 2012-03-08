@@ -17,11 +17,15 @@ public class GroupReply extends Message {
     // These contain info about the distribution of the virtual communicator.
     public final int clusterCount;
     public final int flags;
-    
+
     public final int [] coordinators;
     public final int [] clusterSizes;
     public final int [] members;
-    
+
+    public final int [] clusterRanks;
+    public final int [] memberClusterIndex;
+    public final int [] localRanks;
+
     // This field indicates if the
     public final int type;
 
@@ -37,7 +41,10 @@ public class GroupReply extends Message {
         this.members = null;
         this.clusterSizes = null;
         this.coordinators = null;
-        
+        this.clusterRanks = null;
+        this.memberClusterIndex = null;
+        this.localRanks = null;
+
         if (overlap) {
             this.type = TYPE_SEPERATIST;
         } else {
@@ -45,8 +52,9 @@ public class GroupReply extends Message {
         }
     }
 
-    GroupReply(int comm, int newComm, int rank, int size, int clusterCount, int flags, 
-            int [] coordinators, int [] clusterSizes, int [] members) {
+    GroupReply(int comm, int newComm, int rank, int size, int clusterCount, int flags,
+            int [] coordinators, int [] clusterSizes, int [] members,
+            int [] clusterRanks, int [] memberClusterIndex, int [] localRanks) {
 
         super(Protocol.OPCODE_GROUP_REPLY, comm, -1);
 
@@ -57,7 +65,12 @@ public class GroupReply extends Message {
         this.flags = flags;
         this.coordinators = coordinators;
         this.clusterSizes = clusterSizes;
-        this.members = members; 
+        this.members = members;
+
+        this.clusterRanks = clusterRanks;
+        this.memberClusterIndex = memberClusterIndex;
+        this.localRanks = localRanks;
+
         this.type = TYPE_ACTIVE;
     }
 
@@ -71,22 +84,34 @@ public class GroupReply extends Message {
         out.writeInt(clusterCount);
         out.writeInt(flags);
 
-        for (int i=0;i<clusterCount;i++) { 
+        for (int i=0;i<clusterCount;i++) {
             out.writeInt(coordinators[i]);
         }
-        
-        for (int i=0;i<clusterCount;i++) { 
+
+        for (int i=0;i<clusterCount;i++) {
             out.writeInt(clusterSizes[i]);
         }
-        
+
+        for (int i=0;i<clusterCount;i++) {
+            out.writeInt(clusterRanks[i]);
+        }
+
         if (type == TYPE_ACTIVE) {
-            for (int i=0;i<size;i++) { 
+            for (int i=0;i<size;i++) {
                 out.writeInt(members[i]);
+            }
+
+            for (int i=0;i<size;i++) {
+                out.writeInt(memberClusterIndex[i]);
+            }
+
+            for (int i=0;i<size;i++) {
+                out.writeInt(localRanks[i]);
             }
         }
     }
-    
-    public long dataSize() { 
+
+    public long dataSize() {
         return 4*5 + clusterCount*4*2 + size*4;
     }
 }
