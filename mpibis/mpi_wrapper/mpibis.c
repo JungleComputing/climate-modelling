@@ -1227,14 +1227,22 @@ int IMPI_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Com
    communicator *c = get_communicator(comm);
 
    if (comm_is_local(c)) {
+
+DEBUG(1, "Local BCAST");
+
      // simply perform a bcast in local cluster
      return PMPI_Bcast(buffer, count, datatype, root, c->comm);
    }
 
    // We need to perform a WA BCAST.
 
+DEBUG(1, "WA BCAST root=%d grank=%d gsize=%d lrank=%d lsize=%d", root, c->global_rank, c->global_size, c->local_rank, c->local_size);
+
    // If we are root we first send the data to the server and then bcast locally.
    if (c->global_rank == root) {
+
+DEBUG(1, "WA BCAST I am root");
+
       error = messaging_bcast(buffer, count, datatype, root, c);
 
       if (error != MPI_SUCCESS) {
@@ -1245,14 +1253,25 @@ int IMPI_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Com
       return PMPI_Bcast(buffer, count, datatype, c->local_rank, c->comm);
    }
 
+
+DEBUG(1, "WA BCAST I am NOT root");
+
    // Check if we are in the same cluster as the root. If so, just receive its bcast.
-   if (get_cluster_rank(c, root) == cluster_rank) {
+   if (rank_is_local(c, root)) {
+
+DEBUG(1, "WA BCAST Root is local (grank=%d lrank=%d)", root, get_local_rank(c, root));
+
       return PMPI_Bcast(buffer, count, datatype, get_local_rank(c, root), c->comm);
    }
+
+DEBUG(1, "WA BCAST Root is remote (%d)", root);
 
    // If we are in a different cluster from the root and we are the local coordinator
    // we first receive the WA bcast and then forward this bcast locally
    if (c->global_rank == c->my_coordinator) {
+
+DEBUG(1, "WA BCAST I am coordinator (grank=%d lrank=%d) -- doing receive", c->global_rank, c->my_coordinator);
+
       error = messaging_bcast_receive(buffer, count, datatype, root, c);
 
       if (error != MPI_SUCCESS) {
@@ -1260,6 +1279,8 @@ int IMPI_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Com
          return error;
       }
    }
+
+DEBUG(1, "WA BCAST Local bcast to finish up (coordinator grank=%d lrank=%d)", c->my_coordinator, get_local_rank(c, c->my_coordinator));
 
    return PMPI_Bcast(buffer, count, datatype, get_local_rank(c, c->my_coordinator), c->comm);
 }
