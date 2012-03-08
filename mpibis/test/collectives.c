@@ -184,18 +184,17 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "Starting BCAST tests\n");
 
-//    error = test_bcast(MPI_COMM_WORLD, "MPI_COMM_WORLD");
-//    if (error != 0) return error;
+    error = test_bcast(MPI_COMM_WORLD, "MPI_COMM_WORLD");
+    if (error != 0) return error;
 
-//    error = test_bcast(half, "world half");
-//    if (error != 0) return error;
+    error = test_bcast(half, "world half");
+    if (error != 0) return error;
 
     error = test_bcast(oddeven, "world odd/even");
     if (error != 0) return error;
 
-/*
     fprintf(stderr, "\n****************************************************\n\n");
-
+/*
     fprintf(stderr, "Starting GATHER tests\n");
 
     error = test_gather(MPI_COMM_WORLD, "MPI_COMM_WORLD");
@@ -209,8 +208,6 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "\n****************************************************\n\n");
 */
-
-
     fprintf(stderr, "Done!\n");
 
     MPI_Finalize();
