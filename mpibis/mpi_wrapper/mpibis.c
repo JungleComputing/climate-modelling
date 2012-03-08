@@ -460,6 +460,11 @@ static int do_recv(void *buf, int count, MPI_Datatype datatype, int source, int 
 {
    int error;
 
+   if (source == MPI_ANY_SOURCE) {
+      FATAL("do_recv from MPI_ANY_SOURCE not supported yet!");
+      return MPI_ERR_INTERN;
+   }
+
    if (rank_is_local(c, source)) {
       // local recv
       error = PMPI_Recv(buf, count, datatype, get_local_rank(c, source), tag, c->comm, status);

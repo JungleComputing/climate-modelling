@@ -460,7 +460,7 @@ int rank_is_remote(communicator *c, int rank)
 
 int get_local_rank(communicator *c, int rank)
 {
-   return GET_PROCESS_RANK(c->members[rank]);
+   return c->local_rank[rank];
 }
 
 int get_cluster_rank(communicator *c, int rank)
