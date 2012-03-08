@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
     for (i=0;i<size;i++) {
 
        for (j=0;j<size;j++) {
-          sendbuffer[j] = rank
+          sendbuffer[j] = rank;
        }
 
        error = MPI_Bcast(sendbuffer, size, MPI_INT, i, MPI_COMM_WORLD);
