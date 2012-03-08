@@ -91,19 +91,16 @@ int main(int argc, char *argv[])
 
     for (i=0;i<size;i++) {
 
-       if (rank == i) {
+       for (j=0;j<size;j++) {
+          sendbuffer[j] = rank
+       }
 
-          for (j=0;j<size;j++) {
-             sendbuffer[j] = rank;
-          }
+       error = MPI_Bcast(sendbuffer, size, MPI_INT, i, MPI_COMM_WORLD);
 
-          error = MPI_Bcast(sendbuffer, size, MPI_INT, i, MPI_COMM_WORLD);
-
-          if (error != MPI_SUCCESS) {
-             fprintf(stderr, "BCAST failed!\n");
-             MPI_Finalize();
-             return 1;
-          }
+       if (error != MPI_SUCCESS) {
+          fprintf(stderr, "BCAST failed!\n");
+          MPI_Finalize();
+          return 1;
        }
 
        for (j=0;j<size;j++) {
