@@ -18,7 +18,7 @@ static int test_bcast(MPI_Comm comm, char *name)
       return 1;
    }
 
-   fprintf(stderr, "BCAST %s ************\n", name);
+   fprintf(stderr, "BCAST %s on %d of %d ************\n", name, rank, size);
 
    for (i=0;i<size;i++) {
 
@@ -29,21 +29,21 @@ static int test_bcast(MPI_Comm comm, char *name)
       error = MPI_Bcast(sendbuffer, size, MPI_INT, i, comm);
 
       if (error != MPI_SUCCESS) {
-         fprintf(stderr, "BCAST %s failed!\n", name);
+         fprintf(stderr, "BCAST %s on %d of %d failed!\n", name, rank, size);
          MPI_Finalize();
          return 1;
       }
 
       for (j=0;j<size;j++) {
          if (sendbuffer[j] != i) {
-            fprintf(stderr, "BCAST %s result incorrect on %d (expected %d got %d)\n", name, rank, i, sendbuffer[j]);
+            fprintf(stderr, "BCAST %s on %d of %d result incorrect (expected %d got %d)\n", name, rank, size, i, sendbuffer[j]);
             MPI_Finalize();
             return 1;
          }
       }
    }
 
-   fprintf(stderr, " - BCAST %s OK\n", name);
+   fprintf(stderr, " - BCAST %s on %d of %d OK\n", name,  rank, size);
 
    free(sendbuffer);
 
