@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Odd-even split succeeded: I am now process %d of %d on %s\n", newrank, newsize, processor_name);
 
     fprintf(stderr, "\n****************************************************\n\n");
-
+/*
     fprintf(stderr, "Starting BCAST tests\n");
 
     error = test_bcast(MPI_COMM_WORLD, "MPI_COMM_WORLD");
@@ -194,7 +194,8 @@ int main(int argc, char *argv[])
     if (error != 0) return error;
 
     fprintf(stderr, "\n****************************************************\n\n");
-/*
+*/
+
     fprintf(stderr, "Starting GATHER tests\n");
 
     error = test_gather(MPI_COMM_WORLD, "MPI_COMM_WORLD");
@@ -207,7 +208,7 @@ int main(int argc, char *argv[])
     if (error != 0) return error;
 
     fprintf(stderr, "\n****************************************************\n\n");
-*/
+
     fprintf(stderr, "Done!\n");
 
     MPI_Finalize();
