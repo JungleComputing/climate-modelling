@@ -145,9 +145,6 @@ static int test_reduce(MPI_Comm comm, char *name)
 
    for (j=0;j<size;j++) {
       sendbuffer[j] = j;
-   }
-
-   for (j=0;j<size;j++) {
       recvbuffer[j] = -1;
    }
 
