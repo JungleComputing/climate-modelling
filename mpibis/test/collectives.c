@@ -6,6 +6,54 @@ static int test_bcast(MPI_Comm comm, char *name)
 {
    int i, j, error, rank, size;
    int *sendbuffer;
+
+   MPI_Comm_size(comm, &size);
+   MPI_Comm_rank(comm, &rank);
+
+   sendbuffer = malloc(size * sizeof(int));
+
+   if (sendbuffer == NULL) {
+      fprintf(stderr, "Failed to allocate sendbuffer!\n");
+      MPI_Finalize();
+      return 1;
+   }
+
+   fprintf(stderr, "BCAST %s ************\n", name);
+
+   for (i=0;i<size;i++) {
+
+      for (j=0;j<size;j++) {
+         sendbuffer[j] = rank;
+      }
+
+      error = MPI_Bcast(sendbuffer, size, MPI_INT, i, comm);
+
+      if (error != MPI_SUCCESS) {
+         fprintf(stderr, "BCAST %s failed!\n", name);
+         MPI_Finalize();
+         return 1;
+      }
+
+      for (j=0;j<size;j++) {
+         if (sendbuffer[j] != i) {
+            fprintf(stderr, "BCAST %s result incorrect on %d (expected %d got %d)\n", name, rank, i, sendbuffer[j]);
+            MPI_Finalize();
+            return 1;
+         }
+      }
+   }
+
+   fprintf(stderr, " - BCAST %s OK\n", name);
+
+   free(sendbuffer);
+
+   return 0;
+}
+
+static int test_gather(MPI_Comm comm, char *name)
+{
+   int i, j, p, error, rank, size;
+   int *sendbuffer;
    int *recvbuffer;
 
    MPI_Comm_size(comm, &size);
@@ -27,35 +75,47 @@ static int test_bcast(MPI_Comm comm, char *name)
       return 1;
    }
 
-   fprintf(stderr, "BCAST %s ************\n", name);
+   fprintf(stderr, "GATHER %s ************\n", name);
+
+   for (j=0;j<size;j++) {
+      sendbuffer[j] = rank;
+   }
+
+   for (j=0;j<size*size;j++) {
+      receivebuffer[j] = -1;
+   }
 
    for (i=0;i<size;i++) {
 
-      for (j=0;j<size;j++) {
-         sendbuffer[j] = rank;
-      }
-
-      error = MPI_Bcast(sendbuffer, size, MPI_INT, i, MPI_COMM_WORLD);
+      error = MPI_Gather(sendbuffer, size, MPI_INT, receivebuffer, size, MPI_INT, i, comm);
 
       if (error != MPI_SUCCESS) {
-         fprintf(stderr, "BCAST %s failed!\n", name);
+         fprintf(stderr, "GATHER %s failed!\n", name);
          MPI_Finalize();
          return 1;
       }
 
-      for (j=0;j<size;j++) {
-         if (sendbuffer[j] != i) {
-            fprintf(stderr, "BCAST %s result incorrect on %d (expected %d got %d)\n", name, rank, i, sendbuffer[j]);
-            MPI_Finalize();
-            return 1;
+      if (rank == i) {
+         for (j=0;j<size;j++) {
+            for (p=0;p<size;p++) {
+               if (sendbuffer[j*size+p] != j) {
+                  fprintf(stderr, "GATHER %s result incorrect on %d (expected %d got %d)\n", name, rank, j, sendbuffer[j*size+p]);
+                  MPI_Finalize();
+                  return 1;
+               }
+            }
          }
       }
    }
 
-   fprintf(stderr, " - BCAST %s OK\n", name);
+   fprintf(stderr, " - GATHER %s OK\n", name);
+
+   free(sendbuffer);
+   free(recvbuffer);
 
    return 0;
 }
+
 
 
 int main(int argc, char *argv[])
@@ -122,7 +182,7 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "\n****************************************************\n\n");
 
-    fprintf(stderr, "Starting collective communication test\n");
+    fprintf(stderr, "Starting BCAST tests\n");
 
     error = test_bcast(MPI_COMM_WORLD, "MPI_COMM_WORLD");
     if (error != 0) return error;
@@ -130,10 +190,26 @@ int main(int argc, char *argv[])
     error = test_bcast(half, "world half");
     if (error != 0) return error;
 
-    error = test_bcast(oddeven, "word odd/even");
+    error = test_bcast(oddeven, "world odd/even");
     if (error != 0) return error;
 
     fprintf(stderr, "\n****************************************************\n\n");
+
+
+    fprintf(stderr, "Starting GATHER tests\n");
+
+    error = test_bcast(MPI_COMM_WORLD, "MPI_COMM_WORLD");
+    if (error != 0) return error;
+
+    error = test_bcast(half, "world half");
+    if (error != 0) return error;
+
+    error = test_bcast(oddeven, "world odd/even");
+    if (error != 0) return error;
+
+    fprintf(stderr, "\n****************************************************\n\n");
+
+
 
     fprintf(stderr, "Done!\n");
 
