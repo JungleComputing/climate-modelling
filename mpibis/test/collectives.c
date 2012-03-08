@@ -2,6 +2,62 @@
 #include <stdlib.h>
 #include "mpi.h"
 
+static int test_bcast(MPI_Comm comm, char *name)
+{
+   int i, j, error, rank, size;
+   int *sendbuffer;
+   int *recvbuffer;
+
+   MPI_Comm_size(comm, &size);
+   MPI_Comm_rank(comm, &rank);
+
+   sendbuffer = malloc(size * sizeof(int));
+
+   if (sendbuffer == NULL) {
+      fprintf(stderr, "Failed to allocate sendbuffer!\n");
+      MPI_Finalize();
+      return 1;
+   }
+
+   recvbuffer = malloc(size * size * sizeof(int));
+
+   if (recvbuffer == NULL) {
+      fprintf(stderr, "Failed to allocate recvbuffer!\n");
+      MPI_Finalize();
+      return 1;
+   }
+
+   fprintf(stderr, "BCAST %s ************\n", name);
+
+   for (i=0;i<size;i++) {
+
+      for (j=0;j<size;j++) {
+         sendbuffer[j] = rank;
+      }
+
+      error = MPI_Bcast(sendbuffer, size, MPI_INT, i, MPI_COMM_WORLD);
+
+      if (error != MPI_SUCCESS) {
+         fprintf(stderr, "BCAST %s failed!\n", name);
+         MPI_Finalize();
+         return 1;
+      }
+
+      for (j=0;j<size;j++) {
+         if (sendbuffer[j] != i) {
+            fprintf(stderr, "BCAST %s result incorrect on %d (expected %d got %d)\n", name, rank, i, sendbuffer[j]);
+            MPI_Finalize();
+            return 1;
+         }
+      }
+   }
+
+   fprintf(stderr, " - BCAST %s OK\n", name);
+
+   return 0;
+}
+
+
 int main(int argc, char *argv[])
 {
     MPI_Comm half;
@@ -9,9 +65,6 @@ int main(int argc, char *argv[])
 
     int  namelen, rank, size, newrank, newsize, color, key, i, j, error;
     char processor_name[MPI_MAX_PROCESSOR_NAME];
-
-    int *sendbuffer;
-    int *recvbuffer;
 
     int halfsize;
 
@@ -71,50 +124,16 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "Starting collective communication test\n");
 
-    sendbuffer = malloc(size * sizeof(int));
+    error = test_bcast(MPI_COMM_WORLD, "MPI_COMM_WORLD");
+    if (error != 0) return error;
 
-    if (sendbuffer == NULL) {
-       fprintf(stderr, "Failed to allocate sendbuffer!\n");
-       MPI_Finalize();
-       return 1;
-    }
+    error = test_bcast(half, "world half");
+    if (error != 0) return error;
 
-    recvbuffer = malloc(size * size * sizeof(int));
+    error = test_bcast(oddeven, "word odd/even");
+    if (error != 0) return error;
 
-    if (recvbuffer == NULL) {
-       fprintf(stderr, "Failed to allocate recvbuffer!\n");
-       MPI_Finalize();
-       return 1;
-    }
-
-    fprintf(stderr, "BCAST MPI_COMM_WORLD ************\n");
-
-    for (i=0;i<size;i++) {
-
-       for (j=0;j<size;j++) {
-          sendbuffer[j] = rank;
-       }
-
-       error = MPI_Bcast(sendbuffer, size, MPI_INT, i, MPI_COMM_WORLD);
-
-       if (error != MPI_SUCCESS) {
-          fprintf(stderr, "BCAST failed!\n");
-          MPI_Finalize();
-          return 1;
-       }
-
-       for (j=0;j<size;j++) {
-          if (sendbuffer[j] != i) {
-             fprintf(stderr, "BCAST result incorrect on %d (expected %d got %d)\n", rank, i, sendbuffer[j]);
-             MPI_Finalize();
-             return 1;
-          }
-       }
-    }
-
-    fprintf(stderr, " - OK\n");
-
-
+    fprintf(stderr, "\n****************************************************\n\n");
 
     fprintf(stderr, "Done!\n");
 
