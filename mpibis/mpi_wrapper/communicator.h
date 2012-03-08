@@ -100,7 +100,9 @@ int init_communicators(int cluster_rank, int cluster_count,
 int create_communicator(MPI_Comm comm, int number,
          int local_rank, int local_size, int global_rank, int global_size,
          int cluster_count, int *coordinators, int *cluster_sizes,
-         int flags, uint32_t *members, communicator **out);
+         int flags, uint32_t *members,
+         int *cluster_ranks, uint32_t *member_cluster_index, uint32_t *local_ranks,
+         communicator **out);
 
 int free_communicator(communicator * c);
 
