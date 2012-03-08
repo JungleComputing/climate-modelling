@@ -1785,12 +1785,20 @@ DEBUG(1, "I am root or coordinator (rank=%d root=%d coordinator=%d)", c->global_
          ERROR(1, " Failed to allocate buffer space for WA Allreduce! (comm=%d, error=%d)", c->number, error);
          return MPI_ERR_INTERN;
       }
-   }
+   } else {
+DEBUG(1, "I am NOT root NOR coordinator (rank=%d root=%d coordinator=%d)", c->global_rank, root, c->my_coordinator);
+}
 
 //   INFO(1, "JASON IMPI_REDUCE", "START LOCAL REDUCE root=%d lroot=%d grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
 //                       root, local_root, c->global_rank, c->local_rank, count, ((int *)sendbuf)[0], ((int *)recvbuf)[0]);
 
+
+DEBUG(1, "Starting local reduce sendbuf=%p buffer=%p count=%d root=%d get_local_rank(root)=%d", sendbuf, buffer, count, local_root, get_local_rank(c, local_root));
+
    error = PMPI_Reduce(sendbuf, buffer, count, datatype, o->op, get_local_rank(c, local_root), c->comm);
+
+DEBUG(1, "Local reduce OK");
+
 
    if (error != MPI_SUCCESS) {
       ERROR(1, "Failed to perform local reduce in communicator! (comm=%d, error=%d)", c->number, error);
