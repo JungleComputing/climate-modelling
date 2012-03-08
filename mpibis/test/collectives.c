@@ -82,12 +82,12 @@ static int test_gather(MPI_Comm comm, char *name)
    }
 
    for (j=0;j<size*size;j++) {
-      receivebuffer[j] = -1;
+      recvbuffer[j] = -1;
    }
 
    for (i=0;i<size;i++) {
 
-      error = MPI_Gather(sendbuffer, size, MPI_INT, receivebuffer, size, MPI_INT, i, comm);
+      error = MPI_Gather(sendbuffer, size, MPI_INT, recvbuffer, size, MPI_INT, i, comm);
 
       if (error != MPI_SUCCESS) {
          fprintf(stderr, "GATHER %s failed!\n", name);
@@ -98,8 +98,8 @@ static int test_gather(MPI_Comm comm, char *name)
       if (rank == i) {
          for (j=0;j<size;j++) {
             for (p=0;p<size;p++) {
-               if (sendbuffer[j*size+p] != j) {
-                  fprintf(stderr, "GATHER %s result incorrect on %d (expected %d got %d)\n", name, rank, j, sendbuffer[j*size+p]);
+               if (recvbuffer[j*size+p] != j) {
+                  fprintf(stderr, "GATHER %s result incorrect on %d (expected %d got %d)\n", name, rank, j, recvbuffer[j*size+p]);
                   MPI_Finalize();
                   return 1;
                }
