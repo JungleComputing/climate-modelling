@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "mpi.h"
 
 int main(int argc, char *argv[])
@@ -6,15 +7,13 @@ int main(int argc, char *argv[])
     MPI_Comm half;
     MPI_Comm oddeven;
 
-    int  namelen, rank, size, newrank, newsize, color, key, i, error;
+    int  namelen, rank, size, newrank, newsize, color, key, i, j, error;
     char processor_name[MPI_MAX_PROCESSOR_NAME];
 
     int *sendbuffer;
     int *recvbuffer;
 
     int halfsize;
-
-    MPI_Status status;
 
     MPI_Init(&argc, &argv);
 
