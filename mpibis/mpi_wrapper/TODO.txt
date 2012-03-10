@@ -1,6 +1,8 @@
 TODO
 ----
 
+FIX!!! -> impl of operations doesn't make sense! 
+
 FIX!!! -> local_comm_create
 
 FIX!!! -> MPI_Recv cannot handle MPI_ANY_SOURCE yet!

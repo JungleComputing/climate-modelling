@@ -1793,7 +1793,8 @@ DEBUG(1, "I am NOT root NOR coordinator (rank=%d root=%d coordinator=%d)", c->gl
 //                       root, local_root, c->global_rank, c->local_rank, count, ((int *)sendbuf)[0], ((int *)recvbuf)[0]);
 
 
-DEBUG(1, "Starting local reduce sendbuf=%p buffer=%p count=%d root=%d get_local_rank(root)=%d", sendbuf, buffer, count, local_root, get_local_rank(c, local_root));
+DEBUG(1, "Starting local reduce sendbuf=%p buffer=%p count=%d root=%d get_local_rank(root)=%d",
+             sendbuf, buffer, count, local_root, get_local_rank(c, local_root));
 
    error = PMPI_Reduce(sendbuf, buffer, count, datatype, o->op, get_local_rank(c, local_root), c->comm);
 
@@ -2864,6 +2865,9 @@ MPI_Fint IMPI_Request_c2f(MPI_Request req)
    return tmp->index;
 }
 
+/*
+// We don't need these if we don't support user defines ops yet!
+
 #define __IMPI_Op_f2c
 MPI_Op IMPI_Op_f2c(MPI_Fint op)
 {
@@ -2897,6 +2901,7 @@ MPI_Fint IMPI_Op_c2f(MPI_Op op)
 
    return tmp->index;
 }
+*/
 
 // Include the generated impi implementation which contains
 // default implementations for all MPI calls.

@@ -252,7 +252,8 @@ INFO(2, "MAGPIE_MIN invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((
 void MAGPIE_SUM(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
   int i;
 
-INFO(2, "MAGPIE_SUM invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
+// BROKEN?
+  INFO(2, "MAGPIE_SUM invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
 
   if ( *type == MPI_INT ){
     int *a = (int*)inoutvec;

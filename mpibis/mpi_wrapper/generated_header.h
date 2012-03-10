@@ -880,7 +880,7 @@ MPI_Info IMPI_Info_f2c(MPI_Fint Info);
 #define __IMPI_File_f2c_FORWARD 1
 MPI_File IMPI_File_f2c(MPI_Fint File);
 
-#define __IMPI_Op_f2c_FORWARD 0
+#define __IMPI_Op_f2c_FORWARD 1
 MPI_Op IMPI_Op_f2c(MPI_Fint Op);
 
 #define __IMPI_Win_f2c_FORWARD 1
@@ -910,7 +910,7 @@ MPI_Fint IMPI_Info_c2f(MPI_Info Info);
 #define __IMPI_File_c2f_FORWARD 1
 MPI_Fint IMPI_File_c2f(MPI_File File);
 
-#define __IMPI_Op_c2f_FORWARD 0
+#define __IMPI_Op_c2f_FORWARD 1
 MPI_Fint IMPI_Op_c2f(MPI_Op Op);
 
 #define __IMPI_Win_c2f_FORWARD 1

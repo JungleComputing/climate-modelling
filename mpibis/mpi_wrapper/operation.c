@@ -103,15 +103,21 @@ int init_operations()
 
 operation *get_operation(MPI_Op op)
 {
+   return get_operation_with_index(PMPI_Op_c2f(op));
+/* --
    operation *res;
 
    if (op == MPI_OP_NULL) {
       return NULL;
    }
 
-   memcpy(&res, &op, sizeof(operation *));
+EEEP!--  This can't be right ????
+
+    memcpy(&res, &op, sizeof(operation *));
    return res;
+*/
 }
+
 
 operation *get_operation_with_index(int index)
 {
@@ -123,6 +129,7 @@ operation *get_operation_with_index(int index)
    return ops[index];
 }
 
+/*
 void set_operation_ptr(MPI_Op *dst, operation *src)
 {
    memcpy(dst, &src, sizeof(operation *));
@@ -182,5 +189,6 @@ void free_operation(operation *op)
 
    ops[index] = NULL;
 }
+*/
 
 #endif // IBIS_INTERCEPT
