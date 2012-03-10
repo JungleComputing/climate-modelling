@@ -1730,7 +1730,7 @@ int IMPI_Scatterv(void* sendbuf, int *sendcounts, int *displs, MPI_Datatype send
 #define __IMPI_Reduce
 int IMPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm)
 {
-   int local_root, i, error;
+   int local_root, root_in_cluster, i, error;
    unsigned char *buffer = NULL;
    MPI_Aint extent;
 
@@ -1761,8 +1761,10 @@ DEBUG(1, "WA reduce");
 
    if (rank_is_local(c, root)) {
       local_root = root;
+      root_in_cluster = 1;
    } else {
       local_root = c->my_coordinator;
+      root_in_cluster = 0;
    }
 
 DEBUG(1, "Local root is %d (root=%d)", local_root, root);
@@ -1787,7 +1789,7 @@ DEBUG(1, "I am root or coordinator (rank=%d root=%d coordinator=%d)", c->global_
       }
    } else {
 DEBUG(1, "I am NOT root NOR coordinator (rank=%d root=%d coordinator=%d)", c->global_rank, root, c->my_coordinator);
-}
+   }
 
 //   INFO(1, "JASON IMPI_REDUCE", "START LOCAL REDUCE root=%d lroot=%d grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
 //                       root, local_root, c->global_rank, c->local_rank, count, ((int *)sendbuf)[0], ((int *)recvbuf)[0]);
@@ -1815,7 +1817,7 @@ DEBUG(1, "Local reduce OK");
 
       // Receive partial results from remote coordinators
       for (i=0;i<c->cluster_count;i++) {
-         if (c->global_rank != c->coordinators[i]) {
+         if (c->global_rank != c->coordinators[i] && !(rank_is_local(c, c->coordinators[i]))) {
             error = messaging_receive(buffer, count, datatype, c->coordinators[i], REDUCE_TAG, MPI_STATUS_IGNORE, c);
 
             if (error != MPI_SUCCESS) {
@@ -1828,8 +1830,7 @@ DEBUG(1, "Local reduce OK");
             (*(o->function))((void*)buffer, recvbuf, &count, &datatype);
          }
       }
-
-   } else if (c->global_rank == c->my_coordinator) {
+   } else if (root_in_cluster == 0 && c->global_rank == c->my_coordinator) {
       // The local coordinator now sends the partial result to the global root.
       error = messaging_send(buffer, count, datatype, root, REDUCE_TAG, c);
 
