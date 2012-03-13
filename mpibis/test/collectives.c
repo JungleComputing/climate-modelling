@@ -381,7 +381,7 @@ static int test_scatter(MPI_Comm comm, char *name)
       sendbuffer[j] = rank;
    }
 
-   for (j=0;i<size;j++) {
+   for (i=0;i<size;i++) {
 
       for (j=0;j<size;j++) {
          recvbuffer[j] = -1;
