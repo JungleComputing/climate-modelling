@@ -294,6 +294,64 @@ static int test_allreduce(MPI_Comm comm, char *name)
    return 0;
 }
 
+static int test_scan(MPI_Comm comm, char *name)
+{
+   int i, j, p, error, rank, size;
+   int *sendbuffer;
+   int *recvbuffer;
+
+   MPI_Comm_size(comm, &size);
+   MPI_Comm_rank(comm, &rank);
+
+   sendbuffer = malloc(size * sizeof(int));
+
+   if (sendbuffer == NULL) {
+      fprintf(stderr, "Failed to allocate sendbuffer!\n");
+      MPI_Finalize();
+      return 1;
+   }
+
+   recvbuffer = malloc(size * sizeof(int));
+
+   if (recvbuffer == NULL) {
+      fprintf(stderr, "Failed to allocate recvbuffer!\n");
+      MPI_Finalize();
+      return 1;
+   }
+
+   fprintf(stderr, "SCAN %s ************\n", name);
+
+   for (j=0;j<size;j++) {
+      sendbuffer[j] = j;
+      recvbuffer[j] = -1;
+   }
+
+   error = MPI_Scan(sendbuffer, recvbuffer, size, MPI_INT, MPI_SUM, comm);
+
+   if (error != MPI_SUCCESS) {
+      fprintf(stderr, "SCAN %s failed!\n", name);
+      MPI_Finalize();
+      return 1;
+   }
+
+   for (j=0;j<size;j++) {
+      if (recvbuffer[j] != rank*j) {
+         fprintf(stderr, "SCAN %s result incorrect on %d (recvbuffer[%d] expected %d got %d)\n", name, rank, j, j*rank, recvbuffer[j]);
+         MPI_Finalize();
+         return 1;
+      }
+   }
+
+   fprintf(stderr, " - SCAN %s OK\n", name);
+
+   free(sendbuffer);
+   free(recvbuffer);
+
+   return 0;
+}
+
+
+
 int main(int argc, char *argv[])
 {
     MPI_Comm half;
@@ -414,8 +472,6 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "Done!\n");
 
-*/
-
     fprintf(stderr, "Starting ALLGATHER tests\n");
 
     error = test_allgather(MPI_COMM_WORLD, "MPI_COMM_WORLD");
@@ -430,6 +486,24 @@ int main(int argc, char *argv[])
     fprintf(stderr, "\n****************************************************\n\n");
 
     fprintf(stderr, "Done!\n");
+
+*/
+
+    fprintf(stderr, "Starting SCAN tests\n");
+
+    error = test_scan(MPI_COMM_WORLD, "MPI_COMM_WORLD");
+    if (error != 0) return error;
+
+    error = test_scan(half, "world half");
+    if (error != 0) return error;
+
+    error = test_scan(oddeven, "world odd/even");
+    if (error != 0) return error;
+
+    fprintf(stderr, "\n****************************************************\n\n");
+
+    fprintf(stderr, "Done!\n");
+
 
     MPI_Finalize();
 
