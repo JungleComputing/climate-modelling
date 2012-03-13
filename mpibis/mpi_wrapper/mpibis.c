@@ -1929,7 +1929,7 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
 //  INFO(1, "JASON ALLREDUCE WA", "FIXME: WA BCAST with CRAP performance!!\n");
 
       // FIXME: If this BCAST blocks then we're dead!
-      INFO(1, "WA BAST SEND i=%d grank=%d lrank=%d count=%d buf[1]=%d\n", i, c->global_rank, c->local_rank, count, ((int*)recvbuf)[1]);
+      INFO(1, "WA BAST SEND grank=%d lrank=%d count=%d buf[1]=%d\n", c->global_rank, c->local_rank, count, ((int*)recvbuf)[1]);
       error = messaging_bcast(recvbuf, count, datatype, c->global_rank, c);
 
       if (error != MPI_SUCCESS) {
