@@ -1558,7 +1558,7 @@ for (i=0;i<c->cluster_count;i++) {
       for (i=0;i<c->global_size;i++) {
          if (rank_is_local(c, i)) {
 
-INFO(2, "LOCAL RECEIVE: offset=%d extent=%d count=%d", offset, extent, count);
+INFO(2, "LOCAL RECEIVE: offset=%d extent=%d count=%d", offset, extent, recvcounts[i]);
 
             error = PMPI_Recv(buffer + (offset * extent), recvcounts[i], recvtype, get_local_rank(c, i), ALLGATHERV_TAG, c->comm, MPI_STATUS_IGNORE);
 
