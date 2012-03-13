@@ -398,7 +398,6 @@ int main(int argc, char *argv[])
     fprintf(stderr, "\n****************************************************\n\n");
 
     fprintf(stderr, "Done!\n");
-*/
 
     fprintf(stderr, "Starting ALLREDUCE tests\n");
 
@@ -409,6 +408,23 @@ int main(int argc, char *argv[])
     if (error != 0) return error;
 
     error = test_allreduce(oddeven, "world odd/even");
+    if (error != 0) return error;
+
+    fprintf(stderr, "\n****************************************************\n\n");
+
+    fprintf(stderr, "Done!\n");
+
+*/
+
+    fprintf(stderr, "Starting ALLGATHER tests\n");
+
+    error = test_allgather(MPI_COMM_WORLD, "MPI_COMM_WORLD");
+    if (error != 0) return error;
+
+    error = test_allgather(half, "world half");
+    if (error != 0) return error;
+
+    error = test_allgather(oddeven, "world odd/even");
     if (error != 0) return error;
 
     fprintf(stderr, "\n****************************************************\n\n");
