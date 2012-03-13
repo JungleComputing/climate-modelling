@@ -1892,7 +1892,7 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
    // of this local merge is then broadcast in each local cluster.
    // NOTE: this does assume the operation is commutative!
 
-   INFO(1, "START LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
+   INFO(1, "START LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[1]=%d rbuf[1]=%d\n",
                        c->global_rank, c->local_rank, count, ((int *)sendbuf)[1], ((int *)recvbuf)[1]);
 
    error = PMPI_Reduce(sendbuf, recvbuf, count, datatype, o->op, get_local_rank(c, c->my_coordinator), c->comm);
@@ -1903,7 +1903,7 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
       return error;
    }
 
-   INFO(1, "RESULT LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
+   INFO(1, "RESULT LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[1]=%d rbuf[1]=%d\n",
                         c->global_rank, c->local_rank, count, ((int *)sendbuf)[1], ((int *)recvbuf)[1]);
 
    // The local cluster coordinator shares the result with all other cluster coordinators.
@@ -1928,19 +1928,18 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
 
 //  INFO(1, "JASON ALLREDUCE WA", "FIXME: WA BCAST with CRAP performance!!\n");
 
-      // FIXME: This is a synchronous implementation, which is correct but has crap performance!
+      // FIXME: If this BCAST blocks then we're dead!
+      INFO(1, "WA BAST SEND i=%d grank=%d lrank=%d count=%d buf[1]=%d\n", i, c->global_rank, c->local_rank, count, ((int*)recvbuf)[1]);
+      error = messaging_bcast(recvbuf, count, datatype, c->global_rank, c);
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "Local root %d failed to bcast local allreduce result! (comm=%d, error=%d)", c->global_rank, c->number, error);
+         return error;
+      }
+
       for (i=0;i<c->cluster_count;i++) {
 
-         if (c->coordinators[i] == c->global_rank) {
-
-         INFO(1, "WA BAST SEND i=%d grank=%d lrank=%d count=%d buf[1]=%d\n", i, c->global_rank, c->local_rank, count, ((int*)recvbuf)[1]);
-            error = messaging_bcast(recvbuf, count, datatype, c->global_rank, c);
-
-            if (error != MPI_SUCCESS) {
-               ERROR(1, "Local root %d failed to bcast local allreduce result! (comm=%d, error=%d)", c->global_rank, c->number, error);
-               return error;
-            }
-         } else {
+         if (c->coordinators[i] != c->global_rank) {
 
         INFO(1, "WA BAST RECV i=%d grank=%d lrank=%d count=%d from=%d\n", i, c->global_rank, c->local_rank, count, c->coordinators[i]);
 
