@@ -1942,27 +1942,25 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
             }
          } else {
 
-//  INFO(1, "JASON ALLREDUCE WA", "WA BAST RECV i=%d grank=%d lrank=%d count=%d from=%d\n", i, c->global_rank, c->local_rank, count, c->coordinators[i]);
+        INFO(1, "WA BAST RECV i=%d grank=%d lrank=%d count=%d from=%d\n", i, c->global_rank, c->local_rank, count, c->coordinators[i]);
 
             error = messaging_bcast_receive(buffer, count, datatype, c->coordinators[i], c);
-
-//  INFO(1, "JASON ALLREDUCE WA", "WA BAST RECEIVED %d\n", buffer[i]);
 
             if (error != MPI_SUCCESS) {
                ERROR(1, "Local root %d failed to bcast local allreduce result! (comm=%d, error=%d)", c->global_rank, c->number, error);
                return error;
             }
 
-//  INFO(1, "JASON ALLREDUCE WA", "CALLING REDUCE OP buf[0]=%d revcbuf[0]=%d count=%d\n", ((int *)buffer)[0], ((int *)recvbuf)[0], count);
+        INFO(1, "CALLING REDUCE OP buf[1]=%d revcbuf[1]=%d count=%d\n", ((int *)buffer)[1], ((int *)recvbuf)[1], count);
 
             (*(o->function))((void*)buffer, recvbuf, &count, &datatype);
 
-//  INFO(1, "JASON ALLREDUCE WA", "RESULT REDUCE OP buf[0]=%d revcbuf[0]=%d count=%d\n", ((int *)buffer)[0], ((int *)recvbuf)[0], count);
+        INFO(1, "RESULT REDUCE OP buf[1]=%d revcbuf[1]=%d count=%d\n", ((int *)buffer)[1], ((int *)recvbuf)[1], count);
          }
       }
    }
 
-//  INFO(1, "JASON ALLREDUCE WA", "LOCAL BAST grank=%d lrank=%d count=%d buf[0]=%d\n", c->global_rank, c->local_rank, count, ((int*)recvbuf)[0]);
+   INFO(1, "LOCAL BAST grank=%d lrank=%d count=%d buf[1]=%d\n", c->global_rank, c->local_rank, count, ((int*)recvbuf)[1]);
 
    return PMPI_Bcast(recvbuf, count, datatype, 0, c->comm);
 }
