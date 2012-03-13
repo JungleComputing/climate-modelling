@@ -151,7 +151,7 @@ static int test_allgather(MPI_Comm comm, char *name)
       recvbuffer[j] = -1;
    }
 
-   error = MPI_AllGather(sendbuffer, size, MPI_INT, recvbuffer, size, MPI_INT, comm);
+   error = MPI_Allgather(sendbuffer, size, MPI_INT, recvbuffer, size, MPI_INT, comm);
 
    if (error != MPI_SUCCESS) {
       fprintf(stderr, "ALLGATHER %s failed!\n", name);
