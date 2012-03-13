@@ -1557,8 +1557,8 @@ for (i=0;i<c->cluster_count;i++) {
       offset = offsets[c->member_cluster_index[c->global_rank]];
 
       for (i=0;i<c->global_size;i++) {
-         if (rank_is_local(c, i)) {
 
+         if ((i != c->global_rank) && rank_is_local(c, i)) {
 INFO(2, "LOCAL RECEIVE: offset=%d extent=%d count=%d", offset, extent, recvcounts[i]);
 
             error = PMPI_Recv(buffer + (offset * extent), recvcounts[i], recvtype, get_local_rank(c, i), ALLGATHERV_TAG, c->comm, MPI_STATUS_IGNORE);
@@ -1598,6 +1598,9 @@ INFO(2, "LOCAL RECEIVE: DONE  offset=%d");
    } else {
 
       // I am NOT a coordinator, so just send my data to the local coordinator.
+
+      INFO(2, "LOCAL SEND: count=%d", sendcount);
+
       error = PMPI_Send(sendbuf, sendcount, sendtype, get_local_rank(c, c->my_coordinator), ALLGATHERV_TAG, c->comm);
 
       if (error != MPI_SUCCESS) {
