@@ -1725,7 +1725,7 @@ INFO(1, "WA scatter");
          return MPI_ERR_INTERN;
       }
 
-      for (i=0;i<0;i++) {
+      for (i=0;i<c->global_size;i++) {
          sendcounts[i] = sendcount;
          displs[i] = sendcount * i;
       }
