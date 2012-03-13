@@ -2202,7 +2202,7 @@ int IMPI_Alltoall(void *sendbuf, int sendcount, MPI_Datatype sendtype,
       return MPI_ERR_INTERN;
    }
 
-   for (i=0;i<0;i++) {
+   for (i=0;i<c->global_size;i++) {
       sendcounts[i] = sendcount;
       senddispls[i] = sendcount * i;
       recvcounts[i] = recvcount;
