@@ -261,7 +261,7 @@ void MAGPIE_SUM(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
     int *b = (int*)invec;
     for (i=0; i < *len; i++) {
 
-      INFO(2, "MAGPIE_SUM in[%d]=%d inout[%d]=%d sum=%d", i, b[i], i, a[i], MACROS_SUM(b[i], a[i]));
+      INFO(2, "MAGPIE_SUM in[%d]=%d inout[%d]=%d sum=%d", i, b[i], i, a[i], MACRO_SUM(b[i], a[i]));
 
       a[i] = MACRO_SUM(b[i],a[i]);
     }
