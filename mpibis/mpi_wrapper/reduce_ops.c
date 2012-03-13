@@ -253,13 +253,18 @@ void MAGPIE_SUM(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
   int i;
 
 // BROKEN?
-  INFO(2, "MAGPIE_SUM invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
+
+  INFO(2, "MAGPIE_SUM invec=%d inoutvec=%d len=%d type=%s", ((int*)invec)[0], ((int*)inoutvec)[0], *len, type_to_string(*type));
 
   if ( *type == MPI_INT ){
     int *a = (int*)inoutvec;
     int *b = (int*)invec;
-    for (i=0; i < *len; i++)
+    for (i=0; i < *len; i++) {
+
+      INFO(2, "MAGPIE_SUM in[%d]=%d inout[%d]=%d sum=%d", i, b[i], i, a[i], MACROS_SUM(b[i], a[i]));
+
       a[i] = MACRO_SUM(b[i],a[i]);
+    }
     return;
   }
   else if ( *type == MPI_UNSIGNED ){
