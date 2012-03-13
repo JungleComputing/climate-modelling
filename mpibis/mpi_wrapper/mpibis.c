@@ -1777,14 +1777,14 @@ DEBUG(1, "I am root or coordinator (rank=%d root=%d coordinator=%d)", c->global_
       error = PMPI_Type_extent(datatype, &extent);
 
       if (error != MPI_SUCCESS) {
-         ERROR(1, "Failed to retrieve data size for allreduce! (comm=%d, error=%d)", c->number, error);
+         ERROR(1, "Failed to retrieve data size for reduce! (comm=%d, error=%d)", c->number, error);
          return error;
       }
 
       buffer = malloc(count * extent);
 
       if (buffer == NULL) {
-         ERROR(1, " Failed to allocate buffer space for WA Allreduce! (comm=%d, error=%d)", c->number, error);
+         ERROR(1, " Failed to allocate buffer space for WA reduce! (comm=%d, error=%d)", c->number, error);
          return MPI_ERR_INTERN;
       }
    } else {
@@ -1892,18 +1892,19 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
    // of this local merge is then broadcast in each local cluster.
    // NOTE: this does assume the operation is commutative!
 
-//   INFO(1, "JASON ALLREDUCE WA", "START LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
-//                       c->global_rank, c->local_rank, count, ((int *)sendbuf)[0], ((int *)recvbuf)[0]);
+   INFO(1, "JASON ALLREDUCE WA", "START LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
+                       c->global_rank, c->local_rank, count, ((int *)sendbuf)[1], ((int *)recvbuf)[1]);
 
    error = PMPI_Reduce(sendbuf, recvbuf, count, datatype, o->op, get_local_rank(c, c->my_coordinator), c->comm);
+
 
    if (error != MPI_SUCCESS) {
       ERROR(1, "Failed to perform local allreduce! (comm=%d, error=%d)", c->number, error);
       return error;
    }
 
-//  INFO(1, "JASON ALLREDUCE WA", "RESULT LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
-//                       c->global_rank, c->local_rank, count, ((int *)sendbuf)[0], ((int *)recvbuf)[0]);
+   INFO(1, "JASON ALLREDUCE WA", "RESULT LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
+                        c->global_rank, c->local_rank, count, ((int *)sendbuf)[1], ((int *)recvbuf)[1]);
 
    // The local cluster coordinator shares the result with all other cluster coordinators.
    if (c->global_rank == c->my_coordinator) {
