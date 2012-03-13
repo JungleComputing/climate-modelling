@@ -2119,7 +2119,7 @@ static int WA_Alltoallv(void *sendbuf, int *sendcounts, int *sdispls, MPI_Dataty
 
 INFO(1, "I am master %d", i);
 
-         for (j=0;j<c->global_rank;j++) {
+         for (j=0;j<c->global_size;j++) {
 
             if (j == c->global_rank) {
 
