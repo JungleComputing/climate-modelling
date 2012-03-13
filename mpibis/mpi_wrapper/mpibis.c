@@ -1558,14 +1558,20 @@ for (i=0;i<c->cluster_count;i++) {
 
       for (i=0;i<c->global_size;i++) {
 
-         if ((i != c->global_rank) && rank_is_local(c, i)) {
+         if (rank_is_local(c, i)) {
+
+            if (i == c->global_rank) {
+INFO(2, "LOCAL COPY: offset=%d extent=%d count=%d", offset, extent, recvcounts[i]);
+               memcpy(buffer + (offset*extent), sendbuf, recvcounts[i]*extent);
+            } else {
 INFO(2, "LOCAL RECEIVE: offset=%d extent=%d count=%d", offset, extent, recvcounts[i]);
 
-            error = PMPI_Recv(buffer + (offset * extent), recvcounts[i], recvtype, get_local_rank(c, i), ALLGATHERV_TAG, c->comm, MPI_STATUS_IGNORE);
+               error = PMPI_Recv(buffer + (offset * extent), recvcounts[i], recvtype, get_local_rank(c, i), ALLGATHERV_TAG, c->comm, MPI_STATUS_IGNORE);
 
-            if (error != MPI_SUCCESS) {
-               ERROR(1, "Failed to receive data from %d for gather! (comm=%d, error=%d)", i, c->number, error);
-               return error;
+               if (error != MPI_SUCCESS) {
+                  ERROR(1, "Failed to receive data from %d for gather! (comm=%d, error=%d)", i, c->number, error);
+                  return error;
+               }
             }
 
             offset += recvcounts[i];
