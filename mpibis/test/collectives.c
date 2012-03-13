@@ -116,6 +116,67 @@ static int test_gather(MPI_Comm comm, char *name)
    return 0;
 }
 
+static int test_allgather(MPI_Comm comm, char *name)
+{
+   int i, j, p, error, rank, size;
+   int *sendbuffer;
+   int *recvbuffer;
+
+   MPI_Comm_size(comm, &size);
+   MPI_Comm_rank(comm, &rank);
+
+   sendbuffer = malloc(size * sizeof(int));
+
+   if (sendbuffer == NULL) {
+      fprintf(stderr, "Failed to allocate sendbuffer!\n");
+      MPI_Finalize();
+      return 1;
+   }
+
+   recvbuffer = malloc(size * size * sizeof(int));
+
+   if (recvbuffer == NULL) {
+      fprintf(stderr, "Failed to allocate recvbuffer!\n");
+      MPI_Finalize();
+      return 1;
+   }
+
+   fprintf(stderr, "ALLGATHER %s ************\n", name);
+
+   for (j=0;j<size;j++) {
+      sendbuffer[j] = rank;
+   }
+
+   for (j=0;j<size*size;j++) {
+      recvbuffer[j] = -1;
+   }
+
+   error = MPI_AllGather(sendbuffer, size, MPI_INT, recvbuffer, size, MPI_INT, comm);
+
+   if (error != MPI_SUCCESS) {
+      fprintf(stderr, "ALLGATHER %s failed!\n", name);
+      MPI_Finalize();
+      return 1;
+   }
+
+   for (j=0;j<size;j++) {
+      for (p=0;p<size;p++) {
+         if (recvbuffer[j*size+p] != j) {
+            fprintf(stderr, "ALLGATHER %s result incorrect on %d (expected %d got %d)\n", name, rank, j, recvbuffer[j*size+p]);
+            MPI_Finalize();
+            return 1;
+         }
+      }
+   }
+
+   fprintf(stderr, " - ALLGATHER %s OK\n", name);
+
+   free(sendbuffer);
+   free(recvbuffer);
+
+   return 0;
+}
+
 static int test_reduce(MPI_Comm comm, char *name)
 {
    int i, j, p, error, rank, size;
@@ -177,6 +238,61 @@ static int test_reduce(MPI_Comm comm, char *name)
    return 0;
 }
 
+static int test_allreduce(MPI_Comm comm, char *name)
+{
+   int i, j, p, error, rank, size;
+   int *sendbuffer;
+   int *recvbuffer;
+
+   MPI_Comm_size(comm, &size);
+   MPI_Comm_rank(comm, &rank);
+
+   sendbuffer = malloc(size * sizeof(int));
+
+   if (sendbuffer == NULL) {
+      fprintf(stderr, "Failed to allocate sendbuffer!\n");
+      MPI_Finalize();
+      return 1;
+   }
+
+   recvbuffer = malloc(size * sizeof(int));
+
+   if (recvbuffer == NULL) {
+      fprintf(stderr, "Failed to allocate recvbuffer!\n");
+      MPI_Finalize();
+      return 1;
+   }
+
+   fprintf(stderr, "ALLREDUCE %s ************\n", name);
+
+   for (j=0;j<size;j++) {
+      sendbuffer[j] = j;
+      recvbuffer[j] = -1;
+   }
+
+   error = MPI_Allreduce(sendbuffer, recvbuffer, size, MPI_INT, MPI_SUM, comm);
+
+   if (error != MPI_SUCCESS) {
+      fprintf(stderr, "ALLREDUCE %s failed!\n", name);
+      MPI_Finalize();
+      return 1;
+   }
+
+   for (j=0;j<size;j++) {
+      if (recvbuffer[j] != size*j) {
+         fprintf(stderr, "ALLREDUCE %s result incorrect on %d (expected %d got %d)\n", name, rank, j*size, recvbuffer[j]);
+         MPI_Finalize();
+         return 1;
+      }
+   }
+
+   fprintf(stderr, " - ALLREDUCE %s OK\n", name);
+
+   free(sendbuffer);
+   free(recvbuffer);
+
+   return 0;
+}
 
 int main(int argc, char *argv[])
 {
@@ -267,7 +383,6 @@ int main(int argc, char *argv[])
     if (error != 0) return error;
 
     fprintf(stderr, "\n****************************************************\n\n");
-*/
 
     fprintf(stderr, "Starting REDUCE tests\n");
 
@@ -278,6 +393,22 @@ int main(int argc, char *argv[])
     if (error != 0) return error;
 
     error = test_reduce(oddeven, "world odd/even");
+    if (error != 0) return error;
+
+    fprintf(stderr, "\n****************************************************\n\n");
+
+    fprintf(stderr, "Done!\n");
+*/
+
+    fprintf(stderr, "Starting ALLREDUCE tests\n");
+
+    error = test_allreduce(MPI_COMM_WORLD, "MPI_COMM_WORLD");
+    if (error != 0) return error;
+
+    error = test_allreduce(half, "world half");
+    if (error != 0) return error;
+
+    error = test_allreduce(oddeven, "world odd/even");
     if (error != 0) return error;
 
     fprintf(stderr, "\n****************************************************\n\n");
