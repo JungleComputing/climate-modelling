@@ -1471,7 +1471,7 @@ static int get_count_sums(communicator *c, int *recvcounts, int *sums, int *offs
    }
 
    for (i=0;i<c->global_size;i++) {
-      sums[c->members_cluster_index[i]] += recvcounts[i];
+      sums[c->member_cluster_index[i]] += recvcounts[i];
       sum += recvcounts[i];
 
       if (i > 0) {
