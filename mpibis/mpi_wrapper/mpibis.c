@@ -1698,9 +1698,14 @@ int IMPI_Scatter(void* sendbuf, int sendcount, MPI_Datatype sendtype,
    communicator *c = get_communicator(comm);
 
    if (comm_is_local(c)) {
+
+INFO(1, "local scatter");
+
      // simply perform a scatter in local cluster
      return PMPI_Scatter(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, c->comm);
    }
+
+INFO(1, "WA scatter");
 
    // We implement a WA Scatter using the WA Scatterv
    if (c->global_rank == root) {
