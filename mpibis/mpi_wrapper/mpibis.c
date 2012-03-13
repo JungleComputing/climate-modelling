@@ -1429,6 +1429,8 @@ int IMPI_Allgather(void* sendbuf, int sendcount, MPI_Datatype sendtype,
      return PMPI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, c->comm);
    }
 
+INFO(1, "sendcount=%d recvcount=%d", sendcount, recvcount);
+
    // We implements a Allgather on top of a Allgatherv.
    displs = malloc(c->global_size * sizeof(int));
 
@@ -1448,6 +1450,7 @@ int IMPI_Allgather(void* sendbuf, int sendcount, MPI_Datatype sendtype,
    for (i=0;i<c->global_size;i++) {
       displs[i] = i*recvcount;
       recvcounts[i] = recvcount;
+INFO(1, "displs[%d]=%d recvcounts[%d]=%d", i, displs[i], i, recvcounts[i]);
    }
 
    error = IMPI_Allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm);
