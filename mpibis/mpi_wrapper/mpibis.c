@@ -2117,13 +2117,21 @@ static int WA_Alltoallv(void *sendbuf, int *sendcounts, int *sdispls, MPI_Dataty
       if (i == c->global_rank) {
          // We should receive from all others (including self)
 
+INFO(1, "I am master %d", i);
+
          for (j=0;j<c->global_rank;j++) {
 
             if (j == c->global_rank) {
+
+INFO(1, "local copy index=%d displ=%d, count=%d", j, rdispls[j], recvcounts[j]);
+
                // receive from self is a simple memcopy.
                memcpy(recvbuf + (rextent * rdispls[j]), sendbuf + (sextent * sdispls[j]), recvcounts[i]*rextent);
 
             } else {
+
+INFO(1, "receive index=%d displ=%d, count=%d", j, rdispls[j], recvcounts[j]);
+
                // receive from others.
                error = do_recv(recvbuf + (rextent * rdispls[j]), recvcounts[j], recvtype, j, ALLTOALLV_TAG, MPI_STATUS_IGNORE, c);
 
@@ -2135,6 +2143,9 @@ static int WA_Alltoallv(void *sendbuf, int *sendcounts, int *sdispls, MPI_Dataty
          }
       } else {
          // We should send to one other.
+
+INFO(1, "send index=%d displ=%d, count=%d", i, sdispls[i], sendcounts[i]);
+
          error = do_send(sendbuf + (sdispls[i] * sextent), sendcounts[i], sendtype, i, ALLTOALLV_TAG, c);
 
          if (error != MPI_SUCCESS) {
