@@ -1892,8 +1892,8 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
    // of this local merge is then broadcast in each local cluster.
    // NOTE: this does assume the operation is commutative!
 
-   INFO(1, "START LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[1]=%d rbuf[1]=%d\n",
-                       c->global_rank, c->local_rank, count, ((int *)sendbuf)[1], ((int *)recvbuf)[1]);
+//   INFO(1, "START LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[1]=%d rbuf[1]=%d\n",
+//                       c->global_rank, c->local_rank, count, ((int *)sendbuf)[1], ((int *)recvbuf)[1]);
 
    error = PMPI_Reduce(sendbuf, recvbuf, count, datatype, o->op, get_local_rank(c, c->my_coordinator), c->comm);
 
@@ -1903,8 +1903,8 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
       return error;
    }
 
-   INFO(1, "RESULT LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[1]=%d rbuf[1]=%d\n",
-                        c->global_rank, c->local_rank, count, ((int *)sendbuf)[1], ((int *)recvbuf)[1]);
+//   INFO(1, "RESULT LOCAL REDUCE grank=%d lrank=%d count=%d sbuf[1]=%d rbuf[1]=%d\n",
+//                        c->global_rank, c->local_rank, count, ((int *)sendbuf)[1], ((int *)recvbuf)[1]);
 
    // The local cluster coordinator shares the result with all other cluster coordinators.
    if (c->global_rank == c->my_coordinator) {
@@ -1929,7 +1929,7 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
 //  INFO(1, "JASON ALLREDUCE WA", "FIXME: WA BCAST with CRAP performance!!\n");
 
       // FIXME: If this BCAST blocks then we're dead!
-      INFO(1, "WA BAST SEND grank=%d lrank=%d count=%d buf[1]=%d\n", c->global_rank, c->local_rank, count, ((int*)recvbuf)[1]);
+//      INFO(1, "WA BAST SEND grank=%d lrank=%d count=%d buf[1]=%d\n", c->global_rank, c->local_rank, count, ((int*)recvbuf)[1]);
       error = messaging_bcast(recvbuf, count, datatype, c->global_rank, c);
 
       if (error != MPI_SUCCESS) {
@@ -1941,7 +1941,7 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
 
          if (c->coordinators[i] != c->global_rank) {
 
-        INFO(1, "WA BAST RECV i=%d grank=%d lrank=%d count=%d from=%d\n", i, c->global_rank, c->local_rank, count, c->coordinators[i]);
+//        INFO(1, "WA BAST RECV i=%d grank=%d lrank=%d count=%d from=%d\n", i, c->global_rank, c->local_rank, count, c->coordinators[i]);
 
             error = messaging_bcast_receive(buffer, count, datatype, c->coordinators[i], c);
 
@@ -1950,16 +1950,16 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
                return error;
             }
 
-        INFO(1, "CALLING REDUCE OP buf[1]=%d revcbuf[1]=%d count=%d\n", ((int *)buffer)[1], ((int *)recvbuf)[1], count);
+//        INFO(1, "CALLING REDUCE OP buf[1]=%d revcbuf[1]=%d count=%d\n", ((int *)buffer)[1], ((int *)recvbuf)[1], count);
 
             (*(o->function))((void*)buffer, recvbuf, &count, &datatype);
 
-        INFO(1, "RESULT REDUCE OP buf[1]=%d revcbuf[1]=%d count=%d\n", ((int *)buffer)[1], ((int *)recvbuf)[1], count);
+//        INFO(1, "RESULT REDUCE OP buf[1]=%d revcbuf[1]=%d count=%d\n", ((int *)buffer)[1], ((int *)recvbuf)[1], count);
          }
       }
    }
 
-   INFO(1, "LOCAL BAST grank=%d lrank=%d count=%d buf[1]=%d\n", c->global_rank, c->local_rank, count, ((int*)recvbuf)[1]);
+//   INFO(1, "LOCAL BAST grank=%d lrank=%d count=%d buf[1]=%d\n", c->global_rank, c->local_rank, count, ((int*)recvbuf)[1]);
 
    return PMPI_Bcast(recvbuf, count, datatype, 0, c->comm);
 }
