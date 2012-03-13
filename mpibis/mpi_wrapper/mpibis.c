@@ -1663,16 +1663,30 @@ static int WA_Scatterv(void *sendbuf, int *sendcounts, int *displs, MPI_Datatype
       }
 
       for (i=0;i<c->global_size;i++) {
-         error = do_send(sendbuf + (displs[i] * extent), sendcounts[i], sendtype, i, SCATTERV_TAG, c);
 
-         if (error != MPI_SUCCESS) {
-            ERROR(1, "WA_Scatterv: Root %d (in cluster %d) failed to send data to %d (in cluster %d) (in communicator %d)!\n", root, get_cluster_rank(c, root), i, get_cluster_rank(c, i), c->number);
-            return error;
+         if (i == c->global_rank) {
+INFO(1, "LOCAL COPY");
+            memcpy(recvbuf, sendbuf + (displs[i]*extent), recvcount*extent);
+         } else {
+INFO(1, "DO send to %d", i);
+            error = do_send(sendbuf + (displs[i]*extent), sendcounts[i], sendtype, i, SCATTERV_TAG, c);
+INFO(1, "DONE send to %d", i);
+
+            if (error != MPI_SUCCESS) {
+               ERROR(1, "WA_Scatterv: Root %d (in cluster %d) failed to send data to %d (in cluster %d) (in communicator %d)!\n", root, get_cluster_rank(c, root), i, get_cluster_rank(c, i), c->number);
+               return error;
+            }
          }
       }
 
    } else {
+
+INFO(1, "DO receive from %d", root);
+
       error = do_recv(recvbuf, recvcount, recvtype, root, SCATTERV_TAG, MPI_STATUS_IGNORE, c);
+
+INFO(1, "DONE receive from %d", root);
+
 
       if (error != MPI_SUCCESS) {
          ERROR(1, "WA_Scatterv: Process %d (in cluster %d) failed to receive data from root %d (in cluster %d) (in communicator %d)!\n", c->global_rank, cluster_rank, root, get_cluster_rank(c, root), c->number);
