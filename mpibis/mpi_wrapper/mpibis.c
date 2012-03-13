@@ -1665,12 +1665,12 @@ static int WA_Scatterv(void *sendbuf, int *sendcounts, int *displs, MPI_Datatype
       for (i=0;i<c->global_size;i++) {
 
          if (i == c->global_rank) {
-INFO(1, "LOCAL COPY");
+//INFO(1, "LOCAL COPY");
             memcpy(recvbuf, sendbuf + (displs[i]*extent), recvcount*extent);
          } else {
-INFO(1, "DO send to %d", i);
+//INFO(1, "DO send to %d", i);
             error = do_send(sendbuf + (displs[i]*extent), sendcounts[i], sendtype, i, SCATTERV_TAG, c);
-INFO(1, "DONE send to %d", i);
+//INFO(1, "DONE send to %d", i);
 
             if (error != MPI_SUCCESS) {
                ERROR(1, "WA_Scatterv: Root %d (in cluster %d) failed to send data to %d (in cluster %d) (in communicator %d)!\n", root, get_cluster_rank(c, root), i, get_cluster_rank(c, i), c->number);
@@ -1681,12 +1681,11 @@ INFO(1, "DONE send to %d", i);
 
    } else {
 
-INFO(1, "DO receive from %d", root);
+//INFO(1, "DO receive from %d", root);
 
       error = do_recv(recvbuf, recvcount, recvtype, root, SCATTERV_TAG, MPI_STATUS_IGNORE, c);
 
-INFO(1, "DONE receive from %d", root);
-
+//INFO(1, "DONE receive from %d", root);
 
       if (error != MPI_SUCCESS) {
          ERROR(1, "WA_Scatterv: Process %d (in cluster %d) failed to receive data from root %d (in cluster %d) (in communicator %d)!\n", c->global_rank, cluster_rank, root, get_cluster_rank(c, root), c->number);
@@ -1713,13 +1712,13 @@ int IMPI_Scatter(void* sendbuf, int sendcount, MPI_Datatype sendtype,
 
    if (comm_is_local(c)) {
 
-INFO(1, "local scatter");
+//INFO(1, "local scatter");
 
      // simply perform a scatter in local cluster
      return PMPI_Scatter(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, c->comm);
    }
 
-INFO(1, "WA scatter");
+//INFO(1, "WA scatter");
 
    // We implement a WA Scatter using the WA Scatterv
    if (c->global_rank == root) {
@@ -1792,13 +1791,13 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, 
 
    if (comm_is_local(c)) {
 
-DEBUG(1, "Local reduce");
+//DEBUG(1, "Local reduce");
 
      // simply perform a reduce in local cluster
      return PMPI_Reduce(sendbuf, recvbuf, count, datatype, o->op, root, c->comm);
    }
 
-DEBUG(1, "WA reduce");
+//DEBUG(1, "WA reduce");
 
    // We need to perform a WA Reduce. We do this by performing a reduce
    // to our local cluster coordinator. This result is then forwarded to the
@@ -1812,11 +1811,11 @@ DEBUG(1, "WA reduce");
       root_in_cluster = 0;
    }
 
-DEBUG(1, "Local root is %d (root=%d)", local_root, root);
+//DEBUG(1, "Local root is %d (root=%d)", local_root, root);
 
    if (c->global_rank == root || c->global_rank == c->my_coordinator) {
 
-DEBUG(1, "I am root or coordinator (rank=%d root=%d coordinator=%d)", c->global_rank, root, c->my_coordinator);
+//DEBUG(1, "I am root or coordinator (rank=%d root=%d coordinator=%d)", c->global_rank, root, c->my_coordinator);
 
       // FIXME: use size?
       error = PMPI_Type_extent(datatype, &extent);
@@ -1833,19 +1832,19 @@ DEBUG(1, "I am root or coordinator (rank=%d root=%d coordinator=%d)", c->global_
          return MPI_ERR_INTERN;
       }
    } else {
-DEBUG(1, "I am NOT root NOR coordinator (rank=%d root=%d coordinator=%d)", c->global_rank, root, c->my_coordinator);
+//DEBUG(1, "I am NOT root NOR coordinator (rank=%d root=%d coordinator=%d)", c->global_rank, root, c->my_coordinator);
    }
 
 //   INFO(1, "JASON IMPI_REDUCE", "START LOCAL REDUCE root=%d lroot=%d grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
 //                       root, local_root, c->global_rank, c->local_rank, count, ((int *)sendbuf)[0], ((int *)recvbuf)[0]);
 
 
-DEBUG(1, "Starting local reduce sendbuf=%p buffer=%p count=%d root=%d get_local_rank(root)=%d",
-             sendbuf, buffer, count, local_root, get_local_rank(c, local_root));
+//DEBUG(1, "Starting local reduce sendbuf=%p buffer=%p count=%d root=%d get_local_rank(root)=%d",
+  //           sendbuf, buffer, count, local_root, get_local_rank(c, local_root));
 
    error = PMPI_Reduce(sendbuf, buffer, count, datatype, o->op, get_local_rank(c, local_root), c->comm);
 
-DEBUG(1, "Local reduce OK");
+//DEBUG(1, "Local reduce OK");
 
 
    if (error != MPI_SUCCESS) {
