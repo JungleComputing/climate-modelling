@@ -162,7 +162,7 @@ static int test_allgather(MPI_Comm comm, char *name)
    for (j=0;j<size;j++) {
       for (p=0;p<size;p++) {
          if (recvbuffer[j*size+p] != j) {
-            fprintf(stderr, "ALLGATHER %s result incorrect on %d (expected %d got %d)\n", name, rank, j, recvbuffer[j*size+p]);
+            fprintf(stderr, "ALLGATHER %s result incorrect on %d (recvbuffer[%d] expected %d got %d)\n", name, rank, (j*size+p), j, recvbuffer[j*size+p]);
             MPI_Finalize();
             return 1;
          }
