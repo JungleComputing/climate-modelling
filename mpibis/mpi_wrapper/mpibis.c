@@ -1463,7 +1463,7 @@ INFO(1, "displs[%d]=%d recvcounts[%d]=%d", i, displs[i], i, recvcounts[i]);
 
 static int get_count_sums(communicator *c, int *recvcounts, int *sums, int *offsets)
 {
-   int i, tmp_cluster, sum = 0;
+   int i, sum = 0;
 
    for (i=0;i<c->cluster_count;i++) {
       sums[i] = 0;
@@ -1471,9 +1471,7 @@ static int get_count_sums(communicator *c, int *recvcounts, int *sums, int *offs
    }
 
    for (i=0;i<c->global_size;i++) {
-      tmp_cluster = GET_CLUSTER_RANK(c->members[i]);
-
-      sums[tmp_cluster] += recvcounts[i];
+      sums[c->members_cluster_index[i]] += recvcounts[i];
       sum += recvcounts[i];
 
       if (i > 0) {
@@ -1483,144 +1481,6 @@ static int get_count_sums(communicator *c, int *recvcounts, int *sums, int *offs
 
    return sum;
 }
-
-#if 0
-
-#define __IMPI_Allgatherv
-int IMPI_Allgatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
-                    void *recvbuf, int *recvcounts,
-                    int *displs, MPI_Datatype recvtype, MPI_Comm comm)
-{
-   int tmp, sum, error, i, offset;
-   int *sums;
-   int *offsets;
-   unsigned char *buffer;
-
-   MPI_Aint extent;
-
-   inc_communicator_statistics(comm, STATS_ALLGATHER);
-
-   communicator *c = get_communicator(comm);
-
-   if (comm_is_local(c)) {
-     // simply perform an allgatherv in local cluster
-     return PMPI_Allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, c->comm);
-   }
-
-   // We need to perform a WA Allgatherv.
-
-   // First retrieve the data element size
-   // FIXME: use size?
-   error = PMPI_Type_extent(recvtype, &extent);
-
-   if (error != MPI_SUCCESS) {
-      ERROR(1, "Failed to retrieve data size! (comm=%d, error=%d)", c->number, error);
-      return error;
-   }
-
-   // Next, get the number of elements sent per cluster, the offsets in the buffer, and the total number of elements.
-   sums = malloc(c->cluster_count * sizeof(int));
-
-   if (sums == NULL) {
-      ERROR(1, "Failed to allocated space for local sums! (comm=%d)", c->number);
-      return MPI_ERR_INTERN;
-   }
-
-   offsets = malloc(c->cluster_count * sizeof(int));
-
-   if (offsets == NULL) {
-      ERROR(1, "Failed to allocated space for local offsets! (comm=%d)", c->number);
-      return MPI_ERR_INTERN;
-   }
-
-   sum = get_count_sums(c, recvcounts, sums, offsets);
-
-   // Allocate a buffer large enough to receive all data
-   buffer = malloc(sum * extent);
-
-   if (buffer == NULL) {
-      ERROR(1, "Failed to allocated space for local buffer! (comm=%d)", c->number);
-      return MPI_ERR_INTERN;
-   }
-
-   if (c->global_rank == c->my_coordinator) {
-
-      // I am the local coordinator!
-
-      // First, receive all local data
-      offset = offsets[c->member_cluster_index[c->global_rank]];
-
-      for (i=0;i<c->global_size;i++) {
-         if (rank_is_local(c, i)) {
-            error = PMPI_Recv(buffer + (offset * extent), recvcounts[i], recvtype, get_local_rank(c, i), ALLGATHERV_TAG, c->comm, MPI_STATUS_IGNORE);
-
-            if (error != MPI_SUCCESS) {
-               ERROR(1, "Failed to receive data from %d for gather! (comm=%d, error=%d)", i, c->number, error);
-               return error;
-            }
-
-            offset += recvcounts[i];
-         }
-      }
-
-      // Next, exchange data with other cluster coordinators using a WA BCAST.
-      for (i=0;i<c->cluster_count;i++) {
-
-         if (c->coordinators[i] == c->global_rank) {
-            // bcast the local result to all other coordinators
-            error = messaging_bcast(buffer + (offsets[i]*extent), sums[i], recvtype, c->global_rank, c);
-
-            if (error != MPI_SUCCESS) {
-               ERROR(1, "Failed to send bcast from %d for gather! (comm=%d, error=%d)", c->global_rank, c->number, error);
-               return error;
-            }
-         } else {
-            error = messaging_bcast_receive(buffer + (offsets[i]*extent), sums[i], recvtype, c->coordinators[i], c);
-
-            if (error != MPI_SUCCESS) {
-               ERROR(1, "Failed to receive bcast on %d for gather! (comm=%d, error=%d)", c->global_rank, c->number, error);
-               return error;
-            }
-         }
-      }
-
-   } else {
-
-      // I am NOT a coordinator, so just send my data to the local coordinator.
-      error = PMPI_Send(sendbuf, sendcount, sendtype, get_local_rank(c, c->my_coordinator), ALLGATHERV_TAG, c->comm);
-
-      if (error != MPI_SUCCESS) {
-         ERROR(1, "Failed to send data from %d to local root for gatherv! (comm=%d, error=%d)", c->global_rank, c->number, error);
-         return error;
-      }
-
-   }
-
-   // Bcast the resulting data locally
-   error = PMPI_Bcast(buffer, sum, recvtype, get_local_rank(c, c->my_coordinator), c->comm);
-
-   if (error != MPI_SUCCESS) {
-      ERROR(1, "Local broadcast of result failed! (comm=%d, error=%d)", c->number, error);
-      return error;
-   }
-
-   // We have now collected all data in "buffer". This data is grouped by cluster and relative global rank. We now need to copy it to the destination buffer.
-   for (i=0;i<c->global_size;i++) {
-      tmp = c->member_cluster_index[i];
-
-      memcpy(recvbuf + (displs[i] * extent), buffer + (offsets[tmp] * extent), recvcounts[i] * extent);
-
-      offsets[tmp] += recvcounts[i];
-   }
-
-   // Free all temp buffers
-   free(offsets);
-   free(sums);
-   free(buffer);
-   return MPI_SUCCESS;
-}
-
-#endif
 
 #define __IMPI_Allgatherv
 int IMPI_Allgatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
@@ -1697,6 +1557,9 @@ for (i=0;i<c->cluster_count;i++) {
 
       for (i=0;i<c->global_size;i++) {
          if (rank_is_local(c, i)) {
+
+INFO(2, "LOCAL RECEIVE: offset=%d extent=%d count=%d", offset, extent, count);
+
             error = PMPI_Recv(buffer + (offset * extent), recvcounts[i], recvtype, get_local_rank(c, i), ALLGATHERV_TAG, c->comm, MPI_STATUS_IGNORE);
 
             if (error != MPI_SUCCESS) {
@@ -1707,6 +1570,8 @@ for (i=0;i<c->cluster_count;i++) {
             offset += recvcounts[i];
          }
       }
+
+INFO(2, "LOCAL RECEIVE: DONE  offset=%d");
 
       // Next, exchange data with other cluster coordinators using a WA BCAST.
       for (i=0;i<c->cluster_count;i++) {
