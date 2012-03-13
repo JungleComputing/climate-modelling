@@ -280,7 +280,7 @@ static int test_allreduce(MPI_Comm comm, char *name)
 
    for (j=0;j<size;j++) {
       if (recvbuffer[j] != size*j) {
-         fprintf(stderr, "ALLREDUCE %s result incorrect on %d (expected %d got %d)\n", name, rank, j*size, recvbuffer[j]);
+         fprintf(stderr, "ALLREDUCE %s result incorrect on %d (recvbuffer[%d] expected %d got %d)\n", name, rank, j, j*size, recvbuffer[j]);
          MPI_Finalize();
          return 1;
       }
