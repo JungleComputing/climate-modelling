@@ -751,12 +751,12 @@ int IMPI_Ssend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 
    if (comm_is_local(c)) {
      // simply perform a ssend in local cluster
-     return PMPI_Ssend(buf, count, datatype, dest, tag, comm);
+     return PMPI_Ssend(buf, count, datatype, dest, tag, c->comm);
    }
 
    if (rank_is_local(c, dest)) {
       // local send
-     return PMPI_Ssend(buf, count, datatype, get_local_rank(c, dest), tag, comm);
+     return PMPI_Ssend(buf, count, datatype, get_local_rank(c, dest), tag, c->comm);
    } else {
      // remote send
      WARN(1, "Incorrect WA ssend implementation (in communicator %c)!", c->number);
