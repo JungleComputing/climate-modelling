@@ -63,15 +63,13 @@ INFO(2, "MAGPIE_MAX invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((
       a[i] = MACRO_MAX(b[i],a[i]);
     return;
   }
-#ifdef MAGPIE_HAS_LONG_LONG
-  else if ( *type == MPI_LONG_LONG_INT ){
+  else if ( *type == MPI_LONG_LONG_INT || *type == MPI_INTEGER8 ){
     long long *a = (long long *)inoutvec;
     long long *b = (long long *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_MAX(b[i],a[i]);
     return;
   }
-#endif
   if ( *type == MPI_SHORT ){
     short *a = (short*)inoutvec;
     short *b = (short*)invec;

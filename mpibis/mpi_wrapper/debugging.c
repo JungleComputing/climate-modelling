@@ -15,7 +15,7 @@
 #include "debugging.h"
 #include "logging.h"
 
-#define PRIMITIVE_TYPES 37
+#define PRIMITIVE_TYPES 38
 
 static MPI_Datatype primitive_types[PRIMITIVE_TYPES] = {
    MPI_CHAR,
@@ -54,7 +54,8 @@ static MPI_Datatype primitive_types[PRIMITIVE_TYPES] = {
    MPI_INTEGER4,
    MPI_REAL4,
    MPI_REAL8,
-   MPI_LONG_LONG_INT };
+   MPI_LONG_LONG_INT,
+   MPI_INTEGER8 };
 
 void catch_derived_datatype(MPI_Datatype datatype)
 {
