@@ -54,21 +54,21 @@ INFO(2, "MAGPIE_MAX invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((
     return;
   }
   else if ( *type == MPI_UNSIGNED ){
-    unsigned int *a = (unsigned int *)inoutvec; 
+    unsigned int *a = (unsigned int *)inoutvec;
     unsigned int *b = (unsigned int *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_MAX(b[i],a[i]);
     return;
   }
   else if ( *type == MPI_LONG ){
-    long *a = (long *)inoutvec; 
+    long *a = (long *)inoutvec;
     long *b = (long *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_MAX(b[i],a[i]);
     return;
   }
   else if ( *type == MPI_UNSIGNED_LONG ){
-    unsigned long *a = (unsigned long *)inoutvec; 
+    unsigned long *a = (unsigned long *)inoutvec;
     unsigned long *b = (unsigned long *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_MAX(b[i],a[i]);
@@ -76,7 +76,7 @@ INFO(2, "MAGPIE_MAX invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((
   }
 #ifdef MAGPIE_HAS_LONG_LONG
   else if ( *type == MPI_LONG_LONG_INT ){
-    long long *a = (long long *)inoutvec; 
+    long long *a = (long long *)inoutvec;
     long long *b = (long long *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_MAX(b[i],a[i]);
@@ -91,35 +91,35 @@ INFO(2, "MAGPIE_MAX invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((
     return;
   }
   else if ( *type == MPI_UNSIGNED_SHORT ){
-    unsigned short *a = (unsigned short *)inoutvec; 
+    unsigned short *a = (unsigned short *)inoutvec;
     unsigned short *b = (unsigned short *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_MAX(b[i],a[i]);
     return;
   }
   else if ( *type == MPI_CHAR ){
-    char *a = (char *)inoutvec; 
+    char *a = (char *)inoutvec;
     char *b = (char *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_MAX(b[i],a[i]);
     return;
   }
   else if ( *type == MPI_UNSIGNED_CHAR ){
-    unsigned char *a = (unsigned char *)inoutvec; 
+    unsigned char *a = (unsigned char *)inoutvec;
     unsigned char *b = (unsigned char *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_MAX(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_FLOAT ){
-    float *a = (float *)inoutvec; 
+  else if ( *type == MPI_FLOAT || *type == MPI_REAL4 ){
+    float *a = (float *)inoutvec;
     float *b = (float *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_MAX(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_DOUBLE ){
-    double *a = (double *)inoutvec; 
+  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 ){
+    double *a = (double *)inoutvec;
     double *b = (double *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_MAX(b[i],a[i]);
@@ -127,7 +127,7 @@ INFO(2, "MAGPIE_MAX invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((
   }
 #ifdef MAGPIE_HAS_LONG_DOUBLE
   else if ( *type == MPI_LONG_DOUBLE ){
-    long double *a = (long double *)inoutvec; 
+    long double *a = (long double *)inoutvec;
     long double *b = (long double *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_MAX(b[i],a[i]);
@@ -135,9 +135,7 @@ INFO(2, "MAGPIE_MAX invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((
   }
 #endif
   else {
-
-INFO(2, "MAGPIE_MAX  FAILED TO FIND CORRECT TYPE!\n");
-
+    FATAL("REDUCTION OPERATION FAILED TO FIND CORRECT TYPE!\n");
     MAGPIE_Op_errno = MPI_ERR_OP;
   }
 }
@@ -216,14 +214,14 @@ INFO(2, "MAGPIE_MIN invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((
       a[i] = MACRO_MIN(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_FLOAT ){
+  else if ( *type == MPI_FLOAT || *type == MPI_REAL4 ){
     float *a = (float *)inoutvec; 
     float *b = (float *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_MIN(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_DOUBLE ){
+  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 ){
     double *a = (double *)inoutvec; 
     double *b = (double *)invec;
     for ( i=0; i < *len; i++ )
@@ -240,6 +238,7 @@ INFO(2, "MAGPIE_MIN invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((
   }
 #endif
   else {
+    FATAL("REDUCTION OPERATION FAILED TO FIND CORRECT TYPE!\n");
     MAGPIE_Op_errno = MPI_ERR_OP;
   }
 }
@@ -325,14 +324,14 @@ void MAGPIE_SUM(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
       a[i] = MACRO_SUM(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_FLOAT ){
+  else if ( *type == MPI_FLOAT || *type == MPI_REAL4 ){
     float *a = (float *)inoutvec; 
     float *b = (float *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_SUM(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_DOUBLE ){
+  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 ){
     double *a = (double *)inoutvec; 
     double *b = (double *)invec;
     for ( i=0; i < *len; i++ )
@@ -369,6 +368,7 @@ void MAGPIE_SUM(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
   }
 #endif
   else {
+    FATAL("REDUCTION OPERATION FAILED TO FIND CORRECT TYPE!\n");
     MAGPIE_Op_errno = MPI_ERR_OP;
   }
 }
@@ -448,14 +448,14 @@ INFO(2, "MAGPIE_PROD invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], (
       a[i] = MACRO_PROD(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_FLOAT ){
+  else if ( *type == MPI_FLOAT || *type == MPI_REAL4 ){
     float *a = (float *)inoutvec; 
     float *b = (float *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_PROD(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_DOUBLE ){
+  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 ){
     double *a = (double *)inoutvec; 
     double *b = (double *)invec;
     for ( i=0; i < *len; i++ )
@@ -496,6 +496,7 @@ INFO(2, "MAGPIE_PROD invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], (
   }
 #endif
   else {
+    FATAL("REDUCTION OPERATION FAILED TO FIND CORRECT TYPE!\n");
     MAGPIE_Op_errno = MPI_ERR_OP;
   }
 }
@@ -575,14 +576,14 @@ INFO(2, "MAGPIE_LAND invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], (
       a[i] = MACRO_LAND(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_FLOAT ){
+  else if ( *type == MPI_FLOAT || *type == MPI_REAL4 ){
     float *a = (float *)inoutvec; 
     float *b = (float *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_LAND(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_DOUBLE ){
+  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 ){
     double *a = (double *)inoutvec; 
     double *b = (double *)invec;
     for ( i=0; i < *len; i++ )
@@ -609,6 +610,7 @@ INFO(2, "MAGPIE_LAND invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], (
   }
 #endif
   else {
+    FATAL("REDUCTION OPERATION FAILED TO FIND CORRECT TYPE!\n");
     MAGPIE_Op_errno = MPI_ERR_OP;
   }
 }
@@ -688,14 +690,14 @@ INFO(2, "MAGPIE_LOR invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((
       a[i] = MACRO_LOR(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_FLOAT ){
+  else if ( *type == MPI_FLOAT || *type == MPI_REAL4 ){
     float *a = (float *)inoutvec; 
     float *b = (float *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_LOR(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_DOUBLE ){
+  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 ){
     double *a = (double *)inoutvec; 
     double *b = (double *)invec;
     for ( i=0; i < *len; i++ )
@@ -722,6 +724,7 @@ INFO(2, "MAGPIE_LOR invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((
   }
 #endif
   else {
+    FATAL("REDUCTION OPERATION FAILED TO FIND CORRECT TYPE!\n");
     MAGPIE_Op_errno = MPI_ERR_OP;
   }
 }
@@ -801,14 +804,14 @@ INFO(2, "MAGPIE_LXOR invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], (
       a[i] = MACRO_LXOR(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_FLOAT ){
+  else if ( *type == MPI_FLOAT || *type == MPI_REAL4 ){
     float *a = (float *)inoutvec; 
     float *b = (float *)invec;
     for ( i=0; i < *len; i++ )
       a[i] = MACRO_LXOR(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_DOUBLE ){
+  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 ){
     double *a = (double *)inoutvec; 
     double *b = (double *)invec;
     for ( i=0; i < *len; i++ )
@@ -835,6 +838,7 @@ INFO(2, "MAGPIE_LXOR invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], (
   }
 #endif
   else {
+    FATAL("REDUCTION OPERATION FAILED TO FIND CORRECT TYPE!\n");
     MAGPIE_Op_errno = MPI_ERR_OP;
   }
 }
@@ -921,6 +925,7 @@ INFO(2, "MAGPIE_BAND invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], (
     return;
   }
   else {
+    FATAL("REDUCTION OPERATION FAILED TO FIND CORRECT TYPE!\n");
     MAGPIE_Op_errno = MPI_ERR_OP;
   }
 }
@@ -1009,6 +1014,7 @@ INFO(2, "MAGPIE_BOR invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((
     return;
   }
   else {
+    FATAL("REDUCTION OPERATION FAILED TO FIND CORRECT TYPE!\n");
     MAGPIE_Op_errno = MPI_ERR_OP;
   }
 }
@@ -1096,6 +1102,7 @@ INFO(2, "MAGPIE_BXOR invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], (
     return;
   }
   else {
+    FATAL("REDUCTION OPERATION FAILED TO FIND CORRECT TYPE!\n");
     MAGPIE_Op_errno = MPI_ERR_OP;
   }
 }
@@ -1211,6 +1218,7 @@ INFO(2, "MAGPIE_MAXLOC invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0],
     return;
   }
   else {
+    FATAL("REDUCTION OPERATION FAILED TO FIND CORRECT TYPE!\n");
     MAGPIE_Op_errno = MPI_ERR_OP;
   }
 }
@@ -1298,6 +1306,7 @@ INFO(2, "MAGPIE_MINLOC invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0],
     return;
   }
   else {
+    FATAL("REDUCTION OPERATION FAILED TO FIND CORRECT TYPE!\n");
     MAGPIE_Op_errno = MPI_ERR_OP;
   }
 }

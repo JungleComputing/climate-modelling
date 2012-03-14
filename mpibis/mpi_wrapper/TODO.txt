@@ -27,32 +27,29 @@ INCORRECT-ish
 
 mpi_ssend 
 
-
 UNTESTED
 --------
 
-MERGE if (bla) MPI_Send else messaging_send 
+mpi_sendrecv
+
+DONE
+----
+
 REFACTOR  return ERROR(level, func, errorcode, message)  
 REFACTOR  return IERROR(level, func, messsage)
-
+MERGE if (bla) MPI_Send else messaging_send 
 ADD/FIX various special tags
 
-mpi_sendrecv
 mpi_scan
 mpi_allgather (on top of allgatherv)
 mpi_allgatherv
 mpi_allreduce
+mpi_gather    (on top op gatherv)
 mpi_gatherv
 mpi_alltoall (on top of alltoallv)
 mpi_alltoallv
 mpi_scatter (on top of scatterv)
 mpi_scatterv
-
-
-DONE
-----
-
-mpi_gather
 
 mpi_comm_free
 mpi_comm_group
