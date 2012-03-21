@@ -470,7 +470,7 @@ int get_global_rank(communicator *c, int cluster, int rank)
    cluster_index = c->member_cluster_index[c->global_rank];
 
    for (i=0;i<c->global_size;i++) {
-      if (c->member_cluster_index[i] == cluster_index && c->local_rank[i] == rank) {
+      if (c->member_cluster_index[i] == cluster_index && c->local_ranks[i] == rank) {
          return i;
       }
    }
@@ -479,9 +479,9 @@ int get_global_rank(communicator *c, int cluster, int rank)
    INFO(1, "FAILED TO CONVERT LOCAL TO GLOBAL RANK!");
 
    for (i=0;i<c->global_size;i++) {
-      INFO(2, "index / cluster %d != %d / rank %d != %d", i, c->member_cluster_index[i], cluster_index, c->local_rank[i], rank);
+      INFO(2, "index / cluster %d != %d / rank %d != %d", i, c->member_cluster_index[i], cluster_index, c->local_ranks[i], rank);
 
-      if (c->member_cluster_index[i] == cluster_index && c->local_rank[i] == rank) {
+      if (c->member_cluster_index[i] == cluster_index && c->local_ranks[i] == rank) {
          return i;
       }
    }
