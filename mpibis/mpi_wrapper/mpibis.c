@@ -468,6 +468,10 @@ static int do_recv(void *buf, int count, MPI_Datatype datatype, int source, int 
    if (rank_is_local(c, source)) {
       // local recv
       error = PMPI_Recv(buf, count, datatype, get_local_rank(c, source), tag, c->comm, status);
+
+      if (error == MPI_SUCCESS && status != MPI_STATUS_IGNORE) {
+            status->MPI_SOURCE = get_globale_rank(c, cluster_rank, status->MPI_SOURCE);
+      }
    } else {
       // remote recv
       error = messaging_receive(buf, count, datatype, source, tag, status, c);
@@ -653,7 +657,7 @@ INFO(3, "Irec local ? %d", local);
 #define __IMPI_Recv
 int IMPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status)
 {
-   int local = 0;
+   int local, error;
 
    inc_communicator_statistics(comm, STATS_RECV);
 
@@ -670,10 +674,14 @@ int IMPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
    }
 
    if (local == 1) {
-      return PMPI_Recv(buf, count, datatype, source, tag, c->comm, status);
+      error = PMPI_Recv(buf, count, datatype, source, tag, c->comm, status);
+
+      if (error == MPI_SUCCESS && status != MPI_STATUS_IGNORE) {
+         status->MPI_SOURCE = get_globale_rank(c, cluster_rank, status->MPI_SOURCE);
+      }
+
+      return error;
    } else {
-
-
 // FIXME: messaging_receive will block on the WA, which is NOT what we want!
 
       if (source == MPI_ANY_SOURCE) {
@@ -748,6 +756,8 @@ int IMPI_Sendrecv(void *sendbuf, int sendcount, MPI_Datatype sendtype, int dest,
 #define __IMPI_Ssend
 int IMPI_Ssend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
+   int error;
+
    communicator *c = get_communicator(comm);
 
    CHECK_COUNT(count);
@@ -760,7 +770,13 @@ int IMPI_Ssend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 
    if (rank_is_local(c, dest)) {
       // local send
-     return PMPI_Ssend(buf, count, datatype, get_local_rank(c, dest), tag, c->comm);
+     error = PMPI_Ssend(buf, count, datatype, get_local_rank(c, dest), tag, c->comm);
+
+     if (error == MPI_SUCCESS && status != MPI_STATUS_IGNORE) {
+         status->MPI_SOURCE = get_global_rank(c, cluster_rank, status->MPI_SOURCE);
+     }
+
+     return error;
    } else {
      // remote send
      WARN(1, "Incorrect WA ssend implementation (in communicator %c)!", c->number);
@@ -824,6 +840,11 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
          r->error = PMPI_Test(&(r->req), flag, status);
       }
 
+      if (*flag == 1) {
+         // We must translate local source rank to global rank.
+         status->MPI_SOURCE = get_global_rank(c, cluster_rank, status->MPI_SOURCE);
+      }
+
    } else if (request_send(r)) {
 
       DEBUG(2, "request=WA_SEND blocking=%d", blocking);
@@ -882,6 +903,9 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
                // A message is available locally, so receiving it!
                r->error = PMPI_Recv(r->buf, r->count, r->type, MPI_ANY_SOURCE, r->tag, r->c->comm, status);
                r->flags |= REQUEST_FLAG_COMPLETED;
+
+               // We must translate local source rank to global rank.
+               status->MPI_SOURCE = get_global_rank(c, cluster_rank, status->MPI_SOURCE);
 
             } else {
 
@@ -1080,8 +1104,14 @@ int IMPI_Request_get_status(MPI_Request req, int *flag, MPI_Status *status )
 
    if (request_local(r)) {
       // Pure local request, so we ask MPI.
-      return PMPI_Request_get_status(r->req, flag, status);
-   }
+      error = PMPI_Request_get_status(r->req, flag, status);
+
+      if (error == MPI_SUCCESS && status != MPI_STATUS_IGNORE) {
+         status->MPI_SOURCE = get_global_rank(c, cluster_rank, status->MPI_SOURCE);
+      }
+
+      return error;
+  }
 
    // It was a WA or mixed request.
    // Non-persistent send should already have finished.
@@ -1097,6 +1127,7 @@ int IMPI_Request_get_status(MPI_Request req, int *flag, MPI_Status *status )
    *flag = request_completed(r);
 
    if (!(*flag)) {
+// FIXME: should also probe local here ??
       messaging_probe_receive(r, 0);
    }
 
