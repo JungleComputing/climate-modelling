@@ -1099,7 +1099,7 @@ int IMPI_Request_get_status(MPI_Request req, int *flag, MPI_Status *status )
       error = PMPI_Request_get_status(r->req, flag, status);
 
       if (error == MPI_SUCCESS && status != MPI_STATUS_IGNORE) {
-         status->MPI_SOURCE = get_global_rank(c, cluster_rank, status->MPI_SOURCE);
+         status->MPI_SOURCE = get_global_rank(r->c, cluster_rank, status->MPI_SOURCE);
       }
 
       return error;
