@@ -897,7 +897,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
                r->flags |= REQUEST_FLAG_COMPLETED;
 
                // We must translate local source rank to global rank.
-               status->MPI_SOURCE = get_global_rank(c, cluster_rank, status->MPI_SOURCE);
+               status->MPI_SOURCE = get_global_rank(r->c, cluster_rank, status->MPI_SOURCE);
 
             } else {
 
