@@ -83,6 +83,9 @@ static int unpack_message(void *buf, int count, MPI_Datatype type, MPI_Comm comm
   int error = 0;
   int position = 0;
 
+/*
+  This check is wrong! The sendnig and receiving count may differ if the sending and receiveing types differ!
+ 
   if (m->header.count != count) {
       ERROR(1, "Message size mismatch! (expected %d got %d)",
                   count, m->header.count);
@@ -93,6 +96,7 @@ static int unpack_message(void *buf, int count, MPI_Datatype type, MPI_Comm comm
       }
       // else we have received too much data!
    }
+*/
 
    error = PMPI_Unpack(m->data_buffer, m->header.bytes, &position, buf,
                         count, type, comm);
