@@ -1791,13 +1791,13 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, 
 
    if (comm_is_local(c)) {
 
-//DEBUG(1, "Local reduce");
+INFO(2, "Local reduce");
 
      // simply perform a reduce in local cluster
      return PMPI_Reduce(sendbuf, recvbuf, count, datatype, o->op, root, c->comm);
    }
 
-//DEBUG(1, "WA reduce");
+INFO(2, "WA reduce");
 
    // We need to perform a WA Reduce. We do this by performing a reduce
    // to our local cluster coordinator. This result is then forwarded to the
@@ -1811,11 +1811,11 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, 
       root_in_cluster = 0;
    }
 
-//DEBUG(1, "Local root is %d (root=%d)", local_root, root);
+INFO(2, "Local root is %d (root=%d)", local_root, root);
 
    if (c->global_rank == root || c->global_rank == c->my_coordinator) {
 
-//DEBUG(1, "I am root or coordinator (rank=%d root=%d coordinator=%d)", c->global_rank, root, c->my_coordinator);
+INFO(2, "I am root or coordinator (rank=%d root=%d coordinator=%d)", c->global_rank, root, c->my_coordinator);
 
       // FIXME: use size?
       error = PMPI_Type_extent(datatype, &extent);
@@ -1832,20 +1832,19 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, 
          return MPI_ERR_INTERN;
       }
    } else {
-//DEBUG(1, "I am NOT root NOR coordinator (rank=%d root=%d coordinator=%d)", c->global_rank, root, c->my_coordinator);
+INFO(2, "I am NOT root NOR coordinator (rank=%d root=%d coordinator=%d)", c->global_rank, root, c->my_coordinator);
    }
 
-//   INFO(1, "JASON IMPI_REDUCE", "START LOCAL REDUCE root=%d lroot=%d grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
+//INFO(1, "JASON IMPI_REDUCE", "START LOCAL REDUCE root=%d lroot=%d grank=%d lrank=%d count=%d sbuf[0]=%d rbuf[0]=%d\n",
 //                       root, local_root, c->global_rank, c->local_rank, count, ((int *)sendbuf)[0], ((int *)recvbuf)[0]);
 
 
-//DEBUG(1, "Starting local reduce sendbuf=%p buffer=%p count=%d root=%d get_local_rank(root)=%d",
-  //           sendbuf, buffer, count, local_root, get_local_rank(c, local_root));
+INFO(2, "Starting local reduce sendbuf=%p buffer=%p count=%d root=%d get_local_rank(root)=%d",
+                  sendbuf, buffer, count, local_root, get_local_rank(c, local_root));
 
    error = PMPI_Reduce(sendbuf, buffer, count, datatype, o->op, get_local_rank(c, local_root), c->comm);
 
-//DEBUG(1, "Local reduce OK");
-
+INFO(2, "Local reduce OK");
 
    if (error != MPI_SUCCESS) {
       ERROR(1, "Failed to perform local reduce in communicator! (comm=%d, error=%d)", c->number, error);
@@ -1862,6 +1861,9 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, 
       // Receive partial results from remote coordinators
       for (i=0;i<c->cluster_count;i++) {
          if (c->global_rank != c->coordinators[i] && !(rank_is_local(c, c->coordinators[i]))) {
+
+INFO(2, "Receiving REMOTE result from coordinator[%d]=%d", i, c->coordinators[i]);
+
             error = messaging_receive(buffer, count, datatype, c->coordinators[i], REDUCE_TAG, MPI_STATUS_IGNORE, c);
 
             if (error != MPI_SUCCESS) {
@@ -1876,6 +1878,9 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, 
       }
    } else if (root_in_cluster == 0 && c->global_rank == c->my_coordinator) {
       // The local coordinator now sends the partial result to the global root.
+
+INFO(2, "Sending LOCAL result to REMOTE root=%d", root);
+
       error = messaging_send(buffer, count, datatype, root, REDUCE_TAG, c);
 
       if (error != MPI_SUCCESS) {
@@ -1884,6 +1889,8 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, 
          return error;
       }
    }
+
+INFO(2, "MPI_Reduce DONE");
 
    return MPI_SUCCESS;
 }
