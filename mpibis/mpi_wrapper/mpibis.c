@@ -536,6 +536,8 @@ int IMPI_Isend(void *buf, int count, MPI_Datatype datatype,
 
    inc_communicator_statistics(comm, STATS_ISEND);
 
+INFO(3, "Isend local ? %d", local);
+
    if (local) {
       error = PMPI_Isend(buf, count, datatype, get_local_rank(c, dest), tag, c->comm, &(r->req));
    } else {
@@ -600,10 +602,12 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
       return MPI_ERR_INTERN;
    }
 
+INFO(3, "Irec local ? %d", local);
+
    // Post the ireceive if it is local
    if (local == 1) {
       // If the source is guarenteed to be local, we directly use MPI.
-      error = PMPI_Irecv(buf, count, datatype, source, tag, c->comm, &(r->req));
+      error = PMPI_Irecv(buf, count, datatype, get_local_rank(c, source), tag, c->comm, &(r->req));
    }
 
 /****
@@ -1027,6 +1031,8 @@ int IMPI_Request_free(MPI_Request *r)
    int error = MPI_SUCCESS;
    request *req = NULL;
 
+INFO(2, "Free request %p", r);
+
    if (r == NULL || *r == MPI_REQUEST_NULL) {
       return MPI_SUCCESS;
    }
@@ -1038,9 +1044,13 @@ int IMPI_Request_free(MPI_Request *r)
       return MPI_ERR_REQUEST;
    }
 
+INFO(2, "req->req %p", req->req);
+
    if (req->req != MPI_REQUEST_NULL) {
       error = PMPI_Request_free(&(req->req));
    }
+
+INFO(2, "Free request struct");
 
    free_request(req);
    *r = MPI_REQUEST_NULL;
