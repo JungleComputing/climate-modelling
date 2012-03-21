@@ -756,8 +756,6 @@ int IMPI_Sendrecv(void *sendbuf, int sendcount, MPI_Datatype sendtype, int dest,
 #define __IMPI_Ssend
 int IMPI_Ssend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
-   int error;
-
    communicator *c = get_communicator(comm);
 
    CHECK_COUNT(count);
@@ -770,13 +768,7 @@ int IMPI_Ssend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 
    if (rank_is_local(c, dest)) {
       // local send
-     error = PMPI_Ssend(buf, count, datatype, get_local_rank(c, dest), tag, c->comm);
-
-     if (error == MPI_SUCCESS && status != MPI_STATUS_IGNORE) {
-         status->MPI_SOURCE = get_global_rank(c, cluster_rank, status->MPI_SOURCE);
-     }
-
-     return error;
+     return PMPI_Ssend(buf, count, datatype, get_local_rank(c, dest), tag, c->comm);
    } else {
      // remote send
      WARN(1, "Incorrect WA ssend implementation (in communicator %c)!", c->number);
