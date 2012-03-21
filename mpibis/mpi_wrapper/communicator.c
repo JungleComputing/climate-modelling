@@ -479,13 +479,11 @@ int get_global_rank(communicator *c, int cluster, int rank)
    INFO(1, "FAILED TO CONVERT LOCAL TO GLOBAL RANK!");
 
    for (i=0;i<c->global_size;i++) {
-
       INFO(2, "index / cluster %d != %d / rank %d != %d", i, c->members_cluster_index[i], cluster_index, c->local_rank[i], rank);
 
       if (c->members_cluster_index[i] == cluster_index && c->local_rank[i] == rank) {
          return i;
       }
-
    }
 
    FATAL("Failed to translate local rank (%d:%d) to global rank!", cluster, rank);
