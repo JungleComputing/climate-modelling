@@ -463,6 +463,22 @@ int get_local_rank(communicator *c, int rank)
    return c->local_ranks[rank];
 }
 
+int get_global_rank(communicator *c, int cluster, int rank)
+{
+   int i, pid;
+
+   pid = SET_PID(cluster, rank);
+
+   for (i=0;i<c->global_size;i++) {
+      if (c->members[i] == pid) {
+         return i;
+      }
+   }
+
+   FATAL("Failed to translate local rank (%d:%d) to global rank!");
+   return -1;
+}
+
 int get_cluster_rank(communicator *c, int rank)
 {
    return GET_CLUSTER_RANK(c->members[rank]);

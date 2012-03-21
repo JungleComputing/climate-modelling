@@ -470,7 +470,7 @@ static int do_recv(void *buf, int count, MPI_Datatype datatype, int source, int 
       error = PMPI_Recv(buf, count, datatype, get_local_rank(c, source), tag, c->comm, status);
 
       if (error == MPI_SUCCESS && status != MPI_STATUS_IGNORE) {
-            status->MPI_SOURCE = get_globale_rank(c, cluster_rank, status->MPI_SOURCE);
+            status->MPI_SOURCE = get_global_rank(c, cluster_rank, status->MPI_SOURCE);
       }
    } else {
       // remote recv
@@ -677,7 +677,7 @@ int IMPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, 
       error = PMPI_Recv(buf, count, datatype, source, tag, c->comm, status);
 
       if (error == MPI_SUCCESS && status != MPI_STATUS_IGNORE) {
-         status->MPI_SOURCE = get_globale_rank(c, cluster_rank, status->MPI_SOURCE);
+         status->MPI_SOURCE = get_global_rank(c, cluster_rank, status->MPI_SOURCE);
       }
 
       return error;

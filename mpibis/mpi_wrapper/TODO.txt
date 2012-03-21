@@ -1,6 +1,8 @@
 TODO
 ----
 
+FIX!!! -> MPI_Request_test_status only polls remote network?
+
 FIX!!! -> impl of operations doesn't make sense! 
 
 FIX!!! -> local_comm_create

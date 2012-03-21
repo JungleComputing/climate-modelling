@@ -137,6 +137,8 @@ int rank_is_remote(communicator *c, int rank);
 
 int get_local_rank(communicator *c, int rank);
 int get_cluster_rank(communicator *c, int rank);
+int get_global_rank(communicator *c, int cluster, int rank);
+
 
 #endif // IBIS_INTERCEPT
 
