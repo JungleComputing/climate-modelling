@@ -808,7 +808,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
       return MPI_SUCCESS;
    }
 
-   DEBUG(1, "request=(index=%d, flags=%d, srcdest=%d, count=%d, tag=%d type=%s) blocking=%d", 
+   INFO(1, "request=(index=%d, flags=%d, srcdest=%d, count=%d, tag=%d type=%s) blocking=%d",
 	r->index, r->flags, r->source_or_dest, r->count, r->tag, type_to_string(r->type), blocking);
 
    // We don't support persistent request yet!
@@ -823,7 +823,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
    } else if (request_local(r)) {
       // Pure local request, so we ask MPI.
 
-      DEBUG(2, "request=LOCAL blocking=%d", blocking);
+      INFO(2, "request=LOCAL blocking=%d", blocking);
 
       if (blocking) {
          r->error = PMPI_Wait(&(r->req), status);
@@ -839,7 +839,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
 
    } else if (request_send(r)) {
 
-      DEBUG(2, "request=WA_SEND blocking=%d", blocking);
+      INFO(2, "request=WA_SEND blocking=%d", blocking);
 
       // Non-persistent WA send should already have finished.
       status->MPI_SOURCE = r->source_or_dest;
@@ -850,7 +850,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
 
    } else if (r->source_or_dest != MPI_ANY_SOURCE) {
 
-      DEBUG(2, "request=WA_RECEIVE blocking=%d", blocking);
+      INFO(2, "request=WA_RECEIVE blocking=%d", blocking);
 
       // It was a non-persistent remote receive request, so probe the
       // WA link (will do nothing if the request was already completed).
@@ -871,7 +871,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
       // It was a non-persistent mixed receive request, so we must probe
       // the local network and the WA link.
 
-      DEBUG(2, "request=WA_RECEIVE_ANY blocking=%d", blocking);
+      INFO(2, "request=WA_RECEIVE_ANY blocking=%d", blocking);
 
       if (request_completed(r)) {
          DEBUG(3, "request=WA_RECEIVE_ANY already completed by source=%d tag=%d count=%d", r->source_or_dest, r->tag, r->count);
