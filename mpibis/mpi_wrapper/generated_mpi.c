@@ -1,5 +1,8 @@
 #include "flags.h"
 
+#include <execinfo.h>
+
+
 #ifdef ENABLE_INTERCEPT
 
 #include "logging.h"
