@@ -163,7 +163,7 @@ static int test_async(MPI_Comm comm, char *name)
                return 1;
             }
 
-            error = MPI_Get_count(status, MPI_INTEGER, &count);
+            error = MPI_Get_count(&status, MPI_INTEGER, &count);
 
             if (error != MPI_SUCCESS) {
                fprintf(stderr, "ASYNC %s failed getcount (1)!\n", name);
