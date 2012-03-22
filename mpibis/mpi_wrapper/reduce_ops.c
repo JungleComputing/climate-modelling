@@ -105,7 +105,7 @@ INFO(2, "MAGPIE_MAX invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((
       a[i] = MACRO_MAX(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 ){
+  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 || *type == MPI_DOUBLE_PRECISION ){
     double *a = (double *)inoutvec;
     double *b = (double *)invec;
     for ( i=0; i < *len; i++ )
@@ -206,7 +206,7 @@ INFO(2, "MAGPIE_MIN invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((
       a[i] = MACRO_MIN(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 ){
+  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 || *type == MPI_DOUBLE_PRECISION ){
     double *a = (double *)inoutvec; 
     double *b = (double *)invec;
     for ( i=0; i < *len; i++ )
@@ -314,7 +314,7 @@ void MAGPIE_SUM(void *invec, void *inoutvec, int *len, MPI_Datatype *type){
       a[i] = MACRO_SUM(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 ){
+  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 || *type == MPI_DOUBLE_PRECISION ){
     double *a = (double *)inoutvec; 
     double *b = (double *)invec;
     for ( i=0; i < *len; i++ )
@@ -436,7 +436,7 @@ INFO(2, "MAGPIE_PROD invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], (
       a[i] = MACRO_PROD(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 ){
+  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 || *type == MPI_DOUBLE_PRECISION ){
     double *a = (double *)inoutvec; 
     double *b = (double *)invec;
     for ( i=0; i < *len; i++ )
@@ -562,7 +562,7 @@ INFO(2, "MAGPIE_LAND invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], (
       a[i] = MACRO_LAND(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 ){
+  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 || *type == MPI_DOUBLE_PRECISION ){
     double *a = (double *)inoutvec; 
     double *b = (double *)invec;
     for ( i=0; i < *len; i++ )
@@ -674,7 +674,7 @@ INFO(2, "MAGPIE_LOR invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], ((
       a[i] = MACRO_LOR(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 ){
+  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 || *type == MPI_DOUBLE_PRECISION ){
     double *a = (double *)inoutvec; 
     double *b = (double *)invec;
     for ( i=0; i < *len; i++ )
@@ -786,7 +786,7 @@ INFO(2, "MAGPIE_LXOR invec=%d inoutvec=%d len=%d type=%s\n", ((int*)invec)[0], (
       a[i] = MACRO_LXOR(b[i],a[i]);
     return;
   }
-  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 ){
+  else if ( *type == MPI_DOUBLE || *type == MPI_REAL8 || *type == MPI_DOUBLE_PRECISION ){
     double *a = (double *)inoutvec; 
     double *b = (double *)invec;
     for ( i=0; i < *len; i++ )
