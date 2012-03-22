@@ -852,8 +852,8 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "Starting ASYNC tests\n");
 
-    error = test_async(MPI_COMM_WORLD, "MPI_COMM_WORLD");
-    if (error != 0) return error;
+//    error = test_async(MPI_COMM_WORLD, "MPI_COMM_WORLD");
+//    if (error != 0) return error;
 
     error = test_async(half, "world half");
     if (error != 0) return error;
