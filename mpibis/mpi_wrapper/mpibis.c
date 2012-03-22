@@ -576,8 +576,6 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
    int error, local, flags = REQUEST_FLAG_RECEIVE;
    request *r;
 
-   error = MPI_SUCCESS;
-
    inc_communicator_statistics(comm, STATS_IRECV);
 
    // We first unpack the communicator.
@@ -612,6 +610,15 @@ INFO(3, "Irec local ? %d", local);
    if (local == 1) {
       // If the source is guarenteed to be local, we directly use MPI.
       error = PMPI_Irecv(buf, count, datatype, get_local_rank(c, source), tag, c->comm, &(r->req));
+
+      if (error != MPI_SUCCESS) {
+         ERROR(1, "IRecv failed! (comm=%d,error=%d)", c->number, error);
+         free_request(r);
+         *req = MPI_REQUEST_NULL;
+         return error;
+      }
+
+INFO(3, "Irec local request %p", r->req);
    }
 
 /****
@@ -642,16 +649,9 @@ INFO(3, "Irec local ? %d", local);
 
 ***/
 
-   if (error != MPI_SUCCESS) {
-      ERROR(1, "IRecv failed! (comm=%d,error=%d)", c->number, error);
-      free_request(r);
-      *req = MPI_REQUEST_NULL;
-   } else {
-      // We stuff our own data into the users request pointer here...
-      set_request_ptr(req, r);
-   }
-
-   return error;
+   // We stuff our own data into the users request pointer here...
+   set_request_ptr(req, r);
+   return MPI_SUCCES;
 }
 
 #define __IMPI_Recv
@@ -823,7 +823,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
    } else if (request_local(r)) {
       // Pure local request, so we ask MPI.
 
-      INFO(2, "request=LOCAL blocking=%d", blocking);
+      INFO(2, "request=LOCAL blocking=%d %p", blocking, r->req);
 
       if (blocking) {
          r->error = PMPI_Wait(&(r->req), status);
@@ -834,6 +834,9 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
 
       if (*flag == 1) {
          // We must translate local source rank to global rank.
+
+      INFO(2, "translate local rank=%d to global rank", status->MPI_SOURCE);
+
          status->MPI_SOURCE = get_global_rank(r->c, cluster_rank, status->MPI_SOURCE);
       }
 
