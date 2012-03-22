@@ -540,15 +540,15 @@ int IMPI_Isend(void *buf, int count, MPI_Datatype datatype,
 
    inc_communicator_statistics(comm, STATS_ISEND);
 
-INFO(3, "Isend local ? %d", local);
+//INFO(3, "Isend local ? %d", local);
 
    if (local) {
 
-INFO(3, "Isend local buf=%p count=%d <type> dest=%d/%d tag=%d comm=%d", buf, count, dest, get_local_rank(c, dest), tag, c->number);
+//INFO(3, "Isend local buf=%p count=%d <type> dest=%d/%d tag=%d comm=%d", buf, count, dest, get_local_rank(c, dest), tag, c->number);
 
       error = PMPI_Isend(buf, count, datatype, get_local_rank(c, dest), tag, c->comm, &(r->req));
 
-INFO(3, "Isend local req=%p", r->req);
+//INFO(3, "Isend local req=%p", r->req);
 
    } else {
       error = messaging_send(buf, count, datatype, dest, tag, c);
@@ -594,10 +594,10 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
    if (source == MPI_ANY_SOURCE) {
       // if source is any, the local flag is determined by the distribution of the communicator.
       local = comm_is_local(c);
-INFO(3, "Irec local ? %d (because comm is local)", local);
+//INFO(3, "Irec local ? %d (because comm is local)", local);
    } else {
       local = rank_is_local(c, source);
-INFO(3, "Irec local ? %d (because source is local)", local);
+//INFO(3, "Irec local ? %d (because source is local)", local);
    }
 
    // Next, we create the request struct.
@@ -612,7 +612,7 @@ INFO(3, "Irec local ? %d (because source is local)", local);
       return MPI_ERR_INTERN;
    }
 
-INFO(3, "Created request %p", r);
+//INFO(3, "Created request %p", r);
 
    // Post the ireceive if it is local
    if (local == 1) {
@@ -633,7 +633,7 @@ INFO(3, "Created request %p", r);
          return error;
       }
 
-INFO(3, "Irec local request %p", r->req);
+//INFO(3, "Irec local request %p", r->req);
    }
 
 /****
@@ -1065,7 +1065,7 @@ int IMPI_Request_free(MPI_Request *r)
    int error = MPI_SUCCESS;
    request *req = NULL;
 
-INFO(2, "Free request %p", r);
+//INFO(2, "Free request %p", r);
 
    if (r == NULL || *r == MPI_REQUEST_NULL) {
       return MPI_SUCCESS;
@@ -1078,16 +1078,16 @@ INFO(2, "Free request %p", r);
       return MPI_ERR_REQUEST;
    }
 
-INFO(2, "req->req %p", req->req);
+//INFO(2, "req->req %p", req->req);
 
    if (req->req != MPI_REQUEST_NULL) {
 
-INFO(2, "Forwarding request free!");
+//INFO(2, "Forwarding request free!");
 
       error = PMPI_Request_free(&(req->req));
    }
 
-INFO(2, "Free request struct");
+//INFO(2, "Free request struct");
 
    free_request(req);
    *r = MPI_REQUEST_NULL;

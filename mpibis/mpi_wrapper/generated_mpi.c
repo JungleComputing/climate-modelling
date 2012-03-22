@@ -1,6 +1,6 @@
 #include "flags.h"
 
-#include <execinfo.h>
+//#include <execinfo.h>
 
 
 #ifdef ENABLE_INTERCEPT
@@ -4958,15 +4958,9 @@ int MPI_Type_create_hvector ( int count, int blocklength, MPI_Aint stride, MPI_D
 
 int MPI_Type_create_indexed_block ( int count, int blocklength, int array_of_displacements[], MPI_Datatype oldtype, MPI_Datatype *newtype )
 {
-   size_t size;
-   void *array[10];
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Type_create_indexed_block(int count=%d, int blocklength=%d, int array_of_displacements[]=%p, MPI_Datatype oldtype=%s, MPI_Datatype *newtype=%p)", count, blocklength, array_of_displacements, type_to_string(oldtype), newtype);
 #endif // TRACE_CALLS
-
-   size = backtrace(array, 10);
-   backtrace_symbols_fd(array, size, 2);
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Type_create_indexed_block(count, blocklength, array_of_displacements, oldtype, newtype);
