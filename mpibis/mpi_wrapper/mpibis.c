@@ -544,7 +544,7 @@ INFO(3, "Isend local ? %d", local);
 
    if (local) {
 
-INFO(3, "Isend local buf=%p count=%d <type> dest=%d/%d tag=%d comm=%d", local, buf, count, dest, get_local_rank(c, dest), tag, c->number);
+INFO(3, "Isend local buf=%p count=%d <type> dest=%d/%d tag=%d comm=%d", buf, count, dest, get_local_rank(c, dest), tag, c->number);
 
       error = PMPI_Isend(buf, count, datatype, get_local_rank(c, dest), tag, c->comm, &(r->req));
 
