@@ -543,7 +543,13 @@ int IMPI_Isend(void *buf, int count, MPI_Datatype datatype,
 INFO(3, "Isend local ? %d", local);
 
    if (local) {
+
+INFO(3, "Isend local buf=%p count=%d <type> dest=%d/%d tag=%d comm=%d", local, buf, count, dest, get_local_rank(c, dest), tag, c->number);
+
       error = PMPI_Isend(buf, count, datatype, get_local_rank(c, dest), tag, c->comm, &(r->req));
+
+INFO(3, "Isend local req=%p", r->req);
+
    } else {
       error = messaging_send(buf, count, datatype, dest, tag, c);
    }
@@ -1066,6 +1072,9 @@ INFO(2, "Free request %p", r);
 INFO(2, "req->req %p", req->req);
 
    if (req->req != MPI_REQUEST_NULL) {
+
+INFO(2, "Forwarding request free!");
+
       error = PMPI_Request_free(&(req->req));
    }
 
