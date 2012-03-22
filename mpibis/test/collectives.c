@@ -91,8 +91,8 @@ static int test_async(MPI_Comm comm, char *name)
 
       fprintf(stderr, "%d: Sending 1 int (%d) to %d\n", rank, sendbuffer1, i);
 
-//      error = MPI_Isend(&sendbuffer1, 1, MPI_INTEGER, i, 100, comm, &sreq);
-      error = MPI_Send(&sendbuffer1, 1, MPI_INTEGER, i, 100, comm);
+      error = MPI_Isend(&sendbuffer1, 1, MPI_INTEGER, i, 100, comm, &sreq);
+//      error = MPI_Send(&sendbuffer1, 1, MPI_INTEGER, i, 100, comm);
 
       if (error != MPI_SUCCESS) {
          fprintf(stderr, "ASYNC %s failed isend (1)!\n", name);
@@ -100,7 +100,6 @@ static int test_async(MPI_Comm comm, char *name)
          return 1;
       }
 
-/*
       error = MPI_Request_free(&sreq);
 
       if (error != MPI_SUCCESS) {
@@ -108,7 +107,6 @@ static int test_async(MPI_Comm comm, char *name)
          MPI_Finalize();
          return 1;
       }
-*/
 
       if (rank == i) {
          for (j=0;j<size;j++) {
@@ -137,7 +135,7 @@ static int test_async(MPI_Comm comm, char *name)
 
       fprintf(stderr, "%d: Sending %d ints to %d\n", rank, size-rank, i);
 
-      error = MPI_ISend(sendbuffer2, size-rank, MPI_INTEGER, i, 101, comm);
+      error = MPI_Isend(sendbuffer2, size-rank, MPI_INTEGER, i, 101, comm, &sreq);
 
       if (error != MPI_SUCCESS) {
          fprintf(stderr, "ASYNC %s failed isend (2)!\n", name);
@@ -145,7 +143,6 @@ static int test_async(MPI_Comm comm, char *name)
          return 1;
       }
 
-  /*
       error = MPI_Request_free(&sreq);
 
       if (error != MPI_SUCCESS) {
@@ -153,7 +150,7 @@ static int test_async(MPI_Comm comm, char *name)
          MPI_Finalize();
          return 1;
       }
-*/
+
       if (rank == i) {
          for (j=0;j<size;j++) {
 
