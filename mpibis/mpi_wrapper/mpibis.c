@@ -651,7 +651,7 @@ INFO(3, "Irec local request %p", r->req);
 
    // We stuff our own data into the users request pointer here...
    set_request_ptr(req, r);
-   return MPI_SUCCES;
+   return MPI_SUCCESS;
 }
 
 #define __IMPI_Recv
