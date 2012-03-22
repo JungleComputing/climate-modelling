@@ -13,8 +13,8 @@ static int test_async(MPI_Comm comm, char *name)
       irecv expects regular ints.
    */
 
-   int i, j, p, error, rank, size;
-   int sendbuffer1
+   int i, j, p, error, rank, size, count, z;
+   int sendbuffer1;
    int *sendbuffer2;
    int *recvbuffer1;
    int *recvbuffer2;
@@ -91,7 +91,7 @@ static int test_async(MPI_Comm comm, char *name)
 
       fprintf(stderr, "%d: Sending 1 int (%d) to %d\n", rank, sendbuffer1, i);
 
-      error = MPI_ISend(&sendbuffer1, 1, MPI_INTEGER, i, comm, &sreq);
+      error = MPI_Isend(&sendbuffer1, 1, MPI_INTEGER, i, 100, comm, &sreq);
 
       if (error != MPI_SUCCESS) {
          fprintf(stderr, "ASYNC %s failed isend (1)!\n", name);
@@ -122,7 +122,7 @@ static int test_async(MPI_Comm comm, char *name)
 
             fprintf(stderr, "%d: Receiving %d ints from %d\n", rank, recvbuffer1[j], status.MPI_SOURCE);
 
-            error = MPI_Irecv(recvbuffer2+(j*size), recvbuffer1+j, MPI_INTEGER, status.MPI_SOURCE, 101, comm, rreq+j);
+            error = MPI_Irecv(recvbuffer2+(j*size), recvbuffer1[j], MPI_INTEGER, status.MPI_SOURCE, 101, comm, rreq+j);
 
             if (error != MPI_SUCCESS) {
                fprintf(stderr, "ASYNC %s failed irecv (2)!\n", name);
@@ -134,7 +134,7 @@ static int test_async(MPI_Comm comm, char *name)
 
       fprintf(stderr, "%d: Sending %d ints to %d\n", rank, size-rank, i);
 
-      error = MPI_ISend(sendbuffer2, size-rank, MPI_INTEGER, i, comm, &sreq);
+      error = MPI_Isend(sendbuffer2, size-rank, MPI_INTEGER, i, 101, comm, &sreq);
 
       if (error != MPI_SUCCESS) {
          fprintf(stderr, "ASYNC %s failed isend (2)!\n", name);
