@@ -2,6 +2,208 @@
 #include <stdlib.h>
 #include "mpi.h"
 
+static int test_async(MPI_Comm comm, char *name)
+{
+   /* Test a frequently occuring pattern in CESM model initialization:
+
+      One pe posts an irecv for all others using MPI_ANY_SOURCE, and
+      uses the value received as the count in a new irecv that receives
+      from a specific pe. Isend is used for both sends. The second
+      isend uses a derived datatype to send a sub array, while the
+      irecv expects regular ints.
+   */
+
+   int i, j, p, error, rank, size;
+   int sendbuffer1
+   int *sendbuffer2;
+   int *recvbuffer1;
+   int *recvbuffer2;
+
+   MPI_Request *rreq;
+   MPI_Request sreq;
+   MPI_Status status;
+
+   MPI_Comm_size(comm, &size);
+   MPI_Comm_rank(comm, &rank);
+
+   sendbuffer2 = malloc(size * sizeof(int));
+
+   if (sendbuffer2 == NULL) {
+      fprintf(stderr, "Failed to allocate sendbuffer!\n");
+      MPI_Finalize();
+      return 1;
+   }
+
+   recvbuffer1 = malloc(size * sizeof(int));
+
+   if (recvbuffer1 == NULL) {
+      fprintf(stderr, "Failed to allocate recvbuffer!\n");
+      MPI_Finalize();
+      return 1;
+   }
+
+   recvbuffer2 = malloc(size * size * sizeof(int));
+
+   if (recvbuffer2 == NULL) {
+      fprintf(stderr, "Failed to allocate recvbuffer!\n");
+      MPI_Finalize();
+      return 1;
+   }
+
+   rreq = malloc(size * sizeof(MPI_Request));
+
+   if (rreq == NULL) {
+      fprintf(stderr, "Failed to allocate request buffer!\n");
+      MPI_Finalize();
+      return 1;
+   }
+
+   fprintf(stderr, "ASYNC %s ************\n", name);
+
+   for (j=0;j<size;j++) {
+      sendbuffer2[j] = j;
+      recvbuffer1[j] = -1;
+      rreq[j] = MPI_REQUEST_NULL;
+   }
+
+   for (j=0;j<size*size;j++) {
+      recvbuffer2[j] = -1;
+   }
+
+   for (i=0;i<size;i++) {
+
+      if (rank == i) {
+         for (j=0;j<size;j++) {
+
+            fprintf(stderr, "%d: Receiving 1 int from ANY\n", rank);
+
+            error = MPI_Irecv(recvbuffer1+j, 1, MPI_INTEGER, MPI_ANY_SOURCE, 100, comm, rreq+j);
+
+            if (error != MPI_SUCCESS) {
+               fprintf(stderr, "ASYNC %s failed irecv (1)!\n", name);
+               MPI_Finalize();
+               return 1;
+            }
+         }
+      }
+
+      sendbuffer1 = size-rank;
+
+      fprintf(stderr, "%d: Sending 1 int (%d) to %d\n", rank, sendbuffer1, i);
+
+      error = MPI_ISend(&sendbuffer1, 1, MPI_INTEGER, i, comm, &sreq);
+
+      if (error != MPI_SUCCESS) {
+         fprintf(stderr, "ASYNC %s failed isend (1)!\n", name);
+         MPI_Finalize();
+         return 1;
+      }
+
+      error = MPI_Request_free(&sreq);
+
+      if (error != MPI_SUCCESS) {
+         fprintf(stderr, "ASYNC %s failed request free (1)!\n", name);
+         MPI_Finalize();
+         return 1;
+      }
+
+      if (rank == i) {
+         for (j=0;j<size;j++) {
+
+            fprintf(stderr, "%d: Waiting for request %d\n", rank, j);
+
+            error = MPI_Wait(rreq+j, &status);
+
+            if (error != MPI_SUCCESS) {
+               fprintf(stderr, "ASYNC %s failed wait (1)!\n", name);
+               MPI_Finalize();
+               return 1;
+            }
+
+            fprintf(stderr, "%d: Receiving %d ints from %d\n", rank, recvbuffer1[j], status.MPI_SOURCE);
+
+            error = MPI_Irecv(recvbuffer2+(j*size), recvbuffer1+j, MPI_INTEGER, status.MPI_SOURCE, 101, comm, rreq+j);
+
+            if (error != MPI_SUCCESS) {
+               fprintf(stderr, "ASYNC %s failed irecv (2)!\n", name);
+               MPI_Finalize();
+               return 1;
+            }
+         }
+      }
+
+      fprintf(stderr, "%d: Sending %d ints to %d\n", rank, size-rank, i);
+
+      error = MPI_ISend(sendbuffer2, size-rank, MPI_INTEGER, i, comm, &sreq);
+
+      if (error != MPI_SUCCESS) {
+         fprintf(stderr, "ASYNC %s failed isend (2)!\n", name);
+         MPI_Finalize();
+         return 1;
+      }
+
+      error = MPI_Request_free(&sreq);
+
+      if (error != MPI_SUCCESS) {
+         fprintf(stderr, "ASYNC %s failed request free (2)!\n", name);
+         MPI_Finalize();
+         return 1;
+      }
+
+      if (rank == i) {
+         for (j=0;j<size;j++) {
+
+            fprintf(stderr, "%d: Waiting for request %d\n", rank, j);
+
+            error = MPI_Wait(rreq+j, &status);
+
+            if (error != MPI_SUCCESS) {
+               fprintf(stderr, "ASYNC %s failed wait (2)!\n", name);
+               MPI_Finalize();
+               return 1;
+            }
+
+            error = MPI_Get_count(status, MPI_INTEGER, &count);
+
+            if (error != MPI_SUCCESS) {
+               fprintf(stderr, "ASYNC %s failed getcount (1)!\n", name);
+               MPI_Finalize();
+               return 1;
+            }
+
+            fprintf(stderr, "%d: Received %d ints from %d\n", rank, count, status.MPI_SOURCE);
+
+            for (z=0;z<count;z++) {
+               if (recvbuffer2[j*size+z] != z) {
+                  fprintf(stderr, "%d: Received wrong value: got %d expected %d\n", rank, recvbuffer2[j*size+z], z);
+               }
+            }
+         }
+      }
+
+      fprintf(stderr, "ASYNC %d DONE", i);
+
+      error = MPI_Barrier(comm);
+
+      if (error != MPI_SUCCESS) {
+         fprintf(stderr, "ASYNC %s failed barrier (1)!\n", name);
+         MPI_Finalize();
+         return 1;
+      }
+   }
+
+   fprintf(stderr, " - ASYNC %s OK\n", name);
+
+   free(sendbuffer2);
+   free(recvbuffer1);
+   free(recvbuffer2);
+   free(rreq);
+
+   return 0;
+}
+
+
+
 static int test_bcast(MPI_Comm comm, char *name)
 {
    int i, j, error, rank, size;
@@ -634,8 +836,6 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "\n****************************************************\n\n");
 
-*/
-
     fprintf(stderr, "Starting ALLTOALL tests\n");
 
     error = test_alltoall(MPI_COMM_WORLD, "MPI_COMM_WORLD");
@@ -648,8 +848,20 @@ int main(int argc, char *argv[])
     if (error != 0) return error;
 
     fprintf(stderr, "\n****************************************************\n\n");
+*/
 
+    fprintf(stderr, "Starting ASYNC tests\n");
 
+    error = test_async(MPI_COMM_WORLD, "MPI_COMM_WORLD");
+    if (error != 0) return error;
+
+    error = test_async(half, "world half");
+    if (error != 0) return error;
+
+    error = test_async(oddeven, "world odd/even");
+    if (error != 0) return error;
+
+    fprintf(stderr, "\n****************************************************\n\n");
 
     fprintf(stderr, "Done!\n");
     MPI_Finalize();
