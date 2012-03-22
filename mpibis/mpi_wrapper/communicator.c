@@ -460,6 +460,10 @@ int rank_is_remote(communicator *c, int rank)
 
 int get_local_rank(communicator *c, int rank)
 {
+   if (rank < 0 || rank >= c->global_size) {
+      FATAL("Illegal global rank %d!", rank);
+   }
+
    return c->local_ranks[rank];
 }
 

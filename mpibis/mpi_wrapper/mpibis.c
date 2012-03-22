@@ -579,7 +579,7 @@ int IMPI_Irsend(void *buf, int count, MPI_Datatype datatype,
 int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
                int source, int tag, MPI_Comm comm, MPI_Request *req)
 {
-   int error, local, flags = REQUEST_FLAG_RECEIVE;
+   int error, local, flags = REQUEST_FLAG_RECEIVE, local_source;
    request *r;
 
    inc_communicator_statistics(comm, STATS_IRECV);
@@ -594,8 +594,10 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
    if (source == MPI_ANY_SOURCE) {
       // if source is any, the local flag is determined by the distribution of the communicator.
       local = comm_is_local(c);
+INFO(3, "Irec local ? %d (because comm is local)", local);
    } else {
       local = rank_is_local(c, source);
+INFO(3, "Irec local ? %d (because source is local)", local);
    }
 
    // Next, we create the request struct.
@@ -610,12 +612,19 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
       return MPI_ERR_INTERN;
    }
 
-INFO(3, "Irec local ? %d", local);
+INFO(3, "Created request %p", r);
 
    // Post the ireceive if it is local
    if (local == 1) {
+
+      if (source == MPI_ANY_SOURCE) {
+         local_source = MPI_ANY_SOURCE;
+      } else {
+         local_source = get_local_rank(c, source);
+      }
+
       // If the source is guarenteed to be local, we directly use MPI.
-      error = PMPI_Irecv(buf, count, datatype, get_local_rank(c, source), tag, c->comm, &(r->req));
+      error = PMPI_Irecv(buf, count, datatype, local_source, tag, c->comm, &(r->req));
 
       if (error != MPI_SUCCESS) {
          ERROR(1, "IRecv failed! (comm=%d,error=%d)", c->number, error);
