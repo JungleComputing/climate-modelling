@@ -786,7 +786,7 @@ int IMPI_Ssend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
      return PMPI_Ssend(buf, count, datatype, get_local_rank(c, dest), tag, c->comm);
    } else {
      // remote send
-     WARN(1, "Incorrect WA ssend implementation (in communicator %c)!", c->number);
+     WARN(1, "Incorrect WA ssend implementation (in communicator %d)!", c->number);
      return messaging_send(buf, count, datatype, dest, tag, c);
    }
 }
