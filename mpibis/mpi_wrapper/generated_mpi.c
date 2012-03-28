@@ -10457,17 +10457,6 @@ MPI_Fint MPI_Win_c2f ( MPI_Win Win )
 }
 
 
-MPI_Fint MPI_Status_c2f ( MPI_Status Status )
-{
-#ifdef IBIS_INTERCEPT
-   return IMPI_Status_c2f(Status);
-#else
-   return PMPI_Status_c2f(Status);
-#endif // IBIS_INTERCEPT
-
-}
-
-
 MPI_Fint MPI_Errhandler_c2f ( MPI_Errhandler Errhandler )
 {
 #ifdef IBIS_INTERCEPT
@@ -10562,17 +10551,6 @@ MPI_Win MPI_Win_f2c ( MPI_Fint Win )
    return IMPI_Win_f2c(Win);
 #else
    return PMPI_Win_f2c(Win);
-#endif // IBIS_INTERCEPT
-
-}
-
-
-MPI_Status MPI_Status_f2c ( MPI_Fint Status )
-{
-#ifdef IBIS_INTERCEPT
-   return IMPI_Status_f2c(Status);
-#else
-   return PMPI_Status_f2c(Status);
 #endif // IBIS_INTERCEPT
 
 }
