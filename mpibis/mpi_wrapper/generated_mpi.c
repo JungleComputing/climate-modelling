@@ -10388,7 +10388,6 @@ MPI_Fint MPI_Comm_c2f ( MPI_Comm comm )
    return PMPI_Comm_c2f(comm);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10400,7 +10399,6 @@ MPI_Fint MPI_Group_c2f ( MPI_Group g )
    return PMPI_Group_c2f(g);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10412,7 +10410,6 @@ MPI_Fint MPI_Request_c2f ( MPI_Request request )
    return PMPI_Request_c2f(request);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10424,7 +10421,6 @@ MPI_Fint MPI_Info_c2f ( MPI_Info info )
    return PMPI_Info_c2f(info);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10436,7 +10432,6 @@ MPI_Fint MPI_File_c2f ( MPI_File file )
    return PMPI_File_c2f(file);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10448,7 +10443,6 @@ MPI_Fint MPI_Op_c2f ( MPI_Op op )
    return PMPI_Op_c2f(op);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10460,7 +10454,6 @@ MPI_Fint MPI_Win_c2f ( MPI_Win Win )
    return PMPI_Win_c2f(Win);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10472,7 +10465,6 @@ MPI_Fint MPI_Status_c2f ( MPI_Status Status )
    return PMPI_Status_c2f(Status);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10484,7 +10476,6 @@ MPI_Fint MPI_Errhandler_c2f ( MPI_Errhandler Errhandler )
    return PMPI_Errhandler_c2f(Errhandler);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10496,7 +10487,6 @@ MPI_Fint MPI_Type_c2f ( MPI_Datatype Type )
    return PMPI_Type_c2f(Type);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10508,7 +10498,6 @@ MPI_Comm MPI_Comm_f2c ( MPI_Fint comm )
    return PMPI_Comm_f2c(comm);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10520,7 +10509,6 @@ MPI_Group MPI_Group_f2c ( MPI_Fint g )
    return PMPI_Group_f2c(g);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10532,7 +10520,6 @@ MPI_Request MPI_Request_f2c ( MPI_Fint request )
    return PMPI_Request_f2c(request);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10544,7 +10531,6 @@ MPI_Info MPI_Info_f2c ( MPI_Fint info )
    return PMPI_Info_f2c(info);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10556,7 +10542,6 @@ MPI_File MPI_File_f2c ( MPI_Fint file )
    return PMPI_File_f2c(file);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10568,7 +10553,6 @@ MPI_Op MPI_Op_f2c ( MPI_Fint op )
    return PMPI_Op_f2c(op);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10580,7 +10564,6 @@ MPI_Win MPI_Win_f2c ( MPI_Fint Win )
    return PMPI_Win_f2c(Win);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10592,7 +10575,6 @@ MPI_Status MPI_Status_f2c ( MPI_Fint Status )
    return PMPI_Status_f2c(Status);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10604,7 +10586,6 @@ MPI_Errhandler MPI_Errhandler_f2c ( MPI_Fint Errhandler )
    return PMPI_Errhandler_f2c(Errhandler);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
@@ -10616,7 +10597,6 @@ MPI_Datatype MPI_Type_f2c ( MPI_Fint Type )
    return PMPI_Type_f2c(Type);
 #endif // IBIS_INTERCEPT
 
-   return error;
 }
 
 
