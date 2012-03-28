@@ -31,6 +31,7 @@ int MPI_Init ( int *argc, char ***argv )
    return error;
 }
 
+
 int MPI_Type_create_f90_complex ( int p, int r, MPI_Datatype *newtype )
 {
 #if PROFILE_LEVEL > 0
@@ -56,7 +57,7 @@ int MPI_Type_create_f90_complex ( int p, int r, MPI_Datatype *newtype )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -94,7 +95,7 @@ int MPI_Type_create_f90_integer ( int r, MPI_Datatype *newtype )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -132,7 +133,7 @@ int MPI_Type_create_f90_real ( int p, int r, MPI_Datatype *newtype )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -166,7 +167,7 @@ double MPI_Wtime (  )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -200,7 +201,7 @@ int MPI_Abort ( MPI_Comm comm, int errorcode )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -239,7 +240,7 @@ int MPI_Accumulate ( void *origin_addr, int origin_count, MPI_Datatype origin_da
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -273,7 +274,7 @@ int MPI_Add_error_class ( int *errorclass )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -307,7 +308,7 @@ int MPI_Add_error_code ( int errorclass, int *errorcode )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -341,7 +342,7 @@ int MPI_Add_error_string ( int errorcode, char *string )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -375,7 +376,7 @@ int MPI_Address ( void *location, MPI_Aint *address )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -414,7 +415,7 @@ int MPI_Allgather ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *r
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -453,7 +454,7 @@ int MPI_Allgatherv ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -487,7 +488,7 @@ int MPI_Alloc_mem ( MPI_Aint size, MPI_Info info, void *baseptr )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -525,7 +526,7 @@ int MPI_Allreduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype dataty
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -564,7 +565,7 @@ int MPI_Alltoall ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *re
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -603,7 +604,7 @@ int MPI_Alltoallv ( void *sendbuf, int *sendcnts, int *sdispls, MPI_Datatype sen
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -642,7 +643,7 @@ int MPI_Alltoallw ( void *sendbuf, int *sendcnts, int *sdispls, MPI_Datatype *se
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -676,7 +677,7 @@ int MPI_Attr_delete ( MPI_Comm comm, int keyval )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -710,7 +711,7 @@ int MPI_Attr_get ( MPI_Comm comm, int keyval, void *attr_value, int *flag )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -744,7 +745,7 @@ int MPI_Attr_put ( MPI_Comm comm, int keyval, void *attr_value )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -778,7 +779,7 @@ int MPI_Barrier ( MPI_Comm comm )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -816,7 +817,7 @@ int MPI_Bcast ( void *buffer, int count, MPI_Datatype datatype, int root, MPI_Co
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -854,7 +855,7 @@ int MPI_Bsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -892,7 +893,7 @@ int MPI_Bsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -926,7 +927,7 @@ int MPI_Buffer_attach ( void *buffer, int size )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -960,7 +961,7 @@ int MPI_Buffer_detach ( void *buffer, int *size )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -994,7 +995,7 @@ int MPI_Cancel ( MPI_Request *request )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1028,7 +1029,7 @@ int MPI_Cart_coords ( MPI_Comm comm, int rank, int maxdims, int *coords )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1062,7 +1063,7 @@ int MPI_Cart_create ( MPI_Comm comm_old, int ndims, int *dims, int *periods, int
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1096,7 +1097,7 @@ int MPI_Cartdim_get ( MPI_Comm comm, int *ndims )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1130,7 +1131,7 @@ int MPI_Cart_get ( MPI_Comm comm, int maxdims, int *dims, int *periods, int *coo
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1164,7 +1165,7 @@ int MPI_Cart_map ( MPI_Comm comm_old, int ndims, int *dims, int *periods, int *n
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1198,7 +1199,7 @@ int MPI_Cart_rank ( MPI_Comm comm, int *coords, int *rank )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1232,7 +1233,7 @@ int MPI_Cart_shift ( MPI_Comm comm, int direction, int displ, int *source, int *
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1266,7 +1267,7 @@ int MPI_Cart_sub ( MPI_Comm comm, int *remain_dims, MPI_Comm *comm_new )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1300,7 +1301,7 @@ int MPI_Close_port ( char *port_name )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1334,7 +1335,7 @@ int MPI_Comm_accept ( char *port_name, MPI_Info info, int root, MPI_Comm comm, M
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1368,7 +1369,7 @@ int MPI_Comm_call_errhandler ( MPI_Comm comm, int errorcode )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1402,7 +1403,7 @@ int MPI_Comm_compare ( MPI_Comm comm1, MPI_Comm comm2, int *result )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1436,7 +1437,7 @@ int MPI_Comm_connect ( char *port_name, MPI_Info info, int root, MPI_Comm comm, 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1470,7 +1471,7 @@ int MPI_Comm_create_errhandler ( MPI_Comm_errhandler_fn *function, MPI_Errhandle
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1504,7 +1505,7 @@ int MPI_Comm_create ( MPI_Comm comm, MPI_Group group, MPI_Comm *newcomm )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1538,7 +1539,7 @@ int MPI_Comm_create_keyval ( MPI_Comm_copy_attr_function *comm_copy_attr_fn, MPI
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1572,7 +1573,7 @@ int MPI_Comm_delete_attr ( MPI_Comm comm, int comm_keyval )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1606,7 +1607,7 @@ int MPI_Comm_disconnect ( MPI_Comm *comm )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1640,7 +1641,7 @@ int MPI_Comm_dup ( MPI_Comm comm, MPI_Comm *newcomm )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1674,7 +1675,7 @@ int MPI_Comm_free ( MPI_Comm *comm )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1708,7 +1709,7 @@ int MPI_Comm_free_keyval ( int *comm_keyval )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1742,7 +1743,7 @@ int MPI_Comm_get_attr ( MPI_Comm comm, int comm_keyval, void *attribute_val, int
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1776,7 +1777,7 @@ int MPI_Comm_get_errhandler ( MPI_Comm comm, MPI_Errhandler *errhandler )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1810,7 +1811,7 @@ int MPI_Comm_get_name ( MPI_Comm comm, char *comm_name, int *resultlen )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1844,7 +1845,7 @@ int MPI_Comm_get_parent ( MPI_Comm *parent )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1878,7 +1879,7 @@ int MPI_Comm_group ( MPI_Comm comm, MPI_Group *group )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1912,7 +1913,7 @@ int MPI_Comm_join ( int fd, MPI_Comm *intercomm )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1946,7 +1947,7 @@ int MPI_Comm_rank ( MPI_Comm comm, int *rank )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -1980,7 +1981,7 @@ int MPI_Comm_remote_group ( MPI_Comm comm, MPI_Group *group )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2014,7 +2015,7 @@ int MPI_Comm_remote_size ( MPI_Comm comm, int *size )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2048,7 +2049,7 @@ int MPI_Comm_set_attr ( MPI_Comm comm, int comm_keyval, void *attribute_val )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2082,7 +2083,7 @@ int MPI_Comm_set_errhandler ( MPI_Comm comm, MPI_Errhandler errhandler )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2116,7 +2117,7 @@ int MPI_Comm_set_name ( MPI_Comm comm, char *comm_name )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2150,7 +2151,7 @@ int MPI_Comm_size ( MPI_Comm comm, int *size )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2184,7 +2185,7 @@ int MPI_Comm_spawn ( char *command, char *argv[], int maxprocs, MPI_Info info, i
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2218,7 +2219,7 @@ int MPI_Comm_spawn_multiple ( int count, char *array_of_commands[], char* *array
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2252,7 +2253,7 @@ int MPI_Comm_split ( MPI_Comm comm, int color, int key, MPI_Comm *newcomm )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2286,7 +2287,7 @@ int MPI_Comm_test_inter ( MPI_Comm comm, int *flag )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2320,7 +2321,7 @@ int MPI_Dims_create ( int nnodes, int ndims, int *dims )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2354,7 +2355,7 @@ int MPI_Dist_graph_create_adjacent ( MPI_Comm comm_old, int indegree, int source
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2388,7 +2389,7 @@ int MPI_Dist_graph_create ( MPI_Comm comm_old, int n, int sources[], int degrees
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2422,7 +2423,7 @@ int MPI_Dist_graph_neighbors_count ( MPI_Comm comm, int *indegree, int *outdegre
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2456,7 +2457,7 @@ int MPI_Dist_graph_neighbors ( MPI_Comm comm, int maxindegree, int sources[], in
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2490,7 +2491,7 @@ int MPI_Errhandler_create ( MPI_Handler_function *function, MPI_Errhandler *errh
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2524,7 +2525,7 @@ int MPI_Errhandler_free ( MPI_Errhandler *errhandler )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2558,7 +2559,7 @@ int MPI_Errhandler_get ( MPI_Comm comm, MPI_Errhandler *errhandler )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2592,7 +2593,7 @@ int MPI_Errhandler_set ( MPI_Comm comm, MPI_Errhandler errhandler )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2626,7 +2627,7 @@ int MPI_Error_class ( int errorcode, int *errorclass )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2660,7 +2661,7 @@ int MPI_Error_string ( int errorcode, char *string, int *resultlen )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2698,7 +2699,7 @@ int MPI_Exscan ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2732,7 +2733,7 @@ int MPI_File_call_errhandler ( MPI_File fh, int errorcode )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2766,7 +2767,7 @@ int MPI_File_close ( MPI_File *mpi_fh )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2800,7 +2801,7 @@ int MPI_File_create_errhandler ( MPI_File_errhandler_fn *function, MPI_Errhandle
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2834,7 +2835,7 @@ int MPI_File_delete ( char *filename, MPI_Info info )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2868,7 +2869,7 @@ int MPI_File_get_amode ( MPI_File mpi_fh, int *amode )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2902,7 +2903,7 @@ int MPI_File_get_atomicity ( MPI_File mpi_fh, int *flag )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2936,7 +2937,7 @@ int MPI_File_get_byte_offset ( MPI_File mpi_fh, MPI_Offset offset, MPI_Offset *d
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -2970,7 +2971,7 @@ int MPI_File_get_errhandler ( MPI_File file, MPI_Errhandler *errhandler )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3004,7 +3005,7 @@ int MPI_File_get_group ( MPI_File mpi_fh, MPI_Group *group )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3038,7 +3039,7 @@ int MPI_File_get_info ( MPI_File mpi_fh, MPI_Info *info_used )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3072,7 +3073,7 @@ int MPI_File_get_position ( MPI_File mpi_fh, MPI_Offset *offset )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3106,7 +3107,7 @@ int MPI_File_get_position_shared ( MPI_File mpi_fh, MPI_Offset *offset )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3140,7 +3141,7 @@ int MPI_File_get_size ( MPI_File mpi_fh, MPI_Offset *size )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3178,7 +3179,7 @@ int MPI_File_get_type_extent ( MPI_File mpi_fh, MPI_Datatype datatype, MPI_Aint 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3217,7 +3218,7 @@ int MPI_File_get_view ( MPI_File mpi_fh, MPI_Offset *disp, MPI_Datatype *etype, 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3255,7 +3256,7 @@ int MPI_File_iread_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int count
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3293,7 +3294,7 @@ int MPI_File_iread ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatyp
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3331,7 +3332,7 @@ int MPI_File_iread_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3369,7 +3370,7 @@ int MPI_File_iwrite_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int coun
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3407,7 +3408,7 @@ int MPI_File_iwrite ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype dataty
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3445,7 +3446,7 @@ int MPI_File_iwrite_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3479,7 +3480,7 @@ int MPI_File_open ( MPI_Comm comm, char *filename, int amode, MPI_Info info, MPI
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3513,7 +3514,7 @@ int MPI_File_preallocate ( MPI_File mpi_fh, MPI_Offset size )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3551,7 +3552,7 @@ int MPI_File_read_all_begin ( MPI_File mpi_fh, void *buf, int count, MPI_Datatyp
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3585,7 +3586,7 @@ int MPI_File_read_all_end ( MPI_File mpi_fh, void *buf, MPI_Status *status )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3623,7 +3624,7 @@ int MPI_File_read_all ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype data
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3661,7 +3662,7 @@ int MPI_File_read_at_all_begin ( MPI_File mpi_fh, MPI_Offset offset, void *buf, 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3695,7 +3696,7 @@ int MPI_File_read_at_all_end ( MPI_File mpi_fh, void *buf, MPI_Status *status )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3733,7 +3734,7 @@ int MPI_File_read_at_all ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int co
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3771,7 +3772,7 @@ int MPI_File_read_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int count,
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3809,7 +3810,7 @@ int MPI_File_read ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatype
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3847,7 +3848,7 @@ int MPI_File_read_ordered_begin ( MPI_File mpi_fh, void *buf, int count, MPI_Dat
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3881,7 +3882,7 @@ int MPI_File_read_ordered_end ( MPI_File mpi_fh, void *buf, MPI_Status *status )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3919,7 +3920,7 @@ int MPI_File_read_ordered ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3957,7 +3958,7 @@ int MPI_File_read_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype d
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -3991,7 +3992,7 @@ int MPI_File_seek ( MPI_File mpi_fh, MPI_Offset offset, int whence )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4025,7 +4026,7 @@ int MPI_File_seek_shared ( MPI_File mpi_fh, MPI_Offset offset, int whence )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4059,7 +4060,7 @@ int MPI_File_set_atomicity ( MPI_File mpi_fh, int flag )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4093,7 +4094,7 @@ int MPI_File_set_errhandler ( MPI_File file, MPI_Errhandler errhandler )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4127,7 +4128,7 @@ int MPI_File_set_info ( MPI_File mpi_fh, MPI_Info info )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4161,7 +4162,7 @@ int MPI_File_set_size ( MPI_File mpi_fh, MPI_Offset size )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4200,7 +4201,7 @@ int MPI_File_set_view ( MPI_File mpi_fh, MPI_Offset disp, MPI_Datatype etype, MP
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4234,7 +4235,7 @@ int MPI_File_sync ( MPI_File mpi_fh )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4272,7 +4273,7 @@ int MPI_File_write_all_begin ( MPI_File mpi_fh, void *buf, int count, MPI_Dataty
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4306,7 +4307,7 @@ int MPI_File_write_all_end ( MPI_File mpi_fh, void *buf, MPI_Status *status )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4344,7 +4345,7 @@ int MPI_File_write_all ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype dat
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4382,7 +4383,7 @@ int MPI_File_write_at_all_begin ( MPI_File mpi_fh, MPI_Offset offset, void *buf,
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4416,7 +4417,7 @@ int MPI_File_write_at_all_end ( MPI_File mpi_fh, void *buf, MPI_Status *status )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4454,7 +4455,7 @@ int MPI_File_write_at_all ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int c
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4492,7 +4493,7 @@ int MPI_File_write_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int count
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4530,7 +4531,7 @@ int MPI_File_write ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatyp
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4568,7 +4569,7 @@ int MPI_File_write_ordered_begin ( MPI_File mpi_fh, void *buf, int count, MPI_Da
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4602,7 +4603,7 @@ int MPI_File_write_ordered_end ( MPI_File mpi_fh, void *buf, MPI_Status *status 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4640,7 +4641,7 @@ int MPI_File_write_ordered ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4678,7 +4679,7 @@ int MPI_File_write_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4712,7 +4713,7 @@ int MPI_Finalized ( int *flag )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4746,7 +4747,7 @@ int MPI_Finalize (  )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4780,7 +4781,7 @@ int MPI_Free_mem ( void *base )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4819,7 +4820,7 @@ int MPI_Gather ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvbu
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4858,7 +4859,7 @@ int MPI_Gatherv ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvb
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4892,7 +4893,7 @@ int MPI_Get_address ( void *location, MPI_Aint *address )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4930,7 +4931,7 @@ int MPI_Get_count ( MPI_Status *status, MPI_Datatype datatype, int *count )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -4968,7 +4969,7 @@ int MPI_Get_elements ( MPI_Status *status, MPI_Datatype datatype, int *elements 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5007,7 +5008,7 @@ int MPI_Get ( void *origin_addr, int origin_count, MPI_Datatype origin_datatype,
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5041,7 +5042,7 @@ int MPI_Get_processor_name ( char *name, int *resultlen )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5075,7 +5076,7 @@ int MPI_Get_version ( int *version, int *subversion )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5109,7 +5110,7 @@ int MPI_Graph_create ( MPI_Comm comm_old, int nnodes, int *indx, int *edges, int
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5143,7 +5144,7 @@ int MPI_Graphdims_get ( MPI_Comm comm, int *nnodes, int *nedges )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5177,7 +5178,7 @@ int MPI_Graph_get ( MPI_Comm comm, int maxindex, int maxedges, int *indx, int *e
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5211,7 +5212,7 @@ int MPI_Graph_map ( MPI_Comm comm_old, int nnodes, int *indx, int *edges, int *n
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5245,7 +5246,7 @@ int MPI_Graph_neighbors_count ( MPI_Comm comm, int rank, int *nneighbors )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5279,7 +5280,7 @@ int MPI_Graph_neighbors ( MPI_Comm comm, int rank, int maxneighbors, int *neighb
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5313,7 +5314,7 @@ int MPI_Grequest_complete ( MPI_Request request )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5347,7 +5348,7 @@ int MPI_Grequest_start ( MPI_Grequest_query_function *query_fn, MPI_Grequest_fre
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5381,7 +5382,7 @@ int MPI_Group_compare ( MPI_Group group1, MPI_Group group2, int *result )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5415,7 +5416,7 @@ int MPI_Group_difference ( MPI_Group group1, MPI_Group group2, MPI_Group *newgro
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5449,7 +5450,7 @@ int MPI_Group_excl ( MPI_Group group, int n, int *ranks, MPI_Group *newgroup )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5483,7 +5484,7 @@ int MPI_Group_free ( MPI_Group *group )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5517,7 +5518,7 @@ int MPI_Group_incl ( MPI_Group group, int n, int *ranks, MPI_Group *newgroup )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5551,7 +5552,7 @@ int MPI_Group_intersection ( MPI_Group group1, MPI_Group group2, MPI_Group *newg
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5585,7 +5586,7 @@ int MPI_Group_range_excl ( MPI_Group group, int n, int ranges[][3], MPI_Group *n
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5619,7 +5620,7 @@ int MPI_Group_range_incl ( MPI_Group group, int n, int ranges[][3], MPI_Group *n
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5653,7 +5654,7 @@ int MPI_Group_rank ( MPI_Group group, int *rank )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5687,7 +5688,7 @@ int MPI_Group_size ( MPI_Group group, int *size )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5721,7 +5722,7 @@ int MPI_Group_translate_ranks ( MPI_Group group1, int n, int *ranks1, MPI_Group 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5755,7 +5756,7 @@ int MPI_Group_union ( MPI_Group group1, MPI_Group group2, MPI_Group *newgroup )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5793,7 +5794,7 @@ int MPI_Ibsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5827,7 +5828,7 @@ int MPI_Info_create ( MPI_Info *info )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5861,7 +5862,7 @@ int MPI_Info_delete ( MPI_Info info, char *key )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5895,7 +5896,7 @@ int MPI_Info_dup ( MPI_Info info, MPI_Info *newinfo )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5929,7 +5930,7 @@ int MPI_Info_free ( MPI_Info *info )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5963,7 +5964,7 @@ int MPI_Info_get ( MPI_Info info, char *key, int valuelen, char *value, int *fla
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -5997,7 +5998,7 @@ int MPI_Info_get_nkeys ( MPI_Info info, int *nkeys )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6031,7 +6032,7 @@ int MPI_Info_get_nthkey ( MPI_Info info, int n, char *key )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6065,7 +6066,7 @@ int MPI_Info_get_valuelen ( MPI_Info info, char *key, int *valuelen, int *flag )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6099,7 +6100,7 @@ int MPI_Info_set ( MPI_Info info, char *key, char *value )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6133,7 +6134,7 @@ int MPI_Initialized ( int *flag )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6167,7 +6168,7 @@ int MPI_Init_thread ( int *argc, char ***argv, int required, int *provided )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6201,7 +6202,7 @@ int MPI_Intercomm_create ( MPI_Comm local_comm, int local_leader, MPI_Comm peer_
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6235,7 +6236,7 @@ int MPI_Intercomm_merge ( MPI_Comm intercomm, int high, MPI_Comm *newintracomm )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6269,7 +6270,7 @@ int MPI_Iprobe ( int source, int tag, MPI_Comm comm, int *flag, MPI_Status *stat
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6307,7 +6308,7 @@ int MPI_Irecv ( void *buf, int count, MPI_Datatype datatype, int source, int tag
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6345,7 +6346,7 @@ int MPI_Irsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6383,7 +6384,7 @@ int MPI_Isend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6421,7 +6422,7 @@ int MPI_Issend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6455,7 +6456,7 @@ int MPI_Is_thread_main ( int *flag )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6489,7 +6490,7 @@ int MPI_Keyval_create ( MPI_Copy_function *copy_fn, MPI_Delete_function *delete_
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6523,7 +6524,7 @@ int MPI_Keyval_free ( int *keyval )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6557,7 +6558,7 @@ int MPI_Lookup_name ( char *service_name, MPI_Info info, char *port_name )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6591,7 +6592,7 @@ int MPI_Op_commutative ( MPI_Op op, int *commute )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6625,7 +6626,7 @@ int MPI_Op_create ( MPI_User_function *function, int commute, MPI_Op *op )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6659,7 +6660,7 @@ int MPI_Open_port ( MPI_Info info, char *port_name )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6693,7 +6694,7 @@ int MPI_Op_free ( MPI_Op *op )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6731,7 +6732,7 @@ int MPI_Pack_external ( char *datarep, void *inbuf, int incount, MPI_Datatype da
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6769,7 +6770,7 @@ int MPI_Pack_external_size ( char *datarep, int incount, MPI_Datatype datatype, 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6807,7 +6808,7 @@ int MPI_Pack ( void *inbuf, int incount, MPI_Datatype datatype, void *outbuf, in
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6845,7 +6846,7 @@ int MPI_Pack_size ( int incount, MPI_Datatype datatype, MPI_Comm comm, int *size
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6879,7 +6880,7 @@ int MPI_Pcontrol ( const int, level ... )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6913,7 +6914,7 @@ int MPI_Probe ( int source, int tag, MPI_Comm comm, MPI_Status *status )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6947,7 +6948,7 @@ int MPI_Publish_name ( char *service_name, MPI_Info info, char *port_name )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -6986,7 +6987,7 @@ int MPI_Put ( void *origin_addr, int origin_count, MPI_Datatype origin_datatype,
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7020,7 +7021,7 @@ int MPI_Query_thread ( int *provided )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7058,7 +7059,7 @@ int MPI_Recv ( void *buf, int count, MPI_Datatype datatype, int source, int tag,
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7096,7 +7097,7 @@ int MPI_Recv_init ( void *buf, int count, MPI_Datatype datatype, int source, int
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7134,7 +7135,7 @@ int MPI_Reduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7172,7 +7173,7 @@ int MPI_Reduce_local ( void *inbuf, void *inoutbuf, int count, MPI_Datatype data
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7210,7 +7211,7 @@ int MPI_Reduce_scatter_block ( void *sendbuf, void *recvbuf, int recvcount, MPI_
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7248,7 +7249,7 @@ int MPI_Reduce_scatter ( void *sendbuf, void *recvbuf, int *recvcnts, MPI_Dataty
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7282,7 +7283,7 @@ int MPI_Register_datarep ( char *name, MPI_Datarep_conversion_function *read_con
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7316,7 +7317,7 @@ int MPI_Request_free ( MPI_Request *request )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7350,7 +7351,7 @@ int MPI_Request_get_status ( MPI_Request request, int *flag, MPI_Status *status 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7388,7 +7389,7 @@ int MPI_Rsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7426,7 +7427,7 @@ int MPI_Rsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7464,7 +7465,7 @@ int MPI_Scan ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, M
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7503,7 +7504,7 @@ int MPI_Scatter ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvb
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7542,7 +7543,7 @@ int MPI_Scatterv ( void *sendbuf, int *sendcnts, int *displs, MPI_Datatype sendt
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7580,7 +7581,7 @@ int MPI_Send ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, M
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7618,7 +7619,7 @@ int MPI_Send_init ( void *buf, int count, MPI_Datatype datatype, int dest, int t
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7657,7 +7658,7 @@ int MPI_Sendrecv ( void *sendbuf, int sendcount, MPI_Datatype sendtype, int dest
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7695,7 +7696,7 @@ int MPI_Sendrecv_replace ( void *buf, int count, MPI_Datatype datatype, int dest
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7733,7 +7734,7 @@ int MPI_Ssend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7771,7 +7772,7 @@ int MPI_Ssend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7805,7 +7806,7 @@ int MPI_Startall ( int count, MPI_Request array_of_requests[] )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7839,7 +7840,7 @@ int MPI_Start ( MPI_Request *request )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7873,7 +7874,7 @@ int MPI_Status_set_cancelled ( MPI_Status *status, int flag )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7911,7 +7912,7 @@ int MPI_Status_set_elements ( MPI_Status *status, MPI_Datatype datatype, int cou
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7945,7 +7946,7 @@ int MPI_Testall ( int count, MPI_Request array_of_requests[], int *flag, MPI_Sta
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -7979,7 +7980,7 @@ int MPI_Testany ( int count, MPI_Request array_of_requests[], int *index, int *f
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8013,7 +8014,7 @@ int MPI_Test_cancelled ( MPI_Status *status, int *flag )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8047,7 +8048,7 @@ int MPI_Test ( MPI_Request *request, int *flag, MPI_Status *status )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8081,7 +8082,7 @@ int MPI_Testsome ( int incount, MPI_Request array_of_requests[], int *outcount, 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8115,7 +8116,7 @@ int MPI_Topo_test ( MPI_Comm comm, int *topo_type )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8153,7 +8154,7 @@ int MPI_Type_commit ( MPI_Datatype *datatype )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8192,7 +8193,7 @@ int MPI_Type_contiguous ( int count, MPI_Datatype old_type, MPI_Datatype *new_ty
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8231,7 +8232,7 @@ int MPI_Type_create_darray ( int size, int rank, int ndims, int array_of_gsizes[
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8270,7 +8271,7 @@ int MPI_Type_create_hindexed ( int count, int blocklengths[], MPI_Aint displacem
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8309,7 +8310,7 @@ int MPI_Type_create_hvector ( int count, int blocklength, MPI_Aint stride, MPI_D
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8348,7 +8349,7 @@ int MPI_Type_create_indexed_block ( int count, int blocklength, int array_of_dis
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8382,7 +8383,7 @@ int MPI_Type_create_keyval ( MPI_Type_copy_attr_function *type_copy_attr_fn, MPI
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8421,7 +8422,7 @@ int MPI_Type_create_resized ( MPI_Datatype oldtype, MPI_Aint lb, MPI_Aint extent
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8460,7 +8461,7 @@ int MPI_Type_create_struct ( int count, int array_of_blocklengths[], MPI_Aint ar
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8499,7 +8500,7 @@ int MPI_Type_create_subarray ( int ndims, int array_of_sizes[], int array_of_sub
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8537,7 +8538,7 @@ int MPI_Type_delete_attr ( MPI_Datatype type, int type_keyval )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8576,7 +8577,7 @@ int MPI_Type_dup ( MPI_Datatype datatype, MPI_Datatype *newtype )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8614,7 +8615,7 @@ int MPI_Type_extent ( MPI_Datatype datatype, MPI_Aint *extent )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8652,7 +8653,7 @@ int MPI_Type_free ( MPI_Datatype *datatype )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8686,7 +8687,7 @@ int MPI_Type_free_keyval ( int *type_keyval )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8724,7 +8725,7 @@ int MPI_Type_get_attr ( MPI_Datatype type, int type_keyval, void *attribute_val,
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8763,7 +8764,7 @@ int MPI_Type_get_contents ( MPI_Datatype datatype, int max_integers, int max_add
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8801,7 +8802,7 @@ int MPI_Type_get_envelope ( MPI_Datatype datatype, int *num_integers, int *num_a
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8839,7 +8840,7 @@ int MPI_Type_get_extent ( MPI_Datatype datatype, MPI_Aint *lb, MPI_Aint *extent 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8877,7 +8878,7 @@ int MPI_Type_get_name ( MPI_Datatype datatype, char *type_name, int *resultlen )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8915,7 +8916,7 @@ int MPI_Type_get_true_extent ( MPI_Datatype datatype, MPI_Aint *true_lb, MPI_Ain
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8954,7 +8955,7 @@ int MPI_Type_hindexed ( int count, int blocklens[], MPI_Aint indices[], MPI_Data
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -8993,7 +8994,7 @@ int MPI_Type_hvector ( int count, int blocklen, MPI_Aint stride, MPI_Datatype ol
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9032,7 +9033,7 @@ int MPI_Type_indexed ( int count, int blocklens[], int indices[], MPI_Datatype o
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9070,7 +9071,7 @@ int MPI_Type_lb ( MPI_Datatype datatype, MPI_Aint *displacement )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9108,7 +9109,7 @@ int MPI_Type_match_size ( int typeclass, int size, MPI_Datatype *datatype )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9146,7 +9147,7 @@ int MPI_Type_set_attr ( MPI_Datatype type, int type_keyval, void *attribute_val 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9184,7 +9185,7 @@ int MPI_Type_set_name ( MPI_Datatype type, char *type_name )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9222,7 +9223,7 @@ int MPI_Type_size ( MPI_Datatype datatype, int *size )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9261,7 +9262,7 @@ int MPI_Type_struct ( int count, int blocklens[], MPI_Aint indices[], MPI_Dataty
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9299,7 +9300,7 @@ int MPI_Type_ub ( MPI_Datatype datatype, MPI_Aint *displacement )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9338,7 +9339,7 @@ int MPI_Type_vector ( int count, int blocklength, int stride, MPI_Datatype old_t
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9376,7 +9377,7 @@ int MPI_Unpack_external ( char *datarep, void *inbuf, MPI_Aint insize, MPI_Aint 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9414,7 +9415,7 @@ int MPI_Unpack ( void *inbuf, int insize, int *position, void *outbuf, int outco
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9448,7 +9449,7 @@ int MPI_Unpublish_name ( char *service_name, MPI_Info info, char *port_name )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9482,7 +9483,7 @@ int MPI_Waitall ( int count, MPI_Request array_of_requests[], MPI_Status array_o
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9516,7 +9517,7 @@ int MPI_Waitany ( int count, MPI_Request array_of_requests[], int *index, MPI_St
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9550,7 +9551,7 @@ int MPI_Wait ( MPI_Request *request, MPI_Status *status )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9584,7 +9585,7 @@ int MPI_Waitsome ( int incount, MPI_Request array_of_requests[], int *outcount, 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9618,7 +9619,7 @@ int MPI_Win_call_errhandler ( MPI_Win win, int errorcode )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9652,7 +9653,7 @@ int MPI_Win_complete ( MPI_Win win )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9686,7 +9687,7 @@ int MPI_Win_create_errhandler ( MPI_Win_errhandler_fn *function, MPI_Errhandler 
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9720,7 +9721,7 @@ int MPI_Win_create ( void *base, MPI_Aint size, int disp_unit, MPI_Info info, MP
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9754,7 +9755,7 @@ int MPI_Win_create_keyval ( MPI_Win_copy_attr_function *win_copy_attr_fn, MPI_Wi
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9788,7 +9789,7 @@ int MPI_Win_delete_attr ( MPI_Win win, int win_keyval )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9822,7 +9823,7 @@ int MPI_Win_fence ( int assert, MPI_Win win )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9856,7 +9857,7 @@ int MPI_Win_free ( MPI_Win *win )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9890,7 +9891,7 @@ int MPI_Win_free_keyval ( int *win_keyval )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9924,7 +9925,7 @@ int MPI_Win_get_attr ( MPI_Win win, int win_keyval, void *attribute_val, int *fl
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9958,7 +9959,7 @@ int MPI_Win_get_errhandler ( MPI_Win win, MPI_Errhandler *errhandler )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -9992,7 +9993,7 @@ int MPI_Win_get_group ( MPI_Win win, MPI_Group *group )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -10026,7 +10027,7 @@ int MPI_Win_get_name ( MPI_Win win, char *win_name, int *resultlen )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -10060,7 +10061,7 @@ int MPI_Win_lock ( int lock_type, int rank, int assert, MPI_Win win )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -10094,7 +10095,7 @@ int MPI_Win_post ( MPI_Group group, int assert, MPI_Win win )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -10128,7 +10129,7 @@ int MPI_Win_set_attr ( MPI_Win win, int win_keyval, void *attribute_val )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -10162,7 +10163,7 @@ int MPI_Win_set_errhandler ( MPI_Win win, MPI_Errhandler errhandler )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -10196,7 +10197,7 @@ int MPI_Win_set_name ( MPI_Win win, char *win_name )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -10230,7 +10231,7 @@ int MPI_Win_start ( MPI_Group group, int assert, MPI_Win win )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -10264,7 +10265,7 @@ int MPI_Win_test ( MPI_Win win, int *flag )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -10298,7 +10299,7 @@ int MPI_Win_unlock ( int rank, MPI_Win win )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -10332,7 +10333,7 @@ int MPI_Win_wait ( MPI_Win win )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -10366,7 +10367,7 @@ double MPI_Wtick (  )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
@@ -10400,7 +10401,7 @@ int MPI_Group_comm_create ( MPI_Comm old_comm, MPI_Group group, int tag, MPI_Com
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
+   profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
