@@ -66,6 +66,6 @@ void profile_finalize();
 
 void profile_add_statistics(MPI_Comm comm, int field, uint64_t ticks);
 void profile_print_statistics(MPI_Comm comm);
-void profile_print_statistics();
+void profile_print_all_statistics();
 
 #endif

@@ -54,7 +54,7 @@ void profile_finalize()
 {
    end_ticks = profile_start_ticks();
 
-   profile_print_statistics();
+   profile_print_all_statistics();
 
    printf("Total profiled ticks: %ld\n", end_ticks-start_ticks);
 
@@ -132,7 +132,7 @@ void profile_print_statistics(MPI_Comm comm)
    printf("\n");
 }
 
-void profile_print_statistics()
+void profile_print_all_statistics()
 {
    int i, j;
 
