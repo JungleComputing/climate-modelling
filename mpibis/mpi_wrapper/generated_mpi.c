@@ -10600,3 +10600,5 @@ MPI_Datatype MPI_Type_f2c ( MPI_Fint Type )
 }
 
 
+#endif // ENABLE_INTERCEPT
+
