@@ -415,7 +415,7 @@ int IMPI_Finalize(void)
    int error;
 
 #if PROFILE_LEVEL > 0
-   profile_finalize()
+   profile_finalize();
 #endif
 
    // We tell the system to shut down by terminating MPI_COMM_WORLD.
