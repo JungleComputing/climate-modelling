@@ -27,7 +27,7 @@
 	</target>
 
 	<target name="compile" depends="prepare">
-		<javac classpathref="default.classpath" destdir="${builddir}" srcdir="${srcdir}" debug="true" includes="cesm/**/*.java" />
+		<javac classpathref="default.classpath" destdir="${builddir}" srcdir="${srcdir}" debug="true" includes="cesm/**/*.java,generator/**/*.java" />
 	</target>
 
 	<!-- Internal target - Builds the JAR file -->
