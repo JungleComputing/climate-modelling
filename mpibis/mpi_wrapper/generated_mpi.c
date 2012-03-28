@@ -6859,40 +6859,6 @@ int MPI_Pack_size ( int incount, MPI_Datatype datatype, MPI_Comm comm, int *size
 }
 
 
-int MPI_Pcontrol ( const int, level ... )
-{
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif // PROFILE_LEVEL
-
-#ifdef TRACE_CALLS
-   INFO(0, "MPI_Pcontrol(const int=%p, level ...=%p)", (void *) int, (void *) ...);
-#endif // TRACE_CALLS
-
-#if PROFILE_LEVEL > 0
-   profile_start = profile_start_ticks();
-#endif // PROFILE_LEVEL
-
-#ifdef IBIS_INTERCEPT
-   int error = IMPI_Pcontrol(int, ...);
-#else
-   int error = PMPI_Pcontrol(int, ...);
-#endif // IBIS_INTERCEPT
-
-#if PROFILE_LEVEL > 0
-   profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
-#endif // PROFILE_LEVEL
-
-#ifdef TRACE_ERRORS
-   if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Pcontrol failed (%d)!", error);
-   }
-#endif // TRACE_ERRORS
-   return error;
-}
-
-
 int MPI_Probe ( int source, int tag, MPI_Comm comm, MPI_Status *status )
 {
 #if PROFILE_LEVEL > 0
