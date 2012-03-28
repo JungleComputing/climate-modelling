@@ -1419,6 +1419,7 @@ subroutine ccsm_run()
    call t_stopf ('DRIVER_RUN_LOOP_BSTART')
    Time_begin = mpi_wtime()
    Time_bstep = mpi_wtime()
+
    do while ( .not. stop_alarm)
 
       call t_startf('DRIVER_RUN_LOOP')
@@ -1457,6 +1458,12 @@ subroutine ccsm_run()
       if (mod(tod,21600) == 0) t6hr_alarm = .true.
       if (mod(tod,43200) == 0) t12hr_alarm = .true.
       if (tod == 0) t24hr_alarm = .true.
+
+! ADDED -- JASON
+      if (tod == 0) then
+          call dump_profile_info()
+      endif
+! END ADDED -- JASON
 
       call seq_infodata_putData(infodata, glcrun_alarm=glcrun_alarm)
 
@@ -2440,6 +2447,10 @@ subroutine ccsm_run()
 
    end do   ! driver run loop
 
+! ADDED -- JASON
+   call dump_profile_info()
+! END ADDED -- JASON
+
    call t_startf ('DRIVER_RUN_LOOP_BSTOP')
    call mpi_barrier(mpicom_GLOID,ierr)
    call t_stopf ('DRIVER_RUN_LOOP_BSTOP')
@@ -2451,7 +2462,6 @@ subroutine ccsm_run()
    !----------------------------------------------------------
 
 end subroutine ccsm_run
-
 
 !===============================================================================
 
