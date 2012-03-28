@@ -1,8 +1,5 @@
 #include "flags.h"
 
-//#include <execinfo.h>
-
-
 #ifdef ENABLE_INTERCEPT
 
 #include "logging.h"
@@ -170,10 +167,6 @@ int MPI_Address ( void *location, MPI_Aint *address )
 
 int MPI_Allgather ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Allgather(void *sendbuf=%p, int sendcount=%d, MPI_Datatype sendtype=%s, void *recvbuf=%p, int recvcount=%d, MPI_Datatype recvtype=%s, MPI_Comm comm=%s)", sendbuf, sendcount, type_to_string(sendtype), recvbuf, recvcount, type_to_string(recvtype), comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -183,20 +176,11 @@ int MPI_Allgather ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *r
    CHECK_TYPE(recvtype);
 #endif
 
-#if PROFILE_LEVEL > 0
-   profile_start = profile_start_ticks();
-#endif
-
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #else
    int error = PMPI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm);
 #endif // IBIS_INTERCEPT
-
-#if PROFILE_LEVEL > 0
-   profile_end = profile_end_ticks();
-   profile_add_statistics(comm, STATS_ALLGATHER, profile_end-profile_start);
-#endif
 
 #ifdef TRACE_ERRORS
    if (error != MPI_SUCCESS) {
@@ -209,10 +193,6 @@ int MPI_Allgather ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *r
 
 int MPI_Allgatherv ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf, int *recvcounts, int *displs, MPI_Datatype recvtype, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Allgatherv(void *sendbuf=%p, int sendcount=%d, MPI_Datatype sendtype=%s, void *recvbuf=%p, int *recvcounts=%p, int *displs=%p, MPI_Datatype recvtype=%s, MPI_Comm comm=%s)", sendbuf, sendcount, type_to_string(sendtype), recvbuf, recvcounts, displs, type_to_string(recvtype), comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -260,10 +240,6 @@ int MPI_Alloc_mem ( MPI_Aint size, MPI_Info info, void *baseptr )
 
 int MPI_Allreduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Allreduce(void *sendbuf=%p, void *recvbuf=%p, int count=%d, MPI_Datatype datatype=%s, MPI_Op op=%s, MPI_Comm comm=%s)", sendbuf, recvbuf, count, type_to_string(datatype), op_to_string(op), comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -293,10 +269,6 @@ int MPI_Allreduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype dataty
 
 int MPI_Alltoall ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *recvbuf, int recvcount, MPI_Datatype recvtype, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Alltoall(void *sendbuf=%p, int sendcount=%d, MPI_Datatype sendtype=%s, void *recvbuf=%p, int recvcount=%d, MPI_Datatype recvtype=%s, MPI_Comm comm=%s)", sendbuf, sendcount, type_to_string(sendtype), recvbuf, recvcount, type_to_string(recvtype), comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -323,10 +295,6 @@ int MPI_Alltoall ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *re
 
 int MPI_Alltoallv ( void *sendbuf, int *sendcnts, int *sdispls, MPI_Datatype sendtype, void *recvbuf, int *recvcnts, int *rdispls, MPI_Datatype recvtype, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Alltoallv(void *sendbuf=%p, int *sendcnts=%p, int *sdispls=%p, MPI_Datatype sendtype=%s, void *recvbuf=%p, int *recvcnts=%p, int *rdispls=%p, MPI_Datatype recvtype=%s, MPI_Comm comm=%s)", sendbuf, sendcnts, sdispls, type_to_string(sendtype), recvbuf, recvcnts, rdispls, type_to_string(recvtype), comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -437,10 +405,6 @@ int MPI_Attr_put ( MPI_Comm comm, int keyval, void *attr_value )
 
 int MPI_Barrier ( MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Barrier(MPI_Comm comm=%s)", comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -462,10 +426,6 @@ int MPI_Barrier ( MPI_Comm comm )
 
 int MPI_Bcast ( void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Bcast(void *buffer=%p, int count=%d, MPI_Datatype datatype=%s, int root=%d, MPI_Comm comm=%s)", buffer, count, type_to_string(datatype), root, comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -495,10 +455,6 @@ int MPI_Bcast ( void *buffer, int count, MPI_Datatype datatype, int root, MPI_Co
 
 int MPI_Bsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Bsend(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -524,10 +480,6 @@ int MPI_Bsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 
 int MPI_Bsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Bsend_init(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
@@ -910,10 +862,6 @@ int MPI_Comm_create_errhandler ( MPI_Comm_errhandler_fn *function, MPI_Errhandle
 
 int MPI_Comm_create ( MPI_Comm comm, MPI_Group group, MPI_Comm *newcomm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Comm_create(MPI_Comm comm=%s, MPI_Group group=%s, MPI_Comm *newcomm=%p)", comm_to_string(comm), group_to_string(group), newcomm);
 #endif // TRACE_CALLS
@@ -998,11 +946,6 @@ int MPI_Comm_disconnect ( MPI_Comm *comm )
 
 int MPI_Comm_dup ( MPI_Comm comm, MPI_Comm *newcomm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Comm_dup(MPI_Comm comm=%s, MPI_Comm *newcomm=%p)", comm_to_string(comm), newcomm);
 #endif // TRACE_CALLS
@@ -1381,10 +1324,6 @@ int MPI_Comm_spawn_multiple ( int count, char *array_of_commands[], char* *array
 
 int MPI_Comm_split ( MPI_Comm comm, int color, int key, MPI_Comm *newcomm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Comm_split(MPI_Comm comm=%s, int color=%d, int key=%d, MPI_Comm *newcomm=%p)", comm_to_string(comm), color, key, newcomm);
 #endif // TRACE_CALLS
@@ -1574,10 +1513,6 @@ int MPI_Error_string ( int errorcode, char *string, int *resultlen )
 
 int MPI_Exscan ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Exscan(void *sendbuf=%p, void *recvbuf=%p, int count=%d, MPI_Datatype datatype=%s, MPI_Op op=%s, MPI_Comm comm=%s)", sendbuf, recvbuf, count, type_to_string(datatype), op_to_string(op), comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -2821,10 +2756,6 @@ int MPI_Free_mem ( void *base )
 
 int MPI_Gather ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvbuf, int recvcnt, MPI_Datatype recvtype, int root, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Gather(void *sendbuf=%p, int sendcnt=%d, MPI_Datatype sendtype=%s, void *recvbuf=%p, int recvcnt=%d, MPI_Datatype recvtype=%s, int root=%d, MPI_Comm comm=%s)", sendbuf, sendcnt, type_to_string(sendtype), recvbuf, recvcnt, type_to_string(recvtype), root, comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -2851,10 +2782,6 @@ int MPI_Gather ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvbu
 
 int MPI_Gatherv ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvbuf, int *recvcnts, int *displs, MPI_Datatype recvtype, int root, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Gatherv(void *sendbuf=%p, int sendcnt=%d, MPI_Datatype sendtype=%s, void *recvbuf=%p, int *recvcnts=%p, int *displs=%p, MPI_Datatype recvtype=%s, int root=%d, MPI_Comm comm=%s)", sendbuf, sendcnt, type_to_string(sendtype), recvbuf, recvcnts, displs, type_to_string(recvtype), root, comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -3435,10 +3362,6 @@ int MPI_Group_union ( MPI_Group group1, MPI_Group group2, MPI_Group *newgroup )
 
 int MPI_Ibsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Ibsend(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
@@ -3737,10 +3660,6 @@ int MPI_Intercomm_merge ( MPI_Comm intercomm, int high, MPI_Comm *newintracomm )
 
 int MPI_Iprobe ( int source, int tag, MPI_Comm comm, int *flag, MPI_Status *status )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Iprobe(int source=%d, int tag=%d, MPI_Comm comm=%s, int *flag=%p, MPI_Status *status=%p)", source, tag, comm_to_string(comm), flag, status);
 #endif // TRACE_CALLS
@@ -3762,10 +3681,6 @@ int MPI_Iprobe ( int source, int tag, MPI_Comm comm, int *flag, MPI_Status *stat
 
 int MPI_Irecv ( void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Request *request )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Irecv(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int source=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), source, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
@@ -3792,10 +3707,6 @@ int MPI_Irecv ( void *buf, int count, MPI_Datatype datatype, int source, int tag
 
 int MPI_Irsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Irsend(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
@@ -3822,10 +3733,6 @@ int MPI_Irsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 
 int MPI_Isend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Isend(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
@@ -3852,10 +3759,6 @@ int MPI_Isend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 
 int MPI_Issend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Issend(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
@@ -4142,9 +4045,6 @@ int MPI_Pcontrol ( const int, level ... )
 
 int MPI_Probe ( int source, int tag, MPI_Comm comm, MPI_Status *status )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
 
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Probe(int source=%d, int tag=%d, MPI_Comm comm=%s, MPI_Status *status=%p)", source, tag, comm_to_string(comm), status);
@@ -4230,10 +4130,6 @@ int MPI_Query_thread ( int *provided )
 
 int MPI_Recv ( void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Recv(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int source=%d, int tag=%d, MPI_Comm comm=%s, MPI_Status *status=%p)", buf, count, type_to_string(datatype), source, tag, comm_to_string(comm), status);
 #endif // TRACE_CALLS
@@ -4259,10 +4155,6 @@ int MPI_Recv ( void *buf, int count, MPI_Datatype datatype, int source, int tag,
 
 int MPI_Recv_init ( void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Request *request )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Recv_init(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int source=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), source, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
@@ -4288,10 +4180,6 @@ int MPI_Recv_init ( void *buf, int count, MPI_Datatype datatype, int source, int
 
 int MPI_Reduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Reduce(void *sendbuf=%p, void *recvbuf=%p, int count=%d, MPI_Datatype datatype=%s, MPI_Op op=%s, int root=%d, MPI_Comm comm=%s)", sendbuf, recvbuf, count, type_to_string(datatype), op_to_string(op), root, comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -4316,10 +4204,6 @@ int MPI_Reduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
 
 int MPI_Reduce_scatter ( void *sendbuf, void *recvbuf, int *recvcnts, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Reduce_scatter(void *sendbuf=%p, void *recvbuf=%p, int *recvcnts=%p, MPI_Datatype datatype=%s, MPI_Op op=%s, MPI_Comm comm=%s)", sendbuf, recvbuf, recvcnts, type_to_string(datatype), op_to_string(op), comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -4408,10 +4292,6 @@ int MPI_Request_get_status ( MPI_Request request, int *flag, MPI_Status *status 
 
 int MPI_Rsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Rsend(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -4438,10 +4318,6 @@ int MPI_Rsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 
 int MPI_Rsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Rsend_init(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
@@ -4467,10 +4343,6 @@ int MPI_Rsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int 
 
 int MPI_Scan ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Scan(void *sendbuf=%p, void *recvbuf=%p, int count=%d, MPI_Datatype datatype=%s, MPI_Op op=%s, MPI_Comm comm=%s)", sendbuf, recvbuf, count, type_to_string(datatype), op_to_string(op), comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -4496,10 +4368,6 @@ int MPI_Scan ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, M
 
 int MPI_Scatter ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvbuf, int recvcnt, MPI_Datatype recvtype, int root, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Scatter(void *sendbuf=%p, int sendcnt=%d, MPI_Datatype sendtype=%s, void *recvbuf=%p, int recvcnt=%d, MPI_Datatype recvtype=%s, int root=%d, MPI_Comm comm=%s)", sendbuf, sendcnt, type_to_string(sendtype), recvbuf, recvcnt, type_to_string(recvtype), root, comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -4526,10 +4394,6 @@ int MPI_Scatter ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvb
 
 int MPI_Scatterv ( void *sendbuf, int *sendcnts, int *displs, MPI_Datatype sendtype, void *recvbuf, int recvcnt, MPI_Datatype recvtype, int root, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Scatterv(void *sendbuf=%p, int *sendcnts=%p, int *displs=%p, MPI_Datatype sendtype=%s, void *recvbuf=%p, int recvcnt=%d, MPI_Datatype recvtype=%s, int root=%d, MPI_Comm comm=%s)", sendbuf, sendcnts, displs, type_to_string(sendtype), recvbuf, recvcnt, type_to_string(recvtype), root, comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -4556,10 +4420,6 @@ int MPI_Scatterv ( void *sendbuf, int *sendcnts, int *displs, MPI_Datatype sendt
 
 int MPI_Send ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Send(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -4586,10 +4446,6 @@ int MPI_Send ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, M
 
 int MPI_Send_init ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Send_init(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
@@ -4615,10 +4471,6 @@ int MPI_Send_init ( void *buf, int count, MPI_Datatype datatype, int dest, int t
 
 int MPI_Sendrecv ( void *sendbuf, int sendcount, MPI_Datatype sendtype, int dest, int sendtag, void *recvbuf, int recvcount, MPI_Datatype recvtype, int source, int recvtag, MPI_Comm comm, MPI_Status *status )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Sendrecv(void *sendbuf=%p, int sendcount=%d, MPI_Datatype sendtype=%s, int dest=%d, int sendtag=%d, void *recvbuf=%p, int recvcount=%d, MPI_Datatype recvtype=%s, int source=%d, int recvtag=%d, MPI_Comm comm=%s, MPI_Status *status=%p)", sendbuf, sendcount, type_to_string(sendtype), dest, sendtag, recvbuf, recvcount, type_to_string(recvtype), source, recvtag, comm_to_string(comm), status);
 #endif // TRACE_CALLS
@@ -4645,10 +4497,6 @@ int MPI_Sendrecv ( void *sendbuf, int sendcount, MPI_Datatype sendtype, int dest
 
 int MPI_Sendrecv_replace ( void *buf, int count, MPI_Datatype datatype, int dest, int sendtag, int source, int recvtag, MPI_Comm comm, MPI_Status *status )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Sendrecv_replace(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int sendtag=%d, int source=%d, int recvtag=%d, MPI_Comm comm=%s, MPI_Status *status=%p)", buf, count, type_to_string(datatype), dest, sendtag, source, recvtag, comm_to_string(comm), status);
 #endif // TRACE_CALLS
@@ -4674,10 +4522,6 @@ int MPI_Sendrecv_replace ( void *buf, int count, MPI_Datatype datatype, int dest
 
 int MPI_Ssend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Ssend(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm));
 #endif // TRACE_CALLS
@@ -4703,10 +4547,6 @@ int MPI_Ssend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 
 int MPI_Ssend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Ssend_init(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
 #endif // TRACE_CALLS
