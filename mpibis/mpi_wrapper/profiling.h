@@ -17,7 +17,8 @@
 #define STATS_REDUCE    10
 #define STATS_ALLREDUCE 11
 #define STATS_SCAN      12
-#define STATS_TOTAL     13
+#define STATS_MISC      13
+#define STATS_TOTAL     14
 
 #define STATS_NAME_BARRIER   "barrier"
 #define STATS_NAME_SEND      "send"
