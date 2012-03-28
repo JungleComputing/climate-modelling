@@ -1,9 +1,8 @@
 #ifndef __PROFILING_H_
 #define __PROFILING_H_
 
-#if PROFILE_LEVEL > 0
-
 #include <stdint.h>
+#include "mpi.h"
 
 #define STATS_BARRIER   0
 #define STATS_SEND      1
@@ -56,8 +55,6 @@ static __inline__ uint64_t profile_stop_ticks (void) {
 
   return ((uint64_t)cycles_high << 32) | cycles_low;
 }
-
-#endif
 
 void dump_profile_info();
 
