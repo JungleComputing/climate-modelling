@@ -7,6 +7,7 @@
 
 #include "mpi.h"
 #include "types.h"
+#include <stdint.h>
 
 // special message tags
 
@@ -169,6 +170,9 @@ int messaging_receive_dup_reply(dup_reply *reply);
 
 // Send and receive functions used to implement an MPI_COMM_FREE and MPI_FINALIZE
 int messaging_send_terminate_request(communicator* c);
+
+// Profiling support
+int messaging_print_profile();
 
 #endif // IBIS_INTERCEPT
 

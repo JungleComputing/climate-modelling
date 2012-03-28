@@ -6,9 +6,11 @@
 #include <stdlib.h>
 
 #include "mpi.h"
-#include "generated_header.h"
 
+#include "generated_header.h"
 #include "logging.h"
+#include "messaging.h"
+#include "profiling.h"
 
 void dump_profile_info__() 
 {
