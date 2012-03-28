@@ -16,10 +16,10 @@
 #define TRACE_ERRORS
 
 // Print error when a derived datatype is send (which is not supported yet).
-#define CATCH_DERIVED_TYPES
+//#define CATCH_DERIVED_TYPES
 
 // Switch on Macros used to check function parameters
-#define CHECK_PARAMETERS
+//#define CHECK_PARAMETERS
 
 // These constants determine various maxima used in the MPIbis library.
 

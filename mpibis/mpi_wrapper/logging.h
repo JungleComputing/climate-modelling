@@ -6,12 +6,12 @@
 // VERBOSE must be defined and >= 0. Usual values are:
 //
 // 0 only print fatal
-// 1 print errors and fatal
-// 2 print errors and warnings
-// 3 print errors, warnings and info
+// 1 print fatal and errors 
+// 2 print fatal, errors and warnings
+// 3 print fatal, errors, warnings and info
 // 4+ print all
 
-#define VERBOSE 4
+#define VERBOSE 2
 
 // Crash application when an error is printed ?
 #define ERRORS_ARE_FATAL 1
