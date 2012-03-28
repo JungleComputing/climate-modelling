@@ -43,7 +43,7 @@ static __inline__ uint64_t profile_start_ticks (void) {
 		"mov %%edx, %0\n\t"
 		"mov %%eax, %1\n\t": "=r" (cycles_high), "=r" (cycles_low)::
 		"%rax", "%rbx", "%rcx", "%rdx");
-  return ((ticks)cycles_high << 32) | cycles_low;
+  return ((uint64_t)cycles_high << 32) | cycles_low;
 }
 
 static __inline__ uint64_t profile_stop_ticks (void) {
@@ -54,7 +54,7 @@ static __inline__ uint64_t profile_stop_ticks (void) {
 	       "CPUID\n\t": "=r" (cycles_high), "=r" (cycles_low):: "%rax",
 	       "%rbx", "%rcx", "%rdx");
 
-  return ((ticks)cycles_high << 32) | cycles_low;
+  return ((uint64_t)cycles_high << 32) | cycles_low;
 }
 
 #endif
