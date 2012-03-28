@@ -24,6 +24,7 @@
 #include "util.h"
 #include "debugging.h"
 #include "operation.h"
+#include "profiling.h"
 
 // The number of clusters and the rank of our cluster in this set.
 uint32_t cluster_count;
@@ -333,6 +334,10 @@ int IMPI_Init(int *argc, char **argv[])
 
    INFO(0, "Init MPI...");
 
+#if PROFILE_LEVEL > 0
+   profile_init();
+#endif
+
    int status = PMPI_Init(argc, argv);
 
    if (status == MPI_SUCCESS) {
@@ -409,7 +414,9 @@ int IMPI_Finalize(void)
 {
    int error;
 
-   print_all_communicator_statistics();
+#if PROFILE_LEVEL > 0
+   profile_finalize()
+#endif
 
    // We tell the system to shut down by terminating MPI_COMM_WORLD.
    error = messaging_send_terminate_request(get_communicator(MPI_COMM_WORLD));
@@ -429,7 +436,9 @@ int IMPI_Abort(MPI_Comm comm, int errorcode)
 {
    communicator *c = get_communicator(comm);
 
-   print_all_communicator_statistics();
+#if PROFILE_LEVEL > 0
+   profile_finalize();
+#endif
 
    return PMPI_Abort(c->comm, errorcode);
 }

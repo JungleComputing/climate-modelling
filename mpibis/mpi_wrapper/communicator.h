@@ -9,41 +9,6 @@
 #include "types.h"
 #include "stdint.h"
 
-#define GATHER_STATISTICS 1
-
-#define STATS_BARRIER   0
-#define STATS_SEND      1
-#define STATS_RECV      2
-#define STATS_ISEND     3
-#define STATS_IRECV     4
-#define STATS_BCAST     5
-#define STATS_SCATTER   6
-#define STATS_GATHER    7
-#define STATS_ALLGATHER 8
-#define STATS_ALLTOALL  9
-#define STATS_REDUCE    10
-#define STATS_ALLREDUCE 11
-#define STATS_SCAN      12
-#define STATS_TOTAL     13
-
-#define STATS_NAME_BARRIER   "barrier"
-#define STATS_NAME_SEND      "send"
-#define STATS_NAME_RECV      "receive"
-#define STATS_NAME_ISEND     "isend"
-#define STATS_NAME_IRECV     "ireceive"
-#define STATS_NAME_BCAST     "bcast"
-#define STATS_NAME_SCATTER   "scatter"
-#define STATS_NAME_GATHER    "gather"
-#define STATS_NAME_ALLGATHER "allgather"
-#define STATS_NAME_ALLTOALL  "alltoall"
-#define STATS_NAME_REDUCE    "reduce"
-#define STATS_NAME_ALLREDUCE "allreduce"
-#define STATS_NAME_SCAN      "scan"
-
-#define STATS_OK        0
-#define STATS_ERROR     1
-#define STATS_NOT_FOUND 2
-
 #define COMM_FLAG_LOCAL  (1 << 0)
 #define COMM_FLAG_REMOTE (1 << 1)
 #define COMM_FLAG_WORLD  (1 << 2)
@@ -85,11 +50,6 @@ struct s_communicator {
 
    message_buffer *queue_head;
    message_buffer *queue_tail;
-
-#if GATHER_STATISTICS
-   unsigned long counters[STATS_TOTAL];
-#endif
-
 };
 
 // Communicator mapping

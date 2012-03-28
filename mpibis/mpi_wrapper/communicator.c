@@ -15,25 +15,6 @@
 #include "messaging.h"
 #include "logging.h"
 
-#if 0 // GATHER_STATISTICS
-
-static char *statistic_names[STATS_TOTAL] = {
-   STATS_NAME_BARRIER,
-   STATS_NAME_SEND,
-   STATS_NAME_RECV,
-   STATS_NAME_ISEND,
-   STATS_NAME_IRECV,
-   STATS_NAME_BCAST,
-   STATS_NAME_SCATTER,
-   STATS_NAME_GATHER,
-   STATS_NAME_ALLGATHER,
-   STATS_NAME_ALLTOALL,
-   STATS_NAME_REDUCE,
-   STATS_NAME_ALLREDUCE,
-   STATS_NAME_SCAN };
-
-#endif
-
 extern uint32_t cluster_rank;
 
 static communicator *comms[MAX_COMMUNICATORS];
@@ -579,21 +560,6 @@ message_buffer *find_pending_message(communicator *c, int source, int tag)
    DEBUG(4, "FIND_PENDING_MESSAGE: No matching messages");
 
    return NULL;
-}
-
-int inc_communicator_statistics(MPI_Comm comm, int field)
-{
-   return 0;
-}
-
-int print_communicator_statistics(MPI_Comm comm)
-{
-   return 0;
-}
-
-int print_all_communicator_statistics()
-{
-   return 0;
 }
 
 /*
