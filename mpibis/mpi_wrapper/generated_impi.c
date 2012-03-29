@@ -1,5 +1,54 @@
-//#include "mpi.h"
-//#include "generated_header.h"
+#ifndef __IMPI_Type_create_f90_complex
+int IMPI_Type_create_f90_complex ( int p, int r, MPI_Datatype *newtype )
+{
+#if __IMPI_Type_create_f90_complex_FORWARD >= 1
+   return PMPI_Type_create_f90_complex(p, r, newtype);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Type_create_f90_complex (int p=%d, int r=%d, MPI_Datatype *newtype=%p)", p, r, newtype);
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Type_create_f90_complex_FORWARD
+}
+#endif // __IMPI_Type_create_f90_complex
+
+
+#ifndef __IMPI_Type_create_f90_integer
+int IMPI_Type_create_f90_integer ( int r, MPI_Datatype *newtype )
+{
+#if __IMPI_Type_create_f90_integer_FORWARD >= 1
+   return PMPI_Type_create_f90_integer(r, newtype);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Type_create_f90_integer (int r=%d, MPI_Datatype *newtype=%p)", r, newtype);
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Type_create_f90_integer_FORWARD
+}
+#endif // __IMPI_Type_create_f90_integer
+
+
+#ifndef __IMPI_Type_create_f90_real
+int IMPI_Type_create_f90_real ( int p, int r, MPI_Datatype *newtype )
+{
+#if __IMPI_Type_create_f90_real_FORWARD >= 1
+   return PMPI_Type_create_f90_real(p, r, newtype);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Type_create_f90_real (int p=%d, int r=%d, MPI_Datatype *newtype=%p)", p, r, newtype);
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Type_create_f90_real_FORWARD
+}
+#endif // __IMPI_Type_create_f90_real
+
+
+#ifndef __IMPI_Wtime
+double IMPI_Wtime (  )
+{
+#if __IMPI_Wtime_FORWARD >= 1
+   return PMPI_Wtime();
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Wtime ()");
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Wtime_FORWARD
+}
+#endif // __IMPI_Wtime
+
 
 #ifndef __IMPI_Abort
 int IMPI_Abort ( MPI_Comm comm, int errorcode )
@@ -805,6 +854,58 @@ int IMPI_Dims_create ( int nnodes, int ndims, int *dims )
 #endif // __IMPI_Dims_create_FORWARD
 }
 #endif // __IMPI_Dims_create
+
+
+#ifndef __IMPI_Dist_graph_create_adjacent
+int IMPI_Dist_graph_create_adjacent ( MPI_Comm comm_old, int indegree, int sources[], int sourceweights[], int outdegree, int destinations[], int destweights[], MPI_Info info, int reorder, MPI_Comm *comm_dist_graph )
+{
+#if __IMPI_Dist_graph_create_adjacent_FORWARD >= 1
+   return PMPI_Dist_graph_create_adjacent(comm_old, indegree, sources, sourceweights, outdegree, destinations, destweights, info, reorder, comm_dist_graph);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Dist_graph_create_adjacent (MPI_Comm comm_old=%s, int indegree=%d, int sources[]=%p, int sourceweights[]=%p, int outdegree=%d, int destinations[]=%p, int destweights[]=%p, MPI_Info info=%s, int reorder=%d, MPI_Comm *comm_dist_graph=%p)", comm_to_string(comm_old), indegree, sources, sourceweights, outdegree, destinations, destweights, info_to_string(info), reorder, comm_dist_graph);
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Dist_graph_create_adjacent_FORWARD
+}
+#endif // __IMPI_Dist_graph_create_adjacent
+
+
+#ifndef __IMPI_Dist_graph_create
+int IMPI_Dist_graph_create ( MPI_Comm comm_old, int n, int sources[], int degrees[], int destinations[], int weights[], MPI_Info info, int reorder, MPI_Comm *comm_dist_graph )
+{
+#if __IMPI_Dist_graph_create_FORWARD >= 1
+   return PMPI_Dist_graph_create(comm_old, n, sources, degrees, destinations, weights, info, reorder, comm_dist_graph);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Dist_graph_create (MPI_Comm comm_old=%s, int n=%d, int sources[]=%p, int degrees[]=%p, int destinations[]=%p, int weights[]=%p, MPI_Info info=%s, int reorder=%d, MPI_Comm *comm_dist_graph=%p)", comm_to_string(comm_old), n, sources, degrees, destinations, weights, info_to_string(info), reorder, comm_dist_graph);
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Dist_graph_create_FORWARD
+}
+#endif // __IMPI_Dist_graph_create
+
+
+#ifndef __IMPI_Dist_graph_neighbors_count
+int IMPI_Dist_graph_neighbors_count ( MPI_Comm comm, int *indegree, int *outdegree, int *weighted )
+{
+#if __IMPI_Dist_graph_neighbors_count_FORWARD >= 1
+   return PMPI_Dist_graph_neighbors_count(comm, indegree, outdegree, weighted);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Dist_graph_neighbors_count (MPI_Comm comm=%s, int *indegree=%p, int *outdegree=%p, int *weighted=%p)", comm_to_string(comm), indegree, outdegree, weighted);
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Dist_graph_neighbors_count_FORWARD
+}
+#endif // __IMPI_Dist_graph_neighbors_count
+
+
+#ifndef __IMPI_Dist_graph_neighbors
+int IMPI_Dist_graph_neighbors ( MPI_Comm comm, int maxindegree, int sources[], int sourceweights[], int maxoutdegree, int destinations[], int destweights[] )
+{
+#if __IMPI_Dist_graph_neighbors_FORWARD >= 1
+   return PMPI_Dist_graph_neighbors(comm, maxindegree, sources, sourceweights, maxoutdegree, destinations, destweights);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Dist_graph_neighbors (MPI_Comm comm=%s, int maxindegree=%d, int sources[]=%p, int sourceweights[]=%p, int maxoutdegree=%d, int destinations[]=%p, int destweights[]=%p)", comm_to_string(comm), maxindegree, sources, sourceweights, maxoutdegree, destinations, destweights);
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Dist_graph_neighbors_FORWARD
+}
+#endif // __IMPI_Dist_graph_neighbors
 
 
 #ifndef __IMPI_Errhandler_create
@@ -2328,6 +2429,19 @@ int IMPI_Lookup_name ( char *service_name, MPI_Info info, char *port_name )
 #endif // __IMPI_Lookup_name
 
 
+#ifndef __IMPI_Op_commutative
+int IMPI_Op_commutative ( MPI_Op op, int *commute )
+{
+#if __IMPI_Op_commutative_FORWARD >= 1
+   return PMPI_Op_commutative(op, commute);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Op_commutative (MPI_Op op=%s, int *commute=%p)", op_to_string(op), commute);
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Op_commutative_FORWARD
+}
+#endif // __IMPI_Op_commutative
+
+
 #ifndef __IMPI_Op_create
 int IMPI_Op_create ( MPI_User_function *function, int commute, MPI_Op *op )
 {
@@ -2418,7 +2532,7 @@ int IMPI_Pack_size ( int incount, MPI_Datatype datatype, MPI_Comm comm, int *siz
 }
 #endif // __IMPI_Pack_size
 
-/*
+
 #ifndef __IMPI_Pcontrol
 int IMPI_Pcontrol ( const int, level ... )
 {
@@ -2430,7 +2544,7 @@ int IMPI_Pcontrol ( const int, level ... )
 #endif // __IMPI_Pcontrol_FORWARD
 }
 #endif // __IMPI_Pcontrol
-*/
+
 
 #ifndef __IMPI_Probe
 int IMPI_Probe ( int source, int tag, MPI_Comm comm, MPI_Status *status )
@@ -2521,6 +2635,32 @@ int IMPI_Reduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype
 #endif // __IMPI_Reduce_FORWARD
 }
 #endif // __IMPI_Reduce
+
+
+#ifndef __IMPI_Reduce_local
+int IMPI_Reduce_local ( void *inbuf, void *inoutbuf, int count, MPI_Datatype datatype, MPI_Op op )
+{
+#if __IMPI_Reduce_local_FORWARD >= 1
+   return PMPI_Reduce_local(inbuf, inoutbuf, count, datatype, op);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Reduce_local (void *inbuf=%p, void *inoutbuf=%p, int count=%d, MPI_Datatype datatype=%s, MPI_Op op=%s)", inbuf, inoutbuf, count, type_to_string(datatype), op_to_string(op));
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Reduce_local_FORWARD
+}
+#endif // __IMPI_Reduce_local
+
+
+#ifndef __IMPI_Reduce_scatter_block
+int IMPI_Reduce_scatter_block ( void *sendbuf, void *recvbuf, int recvcount, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
+{
+#if __IMPI_Reduce_scatter_block_FORWARD >= 1
+   return PMPI_Reduce_scatter_block(sendbuf, recvbuf, recvcount, datatype, op, comm);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Reduce_scatter_block (void *sendbuf=%p, void *recvbuf=%p, int recvcount=%d, MPI_Datatype datatype=%s, MPI_Op op=%s, MPI_Comm comm=%s)", sendbuf, recvbuf, recvcount, type_to_string(datatype), op_to_string(op), comm_to_string(comm));
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Reduce_scatter_block_FORWARD
+}
+#endif // __IMPI_Reduce_scatter_block
 
 
 #ifndef __IMPI_Reduce_scatter
@@ -2885,45 +3025,6 @@ int IMPI_Type_create_darray ( int size, int rank, int ndims, int array_of_gsizes
 #endif // __IMPI_Type_create_darray_FORWARD
 }
 #endif // __IMPI_Type_create_darray
-
-
-#ifndef __IMPI_Type_create_f90_complex
-int IMPI_Type_create_f90_complex ( int p, int r, MPI_Datatype *newtype )
-{
-#if __IMPI_Type_create_f90_complex_FORWARD >= 1
-   return PMPI_Type_create_f90_complex(p, r, newtype);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Type_create_f90_complex (int p=%d, int r=%d, MPI_Datatype *newtype=%p)", p, r, newtype);
-   return MPI_ERR_INTERN;
-#endif // __IMPI_Type_create_f90_complex_FORWARD
-}
-#endif // __IMPI_Type_create_f90_complex
-
-
-#ifndef __IMPI_Type_create_f90_integer
-int IMPI_Type_create_f90_integer ( int r, MPI_Datatype *newtype )
-{
-#if __IMPI_Type_create_f90_integer_FORWARD >= 1
-   return PMPI_Type_create_f90_integer(r, newtype);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Type_create_f90_integer (int r=%d, MPI_Datatype *newtype=%p)", r, newtype);
-   return MPI_ERR_INTERN;
-#endif // __IMPI_Type_create_f90_integer_FORWARD
-}
-#endif // __IMPI_Type_create_f90_integer
-
-
-#ifndef __IMPI_Type_create_f90_real
-int IMPI_Type_create_f90_real ( int p, int r, MPI_Datatype *newtype )
-{
-#if __IMPI_Type_create_f90_real_FORWARD >= 1
-   return PMPI_Type_create_f90_real(p, r, newtype);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Type_create_f90_real (int p=%d, int r=%d, MPI_Datatype *newtype=%p)", p, r, newtype);
-   return MPI_ERR_INTERN;
-#endif // __IMPI_Type_create_f90_real_FORWARD
-}
-#endif // __IMPI_Type_create_f90_real
 
 
 #ifndef __IMPI_Type_create_hindexed
@@ -3681,215 +3782,241 @@ int IMPI_Win_wait ( MPI_Win win )
 
 
 #ifndef __IMPI_Wtick
-double IMPI_Wtick ( )
+double IMPI_Wtick (  )
 {
 #if __IMPI_Wtick_FORWARD >= 1
    return PMPI_Wtick();
 #else
-   FATAL("NOT IMPLEMENTED: MPI_Wtick ( )");
+   FATAL("NOT IMPLEMENTED: MPI_Wtick ()");
    return MPI_ERR_INTERN;
 #endif // __IMPI_Wtick_FORWARD
 }
 #endif // __IMPI_Wtick
 
 
-#ifndef __IMPI_Wtime
-double IMPI_Wtime ( )
+#ifndef __IMPI_Group_comm_create
+int IMPI_Group_comm_create ( MPI_Comm old_comm, MPI_Group group, int tag, MPI_Comm *new_comm )
 {
-#if __IMPI_Wtime_FORWARD >= 1
-   return PMPI_Wtime();
+#if __IMPI_Group_comm_create_FORWARD >= 1
+   return PMPI_Group_comm_create(old_comm, group, tag, new_comm);
 #else
-   FATAL("NOT IMPLEMENTED: MPI_Wtime ( )");
+   FATAL("NOT IMPLEMENTED: MPI_Group_comm_create (MPI_Comm old_comm=%s, MPI_Group group=%s, int tag=%d, MPI_Comm *new_comm=%p)", comm_to_string(old_comm), group_to_string(group), tag, new_comm);
    return MPI_ERR_INTERN;
-#endif // __IMPI_Wtime_FORWARD
+#endif // __IMPI_Group_comm_create_FORWARD
 }
-#endif // __IMPI_Wtime
-
-
-#ifndef __IMPI_Comm_f2c
-MPI_Comm IMPI_Comm_f2c(MPI_Fint Comm)
-{
-#if __IMPI_Comm_f2c_FORWARD >= 1
-   return PMPI_Comm_f2c(Comm);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Comm_f2c (MPI_Fint Comm=%d)", Comm);
-   return MPI_ERR_INTERN;
-#endif // __IMPI_Comm_f2c_FORWARD
-}
-#endif // __IMPI_Comm_f2c
+#endif // __IMPI_Group_comm_create
 
 
 #ifndef __IMPI_Comm_c2f
-MPI_Fint IMPI_Comm_c2f(MPI_Comm Comm)
+MPI_Fint IMPI_Comm_c2f ( MPI_Comm comm )
 {
 #if __IMPI_Comm_c2f_FORWARD >= 1
-   return PMPI_Comm_c2f(Comm);
+   return PMPI_Comm_c2f(comm);
 #else
-   FATAL("NOT IMPLEMENTED: MPI_Comm_c2f (MPI_Comm Comm=%p)", (void *)Comm);
+   FATAL("NOT IMPLEMENTED: MPI_Comm_c2f (MPI_Comm comm=%s)", comm_to_string(comm));
    return MPI_ERR_INTERN;
 #endif // __IMPI_Comm_c2f_FORWARD
 }
 #endif // __IMPI_Comm_c2f
 
 
-#ifndef __IMPI_Group_f2c
-MPI_Group IMPI_Group_f2c(MPI_Fint Group)
-{
-#if __IMPI_Group_f2c_FORWARD >= 1
-   return PMPI_Group_f2c(Group);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Group_f2c (MPI_Fint Group=%d)", Group);
-   return MPI_GROUP_NULL;
-#endif // __IMPI_Group_f2c_FORWARD
-}
-#endif // __IMPI_Group_f2c
-
-
 #ifndef __IMPI_Group_c2f
-MPI_Fint IMPI_Group_c2f(MPI_Group Group)
+MPI_Fint IMPI_Group_c2f ( MPI_Group g )
 {
 #if __IMPI_Group_c2f_FORWARD >= 1
-   return PMPI_Group_c2f(Group);
+   return PMPI_Group_c2f(g);
 #else
-   FATAL("NOT IMPLEMENTED: MPI_Group_c2f (MPI_Group Group=%p)", (void *)Group);
+   FATAL("NOT IMPLEMENTED: MPI_Group_c2f (MPI_Group g=%s)", group_to_string(g));
    return MPI_ERR_INTERN;
 #endif // __IMPI_Group_c2f_FORWARD
 }
 #endif // __IMPI_Group_c2f
 
 
-#ifndef __IMPI_Request_f2c
-MPI_Request IMPI_Request_f2c(MPI_Fint Request)
-{
-#if __IMPI_Request_f2c_FORWARD >= 1
-   return PMPI_Request_f2c(Request);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Request_f2c (MPI_Fint Request=%d)", Request);
-   return MPI_REQUEST_NULL;
-#endif // __IMPI_Request_f2c_FORWARD
-}
-#endif // __IMPI_Request_f2c
-
-
 #ifndef __IMPI_Request_c2f
-MPI_Fint IMPI_Request_c2f(MPI_Request Request)
+MPI_Fint IMPI_Request_c2f ( MPI_Request request )
 {
 #if __IMPI_Request_c2f_FORWARD >= 1
-   return PMPI_Request_c2f(Request);
+   return PMPI_Request_c2f(request);
 #else
-   FATAL("NOT IMPLEMENTED: MPI_Request_c2f (MPI_Request Request=%p)", (void *)Request);
+   FATAL("NOT IMPLEMENTED: MPI_Request_c2f (MPI_Request request=%s)", request_to_string(request));
    return MPI_ERR_INTERN;
 #endif // __IMPI_Request_c2f_FORWARD
 }
 #endif // __IMPI_Request_c2f
 
-/*
-#ifndef __IMPI_Status_f2c
-MPI_Status IMPI_Status_f2c(MPI_Fint Status)
-{
-#if __IMPI_Status_f2c_FORWARD >= 1
-   return PMPI_Status_f2c(Status);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Status_f2c (MPI_Fint Status=%d)", Status);
-   return MPI_ERR_INTERN;
-#endif // __IMPI_Status_f2c_FORWARD
-}
-#endif // __IMPI_Status_f2c
-
-
-#ifndef __IMPI_Status_c2f
-MPI_Fint IMPI_Status_c2f(MPI_Status Status)
-{
-#if __IMPI_Status_c2f_FORWARD >= 1
-   return PMPI_Status_c2f(Status);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Status_c2f (MPI_Status Status=%p)", (void *)Status);
-   return MPI_ERR_INTERN;
-#endif // __IMPI_Status_c2f_FORWARD
-}
-#endif // __IMPI_Status_c2f
-*/
-
-#ifndef __IMPI_Info_f2c
-MPI_Info IMPI_Info_f2c(MPI_Fint Info)
-{
-#if __IMPI_Info_f2c_FORWARD >= 1
-   return PMPI_Info_f2c(Info);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Info_f2c (MPI_Fint Info=%d)", Info);
-   return MPI_INFO_NULL;
-#endif // __IMPI_Info_f2c_FORWARD
-}
-#endif // __IMPI_Info_f2c
-
 
 #ifndef __IMPI_Info_c2f
-MPI_Fint IMPI_Info_c2f(MPI_Info Info)
+MPI_Fint IMPI_Info_c2f ( MPI_Info info )
 {
 #if __IMPI_Info_c2f_FORWARD >= 1
-   return PMPI_Info_c2f(Info);
+   return PMPI_Info_c2f(info);
 #else
-   FATAL("NOT IMPLEMENTED: MPI_Info_c2f (MPI_Info Info=%p)", (void *)Info);
+   FATAL("NOT IMPLEMENTED: MPI_Info_c2f (MPI_Info info=%s)", info_to_string(info));
    return MPI_ERR_INTERN;
 #endif // __IMPI_Info_c2f_FORWARD
 }
 #endif // __IMPI_Info_c2f
 
 
-#ifndef __IMPI_File_f2c
-MPI_File IMPI_File_f2c(MPI_Fint File)
-{
-#if __IMPI_File_f2c_FORWARD >= 1
-   return PMPI_File_f2c(File);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_File_f2c (MPI_Fint File=%d)", File);
-   return MPI_ERR_INTERN;
-#endif // __IMPI_File_f2c_FORWARD
-}
-#endif // __IMPI_File_f2c
-
-
 #ifndef __IMPI_File_c2f
-MPI_Fint IMPI_File_c2f(MPI_File File)
+MPI_Fint IMPI_File_c2f ( MPI_File file )
 {
 #if __IMPI_File_c2f_FORWARD >= 1
-   return PMPI_File_c2f(File);
+   return PMPI_File_c2f(file);
 #else
-   FATAL("NOT IMPLEMENTED: MPI_File_c2f (MPI_File File=%p)", (void *)File);
+   FATAL("NOT IMPLEMENTED: MPI_File_c2f (MPI_File file=%s)", file_to_string(file));
    return MPI_ERR_INTERN;
 #endif // __IMPI_File_c2f_FORWARD
 }
 #endif // __IMPI_File_c2f
 
 
-#ifndef __IMPI_Op_f2c
-MPI_Op IMPI_Op_f2c(MPI_Fint Op)
-{
-#if __IMPI_Op_f2c_FORWARD >= 1
-   return PMPI_Op_f2c(Op);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Op_f2c (MPI_Fint Op=%d)", Op);
-   return MPI_ERR_INTERN;
-#endif // __IMPI_Op_f2c_FORWARD
-}
-#endif // __IMPI_Op_f2c
-
-
 #ifndef __IMPI_Op_c2f
-MPI_Fint IMPI_Op_c2f(MPI_Op Op)
+MPI_Fint IMPI_Op_c2f ( MPI_Op op )
 {
 #if __IMPI_Op_c2f_FORWARD >= 1
-   return PMPI_Op_c2f(Op);
+   return PMPI_Op_c2f(op);
 #else
-   FATAL("NOT IMPLEMENTED: MPI_Op_c2f (MPI_Op Op=%p)", (void *)Op);
+   FATAL("NOT IMPLEMENTED: MPI_Op_c2f (MPI_Op op=%s)", op_to_string(op));
    return MPI_ERR_INTERN;
 #endif // __IMPI_Op_c2f_FORWARD
 }
 #endif // __IMPI_Op_c2f
 
 
+#ifndef __IMPI_Win_c2f
+MPI_Fint IMPI_Win_c2f ( MPI_Win Win )
+{
+#if __IMPI_Win_c2f_FORWARD >= 1
+   return PMPI_Win_c2f(Win);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Win_c2f (MPI_Win Win=%s)", win_to_string(Win));
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Win_c2f_FORWARD
+}
+#endif // __IMPI_Win_c2f
+
+
+#ifndef __IMPI_Status_c2f
+MPI_Fint IMPI_Status_c2f ( MPI_Status Status )
+{
+#if __IMPI_Status_c2f_FORWARD >= 1
+   return PMPI_Status_c2f(Status);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Status_c2f (MPI_Status Status=%p)", (void *) Status);
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Status_c2f_FORWARD
+}
+#endif // __IMPI_Status_c2f
+
+
+#ifndef __IMPI_Errhandler_c2f
+MPI_Fint IMPI_Errhandler_c2f ( MPI_Errhandler Errhandler )
+{
+#if __IMPI_Errhandler_c2f_FORWARD >= 1
+   return PMPI_Errhandler_c2f(Errhandler);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Errhandler_c2f (MPI_Errhandler Errhandler=%p)", (void *) Errhandler);
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Errhandler_c2f_FORWARD
+}
+#endif // __IMPI_Errhandler_c2f
+
+
+#ifndef __IMPI_Type_c2f
+MPI_Fint IMPI_Type_c2f ( MPI_Datatype Type )
+{
+#if __IMPI_Type_c2f_FORWARD >= 1
+   return PMPI_Type_c2f(Type);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Type_c2f (MPI_Datatype Type=%s)", type_to_string(Type));
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Type_c2f_FORWARD
+}
+#endif // __IMPI_Type_c2f
+
+
+#ifndef __IMPI_Comm_f2c
+MPI_Comm IMPI_Comm_f2c ( MPI_Fint comm )
+{
+#if __IMPI_Comm_f2c_FORWARD >= 1
+   return PMPI_Comm_f2c(comm);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Comm_f2c (MPI_Fint comm=%d)", comm);
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Comm_f2c_FORWARD
+}
+#endif // __IMPI_Comm_f2c
+
+
+#ifndef __IMPI_Group_f2c
+MPI_Group IMPI_Group_f2c ( MPI_Fint g )
+{
+#if __IMPI_Group_f2c_FORWARD >= 1
+   return PMPI_Group_f2c(g);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Group_f2c (MPI_Fint g=%d)", g);
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Group_f2c_FORWARD
+}
+#endif // __IMPI_Group_f2c
+
+
+#ifndef __IMPI_Request_f2c
+MPI_Request IMPI_Request_f2c ( MPI_Fint request )
+{
+#if __IMPI_Request_f2c_FORWARD >= 1
+   return PMPI_Request_f2c(request);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Request_f2c (MPI_Fint request=%d)", request);
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Request_f2c_FORWARD
+}
+#endif // __IMPI_Request_f2c
+
+
+#ifndef __IMPI_Info_f2c
+MPI_Info IMPI_Info_f2c ( MPI_Fint info )
+{
+#if __IMPI_Info_f2c_FORWARD >= 1
+   return PMPI_Info_f2c(info);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Info_f2c (MPI_Fint info=%d)", info);
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Info_f2c_FORWARD
+}
+#endif // __IMPI_Info_f2c
+
+
+#ifndef __IMPI_File_f2c
+MPI_File IMPI_File_f2c ( MPI_Fint file )
+{
+#if __IMPI_File_f2c_FORWARD >= 1
+   return PMPI_File_f2c(file);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_File_f2c (MPI_Fint file=%d)", file);
+   return MPI_ERR_INTERN;
+#endif // __IMPI_File_f2c_FORWARD
+}
+#endif // __IMPI_File_f2c
+
+
+#ifndef __IMPI_Op_f2c
+MPI_Op IMPI_Op_f2c ( MPI_Fint op )
+{
+#if __IMPI_Op_f2c_FORWARD >= 1
+   return PMPI_Op_f2c(op);
+#else
+   FATAL("NOT IMPLEMENTED: MPI_Op_f2c (MPI_Fint op=%d)", op);
+   return MPI_ERR_INTERN;
+#endif // __IMPI_Op_f2c_FORWARD
+}
+#endif // __IMPI_Op_f2c
+
+
 #ifndef __IMPI_Win_f2c
-MPI_Win IMPI_Win_f2c(MPI_Fint Win)
+MPI_Win IMPI_Win_f2c ( MPI_Fint Win )
 {
 #if __IMPI_Win_f2c_FORWARD >= 1
    return PMPI_Win_f2c(Win);
@@ -3901,21 +4028,21 @@ MPI_Win IMPI_Win_f2c(MPI_Fint Win)
 #endif // __IMPI_Win_f2c
 
 
-#ifndef __IMPI_Win_c2f
-MPI_Fint IMPI_Win_c2f(MPI_Win Win)
+#ifndef __IMPI_Status_f2c
+MPI_Status IMPI_Status_f2c ( MPI_Fint Status )
 {
-#if __IMPI_Win_c2f_FORWARD >= 1
-   return PMPI_Win_c2f(Win);
+#if __IMPI_Status_f2c_FORWARD >= 1
+   return PMPI_Status_f2c(Status);
 #else
-   FATAL("NOT IMPLEMENTED: MPI_Win_c2f (MPI_Win Win=%p)", (void *)Win);
+   FATAL("NOT IMPLEMENTED: MPI_Status_f2c (MPI_Fint Status=%d)", Status);
    return MPI_ERR_INTERN;
-#endif // __IMPI_Win_c2f_FORWARD
+#endif // __IMPI_Status_f2c_FORWARD
 }
-#endif // __IMPI_Win_c2f
+#endif // __IMPI_Status_f2c
 
 
 #ifndef __IMPI_Errhandler_f2c
-MPI_Errhandler IMPI_Errhandler_f2c(MPI_Fint Errhandler)
+MPI_Errhandler IMPI_Errhandler_f2c ( MPI_Fint Errhandler )
 {
 #if __IMPI_Errhandler_f2c_FORWARD >= 1
    return PMPI_Errhandler_f2c(Errhandler);
@@ -3927,21 +4054,8 @@ MPI_Errhandler IMPI_Errhandler_f2c(MPI_Fint Errhandler)
 #endif // __IMPI_Errhandler_f2c
 
 
-#ifndef __IMPI_Errhandler_c2f
-MPI_Fint IMPI_Errhandler_c2f(MPI_Errhandler Errhandler)
-{
-#if __IMPI_Errhandler_c2f_FORWARD >= 1
-   return PMPI_Errhandler_c2f(Errhandler);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Errhandler_c2f (MPI_Errhandler Errhandler=%p)", (void *)Errhandler);
-   return MPI_ERR_INTERN;
-#endif // __IMPI_Errhandler_c2f_FORWARD
-}
-#endif // __IMPI_Errhandler_c2f
-
-
 #ifndef __IMPI_Type_f2c
-MPI_Datatype IMPI_Type_f2c(MPI_Fint Type)
+MPI_Datatype IMPI_Type_f2c ( MPI_Fint Type )
 {
 #if __IMPI_Type_f2c_FORWARD >= 1
    return PMPI_Type_f2c(Type);
@@ -3953,42 +4067,3 @@ MPI_Datatype IMPI_Type_f2c(MPI_Fint Type)
 #endif // __IMPI_Type_f2c
 
 
-#ifndef __IMPI_Type_c2f
-MPI_Fint IMPI_Type_c2f(MPI_Datatype Type)
-{
-#if __IMPI_Type_c2f_FORWARD >= 1
-   return PMPI_Type_c2f(Type);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Type_c2f (MPI_Type Type=%p)", (void *)Type);
-   return MPI_ERR_INTERN;
-#endif // __IMPI_Type_c2f_FORWARD
-}
-#endif // __IMPI_Type_c2f
-
-
-/*
-#ifndef __IMPI_XXX_f2c
-MPI_XXX IMPI_XXX_f2c(MPI_Fint XXX)
-{
-#if __IMPI_XXX_f2c_FORWARD >= 1
-   return PMPI_XXX_f2c(XXX);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_XXX_f2c (MPI_Fint XXX=%d)", XXX);
-   return MPI_ERR_INTERN;
-#endif // __IMPI_XXX_f2c_FORWARD
-}
-#endif // __IMPI_XXX_f2c
-
-
-#ifndef __IMPI_XXX_c2f
-MPI_Fint IMPI_XXX_c2f(MPI_XXX XXX)
-{
-#if __IMPI_XXX_c2f_FORWARD >= 1
-   return PMPI_XXX_c2f(XXX);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_XXX_c2f (MPI_XXX XXX=%p)", (void *)XXX);
-   return MPI_ERR_INTERN;
-#endif // __IMPI_XXX_c2f_FORWARD
-}
-#endif // __IMPI_XXX_c2f
-*/
