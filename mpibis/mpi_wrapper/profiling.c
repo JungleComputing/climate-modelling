@@ -32,6 +32,8 @@ static char *statistic_names[STATS_TOTAL+1] = {
 static uint32_t *total_use[MAX_COMMUNICATORS];
 static uint64_t *total_ticks[MAX_COMMUNICATORS];
 
+static uint32_t running = 0;
+
 // Profiling timers
 uint64_t start_ticks;
 uint64_t end_ticks;
@@ -47,11 +49,18 @@ void profile_init()
 
    start_ticks = profile_start_ticks();
 
+   running = 1;
+
    INFO(1, "Profiling initialized! (%d)", MAX_COMMUNICATORS);
 }
 
 void profile_finalize()
 {
+   if (running != 1) {
+      WARN(1, "Profiling not running!");
+      return;
+   }
+
    end_ticks = profile_start_ticks();
 
    profile_print_all_statistics();
@@ -65,6 +74,11 @@ void profile_finalize()
 void profile_add_statistics(MPI_Comm comm, int field, uint64_t ticks)
 {
    int i, index;
+
+   if (running != 1) {
+      WARN(1, "Profiling not running!");
+      return;
+   }
 
    index = MPI_Comm_c2f(comm);
 
@@ -111,6 +125,11 @@ void profile_print_statistics(MPI_Comm comm)
 {
    int i, index;
 
+   if (running != 1) {
+      WARN(1, "Profiling not running!");
+      return;
+   }
+
    index = MPI_Comm_c2f(comm);
 
    if (index < 0 || index >= MAX_COMMUNICATORS) {
@@ -138,6 +157,11 @@ void profile_print_all_statistics()
 
    uint64_t ticks = 0;
    uint32_t use = 0;
+
+   if (running != 1) {
+      WARN(1, "Profiling not running!");
+      return;
+   }
 
    printf("Statistics for all communicators:\n");
 

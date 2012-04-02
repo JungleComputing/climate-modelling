@@ -203,6 +203,7 @@ int MPI_Abort ( MPI_Comm comm, int errorcode )
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_finalize();
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4749,6 +4750,7 @@ int MPI_Finalize (  )
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_finalize();
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
