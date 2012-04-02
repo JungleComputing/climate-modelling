@@ -7,6 +7,18 @@
 
 #include "mpi.h"
 
+#define __IMPI_Type_create_f90_complex_FORWARD 1
+int IMPI_Type_create_f90_complex ( int p, int r, MPI_Datatype *newtype );
+
+#define __IMPI_Type_create_f90_integer_FORWARD 1
+int IMPI_Type_create_f90_integer ( int r, MPI_Datatype *newtype );
+
+#define __IMPI_Type_create_f90_real_FORWARD 1
+int IMPI_Type_create_f90_real ( int p, int r, MPI_Datatype *newtype );
+
+#define __IMPI_Wtime_FORWARD 1
+double IMPI_Wtime (  );
+
 #define __IMPI_Abort_FORWARD 0
 int IMPI_Abort ( MPI_Comm comm, int errorcode );
 
@@ -192,6 +204,18 @@ int IMPI_Comm_test_inter ( MPI_Comm comm, int *flag );
 
 #define __IMPI_Dims_create_FORWARD 1
 int IMPI_Dims_create ( int nnodes, int ndims, int *dims );
+
+#define __IMPI_Dist_graph_create_adjacent_FORWARD 0
+int IMPI_Dist_graph_create_adjacent ( MPI_Comm comm_old, int indegree, int sources[], int sourceweights[], int outdegree, int destinations[], int destweights[], MPI_Info info, int reorder, MPI_Comm *comm_dist_graph );
+
+#define __IMPI_Dist_graph_create_FORWARD 0
+int IMPI_Dist_graph_create ( MPI_Comm comm_old, int n, int sources[], int degrees[], int destinations[], int weights[], MPI_Info info, int reorder, MPI_Comm *comm_dist_graph );
+
+#define __IMPI_Dist_graph_neighbors_count_FORWARD 0
+int IMPI_Dist_graph_neighbors_count ( MPI_Comm comm, int *indegree, int *outdegree, int *weighted );
+
+#define __IMPI_Dist_graph_neighbors_FORWARD 0
+int IMPI_Dist_graph_neighbors ( MPI_Comm comm, int maxindegree, int sources[], int sourceweights[], int maxoutdegree, int destinations[], int destweights[] );
 
 #define __IMPI_Errhandler_create_FORWARD 1
 int IMPI_Errhandler_create ( MPI_Handler_function *function, MPI_Errhandler *errhandler );
@@ -502,9 +526,6 @@ int IMPI_Info_get_valuelen ( MPI_Info info, char *key, int *valuelen, int *flag 
 #define __IMPI_Info_set_FORWARD 1
 int IMPI_Info_set ( MPI_Info info, char *key, char *value );
 
-#define __IMPI_Init_FORWARD 1
-int IMPI_Init ( int *argc, char ***argv );
-
 #define __IMPI_Initialized_FORWARD 1
 int IMPI_Initialized ( int *flag );
 
@@ -544,6 +565,9 @@ int IMPI_Keyval_free ( int *keyval );
 #define __IMPI_Lookup_name_FORWARD 1
 int IMPI_Lookup_name ( char *service_name, MPI_Info info, char *port_name );
 
+#define __IMPI_Op_commutative_FORWARD 0
+int IMPI_Op_commutative ( MPI_Op op, int *commute );
+
 #define __IMPI_Op_create_FORWARD 0
 int IMPI_Op_create ( MPI_User_function *function, int commute, MPI_Op *op );
 
@@ -564,10 +588,7 @@ int IMPI_Pack ( void *inbuf, int incount, MPI_Datatype datatype, void *outbuf, i
 
 #define __IMPI_Pack_size_FORWARD 0
 int IMPI_Pack_size ( int incount, MPI_Datatype datatype, MPI_Comm comm, int *size );
-/*
-#define __IMPI_Pcontrol_FORWARD 1
-int IMPI_Pcontrol ( const int, level ... );
-*/
+
 #define __IMPI_Probe_FORWARD 0
 int IMPI_Probe ( int source, int tag, MPI_Comm comm, MPI_Status *status );
 
@@ -588,6 +609,12 @@ int IMPI_Recv_init ( void *buf, int count, MPI_Datatype datatype, int source, in
 
 #define __IMPI_Reduce_FORWARD 0
 int IMPI_Reduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm );
+
+#define __IMPI_Reduce_local_FORWARD 0
+int IMPI_Reduce_local ( void *inbuf, void *inoutbuf, int count, MPI_Datatype datatype, MPI_Op op );
+
+#define __IMPI_Reduce_scatter_block_FORWARD 0
+int IMPI_Reduce_scatter_block ( void *sendbuf, void *recvbuf, int recvcount, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm );
 
 #define __IMPI_Reduce_scatter_FORWARD 0
 int IMPI_Reduce_scatter ( void *sendbuf, void *recvbuf, int *recvcnts, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm );
@@ -672,15 +699,6 @@ int IMPI_Type_contiguous ( int count, MPI_Datatype old_type, MPI_Datatype *new_t
 
 #define __IMPI_Type_create_darray_FORWARD 1
 int IMPI_Type_create_darray ( int size, int rank, int ndims, int array_of_gsizes[], int array_of_distribs[], int array_of_dargs[], int array_of_psizes[], int order, MPI_Datatype oldtype, MPI_Datatype *newtype );
-
-#define __IMPI_Type_create_f90_complex_FORWARD 1
-int IMPI_Type_create_f90_complex ( int p, int r, MPI_Datatype *newtype );
-
-#define __IMPI_Type_create_f90_integer_FORWARD 1
-int IMPI_Type_create_f90_integer ( int r, MPI_Datatype *newtype );
-
-#define __IMPI_Type_create_f90_real_FORWARD 1
-int IMPI_Type_create_f90_real ( int p, int r, MPI_Datatype *newtype );
 
 #define __IMPI_Type_create_hindexed_FORWARD 1
 int IMPI_Type_create_hindexed ( int count, int blocklengths[], MPI_Aint displacements[], MPI_Datatype oldtype, MPI_Datatype *newtype );
@@ -857,71 +875,66 @@ int IMPI_Win_unlock ( int rank, MPI_Win win );
 int IMPI_Win_wait ( MPI_Win win );
 
 #define __IMPI_Wtick_FORWARD 1
-double IMPI_Wtick ( );
+double IMPI_Wtick (  );
 
-#define __IMPI_Wtime_FORWARD 1
-double IMPI_Wtime ( );
+#define __IMPI_Group_comm_create_FORWARD 0
+int IMPI_Group_comm_create ( MPI_Comm old_comm, MPI_Group g, int tag, MPI_Comm *new_comm );
 
-#define __IMPI_Comm_f2c_FORWARD 0
-MPI_Comm IMPI_Comm_f2c(MPI_Fint Comm);
+#define __IMPI_Comm_f2c_FORWARD 1
+MPI_Comm IMPI_Comm_f2c ( MPI_Fint comm );
 
-#define __IMPI_Group_f2c_FORWARD 0
-MPI_Group IMPI_Group_f2c(MPI_Fint g);
+#define __IMPI_Group_f2c_FORWARD 1
+MPI_Group IMPI_Group_f2c ( MPI_Fint g );
 
-#define __IMPI_Request_f2c_FORWARD 0
-MPI_Request IMPI_Request_f2c(MPI_Fint r);
-
-#define __IMPI_Status_f2c_FORWARD 1
-MPI_Status IMPI_Status_f2c(MPI_Fint Status);
+#define __IMPI_Request_f2c_FORWARD 1
+MPI_Request IMPI_Request_f2c ( MPI_Fint r );
 
 #define __IMPI_Info_f2c_FORWARD 1
-MPI_Info IMPI_Info_f2c(MPI_Fint Info);
+MPI_Info IMPI_Info_f2c ( MPI_Fint info );
 
 #define __IMPI_File_f2c_FORWARD 1
-MPI_File IMPI_File_f2c(MPI_Fint File);
+MPI_File IMPI_File_f2c ( MPI_Fint file );
 
 #define __IMPI_Op_f2c_FORWARD 1
-MPI_Op IMPI_Op_f2c(MPI_Fint Op);
+MPI_Op IMPI_Op_f2c ( MPI_Fint op );
 
 #define __IMPI_Win_f2c_FORWARD 1
-MPI_Win IMPI_Win_f2c(MPI_Fint Win);
+MPI_Win IMPI_Win_f2c ( MPI_Fint Win );
 
 #define __IMPI_Errhandler_f2c_FORWARD 1
-MPI_Errhandler IMPI_Errhandler_f2c(MPI_Fint Errhandler);
+MPI_Errhandler IMPI_Errhandler_f2c ( MPI_Fint Errhandler );
 
 #define __IMPI_Type_f2c_FORWARD 1
-MPI_Datatype IMPI_Type_f2c(MPI_Fint Type);
+MPI_Datatype IMPI_Type_f2c ( MPI_Fint Type );
 
 #define __IMPI_Comm_c2f_FORWARD 0
-MPI_Fint IMPI_Comm_c2f(MPI_Comm Comm);
+MPI_Fint IMPI_Comm_c2f ( MPI_Comm comm );
 
 #define __IMPI_Group_c2f_FORWARD 0
-MPI_Fint IMPI_Group_c2f(MPI_Group g);
+MPI_Fint IMPI_Group_c2f ( MPI_Group g );
 
 #define __IMPI_Request_c2f_FORWARD 0
-MPI_Fint IMPI_Request_c2f(MPI_Request r);
-
-#define __IMPI_Status_c2f_FORWARD 1
-MPI_Fint IMPI_Status_c2f(MPI_Status Status);
+MPI_Fint IMPI_Request_c2f ( MPI_Request r );
 
 #define __IMPI_Info_c2f_FORWARD 1
-MPI_Fint IMPI_Info_c2f(MPI_Info Info);
+MPI_Fint IMPI_Info_c2f ( MPI_Info info );
 
 #define __IMPI_File_c2f_FORWARD 1
-MPI_Fint IMPI_File_c2f(MPI_File File);
+MPI_Fint IMPI_File_c2f ( MPI_File file );
 
-#define __IMPI_Op_c2f_FORWARD 1
-MPI_Fint IMPI_Op_c2f(MPI_Op Op);
+#define __IMPI_Op_c2f_FORWARD 0
+MPI_Fint IMPI_Op_c2f ( MPI_Op op );
 
 #define __IMPI_Win_c2f_FORWARD 1
-MPI_Fint IMPI_Win_c2f(MPI_Win Win);
+MPI_Fint IMPI_Win_c2f ( MPI_Win Win );
 
 #define __IMPI_Errhandler_c2f_FORWARD 1
-MPI_Fint IMPI_Errhandler_c2f(MPI_Errhandler Errhandler);
+MPI_Fint IMPI_Errhandler_c2f ( MPI_Errhandler Errhandler );
 
 #define __IMPI_Type_c2f_FORWARD 1
-MPI_Fint IMPI_Type_c2f(MPI_Datatype Type);
+MPI_Fint IMPI_Type_c2f ( MPI_Datatype Type );
 
 #endif // IBIS_INTERCEPT
 
 #endif // _GENERATED_HEADER_H_
+
