@@ -146,40 +146,6 @@ int MPI_Type_create_f90_real ( int p, int r, MPI_Datatype *newtype )
 }
 
 
-double MPI_Wtime (  )
-{
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif // PROFILE_LEVEL
-
-#ifdef TRACE_CALLS
-   INFO(0, "MPI_Wtime()");
-#endif // TRACE_CALLS
-
-#if PROFILE_LEVEL > 0
-   profile_start = profile_start_ticks();
-#endif // PROFILE_LEVEL
-
-#ifdef IBIS_INTERCEPT
-   int error = IMPI_Wtime();
-#else
-   int error = PMPI_Wtime();
-#endif // IBIS_INTERCEPT
-
-#if PROFILE_LEVEL > 0
-   profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
-#endif // PROFILE_LEVEL
-
-#ifdef TRACE_ERRORS
-   if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Wtime failed (%d)!", error);
-   }
-#endif // TRACE_ERRORS
-   return error;
-}
-
-
 int MPI_Abort ( MPI_Comm comm, int errorcode )
 {
 #if PROFILE_LEVEL > 0

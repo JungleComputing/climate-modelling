@@ -37,19 +37,6 @@ int IMPI_Type_create_f90_real ( int p, int r, MPI_Datatype *newtype )
 #endif // __IMPI_Type_create_f90_real
 
 
-#ifndef __IMPI_Wtime
-double IMPI_Wtime (  )
-{
-#if __IMPI_Wtime_FORWARD >= 1
-   return PMPI_Wtime();
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Wtime ()");
-   return MPI_ERR_INTERN;
-#endif // __IMPI_Wtime_FORWARD
-}
-#endif // __IMPI_Wtime
-
-
 #ifndef __IMPI_Abort
 int IMPI_Abort ( MPI_Comm comm, int errorcode )
 {
