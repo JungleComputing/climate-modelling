@@ -18,6 +18,11 @@ public class Main {
         "MPI_Status_f2c"
     };
     
+    private static String [][] sensitive = new String [][] {
+        { "request", "r" },  
+        { "group", "g" } 
+    };
+    
     private static StatsField [] fields = new StatsField [] {
         new StatsField("MPI_Allgather", "STATS_ALLGATHER"), 
         new StatsField("MPI_Allgatherv", "STATS_ALLGATHER"),
@@ -501,8 +506,10 @@ public class Main {
                 Parameter p = parameters[i];
 
                 if (p.type.name.equals("MPI_Comm") ||
-                        p.type.name.equals("MPI_Group") ||
-                        p.type.name.equals("MPI_Request")) { 
+                    p.type.name.equals("MPI_Group") ||
+                    p.type.name.equals("MPI_Request") ||
+                    p.type.name.equals("MPI_Op")) { 
+                  
                     return false;
                 }
             }
@@ -512,13 +519,13 @@ public class Main {
 
         void generate(String what) { 
 
-            if (what.equals("ibis")) { 
-
-                for (String s : skip) { 
-                    if (name.equals(s)) { 
-                        return;
-                    }
+            for (String s : skip) { 
+                if (name.equals(s)) { 
+                    return;
                 }
+            }
+            
+            if (what.equals("ibis")) { 
                 
                 System.out.println("#ifndef __I" + name);
                 generateHeader(true, false);
@@ -530,12 +537,6 @@ public class Main {
 
             } else if (what.equals("mpi")) {
 
-                for (String s : skip) { 
-                    if (name.equals(s)) { 
-                        return;
-                    }
-                }
-                
                 generateHeader(false, false);
                 System.out.println("{");
                 
@@ -627,11 +628,58 @@ public class Main {
         return type;
     }
 
+    private String replaceSensitive(String name) { 
+       
+        for (int i=0;i<sensitive.length;i++) { 
+            // Use regexp here!
+            
+            // If the sensitive name matches exactly we replace it.
+            if (name.equals(sensitive[i][0])) {   
+                return sensitive[i][1];
+            }
+            
+            // If the sensitive name is a substring we check futher.
+            int index = name.indexOf(sensitive[i][0]);
+       
+            if (index > 0) { 
+                
+                // Is there a header of -only- 0 or more "*"'s ?
+                boolean pointerHeader = true;
+                
+                for (int j=0;j<index;j++) {
+                    if (name.charAt(j) != '*') {
+                        pointerHeader = false;
+                        break;
+                    }
+                }
+           
+                // Is there a trailer of -only- 0 or more array brackets ?
+                boolean arrayTrailer = true;
+                
+                int end = index+sensitive[i][0].length();
+            
+                for (int j=end;j<name.length();j++) {
+                    if (name.charAt(j) != '[' && name.charAt(j) != ']') {
+                        arrayTrailer = false;
+                        break;
+                    }
+                }
+            
+                // Only if there header and trailer are OK, we replace the string.
+                if (pointerHeader && arrayTrailer) {
+                    return name.substring(0, index) + sensitive[i][1] + name.substring(end);
+                }
+            }
+        }
+        
+        return name;
+    }
+    
     private Parameter getParameter(String type, String name) { 
 
         boolean pointer = name.startsWith("*");
         boolean array = name.endsWith("]");		
-        return new Parameter(getType(type), name, pointer, array);
+        return new Parameter(getType(type), replaceSensitive(name), pointer, array);
     }	
 
     private void parse(String line) { 
@@ -725,6 +773,17 @@ public class Main {
             System.out.println("#endif // TRACE_ERRORS");
             System.out.println("   return error;");
             System.out.println("}\n\n");
+       
+        } else if (what.equals("header")) {
+
+            System.out.println("#ifndef __GENERATED_HEADER_H_");
+            System.out.println("#define __GENERATED_HEADER_H_\n");
+
+            System.out.println("#include \"flags.h\"\n");
+
+            System.out.println("#ifdef IBIS_INTERCEPT\n");
+
+            System.out.println("#include \"mpi.h\"\n");
         }
         
         for (Function f : functions) { 
@@ -733,6 +792,9 @@ public class Main {
 
         if (what.equals("mpi")) {
             System.out.println("#endif // ENABLE_INTERCEPT\n");
+        } else if (what.equals("header")) {
+            System.out.println("#endif // IBIS_INTERCEPT\n");
+            System.out.println("#endif // _GENERATED_HEADER_H_\n");
         }
     }
 
