@@ -526,6 +526,9 @@ int IMPI_Info_get_valuelen ( MPI_Info info, char *key, int *valuelen, int *flag 
 #define __IMPI_Info_set_FORWARD 1
 int IMPI_Info_set ( MPI_Info info, char *key, char *value );
 
+#define __IMPI_Init_FORWARD 1
+int IMPI_Init ( int *argc, char ***argv );
+
 #define __IMPI_Initialized_FORWARD 1
 int IMPI_Initialized ( int *flag );
 
