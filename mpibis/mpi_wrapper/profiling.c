@@ -177,7 +177,9 @@ void dump_profile_info()
       return;
    }
 
-   messaging_print_profile();
+   fprintf(stderr, "SHOULD PRINT PROFILE INFO HERE...\n");
+
+   //messaging_print_profile();
 }
 
 #endif
