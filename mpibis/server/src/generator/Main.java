@@ -17,6 +17,12 @@ public class Main {
         "MPI_Status_c2f", 
         "MPI_Status_f2c"
     };
+   
+    private static String [] headerskip = new String [] {
+        "MPI_Pcontrol", 
+        "MPI_Status_c2f", 
+        "MPI_Status_f2c"
+    };
     
     private static String [][] sensitive = new String [][] {
         { "request", "r" },  
@@ -519,13 +525,14 @@ public class Main {
 
         void generate(String what) { 
 
-            for (String s : skip) { 
-                if (name.equals(s)) { 
-                    return;
-                }
-            }
             
             if (what.equals("ibis")) { 
+               
+                for (String s : skip) { 
+                    if (name.equals(s)) { 
+                        return;
+                    }
+                }
                 
                 System.out.println("#ifndef __I" + name);
                 generateHeader(true, false);
@@ -537,6 +544,12 @@ public class Main {
 
             } else if (what.equals("mpi")) {
 
+                for (String s : skip) { 
+                    if (name.equals(s)) { 
+                        return;
+                    }
+                }
+               
                 generateHeader(false, false);
                 System.out.println("{");
                 
@@ -559,6 +572,12 @@ public class Main {
 
             } else if (what.equals("header")) {
 
+                for (String s : headerskip) { 
+                    if (name.equals(s)) { 
+                        return;
+                    }
+                }
+               
                 if (canForward()) {
                     System.out.println("#define __I" + name + "_FORWARD 1");
                 } else { 
