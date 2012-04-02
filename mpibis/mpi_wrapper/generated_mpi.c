@@ -10279,41 +10279,6 @@ int MPI_Win_wait ( MPI_Win win )
    return error;
 }
 
-
-double MPI_Wtick (  )
-{
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif // PROFILE_LEVEL
-
-#ifdef TRACE_CALLS
-   INFO(0, "MPI_Wtick()");
-#endif // TRACE_CALLS
-
-#if PROFILE_LEVEL > 0
-   profile_start = profile_start_ticks();
-#endif // PROFILE_LEVEL
-
-#ifdef IBIS_INTERCEPT
-   int error = IMPI_Wtick();
-#else
-   int error = PMPI_Wtick();
-#endif // IBIS_INTERCEPT
-
-#if PROFILE_LEVEL > 0
-   profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
-#endif // PROFILE_LEVEL
-
-#ifdef TRACE_ERRORS
-   if (error != MPI_SUCCESS) {
-      ERROR(0, "MPI_Wtick failed (%d)!", error);
-   }
-#endif // TRACE_ERRORS
-   return error;
-}
-
-
 int MPI_Group_comm_create ( MPI_Comm old_comm, MPI_Group group, int tag, MPI_Comm *new_comm )
 {
 #if PROFILE_LEVEL > 0

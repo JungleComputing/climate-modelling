@@ -16,9 +16,6 @@ int IMPI_Type_create_f90_integer ( int r, MPI_Datatype *newtype );
 #define __IMPI_Type_create_f90_real_FORWARD 1
 int IMPI_Type_create_f90_real ( int p, int r, MPI_Datatype *newtype );
 
-#define __IMPI_Wtime_FORWARD 1
-double IMPI_Wtime (  );
-
 #define __IMPI_Abort_FORWARD 0
 int IMPI_Abort ( MPI_Comm comm, int errorcode );
 
@@ -876,9 +873,6 @@ int IMPI_Win_unlock ( int rank, MPI_Win win );
 
 #define __IMPI_Win_wait_FORWARD 1
 int IMPI_Win_wait ( MPI_Win win );
-
-#define __IMPI_Wtick_FORWARD 1
-double IMPI_Wtick (  );
 
 #define __IMPI_Group_comm_create_FORWARD 0
 int IMPI_Group_comm_create ( MPI_Comm old_comm, MPI_Group g, int tag, MPI_Comm *new_comm );

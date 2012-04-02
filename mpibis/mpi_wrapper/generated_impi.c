@@ -3742,18 +3742,6 @@ int IMPI_Win_wait ( MPI_Win win )
 #endif // __IMPI_Win_wait
 
 
-#ifndef __IMPI_Wtick
-double IMPI_Wtick (  )
-{
-#if __IMPI_Wtick_FORWARD >= 1
-   return PMPI_Wtick();
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Wtick ()");
-   return MPI_ERR_INTERN;
-#endif // __IMPI_Wtick_FORWARD
-}
-#endif // __IMPI_Wtick
-
 
 #ifndef __IMPI_Group_comm_create
 int IMPI_Group_comm_create ( MPI_Comm old_comm, MPI_Group group, int tag, MPI_Comm *new_comm )
