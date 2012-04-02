@@ -513,6 +513,13 @@ public class Main {
         void generate(String what) { 
 
             if (what.equals("ibis")) { 
+
+                for (String s : skip) { 
+                    if (name.equals(s)) { 
+                        return;
+                    }
+                }
+                
                 System.out.println("#ifndef __I" + name);
                 generateHeader(true, false);
                 System.out.println("{");
