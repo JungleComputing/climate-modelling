@@ -2247,19 +2247,6 @@ int IMPI_Info_set ( MPI_Info info, char *key, char *value )
 #endif // __IMPI_Info_set
 
 
-#ifndef __IMPI_Init
-int IMPI_Init ( int *argc, char ***argv )
-{
-#if __IMPI_Init_FORWARD >= 1
-   return PMPI_Init(argc, argv);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Init (int *argc=%p, char ***argv=%p)", argc, argv);
-   return MPI_ERR_INTERN;
-#endif // __IMPI_Init_FORWARD
-}
-#endif // __IMPI_Init
-
-
 #ifndef __IMPI_Initialized
 int IMPI_Initialized ( int *flag )
 {
@@ -2531,19 +2518,6 @@ int IMPI_Pack_size ( int incount, MPI_Datatype datatype, MPI_Comm comm, int *siz
 #endif // __IMPI_Pack_size_FORWARD
 }
 #endif // __IMPI_Pack_size
-
-
-#ifndef __IMPI_Pcontrol
-int IMPI_Pcontrol ( const int, level ... )
-{
-#if __IMPI_Pcontrol_FORWARD >= 1
-   return PMPI_Pcontrol(int, ...);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Pcontrol (const int=%p, level ...=%p)", (void *) int, (void *) ...);
-   return MPI_ERR_INTERN;
-#endif // __IMPI_Pcontrol_FORWARD
-}
-#endif // __IMPI_Pcontrol
 
 
 #ifndef __IMPI_Probe
@@ -3898,19 +3872,6 @@ MPI_Fint IMPI_Win_c2f ( MPI_Win Win )
 #endif // __IMPI_Win_c2f
 
 
-#ifndef __IMPI_Status_c2f
-MPI_Fint IMPI_Status_c2f ( MPI_Status Status )
-{
-#if __IMPI_Status_c2f_FORWARD >= 1
-   return PMPI_Status_c2f(Status);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Status_c2f (MPI_Status Status=%p)", (void *) Status);
-   return MPI_ERR_INTERN;
-#endif // __IMPI_Status_c2f_FORWARD
-}
-#endif // __IMPI_Status_c2f
-
-
 #ifndef __IMPI_Errhandler_c2f
 MPI_Fint IMPI_Errhandler_c2f ( MPI_Errhandler Errhandler )
 {
@@ -4026,19 +3987,6 @@ MPI_Win IMPI_Win_f2c ( MPI_Fint Win )
 #endif // __IMPI_Win_f2c_FORWARD
 }
 #endif // __IMPI_Win_f2c
-
-
-#ifndef __IMPI_Status_f2c
-MPI_Status IMPI_Status_f2c ( MPI_Fint Status )
-{
-#if __IMPI_Status_f2c_FORWARD >= 1
-   return PMPI_Status_f2c(Status);
-#else
-   FATAL("NOT IMPLEMENTED: MPI_Status_f2c (MPI_Fint Status=%d)", Status);
-   return MPI_ERR_INTERN;
-#endif // __IMPI_Status_f2c_FORWARD
-}
-#endif // __IMPI_Status_f2c
 
 
 #ifndef __IMPI_Errhandler_f2c
