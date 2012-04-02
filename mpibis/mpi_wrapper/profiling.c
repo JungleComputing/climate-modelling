@@ -185,7 +185,7 @@ void profile_print_all_statistics()
    printf("  Overall ticks %ld use %d\n", ticks, use);
 }
 
-void dump_profile_info__()
+void dump_profile_info_()
 {
    dump_profile_info();
 }
