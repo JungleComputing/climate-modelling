@@ -489,8 +489,6 @@ int IMPI_Send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, MP
    CHECK_COUNT(count);
    CHECK_DESTINATION(c, dest);
 
-   inc_communicator_statistics(comm, STATS_SEND);
-
    return do_send(buf, count, datatype, dest, tag, c);
 }
 
@@ -535,8 +533,6 @@ int IMPI_Isend(void *buf, int count, MPI_Datatype datatype,
       return MPI_ERR_INTERN;
    }
 
-   inc_communicator_statistics(comm, STATS_ISEND);
-
 //INFO(3, "Isend local ? %d", local);
 
    if (local) {
@@ -578,8 +574,6 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
 {
    int error, local, flags = REQUEST_FLAG_RECEIVE, local_source;
    request *r;
-
-   inc_communicator_statistics(comm, STATS_IRECV);
 
    // We first unpack the communicator.
    communicator *c = get_communicator(comm);
@@ -670,8 +664,6 @@ int IMPI_Irecv(void *buf, int count, MPI_Datatype datatype,
 int IMPI_Recv(void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status *status)
 {
    int local, error;
-
-   inc_communicator_statistics(comm, STATS_RECV);
 
    communicator *c = get_communicator(comm);
 
@@ -1169,8 +1161,6 @@ int IMPI_Barrier(MPI_Comm comm)
    int error, i;
    char buffer = 42;
 
-   inc_communicator_statistics(comm, STATS_BARRIER);
-
    communicator *c = get_communicator(comm);
 
    if (comm_is_local(c)) {
@@ -1277,8 +1267,6 @@ int IMPI_Barrier(MPI_Comm comm)
 int IMPI_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm)
 {
    int error;
-
-   inc_communicator_statistics(comm, STATS_BCAST);
 
    communicator *c = get_communicator(comm);
 
@@ -1397,8 +1385,6 @@ int IMPI_Gatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
 
    CHECK_COUNT(sendcount);
 
-   inc_communicator_statistics(comm, STATS_GATHER);
-
    if (comm_is_local(c)) {
      // simply perform a gatherv in local cluster
      return PMPI_Gatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, c->comm);
@@ -1415,8 +1401,6 @@ int IMPI_Gather(void* sendbuf, int sendcount, MPI_Datatype sendtype,
    int i, error;
    int *displs = NULL;
    int *counts = NULL;
-
-   inc_communicator_statistics(comm, STATS_GATHER);
 
    communicator *c = get_communicator(comm);
 
@@ -1470,8 +1454,6 @@ int IMPI_Allgather(void* sendbuf, int sendcount, MPI_Datatype sendtype,
    int *displs;
    int *recvcounts;
    int i, error;
-
-   inc_communicator_statistics(comm, STATS_ALLGATHER);
 
    communicator *c = get_communicator(comm);
 
@@ -1545,8 +1527,6 @@ int IMPI_Allgatherv(void *sendbuf, int sendcount, MPI_Datatype sendtype,
    unsigned char *buffer;
 
    MPI_Aint extent;
-
-   inc_communicator_statistics(comm, STATS_ALLGATHER);
 
    communicator *c = get_communicator(comm);
 
@@ -1757,8 +1737,6 @@ int IMPI_Scatter(void* sendbuf, int sendcount, MPI_Datatype sendtype,
    int *displs = NULL;
    int *sendcounts = NULL;
 
-   inc_communicator_statistics(comm, STATS_SCATTER);
-
    communicator *c = get_communicator(comm);
 
    if (comm_is_local(c)) {
@@ -1812,8 +1790,6 @@ int IMPI_Scatterv(void* sendbuf, int *sendcounts, int *displs, MPI_Datatype send
 {
    communicator *c = get_communicator(comm);
 
-   inc_communicator_statistics(comm, STATS_SCATTER);
-
    if (comm_is_local(c)) {
      // simply perform a scatterv in local cluster
      return PMPI_Scatterv(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, c->comm);
@@ -1828,8 +1804,6 @@ int IMPI_Reduce(void* sendbuf, void* recvbuf, int count, MPI_Datatype datatype, 
    int local_root, root_in_cluster, i, error;
    unsigned char *buffer = NULL;
    MPI_Aint extent;
-
-   inc_communicator_statistics(comm, STATS_REDUCE);
 
    communicator *c = get_communicator(comm);
 
@@ -1972,8 +1946,6 @@ int IMPI_Allreduce(void* sendbuf, void* recvbuf, int count,
    MPI_Aint extent;
    char *buffer;
 
-   inc_communicator_statistics(comm, STATS_ALLREDUCE);
-
    communicator *c = get_communicator(comm);
 
    operation *o = get_operation(op);
@@ -2073,8 +2045,6 @@ int IMPI_Scan(void* sendbuf, void* recvbuf, int count,
    int i, tmp_cluster, error;
    MPI_Aint extent;
    unsigned char *buffer;
-
-   inc_communicator_statistics(comm, STATS_SCAN);
 
    communicator *c = get_communicator(comm);
    operation *o = get_operation(op);
@@ -2227,8 +2197,6 @@ int IMPI_Alltoall(void *sendbuf, int sendcount, MPI_Datatype sendtype,
    int *recvdispls;
    int *recvcounts;
 
-   inc_communicator_statistics(comm, STATS_ALLTOALL);
-
    communicator *c = get_communicator(comm);
 
    if (comm_is_local(c)) {
@@ -2295,8 +2263,6 @@ int IMPI_Alltoallv(void *sendbuf, int *sendcounts, int *sdispls, MPI_Datatype se
                    MPI_Comm comm)
 {
    communicator *c = get_communicator(comm);
-
-   inc_communicator_statistics(comm, STATS_ALLTOALL);
 
    if (comm_is_local(c)) {
      // simply perform an all-to-all in local cluster
