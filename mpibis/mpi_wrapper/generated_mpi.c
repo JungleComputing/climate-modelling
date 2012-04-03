@@ -7881,7 +7881,7 @@ int MPI_Testall ( int count, MPI_Request array_of_requests[], int *flag, MPI_Sta
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_TESTALL, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7915,7 +7915,7 @@ int MPI_Testany ( int count, MPI_Request array_of_requests[], int *index, int *f
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_TESTANY, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7983,7 +7983,7 @@ int MPI_Test ( MPI_Request *r, int *flag, MPI_Status *status )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_TEST, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8017,7 +8017,7 @@ int MPI_Testsome ( int incount, MPI_Request array_of_requests[], int *outcount, 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_TESTSOME, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9418,7 +9418,7 @@ int MPI_Waitall ( int count, MPI_Request array_of_requests[], MPI_Status array_o
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_WAITALL, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9452,7 +9452,7 @@ int MPI_Waitany ( int count, MPI_Request array_of_requests[], int *index, MPI_St
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_WAITANY, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9486,7 +9486,7 @@ int MPI_Wait ( MPI_Request *r, MPI_Status *status )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_WAIT, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9520,7 +9520,7 @@ int MPI_Waitsome ( int incount, MPI_Request array_of_requests[], int *outcount, 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_WAITSOME, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
