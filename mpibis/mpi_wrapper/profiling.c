@@ -1,15 +1,20 @@
 #include "flags.h"
 
-#ifdef IBIS_INTERCEPT
+#ifdef ENABLE_INTERCEPT
 
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "mpi.h"
 
+#ifdef IBIS_INTERCEPT
+
 #include "generated_header.h"
-#include "logging.h"
 #include "messaging.h"
+
+#endif // IBIS_INTERCEPT
+
+#include "logging.h"
 #include "profiling.h"
 
 static char *statistic_names[STATS_TOTAL+1] = {
@@ -214,7 +219,7 @@ void dump_profile_info()
 {
    int error;
 
-   error = IMPI_Barrier(MPI_COMM_WORLD);
+   error = MPI_Barrier(MPI_COMM_WORLD);
 
    if (error != MPI_SUCCESS) {
       ERROR(1, "Barrier failed");
