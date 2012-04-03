@@ -11,7 +11,6 @@
 int MPI_Init ( int *argc, char ***argv )
 {
    init_debug();
-   profile_init();
 
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Init(int *argc=%p, char ***argv=%p)", argc, argv);
@@ -28,6 +27,9 @@ int MPI_Init ( int *argc, char ***argv )
       ERROR(0, "MPI_Init failed (%d)!", error);
    }
 #endif // TRACE_ERRORS
+
+   profile_init();
+
    return error;
 }
 
