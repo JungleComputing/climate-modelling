@@ -63,9 +63,17 @@ static uint32_t running = 0;
 uint64_t start_ticks;
 uint64_t end_ticks;
 
+static MPI_Comm profile_comm;
+
 void profile_init()
 {
-   int i;
+   int i, error;
+
+   error = MPI_Comm_dup(MPI_COMM_WORLD, &profile_comm);
+
+   if (error != MPI_SUCCESS) {
+      ERROR(1, "Failed to initialize profiling! (%d)", error);
+   }
 
    for (i=0;i<MAX_COMMUNICATORS;i++) {
       total_use[i] = NULL;
@@ -76,7 +84,7 @@ void profile_init()
 
    running = 1;
 
-   INFO(1, "Profiling initialized! (%d)", MAX_COMMUNICATORS);
+   WARN(1, "Profiling initialized! (MAX=%d, COMM=%d)", MAX_COMMUNICATORS, MPI_Comm_c2f(profile_comm));
 }
 
 void profile_finalize()
@@ -219,7 +227,7 @@ void dump_profile_info()
 {
    int error;
 
-   error = MPI_Barrier(MPI_COMM_WORLD);
+   error = MPI_Barrier(profile_comm);
 
    if (error != MPI_SUCCESS) {
       ERROR(1, "Barrier failed");
