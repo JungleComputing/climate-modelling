@@ -128,7 +128,7 @@ static void print_and_reset_current_interval()
 
    current_interval++;
 
-   current = profile_end_ticks();
+   current = profile_stop_ticks();
 
    printf("  Overall ticks: total: %ld mpi: %ld calls: %d\n", (current-current_start_ticks), ticks, use);
 
@@ -146,7 +146,7 @@ void profile_finalize()
 
    print_and_reset_current_interval();
 
-   end_ticks = profile_end_ticks();
+   end_ticks = profile_stop_ticks();
 
    printf("Total profiled ticks: %ld\n", end_ticks-start_ticks);
 
