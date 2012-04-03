@@ -57,11 +57,16 @@ STATS_NAME_TOTAL
 static uint32_t *total_use[MAX_COMMUNICATORS];
 static uint64_t *total_ticks[MAX_COMMUNICATORS];
 
+static uint32_t *current_use[MAX_COMMUNICATORS];
+static uint64_t *current_ticks[MAX_COMMUNICATORS];
+
 static uint32_t running = 0;
 
 // Profiling timers
 uint64_t start_ticks;
-uint64_t end_ticks;
+uint64_t current_start_ticks;
+
+uint32_t current_interval;
 
 static MPI_Comm profile_comm;
 
@@ -78,31 +83,75 @@ void profile_init()
    for (i=0;i<MAX_COMMUNICATORS;i++) {
       total_use[i] = NULL;
       total_ticks[i] = NULL;
+      current_use[i] = NULL;
+      current_ticks[i] = NULL;
    }
 
-   start_ticks = profile_start_ticks();
-
    running = 1;
+   current_interval = 0;
 
-   WARN(1, "Profiling initialized! (MAX=%d, COMM=%d)", MAX_COMMUNICATORS, MPI_Comm_c2f(profile_comm));
+   start_ticks = current_start_ticks = profile_start_ticks();
+
+   printf("Profiling initialized! (MAX=%d, COMM=%d)", MAX_COMMUNICATORS, MPI_Comm_c2f(profile_comm));
+}
+
+static void print_and_reset_current_interval()
+{
+   int i, j;
+   uint64_t ticks = 0;
+   uint32_t use = 0;
+   uint64_t current;
+
+   printf("Statistics for interval %d\n", current_interval);
+
+   for (i=0;i<MAX_COMMUNICATORS;i++) {
+      if (current_ticks[i] != NULL) {
+
+         printf("  Communicator %d ", i);
+
+         for (j=0;j<STATS_TOTAL+1;j++) {
+            printf("%s %ld %d ", statistic_names[j], current_ticks[i][j], current_use[i][j]);
+
+            total_ticks[i][j] += current_ticks[i][j];
+            total_use[i][j]   += current_use[i][j];
+
+            current_ticks[i][j] = 0;
+            current_use[i][j] = 0;
+         }
+
+         printf("\n");
+
+         ticks += total_ticks[i][STATS_TOTAL];
+         use += total_use[i][STATS_TOTAL];
+      }
+   }
+
+   current_interval++;
+
+   current = profile_end_ticks();
+
+   printf("  Overall ticks: total: %ld mpi: %ld calls: %d\n", (current-current_start_ticks), ticks, use);
+
+   current_start_ticks = profile_start_ticks();
 }
 
 void profile_finalize()
 {
+   uint64_t end_ticks;
+
    if (running != 1) {
       WARN(1, "Profiling not running!");
       return;
    }
 
-   end_ticks = profile_start_ticks();
+   print_and_reset_current_interval();
 
-   profile_print_all_statistics();
+   end_ticks = profile_end_ticks();
 
    printf("Total profiled ticks: %ld\n", end_ticks-start_ticks);
 
    INFO(1, "Profiling done!");
 }
-
 
 void profile_add_statistics(MPI_Comm comm, int field, uint64_t ticks)
 {
@@ -125,35 +174,45 @@ void profile_add_statistics(MPI_Comm comm, int field, uint64_t ticks)
       return;
    }
 
-   if (total_ticks[index] == NULL) {
+   if (current_ticks[index] == NULL) {
 
-      total_ticks[index] = malloc((STATS_TOTAL+1) * sizeof(uint64_t));
+      current_ticks[index] = calloc((STATS_TOTAL+1), sizeof(uint64_t));
 
-      if (total_ticks[index] == NULL) {
+      if (current_ticks[index] == NULL) {
          ERROR(1, "Failed to allocate profiling buffer for communicator %d (1)", index);
          return;
       }
 
-      total_use[index] = malloc((STATS_TOTAL+1) * sizeof(uint32_t));
+      current_use[index] = calloc((STATS_TOTAL+1), sizeof(uint32_t));
 
-      if (total_use[index] == NULL) {
+      if (current_use[index] == NULL) {
          ERROR(1, "Failed to allocate profiling buffer for communicator %d (2)", index);
          return;
       }
 
-      for (i=0;i<(STATS_TOTAL+1);i++) {
-         total_ticks[index][i] = 0;
-         total_use[index][i] = 0;
+      total_ticks[index] = calloc((STATS_TOTAL+1), sizeof(uint64_t));
+
+      if (total_ticks[index] == NULL) {
+         ERROR(1, "Failed to allocate profiling buffer for communicator %d (3)", index);
+         return;
+      }
+
+      total_use[index] = calloc((STATS_TOTAL+1), sizeof(uint32_t));
+
+      if (total_use[index] == NULL) {
+         ERROR(1, "Failed to allocate profiling buffer for communicator %d (4)", index);
+         return;
       }
    }
 
-   total_ticks[index][field] += ticks;
-   total_ticks[index][STATS_TOTAL] += ticks;
+   current_ticks[index][field] += ticks;
+   current_ticks[index][STATS_TOTAL] += ticks;
 
-   total_use[index][field]++;
-   total_use[index][STATS_TOTAL]++;
+   current_use[index][field]++;
+   current_use[index][STATS_TOTAL]++;
 }
 
+/*
 void profile_print_statistics(MPI_Comm comm)
 {
    int i, index;
@@ -175,7 +234,7 @@ void profile_print_statistics(MPI_Comm comm)
       return;
    }
 
-   printf("Statistics for communicator %d: ", index);
+   printf("Communicator %d: ", index);
 
    for (i=0;i<STATS_TOTAL+1;i++) {
       printf("%s %ld %d ", statistic_names[i], total_ticks[index][i], total_use[index][i]);
@@ -217,6 +276,7 @@ void profile_print_all_statistics()
 
    printf("  Overall ticks %ld use %d\n", ticks, use);
 }
+*/
 
 void dump_profile_info_()
 {
@@ -227,6 +287,11 @@ void dump_profile_info()
 {
    int error;
 
+   if (running != 1) {
+      WARN(1, "Profiling not running!");
+      return;
+   }
+
    error = MPI_Barrier(profile_comm);
 
    if (error != MPI_SUCCESS) {
@@ -234,9 +299,7 @@ void dump_profile_info()
       return;
    }
 
-   fprintf(stderr, "SHOULD PRINT PROFILE INFO HERE...\n");
-
-   //messaging_print_profile();
+   print_and_reset_current_interval();
 }
 
 #endif
