@@ -9,6 +9,9 @@
 // Macro to catch derived datatypes.
 #ifdef CATCH_DERIVED_TYPES
 #define CHECK_TYPE(T) (catch_derived_datatype(T))
+
+void catch_derived_datatype(MPI_Datatype type);
+
 #else
 #define CHECK_TYPE(T)
 #endif
@@ -18,17 +21,15 @@
 #define CHECK_COUNT(C)         (check_count(C))
 #define CHECK_SOURCE(C,R)      (check_source(C, R))
 #define CHECK_DESTINATION(C,R) (check_destination(C, R))
+
+void check_count(int count);
+void check_source(communicator *c, int rank);
+void check_destination(communicator *c, int rank);
 #else
 #define CHECK_COUNT(C)
 #define CHECK_SOURCE(C,R)
 #define CHECK_DESTINATION(C,R)
 #endif
-
-// Function definitions
-void catch_derived_datatype(MPI_Datatype type);
-void check_count(int count);
-void check_source(communicator *c, int rank);
-void check_destination(communicator *c, int rank);
 
 #endif
 

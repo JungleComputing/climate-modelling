@@ -10,10 +10,14 @@
 #ifdef ENABLE_INTERCEPT
 
 #include "mpi.h"
-
-#include "communicator.h"
 #include "debugging.h"
 #include "logging.h"
+
+#ifdef IBIS_INTERCEPT
+
+#include "communicator.h"
+
+#ifdef CATCH_DERIVED_TYPES
 
 #define PRIMITIVE_TYPES 38
 
@@ -70,6 +74,10 @@ void catch_derived_datatype(MPI_Datatype datatype)
    FATAL("Attempt to communicate using a derived datatype!");
 }
 
+#endif // CATCH_DERIVED_TYPES
+
+#ifdef CHECK_PARAMETERS
+
 void check_count(int count)
 {
    if (count < 0) {
@@ -90,5 +98,9 @@ void check_destination(communicator *c, int dest)
       FATAL("Invalid destination rank %d for communicator %d", dest, c->number);
    }
 }
+
+#endif // CHECK_PARAMETERS
+
+#endif // IBIS_INTERCEPT
 
 #endif // ENABLE_INTERCEPT
