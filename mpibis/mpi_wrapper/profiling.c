@@ -114,24 +114,25 @@ static void print_and_reset_current_interval()
 
             total_ticks[i][j] += current_ticks[i][j];
             total_use[i][j]   += current_use[i][j];
-
-            current_ticks[i][j] = 0;
-            current_use[i][j] = 0;
          }
 
          printf("\n");
 
-         ticks += total_ticks[i][STATS_TOTAL];
-         use += total_use[i][STATS_TOTAL];
+         ticks += current_ticks[i][STATS_TOTAL];
+         use += current_use[i][STATS_TOTAL];
+
+         for (j=0;j<STATS_TOTAL+1;j++) {
+            current_ticks[i][j] = 0;
+            current_use[i][j] = 0;
+         }
       }
    }
 
-   current_interval++;
-
    current = profile_stop_ticks();
 
-   printf("  Overall ticks: total: %ld mpi: %ld calls: %d\n", (current-current_start_ticks), ticks, use);
+   printf("  Overall ticks in interval %d - total: %ld mpi: %ld calls: %d\n", current_interval, (current-current_start_ticks), ticks, use);
 
+   current_interval++;
    current_start_ticks = profile_start_ticks();
 }
 
