@@ -58,7 +58,7 @@ int MPI_Type_create_f90_complex ( int p, int r, MPI_Datatype *newtype )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -96,7 +96,7 @@ int MPI_Type_create_f90_integer ( int r, MPI_Datatype *newtype )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -134,7 +134,7 @@ int MPI_Type_create_f90_real ( int p, int r, MPI_Datatype *newtype )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -168,7 +168,7 @@ int MPI_Abort ( MPI_Comm comm, int errorcode )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
    profile_finalize();
 #endif // PROFILE_LEVEL
 
@@ -208,7 +208,7 @@ int MPI_Accumulate ( void *origin_addr, int origin_count, MPI_Datatype origin_da
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -242,7 +242,7 @@ int MPI_Add_error_class ( int *errorclass )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -276,7 +276,7 @@ int MPI_Add_error_code ( int errorclass, int *errorcode )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -310,7 +310,7 @@ int MPI_Add_error_string ( int errorcode, char *string )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -344,7 +344,7 @@ int MPI_Address ( void *location, MPI_Aint *address )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -383,7 +383,7 @@ int MPI_Allgather ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *r
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_ALLGATHER, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -422,7 +422,7 @@ int MPI_Allgatherv ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_ALLGATHER, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -456,7 +456,7 @@ int MPI_Alloc_mem ( MPI_Aint size, MPI_Info info, void *baseptr )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -494,7 +494,7 @@ int MPI_Allreduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype dataty
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_ALLREDUCE, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -533,7 +533,7 @@ int MPI_Alltoall ( void *sendbuf, int sendcount, MPI_Datatype sendtype, void *re
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_ALLTOALL, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -572,7 +572,7 @@ int MPI_Alltoallv ( void *sendbuf, int *sendcnts, int *sdispls, MPI_Datatype sen
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_ALLTOALL, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -611,7 +611,7 @@ int MPI_Alltoallw ( void *sendbuf, int *sendcnts, int *sdispls, MPI_Datatype *se
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_ALLTOALL, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -645,7 +645,7 @@ int MPI_Attr_delete ( MPI_Comm comm, int keyval )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -679,7 +679,7 @@ int MPI_Attr_get ( MPI_Comm comm, int keyval, void *attr_value, int *flag )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -713,7 +713,7 @@ int MPI_Attr_put ( MPI_Comm comm, int keyval, void *attr_value )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -747,7 +747,7 @@ int MPI_Barrier ( MPI_Comm comm )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_BARRIER, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -785,7 +785,7 @@ int MPI_Bcast ( void *buffer, int count, MPI_Datatype datatype, int root, MPI_Co
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_BCAST, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -823,7 +823,7 @@ int MPI_Bsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_BSEND, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -835,14 +835,14 @@ int MPI_Bsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 }
 
 
-int MPI_Bsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
+int MPI_Bsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Bsend_init(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
+   INFO(0, "MPI_Bsend_init(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *r=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), r);
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
@@ -854,14 +854,14 @@ int MPI_Bsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int 
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Bsend_init(buf, count, datatype, dest, tag, comm, request);
+   int error = IMPI_Bsend_init(buf, count, datatype, dest, tag, comm, r);
 #else
-   int error = PMPI_Bsend_init(buf, count, datatype, dest, tag, comm, request);
+   int error = PMPI_Bsend_init(buf, count, datatype, dest, tag, comm, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -895,7 +895,7 @@ int MPI_Buffer_attach ( void *buffer, int size )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -929,7 +929,7 @@ int MPI_Buffer_detach ( void *buffer, int *size )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -941,14 +941,14 @@ int MPI_Buffer_detach ( void *buffer, int *size )
 }
 
 
-int MPI_Cancel ( MPI_Request *request )
+int MPI_Cancel ( MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Cancel(MPI_Request *request=%p)", request);
+   INFO(0, "MPI_Cancel(MPI_Request *r=%p)", r);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -956,14 +956,14 @@ int MPI_Cancel ( MPI_Request *request )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Cancel(request);
+   int error = IMPI_Cancel(r);
 #else
-   int error = PMPI_Cancel(request);
+   int error = PMPI_Cancel(r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -997,7 +997,7 @@ int MPI_Cart_coords ( MPI_Comm comm, int rank, int maxdims, int *coords )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1031,7 +1031,7 @@ int MPI_Cart_create ( MPI_Comm comm_old, int ndims, int *dims, int *periods, int
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1065,7 +1065,7 @@ int MPI_Cartdim_get ( MPI_Comm comm, int *ndims )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1099,7 +1099,7 @@ int MPI_Cart_get ( MPI_Comm comm, int maxdims, int *dims, int *periods, int *coo
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1133,7 +1133,7 @@ int MPI_Cart_map ( MPI_Comm comm_old, int ndims, int *dims, int *periods, int *n
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1167,7 +1167,7 @@ int MPI_Cart_rank ( MPI_Comm comm, int *coords, int *rank )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1201,7 +1201,7 @@ int MPI_Cart_shift ( MPI_Comm comm, int direction, int displ, int *source, int *
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1235,7 +1235,7 @@ int MPI_Cart_sub ( MPI_Comm comm, int *remain_dims, MPI_Comm *comm_new )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1269,7 +1269,7 @@ int MPI_Close_port ( char *port_name )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1303,7 +1303,7 @@ int MPI_Comm_accept ( char *port_name, MPI_Info info, int root, MPI_Comm comm, M
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1337,7 +1337,7 @@ int MPI_Comm_call_errhandler ( MPI_Comm comm, int errorcode )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1371,7 +1371,7 @@ int MPI_Comm_compare ( MPI_Comm comm1, MPI_Comm comm2, int *result )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1405,7 +1405,7 @@ int MPI_Comm_connect ( char *port_name, MPI_Info info, int root, MPI_Comm comm, 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1439,7 +1439,7 @@ int MPI_Comm_create_errhandler ( MPI_Comm_errhandler_fn *function, MPI_Errhandle
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1451,14 +1451,14 @@ int MPI_Comm_create_errhandler ( MPI_Comm_errhandler_fn *function, MPI_Errhandle
 }
 
 
-int MPI_Comm_create ( MPI_Comm comm, MPI_Group group, MPI_Comm *newcomm )
+int MPI_Comm_create ( MPI_Comm comm, MPI_Group g, MPI_Comm *newcomm )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Comm_create(MPI_Comm comm=%s, MPI_Group group=%s, MPI_Comm *newcomm=%p)", comm_to_string(comm), group_to_string(group), newcomm);
+   INFO(0, "MPI_Comm_create(MPI_Comm comm=%s, MPI_Group g=%s, MPI_Comm *newcomm=%p)", comm_to_string(comm), group_to_string(g), newcomm);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -1466,14 +1466,14 @@ int MPI_Comm_create ( MPI_Comm comm, MPI_Group group, MPI_Comm *newcomm )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Comm_create(comm, group, newcomm);
+   int error = IMPI_Comm_create(comm, g, newcomm);
 #else
-   int error = PMPI_Comm_create(comm, group, newcomm);
+   int error = PMPI_Comm_create(comm, g, newcomm);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1507,7 +1507,7 @@ int MPI_Comm_create_keyval ( MPI_Comm_copy_attr_function *comm_copy_attr_fn, MPI
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1541,7 +1541,7 @@ int MPI_Comm_delete_attr ( MPI_Comm comm, int comm_keyval )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1575,7 +1575,7 @@ int MPI_Comm_disconnect ( MPI_Comm *comm )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1609,7 +1609,7 @@ int MPI_Comm_dup ( MPI_Comm comm, MPI_Comm *newcomm )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1643,7 +1643,7 @@ int MPI_Comm_free ( MPI_Comm *comm )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1677,7 +1677,7 @@ int MPI_Comm_free_keyval ( int *comm_keyval )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1711,7 +1711,7 @@ int MPI_Comm_get_attr ( MPI_Comm comm, int comm_keyval, void *attribute_val, int
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1745,7 +1745,7 @@ int MPI_Comm_get_errhandler ( MPI_Comm comm, MPI_Errhandler *errhandler )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1779,7 +1779,7 @@ int MPI_Comm_get_name ( MPI_Comm comm, char *comm_name, int *resultlen )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1813,7 +1813,7 @@ int MPI_Comm_get_parent ( MPI_Comm *parent )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1825,14 +1825,14 @@ int MPI_Comm_get_parent ( MPI_Comm *parent )
 }
 
 
-int MPI_Comm_group ( MPI_Comm comm, MPI_Group *group )
+int MPI_Comm_group ( MPI_Comm comm, MPI_Group *g )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Comm_group(MPI_Comm comm=%s, MPI_Group *group=%p)", comm_to_string(comm), group);
+   INFO(0, "MPI_Comm_group(MPI_Comm comm=%s, MPI_Group *g=%p)", comm_to_string(comm), g);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -1840,14 +1840,14 @@ int MPI_Comm_group ( MPI_Comm comm, MPI_Group *group )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Comm_group(comm, group);
+   int error = IMPI_Comm_group(comm, g);
 #else
-   int error = PMPI_Comm_group(comm, group);
+   int error = PMPI_Comm_group(comm, g);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1881,7 +1881,7 @@ int MPI_Comm_join ( int fd, MPI_Comm *intercomm )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1915,7 +1915,7 @@ int MPI_Comm_rank ( MPI_Comm comm, int *rank )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1927,14 +1927,14 @@ int MPI_Comm_rank ( MPI_Comm comm, int *rank )
 }
 
 
-int MPI_Comm_remote_group ( MPI_Comm comm, MPI_Group *group )
+int MPI_Comm_remote_group ( MPI_Comm comm, MPI_Group *g )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Comm_remote_group(MPI_Comm comm=%s, MPI_Group *group=%p)", comm_to_string(comm), group);
+   INFO(0, "MPI_Comm_remote_group(MPI_Comm comm=%s, MPI_Group *g=%p)", comm_to_string(comm), g);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -1942,14 +1942,14 @@ int MPI_Comm_remote_group ( MPI_Comm comm, MPI_Group *group )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Comm_remote_group(comm, group);
+   int error = IMPI_Comm_remote_group(comm, g);
 #else
-   int error = PMPI_Comm_remote_group(comm, group);
+   int error = PMPI_Comm_remote_group(comm, g);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1983,7 +1983,7 @@ int MPI_Comm_remote_size ( MPI_Comm comm, int *size )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2017,7 +2017,7 @@ int MPI_Comm_set_attr ( MPI_Comm comm, int comm_keyval, void *attribute_val )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2051,7 +2051,7 @@ int MPI_Comm_set_errhandler ( MPI_Comm comm, MPI_Errhandler errhandler )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2085,7 +2085,7 @@ int MPI_Comm_set_name ( MPI_Comm comm, char *comm_name )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2119,7 +2119,7 @@ int MPI_Comm_size ( MPI_Comm comm, int *size )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2153,7 +2153,7 @@ int MPI_Comm_spawn ( char *command, char *argv[], int maxprocs, MPI_Info info, i
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2187,7 +2187,7 @@ int MPI_Comm_spawn_multiple ( int count, char *array_of_commands[], char* *array
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2221,7 +2221,7 @@ int MPI_Comm_split ( MPI_Comm comm, int color, int key, MPI_Comm *newcomm )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2255,7 +2255,7 @@ int MPI_Comm_test_inter ( MPI_Comm comm, int *flag )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2289,7 +2289,7 @@ int MPI_Dims_create ( int nnodes, int ndims, int *dims )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2323,7 +2323,7 @@ int MPI_Dist_graph_create_adjacent ( MPI_Comm comm_old, int indegree, int source
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2357,7 +2357,7 @@ int MPI_Dist_graph_create ( MPI_Comm comm_old, int n, int sources[], int degrees
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2391,7 +2391,7 @@ int MPI_Dist_graph_neighbors_count ( MPI_Comm comm, int *indegree, int *outdegre
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2425,7 +2425,7 @@ int MPI_Dist_graph_neighbors ( MPI_Comm comm, int maxindegree, int sources[], in
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2459,7 +2459,7 @@ int MPI_Errhandler_create ( MPI_Handler_function *function, MPI_Errhandler *errh
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2493,7 +2493,7 @@ int MPI_Errhandler_free ( MPI_Errhandler *errhandler )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2527,7 +2527,7 @@ int MPI_Errhandler_get ( MPI_Comm comm, MPI_Errhandler *errhandler )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2561,7 +2561,7 @@ int MPI_Errhandler_set ( MPI_Comm comm, MPI_Errhandler errhandler )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2595,7 +2595,7 @@ int MPI_Error_class ( int errorcode, int *errorclass )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2629,7 +2629,7 @@ int MPI_Error_string ( int errorcode, char *string, int *resultlen )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2667,7 +2667,7 @@ int MPI_Exscan ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_EXSCAN, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2701,7 +2701,7 @@ int MPI_File_call_errhandler ( MPI_File fh, int errorcode )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2735,7 +2735,7 @@ int MPI_File_close ( MPI_File *mpi_fh )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2769,7 +2769,7 @@ int MPI_File_create_errhandler ( MPI_File_errhandler_fn *function, MPI_Errhandle
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2803,7 +2803,7 @@ int MPI_File_delete ( char *filename, MPI_Info info )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2837,7 +2837,7 @@ int MPI_File_get_amode ( MPI_File mpi_fh, int *amode )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2871,7 +2871,7 @@ int MPI_File_get_atomicity ( MPI_File mpi_fh, int *flag )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2905,7 +2905,7 @@ int MPI_File_get_byte_offset ( MPI_File mpi_fh, MPI_Offset offset, MPI_Offset *d
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2939,7 +2939,7 @@ int MPI_File_get_errhandler ( MPI_File file, MPI_Errhandler *errhandler )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2951,14 +2951,14 @@ int MPI_File_get_errhandler ( MPI_File file, MPI_Errhandler *errhandler )
 }
 
 
-int MPI_File_get_group ( MPI_File mpi_fh, MPI_Group *group )
+int MPI_File_get_group ( MPI_File mpi_fh, MPI_Group *g )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_File_get_group(MPI_File mpi_fh=%s, MPI_Group *group=%p)", file_to_string(mpi_fh), group);
+   INFO(0, "MPI_File_get_group(MPI_File mpi_fh=%s, MPI_Group *g=%p)", file_to_string(mpi_fh), g);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -2966,14 +2966,14 @@ int MPI_File_get_group ( MPI_File mpi_fh, MPI_Group *group )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_File_get_group(mpi_fh, group);
+   int error = IMPI_File_get_group(mpi_fh, g);
 #else
-   int error = PMPI_File_get_group(mpi_fh, group);
+   int error = PMPI_File_get_group(mpi_fh, g);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3007,7 +3007,7 @@ int MPI_File_get_info ( MPI_File mpi_fh, MPI_Info *info_used )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3041,7 +3041,7 @@ int MPI_File_get_position ( MPI_File mpi_fh, MPI_Offset *offset )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3075,7 +3075,7 @@ int MPI_File_get_position_shared ( MPI_File mpi_fh, MPI_Offset *offset )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3109,7 +3109,7 @@ int MPI_File_get_size ( MPI_File mpi_fh, MPI_Offset *size )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3147,7 +3147,7 @@ int MPI_File_get_type_extent ( MPI_File mpi_fh, MPI_Datatype datatype, MPI_Aint 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3186,7 +3186,7 @@ int MPI_File_get_view ( MPI_File mpi_fh, MPI_Offset *disp, MPI_Datatype *etype, 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3198,14 +3198,14 @@ int MPI_File_get_view ( MPI_File mpi_fh, MPI_Offset *disp, MPI_Datatype *etype, 
 }
 
 
-int MPI_File_iread_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int count, MPI_Datatype datatype, MPIO_Request *request )
+int MPI_File_iread_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int count, MPI_Datatype datatype, MPIO_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_File_iread_at(MPI_File mpi_fh=%s, MPI_Offset offset=%p, void *buf=%p, int count=%d, MPI_Datatype datatype=%s, MPIO_Request *request=%p)", file_to_string(mpi_fh), (void *) offset, buf, count, type_to_string(datatype), request);
+   INFO(0, "MPI_File_iread_at(MPI_File mpi_fh=%s, MPI_Offset offset=%p, void *buf=%p, int count=%d, MPI_Datatype datatype=%s, MPIO_Request *r=%p)", file_to_string(mpi_fh), (void *) offset, buf, count, type_to_string(datatype), r);
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
@@ -3217,14 +3217,14 @@ int MPI_File_iread_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int count
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_File_iread_at(mpi_fh, offset, buf, count, datatype, request);
+   int error = IMPI_File_iread_at(mpi_fh, offset, buf, count, datatype, r);
 #else
-   int error = PMPI_File_iread_at(mpi_fh, offset, buf, count, datatype, request);
+   int error = PMPI_File_iread_at(mpi_fh, offset, buf, count, datatype, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3236,14 +3236,14 @@ int MPI_File_iread_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int count
 }
 
 
-int MPI_File_iread ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatype, MPI_Request *request )
+int MPI_File_iread ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatype, MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_File_iread(MPI_File mpi_fh=%s, void *buf=%p, int count=%d, MPI_Datatype datatype=%s, MPI_Request *request=%p)", file_to_string(mpi_fh), buf, count, type_to_string(datatype), request);
+   INFO(0, "MPI_File_iread(MPI_File mpi_fh=%s, void *buf=%p, int count=%d, MPI_Datatype datatype=%s, MPI_Request *r=%p)", file_to_string(mpi_fh), buf, count, type_to_string(datatype), r);
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
@@ -3255,14 +3255,14 @@ int MPI_File_iread ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatyp
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_File_iread(mpi_fh, buf, count, datatype, request);
+   int error = IMPI_File_iread(mpi_fh, buf, count, datatype, r);
 #else
-   int error = PMPI_File_iread(mpi_fh, buf, count, datatype, request);
+   int error = PMPI_File_iread(mpi_fh, buf, count, datatype, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3274,14 +3274,14 @@ int MPI_File_iread ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatyp
 }
 
 
-int MPI_File_iread_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatype, MPI_Request *request )
+int MPI_File_iread_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatype, MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_File_iread_shared(MPI_File mpi_fh=%s, void *buf=%p, int count=%d, MPI_Datatype datatype=%s, MPI_Request *request=%p)", file_to_string(mpi_fh), buf, count, type_to_string(datatype), request);
+   INFO(0, "MPI_File_iread_shared(MPI_File mpi_fh=%s, void *buf=%p, int count=%d, MPI_Datatype datatype=%s, MPI_Request *r=%p)", file_to_string(mpi_fh), buf, count, type_to_string(datatype), r);
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
@@ -3293,14 +3293,14 @@ int MPI_File_iread_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype 
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_File_iread_shared(mpi_fh, buf, count, datatype, request);
+   int error = IMPI_File_iread_shared(mpi_fh, buf, count, datatype, r);
 #else
-   int error = PMPI_File_iread_shared(mpi_fh, buf, count, datatype, request);
+   int error = PMPI_File_iread_shared(mpi_fh, buf, count, datatype, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3312,14 +3312,14 @@ int MPI_File_iread_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype 
 }
 
 
-int MPI_File_iwrite_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int count, MPI_Datatype datatype, MPIO_Request *request )
+int MPI_File_iwrite_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int count, MPI_Datatype datatype, MPIO_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_File_iwrite_at(MPI_File mpi_fh=%s, MPI_Offset offset=%p, void *buf=%p, int count=%d, MPI_Datatype datatype=%s, MPIO_Request *request=%p)", file_to_string(mpi_fh), (void *) offset, buf, count, type_to_string(datatype), request);
+   INFO(0, "MPI_File_iwrite_at(MPI_File mpi_fh=%s, MPI_Offset offset=%p, void *buf=%p, int count=%d, MPI_Datatype datatype=%s, MPIO_Request *r=%p)", file_to_string(mpi_fh), (void *) offset, buf, count, type_to_string(datatype), r);
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
@@ -3331,14 +3331,14 @@ int MPI_File_iwrite_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int coun
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_File_iwrite_at(mpi_fh, offset, buf, count, datatype, request);
+   int error = IMPI_File_iwrite_at(mpi_fh, offset, buf, count, datatype, r);
 #else
-   int error = PMPI_File_iwrite_at(mpi_fh, offset, buf, count, datatype, request);
+   int error = PMPI_File_iwrite_at(mpi_fh, offset, buf, count, datatype, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3350,14 +3350,14 @@ int MPI_File_iwrite_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int coun
 }
 
 
-int MPI_File_iwrite ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatype, MPI_Request *request )
+int MPI_File_iwrite ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatype, MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_File_iwrite(MPI_File mpi_fh=%s, void *buf=%p, int count=%d, MPI_Datatype datatype=%s, MPI_Request *request=%p)", file_to_string(mpi_fh), buf, count, type_to_string(datatype), request);
+   INFO(0, "MPI_File_iwrite(MPI_File mpi_fh=%s, void *buf=%p, int count=%d, MPI_Datatype datatype=%s, MPI_Request *r=%p)", file_to_string(mpi_fh), buf, count, type_to_string(datatype), r);
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
@@ -3369,14 +3369,14 @@ int MPI_File_iwrite ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype dataty
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_File_iwrite(mpi_fh, buf, count, datatype, request);
+   int error = IMPI_File_iwrite(mpi_fh, buf, count, datatype, r);
 #else
-   int error = PMPI_File_iwrite(mpi_fh, buf, count, datatype, request);
+   int error = PMPI_File_iwrite(mpi_fh, buf, count, datatype, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3388,14 +3388,14 @@ int MPI_File_iwrite ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype dataty
 }
 
 
-int MPI_File_iwrite_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatype, MPIO_Request *request )
+int MPI_File_iwrite_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatype, MPIO_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_File_iwrite_shared(MPI_File mpi_fh=%s, void *buf=%p, int count=%d, MPI_Datatype datatype=%s, MPIO_Request *request=%p)", file_to_string(mpi_fh), buf, count, type_to_string(datatype), request);
+   INFO(0, "MPI_File_iwrite_shared(MPI_File mpi_fh=%s, void *buf=%p, int count=%d, MPI_Datatype datatype=%s, MPIO_Request *r=%p)", file_to_string(mpi_fh), buf, count, type_to_string(datatype), r);
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
@@ -3407,14 +3407,14 @@ int MPI_File_iwrite_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_File_iwrite_shared(mpi_fh, buf, count, datatype, request);
+   int error = IMPI_File_iwrite_shared(mpi_fh, buf, count, datatype, r);
 #else
-   int error = PMPI_File_iwrite_shared(mpi_fh, buf, count, datatype, request);
+   int error = PMPI_File_iwrite_shared(mpi_fh, buf, count, datatype, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3448,7 +3448,7 @@ int MPI_File_open ( MPI_Comm comm, char *filename, int amode, MPI_Info info, MPI
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3482,7 +3482,7 @@ int MPI_File_preallocate ( MPI_File mpi_fh, MPI_Offset size )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3520,7 +3520,7 @@ int MPI_File_read_all_begin ( MPI_File mpi_fh, void *buf, int count, MPI_Datatyp
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3554,7 +3554,7 @@ int MPI_File_read_all_end ( MPI_File mpi_fh, void *buf, MPI_Status *status )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3592,7 +3592,7 @@ int MPI_File_read_all ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype data
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3630,7 +3630,7 @@ int MPI_File_read_at_all_begin ( MPI_File mpi_fh, MPI_Offset offset, void *buf, 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3664,7 +3664,7 @@ int MPI_File_read_at_all_end ( MPI_File mpi_fh, void *buf, MPI_Status *status )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3702,7 +3702,7 @@ int MPI_File_read_at_all ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int co
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3740,7 +3740,7 @@ int MPI_File_read_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int count,
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3778,7 +3778,7 @@ int MPI_File_read ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatype
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3816,7 +3816,7 @@ int MPI_File_read_ordered_begin ( MPI_File mpi_fh, void *buf, int count, MPI_Dat
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3850,7 +3850,7 @@ int MPI_File_read_ordered_end ( MPI_File mpi_fh, void *buf, MPI_Status *status )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3888,7 +3888,7 @@ int MPI_File_read_ordered ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3926,7 +3926,7 @@ int MPI_File_read_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype d
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3960,7 +3960,7 @@ int MPI_File_seek ( MPI_File mpi_fh, MPI_Offset offset, int whence )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -3994,7 +3994,7 @@ int MPI_File_seek_shared ( MPI_File mpi_fh, MPI_Offset offset, int whence )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4028,7 +4028,7 @@ int MPI_File_set_atomicity ( MPI_File mpi_fh, int flag )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4062,7 +4062,7 @@ int MPI_File_set_errhandler ( MPI_File file, MPI_Errhandler errhandler )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4096,7 +4096,7 @@ int MPI_File_set_info ( MPI_File mpi_fh, MPI_Info info )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4130,7 +4130,7 @@ int MPI_File_set_size ( MPI_File mpi_fh, MPI_Offset size )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4169,7 +4169,7 @@ int MPI_File_set_view ( MPI_File mpi_fh, MPI_Offset disp, MPI_Datatype etype, MP
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4203,7 +4203,7 @@ int MPI_File_sync ( MPI_File mpi_fh )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4241,7 +4241,7 @@ int MPI_File_write_all_begin ( MPI_File mpi_fh, void *buf, int count, MPI_Dataty
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4275,7 +4275,7 @@ int MPI_File_write_all_end ( MPI_File mpi_fh, void *buf, MPI_Status *status )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4313,7 +4313,7 @@ int MPI_File_write_all ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype dat
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4351,7 +4351,7 @@ int MPI_File_write_at_all_begin ( MPI_File mpi_fh, MPI_Offset offset, void *buf,
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4385,7 +4385,7 @@ int MPI_File_write_at_all_end ( MPI_File mpi_fh, void *buf, MPI_Status *status )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4423,7 +4423,7 @@ int MPI_File_write_at_all ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int c
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4461,7 +4461,7 @@ int MPI_File_write_at ( MPI_File mpi_fh, MPI_Offset offset, void *buf, int count
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4499,7 +4499,7 @@ int MPI_File_write ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype datatyp
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4537,7 +4537,7 @@ int MPI_File_write_ordered_begin ( MPI_File mpi_fh, void *buf, int count, MPI_Da
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4571,7 +4571,7 @@ int MPI_File_write_ordered_end ( MPI_File mpi_fh, void *buf, MPI_Status *status 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4609,7 +4609,7 @@ int MPI_File_write_ordered ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4647,7 +4647,7 @@ int MPI_File_write_shared ( MPI_File mpi_fh, void *buf, int count, MPI_Datatype 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4681,7 +4681,7 @@ int MPI_Finalized ( int *flag )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4715,7 +4715,7 @@ int MPI_Finalize (  )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
    profile_finalize();
 #endif // PROFILE_LEVEL
 
@@ -4750,7 +4750,7 @@ int MPI_Free_mem ( void *base )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4789,7 +4789,7 @@ int MPI_Gather ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvbu
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_GATHER, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4828,7 +4828,7 @@ int MPI_Gatherv ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvb
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_GATHER, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4862,7 +4862,7 @@ int MPI_Get_address ( void *location, MPI_Aint *address )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4900,7 +4900,7 @@ int MPI_Get_count ( MPI_Status *status, MPI_Datatype datatype, int *count )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4938,7 +4938,7 @@ int MPI_Get_elements ( MPI_Status *status, MPI_Datatype datatype, int *elements 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -4977,7 +4977,7 @@ int MPI_Get ( void *origin_addr, int origin_count, MPI_Datatype origin_datatype,
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5011,7 +5011,7 @@ int MPI_Get_processor_name ( char *name, int *resultlen )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5045,7 +5045,7 @@ int MPI_Get_version ( int *version, int *subversion )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5079,7 +5079,7 @@ int MPI_Graph_create ( MPI_Comm comm_old, int nnodes, int *indx, int *edges, int
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5113,7 +5113,7 @@ int MPI_Graphdims_get ( MPI_Comm comm, int *nnodes, int *nedges )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5147,7 +5147,7 @@ int MPI_Graph_get ( MPI_Comm comm, int maxindex, int maxedges, int *indx, int *e
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5181,7 +5181,7 @@ int MPI_Graph_map ( MPI_Comm comm_old, int nnodes, int *indx, int *edges, int *n
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5215,7 +5215,7 @@ int MPI_Graph_neighbors_count ( MPI_Comm comm, int rank, int *nneighbors )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5249,7 +5249,7 @@ int MPI_Graph_neighbors ( MPI_Comm comm, int rank, int maxneighbors, int *neighb
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5261,14 +5261,14 @@ int MPI_Graph_neighbors ( MPI_Comm comm, int rank, int maxneighbors, int *neighb
 }
 
 
-int MPI_Grequest_complete ( MPI_Request request )
+int MPI_Grequest_complete ( MPI_Request r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Grequest_complete(MPI_Request request=%s)", request_to_string(request));
+   INFO(0, "MPI_Grequest_complete(MPI_Request r=%s)", request_to_string(r));
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -5276,14 +5276,14 @@ int MPI_Grequest_complete ( MPI_Request request )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Grequest_complete(request);
+   int error = IMPI_Grequest_complete(r);
 #else
-   int error = PMPI_Grequest_complete(request);
+   int error = PMPI_Grequest_complete(r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5295,14 +5295,14 @@ int MPI_Grequest_complete ( MPI_Request request )
 }
 
 
-int MPI_Grequest_start ( MPI_Grequest_query_function *query_fn, MPI_Grequest_free_function *free_fn, MPI_Grequest_cancel_function *cancel_fn, void *extra_state, MPI_Request *request )
+int MPI_Grequest_start ( MPI_Grequest_query_function *query_fn, MPI_Grequest_free_function *free_fn, MPI_Grequest_cancel_function *cancel_fn, void *extra_state, MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Grequest_start(MPI_Grequest_query_function *query_fn=%p, MPI_Grequest_free_function *free_fn=%p, MPI_Grequest_cancel_function *cancel_fn=%p, void *extra_state=%p, MPI_Request *request=%p)", query_fn, free_fn, cancel_fn, extra_state, request);
+   INFO(0, "MPI_Grequest_start(MPI_Grequest_query_function *query_fn=%p, MPI_Grequest_free_function *free_fn=%p, MPI_Grequest_cancel_function *cancel_fn=%p, void *extra_state=%p, MPI_Request *r=%p)", query_fn, free_fn, cancel_fn, extra_state, r);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -5310,14 +5310,14 @@ int MPI_Grequest_start ( MPI_Grequest_query_function *query_fn, MPI_Grequest_fre
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Grequest_start(query_fn, free_fn, cancel_fn, extra_state, request);
+   int error = IMPI_Grequest_start(query_fn, free_fn, cancel_fn, extra_state, r);
 #else
-   int error = PMPI_Grequest_start(query_fn, free_fn, cancel_fn, extra_state, request);
+   int error = PMPI_Grequest_start(query_fn, free_fn, cancel_fn, extra_state, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5351,7 +5351,7 @@ int MPI_Group_compare ( MPI_Group group1, MPI_Group group2, int *result )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5385,7 +5385,7 @@ int MPI_Group_difference ( MPI_Group group1, MPI_Group group2, MPI_Group *newgro
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5397,14 +5397,14 @@ int MPI_Group_difference ( MPI_Group group1, MPI_Group group2, MPI_Group *newgro
 }
 
 
-int MPI_Group_excl ( MPI_Group group, int n, int *ranks, MPI_Group *newgroup )
+int MPI_Group_excl ( MPI_Group g, int n, int *ranks, MPI_Group *newgroup )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Group_excl(MPI_Group group=%s, int n=%d, int *ranks=%p, MPI_Group *newgroup=%p)", group_to_string(group), n, ranks, newgroup);
+   INFO(0, "MPI_Group_excl(MPI_Group g=%s, int n=%d, int *ranks=%p, MPI_Group *newgroup=%p)", group_to_string(g), n, ranks, newgroup);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -5412,14 +5412,14 @@ int MPI_Group_excl ( MPI_Group group, int n, int *ranks, MPI_Group *newgroup )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Group_excl(group, n, ranks, newgroup);
+   int error = IMPI_Group_excl(g, n, ranks, newgroup);
 #else
-   int error = PMPI_Group_excl(group, n, ranks, newgroup);
+   int error = PMPI_Group_excl(g, n, ranks, newgroup);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5431,14 +5431,14 @@ int MPI_Group_excl ( MPI_Group group, int n, int *ranks, MPI_Group *newgroup )
 }
 
 
-int MPI_Group_free ( MPI_Group *group )
+int MPI_Group_free ( MPI_Group *g )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Group_free(MPI_Group *group=%p)", group);
+   INFO(0, "MPI_Group_free(MPI_Group *g=%p)", g);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -5446,14 +5446,14 @@ int MPI_Group_free ( MPI_Group *group )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Group_free(group);
+   int error = IMPI_Group_free(g);
 #else
-   int error = PMPI_Group_free(group);
+   int error = PMPI_Group_free(g);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5465,14 +5465,14 @@ int MPI_Group_free ( MPI_Group *group )
 }
 
 
-int MPI_Group_incl ( MPI_Group group, int n, int *ranks, MPI_Group *newgroup )
+int MPI_Group_incl ( MPI_Group g, int n, int *ranks, MPI_Group *newgroup )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Group_incl(MPI_Group group=%s, int n=%d, int *ranks=%p, MPI_Group *newgroup=%p)", group_to_string(group), n, ranks, newgroup);
+   INFO(0, "MPI_Group_incl(MPI_Group g=%s, int n=%d, int *ranks=%p, MPI_Group *newgroup=%p)", group_to_string(g), n, ranks, newgroup);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -5480,14 +5480,14 @@ int MPI_Group_incl ( MPI_Group group, int n, int *ranks, MPI_Group *newgroup )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Group_incl(group, n, ranks, newgroup);
+   int error = IMPI_Group_incl(g, n, ranks, newgroup);
 #else
-   int error = PMPI_Group_incl(group, n, ranks, newgroup);
+   int error = PMPI_Group_incl(g, n, ranks, newgroup);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5521,7 +5521,7 @@ int MPI_Group_intersection ( MPI_Group group1, MPI_Group group2, MPI_Group *newg
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5533,14 +5533,14 @@ int MPI_Group_intersection ( MPI_Group group1, MPI_Group group2, MPI_Group *newg
 }
 
 
-int MPI_Group_range_excl ( MPI_Group group, int n, int ranges[][3], MPI_Group *newgroup )
+int MPI_Group_range_excl ( MPI_Group g, int n, int ranges[][3], MPI_Group *newgroup )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Group_range_excl(MPI_Group group=%s, int n=%d, int ranges[][3]=%p, MPI_Group *newgroup=%p)", group_to_string(group), n, ranges, newgroup);
+   INFO(0, "MPI_Group_range_excl(MPI_Group g=%s, int n=%d, int ranges[][3]=%p, MPI_Group *newgroup=%p)", group_to_string(g), n, ranges, newgroup);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -5548,14 +5548,14 @@ int MPI_Group_range_excl ( MPI_Group group, int n, int ranges[][3], MPI_Group *n
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Group_range_excl(group, n, ranges, newgroup);
+   int error = IMPI_Group_range_excl(g, n, ranges, newgroup);
 #else
-   int error = PMPI_Group_range_excl(group, n, ranges, newgroup);
+   int error = PMPI_Group_range_excl(g, n, ranges, newgroup);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5567,14 +5567,14 @@ int MPI_Group_range_excl ( MPI_Group group, int n, int ranges[][3], MPI_Group *n
 }
 
 
-int MPI_Group_range_incl ( MPI_Group group, int n, int ranges[][3], MPI_Group *newgroup )
+int MPI_Group_range_incl ( MPI_Group g, int n, int ranges[][3], MPI_Group *newgroup )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Group_range_incl(MPI_Group group=%s, int n=%d, int ranges[][3]=%p, MPI_Group *newgroup=%p)", group_to_string(group), n, ranges, newgroup);
+   INFO(0, "MPI_Group_range_incl(MPI_Group g=%s, int n=%d, int ranges[][3]=%p, MPI_Group *newgroup=%p)", group_to_string(g), n, ranges, newgroup);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -5582,14 +5582,14 @@ int MPI_Group_range_incl ( MPI_Group group, int n, int ranges[][3], MPI_Group *n
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Group_range_incl(group, n, ranges, newgroup);
+   int error = IMPI_Group_range_incl(g, n, ranges, newgroup);
 #else
-   int error = PMPI_Group_range_incl(group, n, ranges, newgroup);
+   int error = PMPI_Group_range_incl(g, n, ranges, newgroup);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5601,14 +5601,14 @@ int MPI_Group_range_incl ( MPI_Group group, int n, int ranges[][3], MPI_Group *n
 }
 
 
-int MPI_Group_rank ( MPI_Group group, int *rank )
+int MPI_Group_rank ( MPI_Group g, int *rank )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Group_rank(MPI_Group group=%s, int *rank=%p)", group_to_string(group), rank);
+   INFO(0, "MPI_Group_rank(MPI_Group g=%s, int *rank=%p)", group_to_string(g), rank);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -5616,14 +5616,14 @@ int MPI_Group_rank ( MPI_Group group, int *rank )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Group_rank(group, rank);
+   int error = IMPI_Group_rank(g, rank);
 #else
-   int error = PMPI_Group_rank(group, rank);
+   int error = PMPI_Group_rank(g, rank);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5635,14 +5635,14 @@ int MPI_Group_rank ( MPI_Group group, int *rank )
 }
 
 
-int MPI_Group_size ( MPI_Group group, int *size )
+int MPI_Group_size ( MPI_Group g, int *size )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Group_size(MPI_Group group=%s, int *size=%p)", group_to_string(group), size);
+   INFO(0, "MPI_Group_size(MPI_Group g=%s, int *size=%p)", group_to_string(g), size);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -5650,14 +5650,14 @@ int MPI_Group_size ( MPI_Group group, int *size )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Group_size(group, size);
+   int error = IMPI_Group_size(g, size);
 #else
-   int error = PMPI_Group_size(group, size);
+   int error = PMPI_Group_size(g, size);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5691,7 +5691,7 @@ int MPI_Group_translate_ranks ( MPI_Group group1, int n, int *ranks1, MPI_Group 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5725,7 +5725,7 @@ int MPI_Group_union ( MPI_Group group1, MPI_Group group2, MPI_Group *newgroup )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5737,14 +5737,14 @@ int MPI_Group_union ( MPI_Group group1, MPI_Group group2, MPI_Group *newgroup )
 }
 
 
-int MPI_Ibsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
+int MPI_Ibsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Ibsend(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
+   INFO(0, "MPI_Ibsend(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *r=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), r);
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
@@ -5756,14 +5756,14 @@ int MPI_Ibsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Ibsend(buf, count, datatype, dest, tag, comm, request);
+   int error = IMPI_Ibsend(buf, count, datatype, dest, tag, comm, r);
 #else
-   int error = PMPI_Ibsend(buf, count, datatype, dest, tag, comm, request);
+   int error = PMPI_Ibsend(buf, count, datatype, dest, tag, comm, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_IBSEND, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5797,7 +5797,7 @@ int MPI_Info_create ( MPI_Info *info )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5831,7 +5831,7 @@ int MPI_Info_delete ( MPI_Info info, char *key )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5865,7 +5865,7 @@ int MPI_Info_dup ( MPI_Info info, MPI_Info *newinfo )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5899,7 +5899,7 @@ int MPI_Info_free ( MPI_Info *info )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5933,7 +5933,7 @@ int MPI_Info_get ( MPI_Info info, char *key, int valuelen, char *value, int *fla
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5967,7 +5967,7 @@ int MPI_Info_get_nkeys ( MPI_Info info, int *nkeys )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6001,7 +6001,7 @@ int MPI_Info_get_nthkey ( MPI_Info info, int n, char *key )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6035,7 +6035,7 @@ int MPI_Info_get_valuelen ( MPI_Info info, char *key, int *valuelen, int *flag )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6069,7 +6069,7 @@ int MPI_Info_set ( MPI_Info info, char *key, char *value )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6103,7 +6103,7 @@ int MPI_Initialized ( int *flag )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6137,7 +6137,7 @@ int MPI_Init_thread ( int *argc, char ***argv, int required, int *provided )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6171,7 +6171,7 @@ int MPI_Intercomm_create ( MPI_Comm local_comm, int local_leader, MPI_Comm peer_
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6205,7 +6205,7 @@ int MPI_Intercomm_merge ( MPI_Comm intercomm, int high, MPI_Comm *newintracomm )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6239,7 +6239,7 @@ int MPI_Iprobe ( int source, int tag, MPI_Comm comm, int *flag, MPI_Status *stat
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_IPROBE, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6251,14 +6251,14 @@ int MPI_Iprobe ( int source, int tag, MPI_Comm comm, int *flag, MPI_Status *stat
 }
 
 
-int MPI_Irecv ( void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Request *request )
+int MPI_Irecv ( void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Irecv(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int source=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), source, tag, comm_to_string(comm), request);
+   INFO(0, "MPI_Irecv(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int source=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *r=%p)", buf, count, type_to_string(datatype), source, tag, comm_to_string(comm), r);
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
@@ -6270,14 +6270,14 @@ int MPI_Irecv ( void *buf, int count, MPI_Datatype datatype, int source, int tag
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Irecv(buf, count, datatype, source, tag, comm, request);
+   int error = IMPI_Irecv(buf, count, datatype, source, tag, comm, r);
 #else
-   int error = PMPI_Irecv(buf, count, datatype, source, tag, comm, request);
+   int error = PMPI_Irecv(buf, count, datatype, source, tag, comm, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_IRECV, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6289,14 +6289,14 @@ int MPI_Irecv ( void *buf, int count, MPI_Datatype datatype, int source, int tag
 }
 
 
-int MPI_Irsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
+int MPI_Irsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Irsend(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
+   INFO(0, "MPI_Irsend(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *r=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), r);
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
@@ -6308,14 +6308,14 @@ int MPI_Irsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Irsend(buf, count, datatype, dest, tag, comm, request);
+   int error = IMPI_Irsend(buf, count, datatype, dest, tag, comm, r);
 #else
-   int error = PMPI_Irsend(buf, count, datatype, dest, tag, comm, request);
+   int error = PMPI_Irsend(buf, count, datatype, dest, tag, comm, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_IRSEND, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6327,14 +6327,14 @@ int MPI_Irsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 }
 
 
-int MPI_Isend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
+int MPI_Isend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Isend(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
+   INFO(0, "MPI_Isend(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *r=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), r);
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
@@ -6346,14 +6346,14 @@ int MPI_Isend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Isend(buf, count, datatype, dest, tag, comm, request);
+   int error = IMPI_Isend(buf, count, datatype, dest, tag, comm, r);
 #else
-   int error = PMPI_Isend(buf, count, datatype, dest, tag, comm, request);
+   int error = PMPI_Isend(buf, count, datatype, dest, tag, comm, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_ISEND, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6365,14 +6365,14 @@ int MPI_Isend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 }
 
 
-int MPI_Issend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
+int MPI_Issend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Issend(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
+   INFO(0, "MPI_Issend(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *r=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), r);
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
@@ -6384,14 +6384,14 @@ int MPI_Issend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag,
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Issend(buf, count, datatype, dest, tag, comm, request);
+   int error = IMPI_Issend(buf, count, datatype, dest, tag, comm, r);
 #else
-   int error = PMPI_Issend(buf, count, datatype, dest, tag, comm, request);
+   int error = PMPI_Issend(buf, count, datatype, dest, tag, comm, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_ISSEND, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6425,7 +6425,7 @@ int MPI_Is_thread_main ( int *flag )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6459,7 +6459,7 @@ int MPI_Keyval_create ( MPI_Copy_function *copy_fn, MPI_Delete_function *delete_
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6493,7 +6493,7 @@ int MPI_Keyval_free ( int *keyval )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6527,7 +6527,7 @@ int MPI_Lookup_name ( char *service_name, MPI_Info info, char *port_name )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6561,7 +6561,7 @@ int MPI_Op_commutative ( MPI_Op op, int *commute )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6595,7 +6595,7 @@ int MPI_Op_create ( MPI_User_function *function, int commute, MPI_Op *op )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6629,7 +6629,7 @@ int MPI_Open_port ( MPI_Info info, char *port_name )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6663,7 +6663,7 @@ int MPI_Op_free ( MPI_Op *op )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6701,7 +6701,7 @@ int MPI_Pack_external ( char *datarep, void *inbuf, int incount, MPI_Datatype da
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6739,7 +6739,7 @@ int MPI_Pack_external_size ( char *datarep, int incount, MPI_Datatype datatype, 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6777,7 +6777,7 @@ int MPI_Pack ( void *inbuf, int incount, MPI_Datatype datatype, void *outbuf, in
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6815,7 +6815,7 @@ int MPI_Pack_size ( int incount, MPI_Datatype datatype, MPI_Comm comm, int *size
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6849,7 +6849,7 @@ int MPI_Probe ( int source, int tag, MPI_Comm comm, MPI_Status *status )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_PROBE, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6883,7 +6883,7 @@ int MPI_Publish_name ( char *service_name, MPI_Info info, char *port_name )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6922,7 +6922,7 @@ int MPI_Put ( void *origin_addr, int origin_count, MPI_Datatype origin_datatype,
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6956,7 +6956,7 @@ int MPI_Query_thread ( int *provided )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6994,7 +6994,7 @@ int MPI_Recv ( void *buf, int count, MPI_Datatype datatype, int source, int tag,
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_RECV, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7006,14 +7006,14 @@ int MPI_Recv ( void *buf, int count, MPI_Datatype datatype, int source, int tag,
 }
 
 
-int MPI_Recv_init ( void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Request *request )
+int MPI_Recv_init ( void *buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Recv_init(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int source=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), source, tag, comm_to_string(comm), request);
+   INFO(0, "MPI_Recv_init(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int source=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *r=%p)", buf, count, type_to_string(datatype), source, tag, comm_to_string(comm), r);
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
@@ -7025,14 +7025,14 @@ int MPI_Recv_init ( void *buf, int count, MPI_Datatype datatype, int source, int
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Recv_init(buf, count, datatype, source, tag, comm, request);
+   int error = IMPI_Recv_init(buf, count, datatype, source, tag, comm, r);
 #else
-   int error = PMPI_Recv_init(buf, count, datatype, source, tag, comm, request);
+   int error = PMPI_Recv_init(buf, count, datatype, source, tag, comm, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7070,7 +7070,7 @@ int MPI_Reduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_REDUCE, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7108,7 +7108,7 @@ int MPI_Reduce_local ( void *inbuf, void *inoutbuf, int count, MPI_Datatype data
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7146,7 +7146,7 @@ int MPI_Reduce_scatter_block ( void *sendbuf, void *recvbuf, int recvcount, MPI_
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7184,7 +7184,7 @@ int MPI_Reduce_scatter ( void *sendbuf, void *recvbuf, int *recvcnts, MPI_Dataty
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_REDUCE_SCATTER, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7218,7 +7218,7 @@ int MPI_Register_datarep ( char *name, MPI_Datarep_conversion_function *read_con
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7230,14 +7230,14 @@ int MPI_Register_datarep ( char *name, MPI_Datarep_conversion_function *read_con
 }
 
 
-int MPI_Request_free ( MPI_Request *request )
+int MPI_Request_free ( MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Request_free(MPI_Request *request=%p)", request);
+   INFO(0, "MPI_Request_free(MPI_Request *r=%p)", r);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -7245,14 +7245,14 @@ int MPI_Request_free ( MPI_Request *request )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Request_free(request);
+   int error = IMPI_Request_free(r);
 #else
-   int error = PMPI_Request_free(request);
+   int error = PMPI_Request_free(r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7264,14 +7264,14 @@ int MPI_Request_free ( MPI_Request *request )
 }
 
 
-int MPI_Request_get_status ( MPI_Request request, int *flag, MPI_Status *status )
+int MPI_Request_get_status ( MPI_Request r, int *flag, MPI_Status *status )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Request_get_status(MPI_Request request=%s, int *flag=%p, MPI_Status *status=%p)", request_to_string(request), flag, status);
+   INFO(0, "MPI_Request_get_status(MPI_Request r=%s, int *flag=%p, MPI_Status *status=%p)", request_to_string(r), flag, status);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -7279,14 +7279,14 @@ int MPI_Request_get_status ( MPI_Request request, int *flag, MPI_Status *status 
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Request_get_status(request, flag, status);
+   int error = IMPI_Request_get_status(r, flag, status);
 #else
-   int error = PMPI_Request_get_status(request, flag, status);
+   int error = PMPI_Request_get_status(r, flag, status);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7324,7 +7324,7 @@ int MPI_Rsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_RSEND, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7336,14 +7336,14 @@ int MPI_Rsend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 }
 
 
-int MPI_Rsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
+int MPI_Rsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Rsend_init(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
+   INFO(0, "MPI_Rsend_init(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *r=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), r);
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
@@ -7355,14 +7355,14 @@ int MPI_Rsend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int 
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Rsend_init(buf, count, datatype, dest, tag, comm, request);
+   int error = IMPI_Rsend_init(buf, count, datatype, dest, tag, comm, r);
 #else
-   int error = PMPI_Rsend_init(buf, count, datatype, dest, tag, comm, request);
+   int error = PMPI_Rsend_init(buf, count, datatype, dest, tag, comm, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7400,7 +7400,7 @@ int MPI_Scan ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, M
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_SCAN, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7439,7 +7439,7 @@ int MPI_Scatter ( void *sendbuf, int sendcnt, MPI_Datatype sendtype, void *recvb
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_SCATTER, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7478,7 +7478,7 @@ int MPI_Scatterv ( void *sendbuf, int *sendcnts, int *displs, MPI_Datatype sendt
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_SCATTER, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7516,7 +7516,7 @@ int MPI_Send ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, M
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_SEND, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7528,14 +7528,14 @@ int MPI_Send ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, M
 }
 
 
-int MPI_Send_init ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
+int MPI_Send_init ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Send_init(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
+   INFO(0, "MPI_Send_init(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *r=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), r);
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
@@ -7547,14 +7547,14 @@ int MPI_Send_init ( void *buf, int count, MPI_Datatype datatype, int dest, int t
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Send_init(buf, count, datatype, dest, tag, comm, request);
+   int error = IMPI_Send_init(buf, count, datatype, dest, tag, comm, r);
 #else
-   int error = PMPI_Send_init(buf, count, datatype, dest, tag, comm, request);
+   int error = PMPI_Send_init(buf, count, datatype, dest, tag, comm, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7593,7 +7593,7 @@ int MPI_Sendrecv ( void *sendbuf, int sendcount, MPI_Datatype sendtype, int dest
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_SEND_RECV, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7631,7 +7631,7 @@ int MPI_Sendrecv_replace ( void *buf, int count, MPI_Datatype datatype, int dest
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_SEND_RECV, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7669,7 +7669,7 @@ int MPI_Ssend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_SSEND, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7681,14 +7681,14 @@ int MPI_Ssend ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, 
 }
 
 
-int MPI_Ssend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *request )
+int MPI_Ssend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm, MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Ssend_init(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *request=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), request);
+   INFO(0, "MPI_Ssend_init(void *buf=%p, int count=%d, MPI_Datatype datatype=%s, int dest=%d, int tag=%d, MPI_Comm comm=%s, MPI_Request *r=%p)", buf, count, type_to_string(datatype), dest, tag, comm_to_string(comm), r);
 #endif // TRACE_CALLS
 
 #ifdef CATCH_DERIVED_TYPES
@@ -7700,14 +7700,14 @@ int MPI_Ssend_init ( void *buf, int count, MPI_Datatype datatype, int dest, int 
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Ssend_init(buf, count, datatype, dest, tag, comm, request);
+   int error = IMPI_Ssend_init(buf, count, datatype, dest, tag, comm, r);
 #else
-   int error = PMPI_Ssend_init(buf, count, datatype, dest, tag, comm, request);
+   int error = PMPI_Ssend_init(buf, count, datatype, dest, tag, comm, r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7741,7 +7741,7 @@ int MPI_Startall ( int count, MPI_Request array_of_requests[] )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7753,14 +7753,14 @@ int MPI_Startall ( int count, MPI_Request array_of_requests[] )
 }
 
 
-int MPI_Start ( MPI_Request *request )
+int MPI_Start ( MPI_Request *r )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Start(MPI_Request *request=%p)", request);
+   INFO(0, "MPI_Start(MPI_Request *r=%p)", r);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -7768,14 +7768,14 @@ int MPI_Start ( MPI_Request *request )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Start(request);
+   int error = IMPI_Start(r);
 #else
-   int error = PMPI_Start(request);
+   int error = PMPI_Start(r);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7809,7 +7809,7 @@ int MPI_Status_set_cancelled ( MPI_Status *status, int flag )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7847,7 +7847,7 @@ int MPI_Status_set_elements ( MPI_Status *status, MPI_Datatype datatype, int cou
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7881,7 +7881,7 @@ int MPI_Testall ( int count, MPI_Request array_of_requests[], int *flag, MPI_Sta
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7915,7 +7915,7 @@ int MPI_Testany ( int count, MPI_Request array_of_requests[], int *index, int *f
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7949,7 +7949,7 @@ int MPI_Test_cancelled ( MPI_Status *status, int *flag )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -7961,14 +7961,14 @@ int MPI_Test_cancelled ( MPI_Status *status, int *flag )
 }
 
 
-int MPI_Test ( MPI_Request *request, int *flag, MPI_Status *status )
+int MPI_Test ( MPI_Request *r, int *flag, MPI_Status *status )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Test(MPI_Request *request=%p, int *flag=%p, MPI_Status *status=%p)", request, flag, status);
+   INFO(0, "MPI_Test(MPI_Request *r=%p, int *flag=%p, MPI_Status *status=%p)", r, flag, status);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -7976,14 +7976,14 @@ int MPI_Test ( MPI_Request *request, int *flag, MPI_Status *status )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Test(request, flag, status);
+   int error = IMPI_Test(r, flag, status);
 #else
-   int error = PMPI_Test(request, flag, status);
+   int error = PMPI_Test(r, flag, status);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8017,7 +8017,7 @@ int MPI_Testsome ( int incount, MPI_Request array_of_requests[], int *outcount, 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8051,7 +8051,7 @@ int MPI_Topo_test ( MPI_Comm comm, int *topo_type )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8089,7 +8089,7 @@ int MPI_Type_commit ( MPI_Datatype *datatype )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8128,7 +8128,7 @@ int MPI_Type_contiguous ( int count, MPI_Datatype old_type, MPI_Datatype *new_ty
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8167,7 +8167,7 @@ int MPI_Type_create_darray ( int size, int rank, int ndims, int array_of_gsizes[
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8206,7 +8206,7 @@ int MPI_Type_create_hindexed ( int count, int blocklengths[], MPI_Aint displacem
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8245,7 +8245,7 @@ int MPI_Type_create_hvector ( int count, int blocklength, MPI_Aint stride, MPI_D
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8284,7 +8284,7 @@ int MPI_Type_create_indexed_block ( int count, int blocklength, int array_of_dis
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8318,7 +8318,7 @@ int MPI_Type_create_keyval ( MPI_Type_copy_attr_function *type_copy_attr_fn, MPI
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8357,7 +8357,7 @@ int MPI_Type_create_resized ( MPI_Datatype oldtype, MPI_Aint lb, MPI_Aint extent
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8396,7 +8396,7 @@ int MPI_Type_create_struct ( int count, int array_of_blocklengths[], MPI_Aint ar
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8435,7 +8435,7 @@ int MPI_Type_create_subarray ( int ndims, int array_of_sizes[], int array_of_sub
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8473,7 +8473,7 @@ int MPI_Type_delete_attr ( MPI_Datatype type, int type_keyval )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8512,7 +8512,7 @@ int MPI_Type_dup ( MPI_Datatype datatype, MPI_Datatype *newtype )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8550,7 +8550,7 @@ int MPI_Type_extent ( MPI_Datatype datatype, MPI_Aint *extent )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8588,7 +8588,7 @@ int MPI_Type_free ( MPI_Datatype *datatype )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8622,7 +8622,7 @@ int MPI_Type_free_keyval ( int *type_keyval )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8660,7 +8660,7 @@ int MPI_Type_get_attr ( MPI_Datatype type, int type_keyval, void *attribute_val,
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8699,7 +8699,7 @@ int MPI_Type_get_contents ( MPI_Datatype datatype, int max_integers, int max_add
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8737,7 +8737,7 @@ int MPI_Type_get_envelope ( MPI_Datatype datatype, int *num_integers, int *num_a
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8775,7 +8775,7 @@ int MPI_Type_get_extent ( MPI_Datatype datatype, MPI_Aint *lb, MPI_Aint *extent 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8813,7 +8813,7 @@ int MPI_Type_get_name ( MPI_Datatype datatype, char *type_name, int *resultlen )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8851,7 +8851,7 @@ int MPI_Type_get_true_extent ( MPI_Datatype datatype, MPI_Aint *true_lb, MPI_Ain
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8890,7 +8890,7 @@ int MPI_Type_hindexed ( int count, int blocklens[], MPI_Aint indices[], MPI_Data
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8929,7 +8929,7 @@ int MPI_Type_hvector ( int count, int blocklen, MPI_Aint stride, MPI_Datatype ol
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -8968,7 +8968,7 @@ int MPI_Type_indexed ( int count, int blocklens[], int indices[], MPI_Datatype o
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9006,7 +9006,7 @@ int MPI_Type_lb ( MPI_Datatype datatype, MPI_Aint *displacement )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9044,7 +9044,7 @@ int MPI_Type_match_size ( int typeclass, int size, MPI_Datatype *datatype )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9082,7 +9082,7 @@ int MPI_Type_set_attr ( MPI_Datatype type, int type_keyval, void *attribute_val 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9120,7 +9120,7 @@ int MPI_Type_set_name ( MPI_Datatype type, char *type_name )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9158,7 +9158,7 @@ int MPI_Type_size ( MPI_Datatype datatype, int *size )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9197,7 +9197,7 @@ int MPI_Type_struct ( int count, int blocklens[], MPI_Aint indices[], MPI_Dataty
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9235,7 +9235,7 @@ int MPI_Type_ub ( MPI_Datatype datatype, MPI_Aint *displacement )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9274,7 +9274,7 @@ int MPI_Type_vector ( int count, int blocklength, int stride, MPI_Datatype old_t
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9312,7 +9312,7 @@ int MPI_Unpack_external ( char *datarep, void *inbuf, MPI_Aint insize, MPI_Aint 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9350,7 +9350,7 @@ int MPI_Unpack ( void *inbuf, int insize, int *position, void *outbuf, int outco
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9384,7 +9384,7 @@ int MPI_Unpublish_name ( char *service_name, MPI_Info info, char *port_name )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9418,7 +9418,7 @@ int MPI_Waitall ( int count, MPI_Request array_of_requests[], MPI_Status array_o
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9452,7 +9452,7 @@ int MPI_Waitany ( int count, MPI_Request array_of_requests[], int *index, MPI_St
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9464,14 +9464,14 @@ int MPI_Waitany ( int count, MPI_Request array_of_requests[], int *index, MPI_St
 }
 
 
-int MPI_Wait ( MPI_Request *request, MPI_Status *status )
+int MPI_Wait ( MPI_Request *r, MPI_Status *status )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Wait(MPI_Request *request=%p, MPI_Status *status=%p)", request, status);
+   INFO(0, "MPI_Wait(MPI_Request *r=%p, MPI_Status *status=%p)", r, status);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -9479,14 +9479,14 @@ int MPI_Wait ( MPI_Request *request, MPI_Status *status )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Wait(request, status);
+   int error = IMPI_Wait(r, status);
 #else
-   int error = PMPI_Wait(request, status);
+   int error = PMPI_Wait(r, status);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9520,7 +9520,7 @@ int MPI_Waitsome ( int incount, MPI_Request array_of_requests[], int *outcount, 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9554,7 +9554,7 @@ int MPI_Win_call_errhandler ( MPI_Win win, int errorcode )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9588,7 +9588,7 @@ int MPI_Win_complete ( MPI_Win win )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9622,7 +9622,7 @@ int MPI_Win_create_errhandler ( MPI_Win_errhandler_fn *function, MPI_Errhandler 
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9656,7 +9656,7 @@ int MPI_Win_create ( void *base, MPI_Aint size, int disp_unit, MPI_Info info, MP
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9690,7 +9690,7 @@ int MPI_Win_create_keyval ( MPI_Win_copy_attr_function *win_copy_attr_fn, MPI_Wi
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9724,7 +9724,7 @@ int MPI_Win_delete_attr ( MPI_Win win, int win_keyval )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9758,7 +9758,7 @@ int MPI_Win_fence ( int assert, MPI_Win win )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9792,7 +9792,7 @@ int MPI_Win_free ( MPI_Win *win )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9826,7 +9826,7 @@ int MPI_Win_free_keyval ( int *win_keyval )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9860,7 +9860,7 @@ int MPI_Win_get_attr ( MPI_Win win, int win_keyval, void *attribute_val, int *fl
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9894,7 +9894,7 @@ int MPI_Win_get_errhandler ( MPI_Win win, MPI_Errhandler *errhandler )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9906,14 +9906,14 @@ int MPI_Win_get_errhandler ( MPI_Win win, MPI_Errhandler *errhandler )
 }
 
 
-int MPI_Win_get_group ( MPI_Win win, MPI_Group *group )
+int MPI_Win_get_group ( MPI_Win win, MPI_Group *g )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Win_get_group(MPI_Win win=%s, MPI_Group *group=%p)", win_to_string(win), group);
+   INFO(0, "MPI_Win_get_group(MPI_Win win=%s, MPI_Group *g=%p)", win_to_string(win), g);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -9921,14 +9921,14 @@ int MPI_Win_get_group ( MPI_Win win, MPI_Group *group )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Win_get_group(win, group);
+   int error = IMPI_Win_get_group(win, g);
 #else
-   int error = PMPI_Win_get_group(win, group);
+   int error = PMPI_Win_get_group(win, g);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9962,7 +9962,7 @@ int MPI_Win_get_name ( MPI_Win win, char *win_name, int *resultlen )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9996,7 +9996,7 @@ int MPI_Win_lock ( int lock_type, int rank, int assert, MPI_Win win )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -10008,14 +10008,14 @@ int MPI_Win_lock ( int lock_type, int rank, int assert, MPI_Win win )
 }
 
 
-int MPI_Win_post ( MPI_Group group, int assert, MPI_Win win )
+int MPI_Win_post ( MPI_Group g, int assert, MPI_Win win )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Win_post(MPI_Group group=%s, int assert=%d, MPI_Win win=%s)", group_to_string(group), assert, win_to_string(win));
+   INFO(0, "MPI_Win_post(MPI_Group g=%s, int assert=%d, MPI_Win win=%s)", group_to_string(g), assert, win_to_string(win));
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -10023,14 +10023,14 @@ int MPI_Win_post ( MPI_Group group, int assert, MPI_Win win )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Win_post(group, assert, win);
+   int error = IMPI_Win_post(g, assert, win);
 #else
-   int error = PMPI_Win_post(group, assert, win);
+   int error = PMPI_Win_post(g, assert, win);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -10064,7 +10064,7 @@ int MPI_Win_set_attr ( MPI_Win win, int win_keyval, void *attribute_val )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -10098,7 +10098,7 @@ int MPI_Win_set_errhandler ( MPI_Win win, MPI_Errhandler errhandler )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -10132,7 +10132,7 @@ int MPI_Win_set_name ( MPI_Win win, char *win_name )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -10144,14 +10144,14 @@ int MPI_Win_set_name ( MPI_Win win, char *win_name )
 }
 
 
-int MPI_Win_start ( MPI_Group group, int assert, MPI_Win win )
+int MPI_Win_start ( MPI_Group g, int assert, MPI_Win win )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Win_start(MPI_Group group=%s, int assert=%d, MPI_Win win=%s)", group_to_string(group), assert, win_to_string(win));
+   INFO(0, "MPI_Win_start(MPI_Group g=%s, int assert=%d, MPI_Win win=%s)", group_to_string(g), assert, win_to_string(win));
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -10159,14 +10159,14 @@ int MPI_Win_start ( MPI_Group group, int assert, MPI_Win win )
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Win_start(group, assert, win);
+   int error = IMPI_Win_start(g, assert, win);
 #else
-   int error = PMPI_Win_start(group, assert, win);
+   int error = PMPI_Win_start(g, assert, win);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -10200,7 +10200,7 @@ int MPI_Win_test ( MPI_Win win, int *flag )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -10234,7 +10234,7 @@ int MPI_Win_unlock ( int rank, MPI_Win win )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -10268,7 +10268,7 @@ int MPI_Win_wait ( MPI_Win win )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -10279,14 +10279,15 @@ int MPI_Win_wait ( MPI_Win win )
    return error;
 }
 
-int MPI_Group_comm_create ( MPI_Comm old_comm, MPI_Group group, int tag, MPI_Comm *new_comm )
+
+int MPI_Group_comm_create ( MPI_Comm old_comm, MPI_Group g, int tag, MPI_Comm *new_comm )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
-   INFO(0, "MPI_Group_comm_create(MPI_Comm old_comm=%s, MPI_Group group=%s, int tag=%d, MPI_Comm *new_comm=%p)", comm_to_string(old_comm), group_to_string(group), tag, new_comm);
+   INFO(0, "MPI_Group_comm_create(MPI_Comm old_comm=%s, MPI_Group g=%s, int tag=%d, MPI_Comm *new_comm=%p)", comm_to_string(old_comm), group_to_string(g), tag, new_comm);
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
@@ -10294,14 +10295,14 @@ int MPI_Group_comm_create ( MPI_Comm old_comm, MPI_Group group, int tag, MPI_Com
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
-   int error = IMPI_Group_comm_create(old_comm, group, tag, new_comm);
+   int error = IMPI_Group_comm_create(old_comm, g, tag, new_comm);
 #else
-   int error = PMPI_Group_comm_create(old_comm, group, tag, new_comm);
+   int error = PMPI_Group_comm_create(old_comm, g, tag, new_comm);
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -10310,105 +10311,6 @@ int MPI_Group_comm_create ( MPI_Comm old_comm, MPI_Group group, int tag, MPI_Com
    }
 #endif // TRACE_ERRORS
    return error;
-}
-
-
-MPI_Fint MPI_Comm_c2f ( MPI_Comm comm )
-{
-#ifdef IBIS_INTERCEPT
-   return IMPI_Comm_c2f(comm);
-#else
-   return PMPI_Comm_c2f(comm);
-#endif // IBIS_INTERCEPT
-
-}
-
-
-MPI_Fint MPI_Group_c2f ( MPI_Group g )
-{
-#ifdef IBIS_INTERCEPT
-   return IMPI_Group_c2f(g);
-#else
-   return PMPI_Group_c2f(g);
-#endif // IBIS_INTERCEPT
-
-}
-
-
-MPI_Fint MPI_Request_c2f ( MPI_Request request )
-{
-#ifdef IBIS_INTERCEPT
-   return IMPI_Request_c2f(request);
-#else
-   return PMPI_Request_c2f(request);
-#endif // IBIS_INTERCEPT
-
-}
-
-
-MPI_Fint MPI_Info_c2f ( MPI_Info info )
-{
-#ifdef IBIS_INTERCEPT
-   return IMPI_Info_c2f(info);
-#else
-   return PMPI_Info_c2f(info);
-#endif // IBIS_INTERCEPT
-
-}
-
-
-MPI_Fint MPI_File_c2f ( MPI_File file )
-{
-#ifdef IBIS_INTERCEPT
-   return IMPI_File_c2f(file);
-#else
-   return PMPI_File_c2f(file);
-#endif // IBIS_INTERCEPT
-
-}
-
-
-MPI_Fint MPI_Op_c2f ( MPI_Op op )
-{
-#ifdef IBIS_INTERCEPT
-   return IMPI_Op_c2f(op);
-#else
-   return PMPI_Op_c2f(op);
-#endif // IBIS_INTERCEPT
-
-}
-
-
-MPI_Fint MPI_Win_c2f ( MPI_Win Win )
-{
-#ifdef IBIS_INTERCEPT
-   return IMPI_Win_c2f(Win);
-#else
-   return PMPI_Win_c2f(Win);
-#endif // IBIS_INTERCEPT
-
-}
-
-
-MPI_Fint MPI_Errhandler_c2f ( MPI_Errhandler Errhandler )
-{
-#ifdef IBIS_INTERCEPT
-   return IMPI_Errhandler_c2f(Errhandler);
-#else
-   return PMPI_Errhandler_c2f(Errhandler);
-#endif // IBIS_INTERCEPT
-
-}
-
-
-MPI_Fint MPI_Type_c2f ( MPI_Datatype Type )
-{
-#ifdef IBIS_INTERCEPT
-   return IMPI_Type_c2f(Type);
-#else
-   return PMPI_Type_c2f(Type);
-#endif // IBIS_INTERCEPT
-
 }
 
 
@@ -10434,12 +10336,12 @@ MPI_Group MPI_Group_f2c ( MPI_Fint g )
 }
 
 
-MPI_Request MPI_Request_f2c ( MPI_Fint request )
+MPI_Request MPI_Request_f2c ( MPI_Fint r )
 {
 #ifdef IBIS_INTERCEPT
-   return IMPI_Request_f2c(request);
+   return IMPI_Request_f2c(r);
 #else
-   return PMPI_Request_f2c(request);
+   return PMPI_Request_f2c(r);
 #endif // IBIS_INTERCEPT
 
 }
@@ -10506,6 +10408,105 @@ MPI_Datatype MPI_Type_f2c ( MPI_Fint Type )
    return IMPI_Type_f2c(Type);
 #else
    return PMPI_Type_f2c(Type);
+#endif // IBIS_INTERCEPT
+
+}
+
+
+MPI_Fint MPI_Comm_c2f ( MPI_Comm comm )
+{
+#ifdef IBIS_INTERCEPT
+   return IMPI_Comm_c2f(comm);
+#else
+   return PMPI_Comm_c2f(comm);
+#endif // IBIS_INTERCEPT
+
+}
+
+
+MPI_Fint MPI_Group_c2f ( MPI_Group g )
+{
+#ifdef IBIS_INTERCEPT
+   return IMPI_Group_c2f(g);
+#else
+   return PMPI_Group_c2f(g);
+#endif // IBIS_INTERCEPT
+
+}
+
+
+MPI_Fint MPI_Request_c2f ( MPI_Request r )
+{
+#ifdef IBIS_INTERCEPT
+   return IMPI_Request_c2f(r);
+#else
+   return PMPI_Request_c2f(r);
+#endif // IBIS_INTERCEPT
+
+}
+
+
+MPI_Fint MPI_Info_c2f ( MPI_Info info )
+{
+#ifdef IBIS_INTERCEPT
+   return IMPI_Info_c2f(info);
+#else
+   return PMPI_Info_c2f(info);
+#endif // IBIS_INTERCEPT
+
+}
+
+
+MPI_Fint MPI_File_c2f ( MPI_File file )
+{
+#ifdef IBIS_INTERCEPT
+   return IMPI_File_c2f(file);
+#else
+   return PMPI_File_c2f(file);
+#endif // IBIS_INTERCEPT
+
+}
+
+
+MPI_Fint MPI_Op_c2f ( MPI_Op op )
+{
+#ifdef IBIS_INTERCEPT
+   return IMPI_Op_c2f(op);
+#else
+   return PMPI_Op_c2f(op);
+#endif // IBIS_INTERCEPT
+
+}
+
+
+MPI_Fint MPI_Win_c2f ( MPI_Win Win )
+{
+#ifdef IBIS_INTERCEPT
+   return IMPI_Win_c2f(Win);
+#else
+   return PMPI_Win_c2f(Win);
+#endif // IBIS_INTERCEPT
+
+}
+
+
+MPI_Fint MPI_Errhandler_c2f ( MPI_Errhandler Errhandler )
+{
+#ifdef IBIS_INTERCEPT
+   return IMPI_Errhandler_c2f(Errhandler);
+#else
+   return PMPI_Errhandler_c2f(Errhandler);
+#endif // IBIS_INTERCEPT
+
+}
+
+
+MPI_Fint MPI_Type_c2f ( MPI_Datatype Type )
+{
+#ifdef IBIS_INTERCEPT
+   return IMPI_Type_c2f(Type);
+#else
+   return PMPI_Type_c2f(Type);
 #endif // IBIS_INTERCEPT
 
 }

@@ -13,20 +13,32 @@
 #include "profiling.h"
 
 static char *statistic_names[STATS_TOTAL+1] = {
-   STATS_NAME_BARRIER,
-   STATS_NAME_SEND,
-   STATS_NAME_RECV,
-   STATS_NAME_ISEND,
-   STATS_NAME_IRECV,
-   STATS_NAME_BCAST,
-   STATS_NAME_SCATTER,
-   STATS_NAME_GATHER,
-   STATS_NAME_ALLGATHER,
-   STATS_NAME_ALLTOALL,
-   STATS_NAME_REDUCE,
-   STATS_NAME_ALLREDUCE,
-   STATS_NAME_SCAN,
-   STATS_NAME_TOTAL
+STATS_NAME_BARRIER,
+STATS_NAME_SEND,
+STATS_NAME_RSEND,
+STATS_NAME_BSEND,
+STATS_NAME_SSEND,
+STATS_NAME_ISEND,
+STATS_NAME_IRSEND,
+STATS_NAME_IBSEND,
+STATS_NAME_ISSEND,
+STATS_NAME_RECV,
+STATS_NAME_IRECV,
+STATS_NAME_SEND_RECV,
+STATS_NAME_PROBE,
+STATS_NAME_IPROBE,
+STATS_NAME_BCAST,
+STATS_NAME_SCATTER,
+STATS_NAME_GATHER,
+STATS_NAME_ALLGATHER,
+STATS_NAME_ALLTOALL,
+STATS_NAME_REDUCE,
+STATS_NAME_ALLREDUCE,
+STATS_NAME_REDUCE_SCATTER,
+STATS_NAME_SCAN,
+STATS_NAME_EXSCAN,
+STATS_NAME_MISC,
+STATS_NAME_TOTAL
 };
 
 static uint32_t *total_use[MAX_COMMUNICATORS];
@@ -171,8 +183,8 @@ void profile_print_all_statistics()
 
          printf("  Communicator %d ", i);
 
-         for (j=0;j<STATS_TOTAL;j++) {
-            printf("%s %ld %d", statistic_names[j], total_ticks[i][j], total_use[i][j]);
+         for (j=0;j<STATS_TOTAL+1;j++) {
+            printf("%s %ld %d ", statistic_names[j], total_ticks[i][j], total_use[i][j]);
          }
 
          printf("\n");
