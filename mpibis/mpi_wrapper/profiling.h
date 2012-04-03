@@ -29,8 +29,19 @@
 #define STATS_REDUCE_SCATTER 21
 #define STATS_SCAN           22
 #define STATS_EXSCAN         23
-#define STATS_MISC           24
-#define STATS_TOTAL          25
+
+#define STATS_WAIT           23
+#define STATS_WAITALL        24
+#define STATS_WAITANY        25
+#define STATS_WAITSOME       26
+
+#define STATS_TEST           27
+#define STATS_TESTALL        28
+#define STATS_TESTANY        29
+#define STATS_TESTSOME       30
+
+#define STATS_MISC           31
+#define STATS_TOTAL          32
 
 #define STATS_NAME_BARRIER        "barrier"
 #define STATS_NAME_SEND           "send"
@@ -56,6 +67,14 @@
 #define STATS_NAME_REDUCE_SCATTER "reduce_scatter"
 #define STATS_NAME_SCAN           "scan"
 #define STATS_NAME_EXSCAN         "exscan"
+#define STATS_NAME_WAIT           "wait"
+#define STATS_NAME_WAITALL        "waitall"
+#define STATS_NAME_WAITANY        "waitany"
+#define STATS_NAME_WAITSOME       "waitsome"
+#define STATS_NAME_TEST           "test"
+#define STATS_NAME_TESTALL        "testall"
+#define STATS_NAME_TESTANY        "testany"
+#define STATS_NAME_TESTSOME       "testsome"
 #define STATS_NAME_MISC           "misc"
 #define STATS_NAME_TOTAL          "total"
 
