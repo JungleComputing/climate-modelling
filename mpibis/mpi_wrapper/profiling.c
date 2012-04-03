@@ -155,7 +155,7 @@ void profile_finalize()
 
 void profile_add_statistics(MPI_Comm comm, int field, uint64_t ticks)
 {
-   int i, index;
+   int index;
 
    if (running != 1) {
       WARN(1, "Profiling not running!");
