@@ -148,17 +148,9 @@ int MPI_Type_create_f90_real ( int p, int r, MPI_Datatype *newtype )
 
 int MPI_Abort ( MPI_Comm comm, int errorcode )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif // PROFILE_LEVEL
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Abort(MPI_Comm comm=%s, int errorcode=%d)", comm_to_string(comm), errorcode);
 #endif // TRACE_CALLS
-
-#if PROFILE_LEVEL > 0
-   profile_start = profile_start_ticks();
-#endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Abort(comm, errorcode);
@@ -167,8 +159,6 @@ int MPI_Abort ( MPI_Comm comm, int errorcode )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_stop_ticks();
-   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
    profile_finalize();
 #endif // PROFILE_LEVEL
 
@@ -4695,17 +4685,9 @@ int MPI_Finalized ( int *flag )
 
 int MPI_Finalize (  )
 {
-#if PROFILE_LEVEL > 0
-   uint64_t profile_start, profile_end;
-#endif // PROFILE_LEVEL
-
 #ifdef TRACE_CALLS
    INFO(0, "MPI_Finalize()");
 #endif // TRACE_CALLS
-
-#if PROFILE_LEVEL > 0
-   profile_start = profile_start_ticks();
-#endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
    int error = IMPI_Finalize();
@@ -4714,8 +4696,6 @@ int MPI_Finalize (  )
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
-   profile_end = profile_stop_ticks();
-   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
    profile_finalize();
 #endif // PROFILE_LEVEL
 
