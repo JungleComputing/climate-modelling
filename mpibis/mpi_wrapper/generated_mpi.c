@@ -2300,7 +2300,7 @@ int MPI_Dims_create ( int nnodes, int ndims, int *dims )
    return error;
 }
 
-
+/*
 int MPI_Dist_graph_create_adjacent ( MPI_Comm comm_old, int indegree, int sources[], int sourceweights[], int outdegree, int destinations[], int destweights[], MPI_Info info, int reorder, MPI_Comm *comm_dist_graph )
 {
 #if PROFILE_LEVEL > 0
@@ -2333,8 +2333,8 @@ int MPI_Dist_graph_create_adjacent ( MPI_Comm comm_old, int indegree, int source
 #endif // TRACE_ERRORS
    return error;
 }
-
-
+*/
+/*
 int MPI_Dist_graph_create ( MPI_Comm comm_old, int n, int sources[], int degrees[], int destinations[], int weights[], MPI_Info info, int reorder, MPI_Comm *comm_dist_graph )
 {
 #if PROFILE_LEVEL > 0
@@ -2367,8 +2367,8 @@ int MPI_Dist_graph_create ( MPI_Comm comm_old, int n, int sources[], int degrees
 #endif // TRACE_ERRORS
    return error;
 }
-
-
+*/
+/*
 int MPI_Dist_graph_neighbors_count ( MPI_Comm comm, int *indegree, int *outdegree, int *weighted )
 {
 #if PROFILE_LEVEL > 0
@@ -2401,8 +2401,8 @@ int MPI_Dist_graph_neighbors_count ( MPI_Comm comm, int *indegree, int *outdegre
 #endif // TRACE_ERRORS
    return error;
 }
-
-
+*/
+/*
 int MPI_Dist_graph_neighbors ( MPI_Comm comm, int maxindegree, int sources[], int sourceweights[], int maxoutdegree, int destinations[], int destweights[] )
 {
 #if PROFILE_LEVEL > 0
@@ -2435,7 +2435,7 @@ int MPI_Dist_graph_neighbors ( MPI_Comm comm, int maxindegree, int sources[], in
 #endif // TRACE_ERRORS
    return error;
 }
-
+*/
 
 int MPI_Errhandler_create ( MPI_Handler_function *function, MPI_Errhandler *errhandler )
 {
@@ -6538,7 +6538,7 @@ int MPI_Lookup_name ( char *service_name, MPI_Info info, char *port_name )
    return error;
 }
 
-
+/*
 int MPI_Op_commutative ( MPI_Op op, int *commute )
 {
 #if PROFILE_LEVEL > 0
@@ -6571,7 +6571,7 @@ int MPI_Op_commutative ( MPI_Op op, int *commute )
 #endif // TRACE_ERRORS
    return error;
 }
-
+*/
 
 int MPI_Op_create ( MPI_User_function *function, int commute, MPI_Op *op )
 {
@@ -7081,7 +7081,7 @@ int MPI_Reduce ( void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype,
    return error;
 }
 
-
+/*
 int MPI_Reduce_local ( void *inbuf, void *inoutbuf, int count, MPI_Datatype datatype, MPI_Op op )
 {
 #if PROFILE_LEVEL > 0
@@ -7118,8 +7118,8 @@ int MPI_Reduce_local ( void *inbuf, void *inoutbuf, int count, MPI_Datatype data
 #endif // TRACE_ERRORS
    return error;
 }
-
-
+*/
+/*
 int MPI_Reduce_scatter_block ( void *sendbuf, void *recvbuf, int recvcount, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
 {
 #if PROFILE_LEVEL > 0
@@ -7156,7 +7156,7 @@ int MPI_Reduce_scatter_block ( void *sendbuf, void *recvbuf, int recvcount, MPI_
 #endif // TRACE_ERRORS
    return error;
 }
-
+*/
 
 int MPI_Reduce_scatter ( void *sendbuf, void *recvbuf, int *recvcnts, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm )
 {
@@ -10279,7 +10279,7 @@ int MPI_Win_wait ( MPI_Win win )
    return error;
 }
 
-
+/*
 int MPI_Group_comm_create ( MPI_Comm old_comm, MPI_Group g, int tag, MPI_Comm *new_comm )
 {
 #if PROFILE_LEVEL > 0
@@ -10312,7 +10312,7 @@ int MPI_Group_comm_create ( MPI_Comm old_comm, MPI_Group g, int tag, MPI_Comm *n
 #endif // TRACE_ERRORS
    return error;
 }
-
+*/
 
 MPI_Comm MPI_Comm_f2c ( MPI_Fint comm )
 {
