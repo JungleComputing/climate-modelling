@@ -1031,7 +1031,7 @@ int MPI_Cart_create ( MPI_Comm comm_old, int ndims, int *dims, int *periods, int
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm_old, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1133,7 +1133,7 @@ int MPI_Cart_map ( MPI_Comm comm_old, int ndims, int *dims, int *periods, int *n
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm_old, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1371,7 +1371,7 @@ int MPI_Comm_compare ( MPI_Comm comm1, MPI_Comm comm2, int *result )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm1, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1575,7 +1575,7 @@ int MPI_Comm_disconnect ( MPI_Comm *comm )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1643,7 +1643,7 @@ int MPI_Comm_free ( MPI_Comm *comm )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1813,7 +1813,7 @@ int MPI_Comm_get_parent ( MPI_Comm *parent )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -1881,7 +1881,7 @@ int MPI_Comm_join ( int fd, MPI_Comm *intercomm )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(MPI_COMM_SELF, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2323,7 +2323,7 @@ int MPI_Dist_graph_create_adjacent ( MPI_Comm comm_old, int indegree, int source
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm_old, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -2357,7 +2357,7 @@ int MPI_Dist_graph_create ( MPI_Comm comm_old, int n, int sources[], int degrees
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm_old, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5079,7 +5079,7 @@ int MPI_Graph_create ( MPI_Comm comm_old, int nnodes, int *indx, int *edges, int
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm_old, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -5181,7 +5181,7 @@ int MPI_Graph_map ( MPI_Comm comm_old, int nnodes, int *indx, int *edges, int *n
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(comm_old, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6171,7 +6171,7 @@ int MPI_Intercomm_create ( MPI_Comm local_comm, int local_leader, MPI_Comm peer_
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(local_comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -6205,7 +6205,7 @@ int MPI_Intercomm_merge ( MPI_Comm intercomm, int high, MPI_Comm *newintracomm )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(intercomm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -10302,7 +10302,7 @@ int MPI_Group_comm_create ( MPI_Comm old_comm, MPI_Group g, int tag, MPI_Comm *n
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-   profile_add_statistics(comm, STATS_MISC, profile_end-profile_start);
+   profile_add_statistics(old_comm, STATS_MISC, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
