@@ -311,19 +311,19 @@ void dump_profile_info_()
 
 void dump_profile_info()
 {
-   int error;
+//   int error;
 
    if (running != 1) {
       WARN(1, "Profiling not running!");
       return;
    }
 
-   error = MPI_Barrier(profile_comm);
+//   error = MPI_Barrier(profile_comm);
 
-   if (error != MPI_SUCCESS) {
-      ERROR(1, "Barrier failed");
-      return;
-   }
+//   if (error != MPI_SUCCESS) {
+//      ERROR(1, "Barrier failed");
+//      return;
+//   }
 
    print_and_reset_current_interval();
 }
