@@ -152,4 +152,9 @@ int request_completed(request *r)
    return (r->flags & REQUEST_FLAG_COMPLETED);
 }
 
+MPI_Comm request_get_mpi_comm(request *r)
+{
+   return r->c->comm;
+}
+
 #endif // IBIS_INTERCEPT

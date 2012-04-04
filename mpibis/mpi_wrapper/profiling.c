@@ -139,17 +139,42 @@ static void print_and_reset_current_interval()
 void profile_finalize()
 {
    uint64_t end_ticks;
+   int i, j;
+   uint64_t ticks = 0;
+   uint32_t use = 0;
 
    if (running != 1) {
       WARN(1, "Profiling not running!");
       return;
    }
 
-   print_and_reset_current_interval();
-
    end_ticks = profile_stop_ticks();
 
-   printf("Total profiled ticks: %ld\n", end_ticks-start_ticks);
+   printf("Statistics for entire application (total intervals %d)\n", current_interval);
+
+   for (i=0;i<MAX_COMMUNICATORS;i++) {
+      if (current_ticks[i] != NULL) {
+
+         for (j=0;j<STATS_TOTAL+1;j++) {
+            total_ticks[i][j] += current_ticks[i][j];
+            total_use[i][j]   += current_use[i][j];
+         }
+
+         printf("  Communicator %d ", i);
+
+         for (j=0;j<STATS_TOTAL+1;j++) {
+            printf("%s %ld %d ", statistic_names[j], total_ticks[i][j], total_use[i][j]);
+
+         }
+
+         printf("\n");
+
+         ticks += total_ticks[i][STATS_TOTAL];
+         use += total_use[i][STATS_TOTAL];
+      }
+   }
+
+   printf("Total profiled ticks in %d intervals - total: %ld mpi: %ld calls: %d\n", current_interval, end_ticks-start_ticks, ticks, use);
 
    INFO(1, "Profiling done!");
 }
