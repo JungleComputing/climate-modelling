@@ -1422,6 +1422,10 @@ subroutine ccsm_run()
 
    do while ( .not. stop_alarm)
 
+! ADDED -- JASON
+      call dump_profile_info()
+! END ADDED -- JASON
+
       call t_startf('DRIVER_RUN_LOOP')
       call t_drvstartf ('DRIVER_CLOCK_ADVANCE',cplrun=.true.)
 
@@ -1460,9 +1464,9 @@ subroutine ccsm_run()
       if (tod == 0) t24hr_alarm = .true.
 
 ! ADDED -- JASON
-      if (tod == 0) then
-          call dump_profile_info()
-      endif
+!      if (tod == 0) then
+!          call dump_profile_info()
+!      endif
 ! END ADDED -- JASON
 
       call seq_infodata_putData(infodata, glcrun_alarm=glcrun_alarm)
