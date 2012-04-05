@@ -282,7 +282,7 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "Process %d of %d on %s\n", rank, size, processor_name);
 
-    for (i=16;i<(32*1024)+1);i=i*2) {
+    for (i=16;i<((32*1024)+1);i=i*2) {
        runtest0(i, rank, size);
     }
 
