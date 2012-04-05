@@ -55,6 +55,14 @@
 #define DEBUG(indent, message, ...)
 #endif
 
+
+// Define macro to print debug
+#if VERBOSE > 1
+#define STACKTRACE(indent, message, ...) XSTACKTRACE(indent, "STACKTRACE", __FUNCTION__, __FILE__, __LINE__, message, ##__VA_ARGS__)
+#else
+#define STACKTRACE(indent, message, ...)
+#endif
+
 void init_debug();
 
 char *comm_to_string(MPI_Comm comm);
@@ -79,6 +87,7 @@ char *group_to_string(MPI_Group g);
 // New format...
 void XERROR(int indent, int fatal, const char *header, const char *func, const char *file, const int line, const char *fmt, ...);
 void XLOG(int indent, int verbose, const char *header, const char *func, const char *file, const int line, const char *fmt, ...);
+void XSTACKTRACE(int indent, const char *header, const char *func, const char *file, const int line, const char *fmt, ...);
 
 #endif // _LOGGING_H_
 

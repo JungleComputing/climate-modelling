@@ -397,4 +397,29 @@ void XLOG(int indent, int verbose, const char *header, const char *func, const c
    va_end(argp);
 }
 
+void XSTACKTRACE(int indent, const char *header, const char *func, const char *file, const int line, const char *fmt, ...)
+{
+   size_t size;
+   void *array[PRINT_STACK_TRACE];
+   int *ptr;
+   va_list argp;
+
+   va_start(argp, fmt);
+
+   if (indent < 0) {
+      indent = 0;
+   } else if (indent > 9) {
+      indent = 9;
+   }
+
+   fprintf(stderr, "%s%s %s : ", indents[indent], header, func);
+   vfprintf(stderr, fmt, argp);
+   fprintf(stderr, " (at %s:%d)\n", file, line);
+
+   va_end(argp);
+
+   size = backtrace(array, 5);
+   backtrace_symbols_fd(array, size, 2);
+}
+
 #endif // ENABLE_INTERCEPT
