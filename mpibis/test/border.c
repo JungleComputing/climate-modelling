@@ -9,7 +9,7 @@
 
 int main(int argc, char *argv[])
 {
-    int  namelen, rank, size, i, j, error;
+    int  namelen, rank, size, i, j, error, prev, next;
     char processor_name[MPI_MAX_PROCESSOR_NAME];
 
     double start, end;
@@ -41,62 +41,67 @@ int main(int argc, char *argv[])
     sreq[0] = MPI_REQUEST_NULL;
     sreq[1] = MPI_REQUEST_NULL;
 
+    next = rank+1;
+
+    if (next == size) {
+       next = 0;
+    }
+
+    prev = rank-1;
+
+    if (prev == -1) {
+       prev = size-1;
+    }
+
     for (i=0;i<COUNT;i++) {
+
 
        start = MPI_Wtime();
 
        for (j=0;j<REPEAT;j++) {
 
            // Handle prev
-           if (rank > 0) {
-               error = MPI_Irecv(rbuf, DATA_COUNT, MPI_DOUBLE, rank-1, 0, MPI_COMM_WORLD, &rreq[0]);
+           error = MPI_Irecv(rbuf, DATA_COUNT, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, &rreq[0]);
 
-               if (error != MPI_SUCCESS) {
-                  fprintf(stderr, "Irecv failed (1)! %d\n", error);
-                  return 1;
-               }
+           if (error != MPI_SUCCESS) {
+              fprintf(stderr, "Irecv failed (1)! %d\n", error);
+              return 1;
+           }
 
-               error = MPI_Isend(sbuf, DATA_COUNT, MPI_DOUBLE, rank-1, 0, MPI_COMM_WORLD, &sreq[0]);
+           error = MPI_Isend(sbuf, DATA_COUNT, MPI_DOUBLE, prev, 1, MPI_COMM_WORLD, &sreq[0]);
 
-               if (error != MPI_SUCCESS) {
-                  fprintf(stderr, "Irecv failed (1)! %d\n", error);
-                  return 1;
-               }
+           if (error != MPI_SUCCESS) {
+              fprintf(stderr, "Irecv failed (1)! %d\n", error);
+              return 1;
            }
 
            // Handle next
-           if (rank < size-1) {
-               error = MPI_Irecv(rbuf, DATA_COUNT, MPI_DOUBLE, rank+1, 0, MPI_COMM_WORLD, &rreq[1]);
+           error = MPI_Irecv(rbuf, DATA_COUNT, MPI_DOUBLE, next, 1, MPI_COMM_WORLD, &rreq[1]);
 
-               if (error != MPI_SUCCESS) {
-                  fprintf(stderr, "Irecv failed (2)! %d\n", error);
-                  return 1;
-               }
-
-               error = MPI_Isend(sbuf, DATA_COUNT, MPI_DOUBLE, rank+1, 0, MPI_COMM_WORLD, &sreq[1]);
-
-               if (error != MPI_SUCCESS) {
-                  fprintf(stderr, "Irecv failed (2)! %d\n", error);
-                  return 1;
-               }
+           if (error != MPI_SUCCESS) {
+              fprintf(stderr, "Irecv failed (2)! %d\n", error);
+              return 1;
            }
 
-           if (rank > 0) {
-              error = MPI_Wait(&rreq[0], &rstat[0]);
+           error = MPI_Isend(sbuf, DATA_COUNT, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, &sreq[1]);
 
-              if (error != MPI_SUCCESS) {
-                 fprintf(stderr, "WAIT failed (1)! %d\n", error);
-                 return 1;
-              }
+           if (error != MPI_SUCCESS) {
+              fprintf(stderr, "Irecv failed (2)! %d\n", error);
+              return 1;
            }
 
-           if (rank < size-1) {
-              error = MPI_Wait(&rreq[1], &rstat[1]);
+           error = MPI_Wait(&rreq[0], &rstat[0]);
 
-              if (error != MPI_SUCCESS) {
-                 fprintf(stderr, "WAIT failed (2)! %d\n", error);
-                 return 1;
-              }
+           if (error != MPI_SUCCESS) {
+              fprintf(stderr, "WAIT failed (1)! %d\n", error);
+              return 1;
+           }
+
+           error = MPI_Wait(&rreq[1], &rstat[1]);
+
+           if (error != MPI_SUCCESS) {
+              fprintf(stderr, "WAIT failed (2)! %d\n", error);
+              return 1;
            }
 
            error = MPI_Waitall(2, sreq, sstat);
