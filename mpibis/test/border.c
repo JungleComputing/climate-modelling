@@ -5,6 +5,16 @@
 #define COUNT 100
 #define REPEAT 100
 
+void copy(double *in, double *out, int size, int off)
+{
+   int i;
+
+   for (i=0;i<size;i++) {
+      out[i*size+off] = in[i];
+   }
+}
+
+
 int runtest0(int dsize, int rank, int size)
 {
     int i, j, error, prev, next;
@@ -17,6 +27,8 @@ int runtest0(int dsize, int rank, int size)
     double *sbufNext;
     double *rbufNext;
 
+    double *buf;
+
     MPI_Status  rstat[2];
     MPI_Status  sstat[2];
 
@@ -28,6 +40,8 @@ int runtest0(int dsize, int rank, int size)
 
     sbufNext = malloc(dsize*sizeof(double));
     rbufNext = malloc(dsize*sizeof(double));
+
+    buf = malloc(dsize * REPEAT * sizeof(double));
 
     rreq[0] = MPI_REQUEST_NULL;
     rreq[1] = MPI_REQUEST_NULL;
@@ -90,12 +104,16 @@ int runtest0(int dsize, int rank, int size)
               return 1;
            }
 
+           copy(rbufPrev, buf, dsize, j);
+
            error = MPI_Wait(&rreq[1], &rstat[1]);
 
            if (error != MPI_SUCCESS) {
               fprintf(stderr, "WAIT failed (2)! %d\n", error);
               return 1;
            }
+
+           copy(rbufNext, buf, dsize, j);
 
            error = MPI_Waitall(2, sreq, sstat);
 
@@ -115,6 +133,8 @@ int runtest0(int dsize, int rank, int size)
 
     free(sbufNext);
     free(rbufNext);
+
+    free(buf);
 
     return 0;
 }
