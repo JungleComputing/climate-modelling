@@ -35,6 +35,12 @@ int main(int argc, char *argv[])
     sbuf = malloc(DATA_COUNT*sizeof(double));
     rbuf = malloc(DATA_COUNT*sizeof(double));
 
+    rreq[0] = MPI_REQUEST_NULL;
+    rreq[1] = MPI_REQUEST_NULL;
+
+    sreq[0] = MPI_REQUEST_NULL;
+    sreq[1] = MPI_REQUEST_NULL;
+
     for (i=0;i<COUNT;i++) {
 
        start = MPI_Wtime();
