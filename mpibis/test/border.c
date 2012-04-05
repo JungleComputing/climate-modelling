@@ -73,6 +73,13 @@ int main(int argc, char *argv[])
               return 1;
            }
 
+           error = MPI_Isend(sbufNext, DATA_COUNT, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, &sreq[1]);
+
+           if (error != MPI_SUCCESS) {
+              fprintf(stderr, "Irecv failed (2)! %d\n", error);
+              return 1;
+           }
+
            // Handle next
            error = MPI_Irecv(rbufNext, DATA_COUNT, MPI_DOUBLE, next, 1, MPI_COMM_WORLD, &rreq[1]);
 
@@ -85,13 +92,6 @@ int main(int argc, char *argv[])
 
            if (error != MPI_SUCCESS) {
               fprintf(stderr, "Irecv failed (1)! %d\n", error);
-              return 1;
-           }
-
-           error = MPI_Isend(sbufNext, DATA_COUNT, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, &sreq[1]);
-
-           if (error != MPI_SUCCESS) {
-              fprintf(stderr, "Irecv failed (2)! %d\n", error);
               return 1;
            }
 
