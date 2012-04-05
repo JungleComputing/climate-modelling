@@ -8,6 +8,10 @@
 #include "mpi.h"
 #include "generated_header.h"
 
+#ifdef IBIS_INTERCEPT
+#include "request.h"
+#endif
+
 int MPI_Init ( int *argc, char ***argv )
 {
    init_debug();
