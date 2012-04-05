@@ -330,11 +330,16 @@ contains
    myid_z   = iam/npr_y
    myid_y   = iam - myid_z*npr_y
    color = iam/npes_yz
+
    call mpi_comm_split(mpicom, color, iam, mpicom_yz, ierror)
+
    if (ierror /= mpi_success) then
       write(iulog,*) 'SPMD_DYN_READNL:  ERROR:  mpi_comm_split_yz failed with IER=', ierror
       call endrun
    endif
+
+write(*,*) 'JASON: mpicom_yz', mpicom, mpicom_yz);
+
    call mpi_comm_size(mpicom_yz, ntemp, ierror)
    if (masterproc .and. ntemp .ne. npes_yz) then
       write(iulog,*) 'SPMD_DYN_READNL:  ERROR:  mpicom_yz has incorrect size of ', ntemp
@@ -355,6 +360,9 @@ contains
    else
       mpicom_nyz = mpicom_yz
    endif
+
+write(*,*) 'JASON: mpicom_nyz', mpicom, mpicom_nyz);
+
    myidxy_y = iam/nprxy_x
    myidxy_x = iam - myidxy_y*nprxy_x
    color = iam/npes_xy
@@ -363,6 +371,9 @@ contains
       write(iulog,*) 'SPMD_DYN_READNL:  ERROR:  mpi_comm_split_xy failed with IER=', ierror
       call endrun
    endif
+
+write(*,*) 'JASON: mpicom_xy', mpicom, mpicom_xy);
+
    call mpi_comm_size(mpicom_xy, ntemp, ierror)
    if (ntemp .ne. npes_xy) then
       write(iulog,*) 'SPMD_DYN_READNL:  ERROR:  mpicom_xy has incorrect size of ', ntemp
