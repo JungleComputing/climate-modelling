@@ -61,7 +61,6 @@ int main(int argc, char *argv[])
 
     for (i=0;i<COUNT;i++) {
 
-
        start = MPI_Wtime();
 
        for (j=0;j<REPEAT;j++) {
@@ -74,18 +73,18 @@ int main(int argc, char *argv[])
               return 1;
            }
 
-           error = MPI_Isend(sbufPrev, DATA_COUNT, MPI_DOUBLE, prev, 1, MPI_COMM_WORLD, &sreq[0]);
-
-           if (error != MPI_SUCCESS) {
-              fprintf(stderr, "Irecv failed (1)! %d\n", error);
-              return 1;
-           }
-
            // Handle next
            error = MPI_Irecv(rbufNext, DATA_COUNT, MPI_DOUBLE, next, 1, MPI_COMM_WORLD, &rreq[1]);
 
            if (error != MPI_SUCCESS) {
               fprintf(stderr, "Irecv failed (2)! %d\n", error);
+              return 1;
+           }
+
+           error = MPI_Isend(sbufPrev, DATA_COUNT, MPI_DOUBLE, prev, 1, MPI_COMM_WORLD, &sreq[0]);
+
+           if (error != MPI_SUCCESS) {
+              fprintf(stderr, "Irecv failed (1)! %d\n", error);
               return 1;
            }
 
