@@ -2424,6 +2424,8 @@ int IMPI_Comm_dup(MPI_Comm comm, MPI_Comm *newcomm)
 
    set_communicator_ptr(newcomm, dup);
 
+   STACKTRACE(0, "COMM_DUP %d -> %d", c->number, dup->number);
+
    return MPI_SUCCESS;
 }
 
@@ -2572,6 +2574,8 @@ int IMPI_Comm_create(MPI_Comm mc, MPI_Group mg, MPI_Comm *newcomm)
       *newcomm = MPI_COMM_NULL;
    }
 
+   STACKTRACE(0, "COMM_CREATE %d -> %d", c->number, result->number);
+
    return MPI_SUCCESS;
 }
 
@@ -2646,6 +2650,8 @@ int IMPI_Comm_split(MPI_Comm comm, int color, int key, MPI_Comm *newcomm)
    } else {
       *newcomm = MPI_COMM_NULL;
    }
+
+   STACKTRACE(0, "COMM_SPLIT %d -> %d", c->number, result->number);
 
    return MPI_SUCCESS;
 }

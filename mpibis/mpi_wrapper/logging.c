@@ -401,7 +401,6 @@ void XSTACKTRACE(int indent, const char *header, const char *func, const char *f
 {
    size_t size;
    void *array[PRINT_STACK_TRACE];
-   int *ptr;
    va_list argp;
 
    va_start(argp, fmt);
