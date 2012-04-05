@@ -79,7 +79,7 @@ public class Connection extends Thread implements Protocol {
        
         int len = in.readInt();
 
-	Logging.println(pidAsString + " read len " + len);
+//	Logging.println(pidAsString + " read len " + len);
 
         byte [] tmp = new byte[len];
 
@@ -98,7 +98,7 @@ public class Connection extends Thread implements Protocol {
         // Wait until everyone has registered.
         int [] clusterSizes = parent.waitUntilSignupComplete();
 
-	Logging.println(pidAsString + " writing output handshake");
+//	Logging.println(pidAsString + " writing output handshake");
         
         // Write the output handshake.
         out.write(OPCODE_HANDSHAKE_ACCEPTED);
@@ -180,7 +180,7 @@ public class Connection extends Thread implements Protocol {
     
     private boolean receiveMessage() throws Exception {
 
-        Logging.println(pidAsString + " - Waiting for message");
+//        Logging.println(pidAsString + " - Waiting for message");
 
         int opcode = in.readInt();
 
@@ -188,34 +188,34 @@ public class Connection extends Thread implements Protocol {
 
         switch (opcode) {
         case OPCODE_DATA:
-            Logging.println(pidAsString + " - Reading DATA message");
+//            Logging.println(pidAsString + " - Reading DATA message");
             m = new DataMessage(OPCODE_DATA, in);
-            Logging.println(pidAsString + " - DATA message read");
+//            Logging.println(pidAsString + " - DATA message read");
             break;
 
         case OPCODE_COLLECTIVE_BCAST:
-            Logging.println(pidAsString + " - Reading BCAST message");
+//            Logging.println(pidAsString + " - Reading BCAST message");
             m = new DataMessage(OPCODE_COLLECTIVE_BCAST, in);
-            Logging.println(pidAsString + " - BCAST message read");
+//            Logging.println(pidAsString + " - BCAST message read");
             break;
             
         case OPCODE_COMM:
-            Logging.println(pidAsString + " - Reading COMM message");
+//            Logging.println(pidAsString + " - Reading COMM message");
             m = new CommMessage(in);
             break;
 
         case OPCODE_GROUP:
-            Logging.println(pidAsString + " - Reading GROUP message");
+//            Logging.println(pidAsString + " - Reading GROUP message");
             m = new GroupMessage(in);
             break;
 
         case OPCODE_DUP:
-            Logging.println(pidAsString + " - Reading DUP message");
+//            Logging.println(pidAsString + " - Reading DUP message");
             m = new DupMessage(in);
             break;
 
         case OPCODE_TERMINATE:
-            Logging.println(pidAsString + " - Reading TERMINATE message");
+//            Logging.println(pidAsString + " - Reading TERMINATE message");
             m = new TerminateMessage(in);
             break;
             
@@ -243,7 +243,7 @@ public class Connection extends Thread implements Protocol {
             return false;
         }
 
-        Logging.println(pidAsString + " Forwarding message from " + m.source);
+//        Logging.println(pidAsString + " Forwarding message from " + m.source);
 
         m.write(out);
         out.flush();

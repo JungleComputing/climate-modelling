@@ -15,13 +15,17 @@ public class Main {
         "MPI_Init", 
         "MPI_Pcontrol", 
         "MPI_Status_c2f", 
-        "MPI_Status_f2c"
+        "MPI_Status_f2c",
+        "MPI_Wtime", 
+        "MPI_Wtick"
     };
    
     private static String [] headerskip = new String [] {
         "MPI_Pcontrol", 
         "MPI_Status_c2f", 
-        "MPI_Status_f2c"
+        "MPI_Status_f2c", 
+        "MPI_Wtime", 
+        "MPI_Wtick"
     };
     
     private static String [][] sensitive = new String [][] {
@@ -59,7 +63,15 @@ public class Main {
         new StatsField("MPI_Send", "STATS_SEND"),
         new StatsField("MPI_Sendrecv", "STATS_SEND_RECV"),
         new StatsField("MPI_Sendrecv_replace", "STATS_SEND_RECV"),
-        new StatsField("MPI_Ssend", "STATS_SSEND")
+        new StatsField("MPI_Ssend", "STATS_SSEND"),
+        new StatsField("MPI_Wait", "STATS_WAIT"),
+        new StatsField("MPI_Waitall", "STATS_WAITALL"),
+        new StatsField("MPI_Waitany", "STATS_WAITANY"),
+        new StatsField("MPI_Waitsome", "STATS_WAITSOME"),
+        new StatsField("MPI_Test", "STATS_TEST"),
+        new StatsField("MPI_Testall", "STATS_TESTALL"),
+        new StatsField("MPI_Testany", "STATS_TESTANY"),
+        new StatsField("MPI_Testsome", "STATS_TESTSOME"),
     };
         
     private static class StatsField {
@@ -170,12 +182,31 @@ public class Main {
 
         final Parameter [] parameters;
 
+        final int commParamCount; 
+        
         Function(Type ret, String name, Parameter [] parameters) { 
             this.ret = ret;
             this.name = name;
             this.parameters = parameters;
+            
+            commParamCount = countCommParameter();
         }
 
+        int countCommParameter() { 
+            
+            int count = 0;
+            
+            if (parameters != null && parameters.length > 0) { 
+                for (Parameter p : parameters) { 
+                    if (p.type.name.equals("MPI_Comm")) { 
+                        count++;
+                    }
+                }
+            }
+
+            return count;
+        }
+        
         String cleanName(String name) { 
             StringTokenizer tok = new StringTokenizer(name, " *[]");
             return tok.nextToken().trim();
@@ -266,23 +297,36 @@ public class Main {
             System.out.println("#endif // PROFILE_LEVEL\n");
         }
         
-        String find_profile_field() {
+        Parameter find_profile_comm_parameter() {
 
-            boolean hasComm = false;
+            ArrayList<Parameter> tmp = new ArrayList<Main.Parameter>(); 
             
-            for (int i=0;i<parameters.length;i++) { 
-                Parameter p = parameters[i];
-                
-                if (p.type.equals("MPI_Comm")) {
-                    hasComm = true;
-                    break;
+            for (Parameter p : parameters) { 
+                if (p.type.name.equals("MPI_Comm")) {
+                    tmp.add(p);
                 }
             }
             
-            if (!hasComm) {
+            if (tmp.size() == 0) {
                 return null;
             }
             
+            if (tmp.size() > 1) { 
+                System.err.println("WARNING: function " + name + " has multple parameters of type MPI_Comm!");
+            }
+            
+            for (Parameter p : tmp) {
+                
+                if (!p.pointer && !p.array) { 
+                    return p;
+                }
+            }
+            
+            return null;
+        }
+
+        String find_profile_field() {
+        
             for (StatsField s : fields) {
                 if (name.equals(s.function)) {
                     return s.field;
@@ -296,12 +340,16 @@ public class Main {
             System.out.println("#if PROFILE_LEVEL > 0");
             System.out.println("   profile_end = profile_stop_ticks();");
 
-            String field = find_profile_field();
+            Parameter p = find_profile_comm_parameter();
             
-            if (field == null) {
-               System.out.println("   profile_add_statistics(MPI_COMM_WORLD, STATS_MISC, profile_end-profile_start);");   
+            if (p == null) {
+                System.out.println("   profile_add_statistics(MPI_COMM_SELF, " + find_profile_field() + ", profile_end-profile_start);");   
             } else {
-               System.out.println("   profile_add_statistics(comm, " + field + ", profile_end-profile_start);");
+                System.out.println("   profile_add_statistics(" + p.name + ", " + find_profile_field() + ", profile_end-profile_start);");
+            }
+            
+            if (name.equals("MPI_Finalize") || name.equals("MPI_Abort")) {
+                System.out.println("   profile_finalize();");
             }
             
             System.out.println("#endif // PROFILE_LEVEL\n");

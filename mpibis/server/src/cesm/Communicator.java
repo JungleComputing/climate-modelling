@@ -265,6 +265,8 @@ public class Communicator {
                         procs[i++] = processes[m.source];
                     }
 
+                    Logging.println("Creating split " + color + " from communicator " + communicator);
+                    
                     // We generate a new 'virtual' communicator.
                     Communicator com = parent.createCommunicator(procs);
 
@@ -372,7 +374,7 @@ public class Communicator {
             }
         }
 
-        Logging.println("   processes(" + group.length + "): " + printPIDs(group));
+    //    Logging.println("   processes(" + group.length + "): " + printPIDs(group));
 
         // We gather all connections to the participating machines, and save all connections
         // to the machines that do not participate.
@@ -392,7 +394,7 @@ public class Communicator {
 
         int number = com.getNumber();
 
-        Logging.println("   new communicator: " + number);
+    //    Logging.println("   new communicator: " + number);
 
         // Next, we send a reply to all participants, providing them with the new virtual communicator, its size,
         // and their new rank.
@@ -400,7 +402,7 @@ public class Communicator {
         // Generate the flags needed by the virtual communicator.
         int flags = generateFlags(used);
 
-        Logging.println("   flags: " + flags);
+    //    Logging.println("   flags: " + flags);
 
         // Generate a correct members array for this cluster.
         int [] members = com.getMembers();
@@ -410,10 +412,10 @@ public class Communicator {
         int [] localRanks = com.getLocalRanks();
         int [] memberClusterIndex = com.getMemberClusterIndex();
 
-        Logging.println("   group reply: " + number + " " + flags + " "
-                + coordinators.length + " " + Arrays.toString(coordinators)
-                + " " + Arrays.toString(clusterSizes)
-                + members.length + " " + flags + " " + printPIDs(members));
+   //     Logging.println("   group reply: " + number + " " + flags + " "
+    //            + coordinators.length + " " + Arrays.toString(coordinators)
+    //            + " " + Arrays.toString(clusterSizes)
+    //            + members.length + " " + flags + " " + printPIDs(members));
 
         // We need to figure out which cluster do and which don't participate. Those that don't do not need to create a local
         // communicator.
@@ -429,7 +431,7 @@ public class Communicator {
             // Add the cluster to the set of participants.
             participatingCluster.add(name);
 
-            Logging.println("        sending group info to " + j + " " + printPID(c.pid) + " at " + name);
+      //      Logging.println("        sending group info to " + j + " " + printPID(c.pid) + " at " + name);
 
             GroupReply reply = new GroupReply(communicator, number, j, members.length, coordinators.length, flags,
                     coordinators, clusterSizes, members, clusterRanks, memberClusterIndex, localRanks);
@@ -451,8 +453,8 @@ public class Communicator {
                 String name = c.getClusterName();
                 boolean participant = participatingCluster.contains(name);
 
-                Logging.println("        sending participant info to " + j++ + " " + printPID(c.pid) + " at " + name
-                        + "(" + participant + ")");
+        //        Logging.println("        sending participant info to " + j++ + " " + printPID(c.pid) + " at " + name
+       //                 + "(" + participant + ")");
 
 
                 GroupReply reply = new GroupReply(communicator, participant);
@@ -472,7 +474,7 @@ public class Communicator {
         // We generate a new 'virtual' communicator.
         int number = parent.createCommunicator(processes).getNumber();
 
-        Logging.println("   dup communicator: " + communicator + " -> " + number);
+//        Logging.println("   dup communicator: " + communicator + " -> " + number);
 
         // Next, we send a reply to all participants, providing them with the new virtual communicator.
         DupReply reply = new DupReply(communicator, number);
@@ -586,10 +588,10 @@ public class Communicator {
             Connection c = processes[coordinatorRanks[i]];
 
             if (c.clusterRank != source.clusterRank) {
-                Logging.println("Enqueuing BCAST at cluster coordinator " + printPID(c.pid) + " of comm " + communicator);
+//                Logging.println("Enqueuing BCAST at cluster coordinator " + printPID(c.pid) + " of comm " + communicator);
                 c.enqueue(m, true);
             } else {
-                Logging.println("SKIP Enqueuing BCAST at cluster coordinator " + printPID(c.pid) + " of comm " + communicator);
+  //              Logging.println("SKIP Enqueuing BCAST at cluster coordinator " + printPID(c.pid) + " of comm " + communicator);
             }
         }
 
@@ -626,4 +628,9 @@ public class Communicator {
         sb.append(" commOut: " + commReplies + " / " + commReplyBytes);
         return sb.toString();
     }
+    
+    public String printInfo() {
+        return "COMM(" + communicator + ") = " + printPIDs(members);
+    }
+
 }
