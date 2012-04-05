@@ -817,7 +817,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
 
    if (r->c->number == 23 || r->c->number == 24 || r->c->number == 16) {
 
-      error = PMPI_Type_extent(recvtype, &extent);
+      error = PMPI_Type_extent(r->type, &extent);
 
       if (error != MPI_SUCCESS) {
          extent = 0;
