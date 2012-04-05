@@ -800,6 +800,7 @@ static void clear_status(MPI_Status *status)
 static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *status)
 {
    int error = MPI_SUCCESS;
+   MPI_Aint extent;
 
    request *r = get_request(*req);
 
@@ -815,7 +816,14 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
 // FIXME: for performance debugging!!!
 
    if (r->c->number == 23 || r->c->number == 24 || r->c->number == 16) {
-      STACKTRACE(0, "in wait/test for comm %d", r->c->number);
+
+      error = PMPI_Type_extent(recvtype, &extent);
+
+      if (error != MPI_SUCCESS) {
+         extent = 0;
+      }
+
+      STACKTRACE(0, "in wait/test for comm %d count %d bytes %d", r->c->number, r->count, r->count*extent);
    }
 
 // END FIXME: for performance debugging!!!
