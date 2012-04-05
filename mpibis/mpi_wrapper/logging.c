@@ -400,7 +400,7 @@ void XLOG(int indent, int verbose, const char *header, const char *func, const c
 void XSTACKTRACE(int indent, const char *header, const char *func, const char *file, const int line, const char *fmt, ...)
 {
    size_t size;
-   void *array[PRINT_STACK_TRACE];
+   void *array[15];
    va_list argp;
 
    va_start(argp, fmt);
@@ -417,7 +417,7 @@ void XSTACKTRACE(int indent, const char *header, const char *func, const char *f
 
    va_end(argp);
 
-   size = backtrace(array, 5);
+   size = backtrace(array, 15);
    backtrace_symbols_fd(array, size, 2);
 }
 

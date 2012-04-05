@@ -803,14 +803,6 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
 
    request *r = get_request(*req);
 
-// FIXME: for performance debugging!!!
-
-   if (r->c->number == 23 || r->c->number == 24 || r->c->number == 16) {
-      STACKTRACE(0, "in wait/test for comm %d", r->c->number);
-   }
-
-// END FIXME: for performance debugging!!!
-
    if (r == NULL) {
 
       DEBUG(1, "request=NULL, blocking=%d", blocking);
@@ -819,6 +811,14 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
       *flag = 1;
       return MPI_SUCCESS;
    }
+
+// FIXME: for performance debugging!!!
+
+   if (r->c->number == 23 || r->c->number == 24 || r->c->number == 16) {
+      STACKTRACE(0, "in wait/test for comm %d", r->c->number);
+   }
+
+// END FIXME: for performance debugging!!!
 
    INFO(1, "request=(index=%d, flags=%d, srcdest=%d, count=%d, tag=%d type=%s) blocking=%d",
 	r->index, r->flags, r->source_or_dest, r->count, r->tag, type_to_string(r->type), blocking);
