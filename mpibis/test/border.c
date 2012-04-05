@@ -5,7 +5,7 @@
 #define DATA_COUNT 22464
 
 #define COUNT 1000
-#define REPEAT 1000
+#define REPEAT 100
 
 int main(int argc, char *argv[])
 {
@@ -65,6 +65,8 @@ int main(int argc, char *argv[])
 
        for (j=0;j<REPEAT;j++) {
 
+	if (rank % 2 == 0) {
+
            // Handle prev
            error = MPI_Irecv(rbufPrev, DATA_COUNT, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, &rreq[0]);
 
@@ -73,10 +75,10 @@ int main(int argc, char *argv[])
               return 1;
            }
 
-           error = MPI_Isend(sbufNext, DATA_COUNT, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, &sreq[1]);
+           error = MPI_Isend(sbufPrev, DATA_COUNT, MPI_DOUBLE, prev, 1, MPI_COMM_WORLD, &sreq[0]);
 
            if (error != MPI_SUCCESS) {
-              fprintf(stderr, "Irecv failed (2)! %d\n", error);
+              fprintf(stderr, "Irecv failed (1)! %d\n", error);
               return 1;
            }
 
@@ -88,12 +90,48 @@ int main(int argc, char *argv[])
               return 1;
            }
 
+
+           error = MPI_Isend(sbufNext, DATA_COUNT, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, &sreq[1]);
+
+           if (error != MPI_SUCCESS) {
+              fprintf(stderr, "Irecv failed (2)! %d\n", error);
+              return 1;
+           }
+
+
+       } else { 
+
+           // Handle next
+           error = MPI_Irecv(rbufNext, DATA_COUNT, MPI_DOUBLE, next, 1, MPI_COMM_WORLD, &rreq[1]);
+
+           if (error != MPI_SUCCESS) {
+              fprintf(stderr, "Irecv failed (2)! %d\n", error);
+              return 1;
+           }
+
+
+           error = MPI_Isend(sbufNext, DATA_COUNT, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, &sreq[1]);
+
+           if (error != MPI_SUCCESS) {
+              fprintf(stderr, "Irecv failed (2)! %d\n", error);
+              return 1;
+           }
+
+           // Handle prev
+           error = MPI_Irecv(rbufPrev, DATA_COUNT, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, &rreq[0]);
+
+           if (error != MPI_SUCCESS) {
+              fprintf(stderr, "Irecv failed (1)! %d\n", error);
+              return 1;
+           }
+
            error = MPI_Isend(sbufPrev, DATA_COUNT, MPI_DOUBLE, prev, 1, MPI_COMM_WORLD, &sreq[0]);
 
            if (error != MPI_SUCCESS) {
               fprintf(stderr, "Irecv failed (1)! %d\n", error);
               return 1;
            }
+       }
 
            error = MPI_Wait(&rreq[0], &rstat[0]);
 
