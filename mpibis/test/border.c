@@ -115,6 +115,8 @@ int runtest0(int dsize, int rank, int size)
 
     free(sbufNext);
     free(rbufNext);
+
+    return 0;
 }
 
 int runtest1(int dsize, int rank, int size)
@@ -265,6 +267,8 @@ int runtest1(int dsize, int rank, int size)
 
     free(sbufNext);
     free(rbufNext);
+
+    return 0;
 }
 
 
