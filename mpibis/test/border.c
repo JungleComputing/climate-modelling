@@ -82,11 +82,32 @@ int runtest0(int dsize, int rank, int size)
               fprintf(stderr, "Irecv failed (2)! %d\n", error);
               return 1;
            }
+
+           error = MPI_Wait(&rreq[0], &rstat[0]);
+
+           if (error != MPI_SUCCESS) {
+              fprintf(stderr, "WAIT failed (1)! %d\n", error);
+              return 1;
+           }
+
+           error = MPI_Wait(&rreq[1], &rstat[1]);
+
+           if (error != MPI_SUCCESS) {
+              fprintf(stderr, "WAIT failed (2)! %d\n", error);
+              return 1;
+           }
+
+           error = MPI_Waitall(2, sreq, sstat);
+
+           if (error != MPI_SUCCESS) {
+              fprintf(stderr, "WAITAll failed (1)! %d\n", error);
+              return 1;
+           }
        }
 
        end = MPI_Wtime();
 
-       printf("Iteration $d / %d took %f sec. (%f/sec/phase)\n", dsize, i, end-start, (end-start)/REPEAT);
+       printf("Iteration %d / %d took %f sec. (%f/sec/phase)\n", dsize, i, end-start, (end-start)/REPEAT);
     }
 
     free(sbufPrev);
@@ -261,7 +282,7 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "Process %d of %d on %s\n", rank, size, processor_name);
 
-    for (i=16;i<(32*1024)+1);i*=2) {
+    for (i=16;i<(32*1024)+1);i=i*2) {
        runtest0(i, rank, size);
     }
 
