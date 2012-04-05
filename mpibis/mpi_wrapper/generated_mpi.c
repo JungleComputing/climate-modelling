@@ -9473,11 +9473,12 @@ int MPI_Wait ( MPI_Request *r, MPI_Status *status )
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
 
-#if IBIS_INTERCEPT
+#ifdef IBIS_INTERCEPT
    profile_add_statistics(request_get_mpi_comm(r, MPI_COMM_SELF), STATS_WAIT, profile_end-profile_start);
 #else
    profile_add_statistics(MPI_COMM_SELF, STATS_WAIT, profile_end-profile_start);
 #endif
+
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
