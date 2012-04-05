@@ -32,8 +32,8 @@ int main(int argc, char *argv[])
 
     fprintf(stderr, "Process %d of %d on %s\n", rank, size, processor_name);
 
-    sbuf == malloc(DATA_COUNT*sizeof(double));
-    rbuf == malloc(DATA_COUNT*sizeof(double));
+    sbuf = malloc(DATA_COUNT*sizeof(double));
+    rbuf = malloc(DATA_COUNT*sizeof(double));
 
     for (i=0;i<COUNT;i++) {
 
