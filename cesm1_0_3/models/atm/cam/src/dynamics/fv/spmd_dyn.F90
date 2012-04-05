@@ -338,7 +338,7 @@ contains
       call endrun
    endif
 
-write(*,*) 'JASON: mpicom_yz', mpicom, mpicom_yz);
+write(*,*) 'JASON: mpicom_yz', mpicom, mpicom_yz
 
    call mpi_comm_size(mpicom_yz, ntemp, ierror)
    if (masterproc .and. ntemp .ne. npes_yz) then
@@ -361,7 +361,7 @@ write(*,*) 'JASON: mpicom_yz', mpicom, mpicom_yz);
       mpicom_nyz = mpicom_yz
    endif
 
-write(*,*) 'JASON: mpicom_nyz', mpicom, mpicom_nyz);
+write(*,*) 'JASON: mpicom_nyz', mpicom, mpicom_nyz
 
    myidxy_y = iam/nprxy_x
    myidxy_x = iam - myidxy_y*nprxy_x
