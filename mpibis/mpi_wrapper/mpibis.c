@@ -806,7 +806,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
 // FIXME: for performance debugging!!!
 
    if (r->c->number == 23 || r->c->number == 24 || r->c->number == 16) {
-      STACKTRACE(0, "in wait/test for comm %d", c->c->number);
+      STACKTRACE(0, "in wait/test for comm %d", r->c->number);
    }
 
 // END FIXME: for performance debugging!!!
