@@ -4,8 +4,8 @@
 
 #define DATA_COUNT 22464
 
-#define COUNT 100
-#define REPEAT 100
+#define COUNT 1000
+#define REPEAT 1000
 
 int main(int argc, char *argv[])
 {
