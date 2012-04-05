@@ -9389,7 +9389,9 @@ int MPI_Waitall ( int count, MPI_Request array_of_requests[], MPI_Status array_o
 #endif // TRACE_CALLS
 
 #if PROFILE_LEVEL > 0
+#ifndef IBIS_INTERCEPT
    profile_start = profile_start_ticks();
+#endif // IBIS_INTERCEPT
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
@@ -9399,8 +9401,10 @@ int MPI_Waitall ( int count, MPI_Request array_of_requests[], MPI_Status array_o
 #endif // IBIS_INTERCEPT
 
 #if PROFILE_LEVEL > 0
+#ifndef IBIS_INTERCEPT
    profile_end = profile_stop_ticks();
    profile_add_statistics(MPI_COMM_SELF, STATS_WAITALL, profile_end-profile_start);
+#endif // IBIS_INTERCEPT
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
@@ -9468,7 +9472,12 @@ int MPI_Wait ( MPI_Request *r, MPI_Status *status )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
+
+#if IBIS_INTERCEPT
+   profile_add_statistics(request_get_mpi_comm(r, MPI_COMM_SELF), STATS_WAIT, profile_end-profile_start);
+#else
    profile_add_statistics(MPI_COMM_SELF, STATS_WAIT, profile_end-profile_start);
+#endif
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS

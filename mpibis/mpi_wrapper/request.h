@@ -56,7 +56,7 @@ int request_send(request *r);
 int request_receive(request *r);
 int request_completed(request *r);
 
-MPI_Comm request_get_mpi_comm(request *r);
+MPI_Comm request_get_mpi_comm(MPI_Request *r, MPI_Comm def);
 
 #endif // IBIS_INTERCEPT
 

@@ -1029,7 +1029,10 @@ int IMPI_Waitall(int count, MPI_Request *array_of_requests, MPI_Status *array_of
 
          DEBUG(1, "checking %d of %d request=%s", i, count, request_to_string(array_of_requests[i]));
 
-         error = IMPI_Wait(&array_of_requests[i], &array_of_statuses[i]);
+//         error = IMPI_Wait(&array_of_requests[i], &array_of_statuses[i]);
+
+         // NOTE: fall back to MPI_Wait for profiling purposes!
+         error = MPI_Wait(&array_of_requests[i], &array_of_statuses[i]);
 
          DEBUG(1, "done %d of %d request=%s -> error=%d", i, count, request_to_string(array_of_requests[i]), error);
 
