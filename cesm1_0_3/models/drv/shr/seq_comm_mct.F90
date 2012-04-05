@@ -541,6 +541,9 @@ write(*,*) 'JASON: seq_comm_init JOIN CPLID GLCID CPLGLCID', CPLID, GLCID, CPLGL
        else
           seq_comms(ID)%iamroot = .false.
        endif
+
+       write(logunit,*) 'JASON setcomm: ',ID, seq_comms(ID)%name, mpicomm
+
     else
        seq_comms(ID)%npes = -1
        seq_comms(ID)%iam = -1
@@ -626,6 +629,9 @@ write(*,*) 'JASON: seq_comm_join COMM CREATE of ', ID
        else
           seq_comms(ID)%iamroot = .false.
        endif
+
+       write(logunit,*) 'JASON joincomm: ',ID, seq_comms(ID)%name, mpicomm
+
     else
        seq_comms(ID)%npes = -1
        seq_comms(ID)%iam = -1
