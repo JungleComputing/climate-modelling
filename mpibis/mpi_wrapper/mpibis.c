@@ -803,6 +803,14 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
 
    request *r = get_request(*req);
 
+// FIXME: for performance debugging!!!
+
+   if (r->c->number == 23 || r->c->number == 24 || r->c->number == 16) {
+      STACKTRACE(0, "in wait/test for comm %d", c->c->number);
+   }
+
+// END FIXME: for performance debugging!!!
+
    if (r == NULL) {
 
       DEBUG(1, "request=NULL, blocking=%d", blocking);
