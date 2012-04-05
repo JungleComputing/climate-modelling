@@ -10,7 +10,7 @@ void copy(double *in, double *out, int size, int off)
    int i;
 
    for (i=0;i<size;i++) {
-      out[i*size+off] = in[i];
+     out[(i*size)+off] = in[i];
    }
 }
 
@@ -41,7 +41,7 @@ int runtest0(int dsize, int rank, int size)
     sbufNext = malloc(dsize*sizeof(double));
     rbufNext = malloc(dsize*sizeof(double));
 
-    buf = malloc(dsize * REPEAT * sizeof(double));
+    buf = malloc(dsize * (REPEAT+1) * sizeof(double));
 
     rreq[0] = MPI_REQUEST_NULL;
     rreq[1] = MPI_REQUEST_NULL;
