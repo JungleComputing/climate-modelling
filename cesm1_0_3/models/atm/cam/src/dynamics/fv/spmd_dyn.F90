@@ -372,7 +372,7 @@ write(*,*) 'JASON: mpicom_nyz', mpicom, mpicom_nyz
       call endrun
    endif
 
-write(*,*) 'JASON: mpicom_xy', mpicom, mpicom_xy);
+write(*,*) 'JASON: mpicom_xy', mpicom, mpicom_xy
 
    call mpi_comm_size(mpicom_xy, ntemp, ierror)
    if (ntemp .ne. npes_xy) then
