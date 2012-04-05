@@ -5,9 +5,9 @@
 #define COUNT 100
 #define REPEAT 100
 
-int runtest0(int size)
+int runtest0(int dsize, int rank, int size)
 {
-    int  rank, size, i, j, error, prev, next;
+    int i, j, error, prev, next;
 
     double start, end;
 
@@ -23,11 +23,11 @@ int runtest0(int size)
     MPI_Request rreq[2];
     MPI_Request sreq[2];
 
-    sbufPrev = malloc(size*sizeof(double));
-    rbufPrev = malloc(size*sizeof(double));
+    sbufPrev = malloc(dsize*sizeof(double));
+    rbufPrev = malloc(dsize*sizeof(double));
 
-    sbufNext = malloc(size*sizeof(double));
-    rbufNext = malloc(size*sizeof(double));
+    sbufNext = malloc(dsize*sizeof(double));
+    rbufNext = malloc(dsize*sizeof(double));
 
     rreq[0] = MPI_REQUEST_NULL;
     rreq[1] = MPI_REQUEST_NULL;
@@ -54,14 +54,14 @@ int runtest0(int size)
        for (j=0;j<REPEAT;j++) {
 
            // Handle prev
-           error = MPI_Irecv(rbufPrev, size, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, &rreq[0]);
+           error = MPI_Irecv(rbufPrev, dsize, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, &rreq[0]);
 
            if (error != MPI_SUCCESS) {
               fprintf(stderr, "Irecv failed (1)! %d\n", error);
               return 1;
            }
 
-           error = MPI_Isend(sbufPrev, size, MPI_DOUBLE, prev, 1, MPI_COMM_WORLD, &sreq[0]);
+           error = MPI_Isend(sbufPrev, dsize, MPI_DOUBLE, prev, 1, MPI_COMM_WORLD, &sreq[0]);
 
            if (error != MPI_SUCCESS) {
               fprintf(stderr, "Irecv failed (1)! %d\n", error);
@@ -69,14 +69,14 @@ int runtest0(int size)
            }
 
            // Handle next
-           error = MPI_Irecv(rbufNext, size, MPI_DOUBLE, next, 1, MPI_COMM_WORLD, &rreq[1]);
+           error = MPI_Irecv(rbufNext, dsize, MPI_DOUBLE, next, 1, MPI_COMM_WORLD, &rreq[1]);
 
            if (error != MPI_SUCCESS) {
               fprintf(stderr, "Irecv failed (2)! %d\n", error);
               return 1;
            }
 
-           error = MPI_Isend(sbufNext, size, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, &sreq[1]);
+           error = MPI_Isend(sbufNext, dsize, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, &sreq[1]);
 
            if (error != MPI_SUCCESS) {
               fprintf(stderr, "Irecv failed (2)! %d\n", error);
@@ -86,7 +86,7 @@ int runtest0(int size)
 
        end = MPI_Wtime();
 
-       printf("Iteration $d / %d took %f sec. (%f/sec/phase)\n", size, i, end-start, (end-start)/REPEAT);
+       printf("Iteration $d / %d took %f sec. (%f/sec/phase)\n", dsize, i, end-start, (end-start)/REPEAT);
     }
 
     free(sbufPrev);
@@ -96,9 +96,9 @@ int runtest0(int size)
     free(rbufNext);
 }
 
-int runtest1(int size)
+int runtest1(int dsize, int rank, int size)
 {
-    int  rank, size, i, j, error, prev, next;
+    int i, j, error, prev, next;
 
     double start, end;
 
@@ -114,11 +114,11 @@ int runtest1(int size)
     MPI_Request rreq[2];
     MPI_Request sreq[2];
 
-    sbufPrev = malloc(size*sizeof(double));
-    rbufPrev = malloc(size*sizeof(double));
+    sbufPrev = malloc(dsize*sizeof(double));
+    rbufPrev = malloc(dsize*sizeof(double));
 
-    sbufNext = malloc(size*sizeof(double));
-    rbufNext = malloc(size*sizeof(double));
+    sbufNext = malloc(dsize*sizeof(double));
+    rbufNext = malloc(dsize*sizeof(double));
 
     rreq[0] = MPI_REQUEST_NULL;
     rreq[1] = MPI_REQUEST_NULL;
@@ -147,14 +147,14 @@ int runtest1(int size)
 	if (rank % 2 == 0) {
 
            // Handle prev
-           error = MPI_Irecv(rbufPrev, size, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, &rreq[0]);
+           error = MPI_Irecv(rbufPrev, dsize, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, &rreq[0]);
 
            if (error != MPI_SUCCESS) {
               fprintf(stderr, "Irecv failed (1)! %d\n", error);
               return 1;
            }
 
-           error = MPI_Isend(sbufPrev, size, MPI_DOUBLE, prev, 1, MPI_COMM_WORLD, &sreq[0]);
+           error = MPI_Isend(sbufPrev, dsize, MPI_DOUBLE, prev, 1, MPI_COMM_WORLD, &sreq[0]);
 
            if (error != MPI_SUCCESS) {
               fprintf(stderr, "Irecv failed (1)! %d\n", error);
@@ -162,7 +162,7 @@ int runtest1(int size)
            }
 
            // Handle next
-           error = MPI_Irecv(rbufNext, size, MPI_DOUBLE, next, 1, MPI_COMM_WORLD, &rreq[1]);
+           error = MPI_Irecv(rbufNext, dsize, MPI_DOUBLE, next, 1, MPI_COMM_WORLD, &rreq[1]);
 
            if (error != MPI_SUCCESS) {
               fprintf(stderr, "Irecv failed (2)! %d\n", error);
@@ -170,7 +170,7 @@ int runtest1(int size)
            }
 
 
-           error = MPI_Isend(sbufNext, size, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, &sreq[1]);
+           error = MPI_Isend(sbufNext, dsize, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, &sreq[1]);
 
            if (error != MPI_SUCCESS) {
               fprintf(stderr, "Irecv failed (2)! %d\n", error);
@@ -181,7 +181,7 @@ int runtest1(int size)
        } else { 
 
            // Handle next
-           error = MPI_Irecv(rbufNext, size, MPI_DOUBLE, next, 1, MPI_COMM_WORLD, &rreq[1]);
+           error = MPI_Irecv(rbufNext, dsize, MPI_DOUBLE, next, 1, MPI_COMM_WORLD, &rreq[1]);
 
            if (error != MPI_SUCCESS) {
               fprintf(stderr, "Irecv failed (2)! %d\n", error);
@@ -189,7 +189,7 @@ int runtest1(int size)
            }
 
 
-           error = MPI_Isend(sbufNext, size, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, &sreq[1]);
+           error = MPI_Isend(sbufNext, dsize, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, &sreq[1]);
 
            if (error != MPI_SUCCESS) {
               fprintf(stderr, "Irecv failed (2)! %d\n", error);
@@ -197,14 +197,14 @@ int runtest1(int size)
            }
 
            // Handle prev
-           error = MPI_Irecv(rbufPrev, size, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, &rreq[0]);
+           error = MPI_Irecv(rbufPrev, dsize, MPI_DOUBLE, prev, 0, MPI_COMM_WORLD, &rreq[0]);
 
            if (error != MPI_SUCCESS) {
               fprintf(stderr, "Irecv failed (1)! %d\n", error);
               return 1;
            }
 
-           error = MPI_Isend(sbufPrev, size, MPI_DOUBLE, prev, 1, MPI_COMM_WORLD, &sreq[0]);
+           error = MPI_Isend(sbufPrev, dsize, MPI_DOUBLE, prev, 1, MPI_COMM_WORLD, &sreq[0]);
 
            if (error != MPI_SUCCESS) {
               fprintf(stderr, "Irecv failed (1)! %d\n", error);
@@ -236,7 +236,7 @@ int runtest1(int size)
 
        end = MPI_Wtime();
 
-       printf("Iteration %d / %d took %f sec. (%f/sec/phase)\n", size, i, end-start, (end-start)/REPEAT);
+       printf("Iteration %d / %d took %f sec. (%f/sec/phase)\n", dsize, i, end-start, (end-start)/REPEAT);
     }
 
     free(sbufPrev);
@@ -262,7 +262,7 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Process %d of %d on %s\n", rank, size, processor_name);
 
     for (i=16;i<(32*1024)+1);i*=2) {
-       runtest0(i);
+       runtest0(i, rank, size);
     }
 
     fprintf(stderr, "Done!\n");
