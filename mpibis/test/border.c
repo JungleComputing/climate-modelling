@@ -9,7 +9,7 @@
 
 int main(int argc, char *argv[])
 {
-    int  namelen, rank, size, i, error;
+    int  namelen, rank, size, i, j, error;
     char processor_name[MPI_MAX_PROCESSOR_NAME];
 
     double start, end;
