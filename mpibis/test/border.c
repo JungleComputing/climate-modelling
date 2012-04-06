@@ -5,12 +5,21 @@
 #define COUNT 100
 #define REPEAT 100
 
-void copy(double *in, double *out, int size, int off)
+void copyIn(double *from, double *to, int size, int off)
 {
    int i;
 
    for (i=0;i<size;i++) {
-     out[REPEAT*i + off] = in[i];
+     to[REPEAT*i + off] = from[i];
+   }
+}
+
+void copyOut(double *from, double *to, int size, int off)
+{
+   int i;
+
+   for (i=0;i<size;i++) {
+     to[i] = from[REPEAT*i + off];
    }
 }
 
@@ -27,7 +36,8 @@ int runtest0(int dsize, int rank, int size)
     double *sbufNext;
     double *rbufNext;
 
-    double *buf;
+    double *bufFrom;
+    double *bufTo;
 
     MPI_Status  rstat[2];
     MPI_Status  sstat[2];
@@ -41,7 +51,8 @@ int runtest0(int dsize, int rank, int size)
     sbufNext = malloc(dsize*sizeof(double));
     rbufNext = malloc(dsize*sizeof(double));
 
-    buf = malloc(dsize * (REPEAT+1) * sizeof(double));
+    bufFrom = malloc(2 * dsize * REPEAT * sizeof(double));
+    bufTo = malloc(2 * dsize * REPEAT * sizeof(double));
 
     rreq[0] = MPI_REQUEST_NULL;
     rreq[1] = MPI_REQUEST_NULL;
@@ -75,6 +86,8 @@ int runtest0(int dsize, int rank, int size)
               return 1;
            }
 
+           copyOut(bufFrom, sbufPrev, dsize, 2*j);
+
            error = MPI_Isend(sbufPrev, dsize, MPI_DOUBLE, prev, 1, MPI_COMM_WORLD, &sreq[0]);
 
            if (error != MPI_SUCCESS) {
@@ -90,6 +103,8 @@ int runtest0(int dsize, int rank, int size)
               return 1;
            }
 
+           copyOut(bufFrom, sbufNext, dsize, 2*j+1);
+
            error = MPI_Isend(sbufNext, dsize, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, &sreq[1]);
 
            if (error != MPI_SUCCESS) {
@@ -104,7 +119,7 @@ int runtest0(int dsize, int rank, int size)
               return 1;
            }
 
-           copy(rbufPrev, buf, dsize, j);
+           copyIn(rbufPrev, bufTo, dsize, 2*j);
 
            error = MPI_Wait(&rreq[1], &rstat[1]);
 
@@ -113,7 +128,7 @@ int runtest0(int dsize, int rank, int size)
               return 1;
            }
 
-           copy(rbufNext, buf, dsize, j);
+           copyIn(rbufNext, bufTo, dsize, 2*j+1);
 
            error = MPI_Waitall(2, sreq, sstat);
 
