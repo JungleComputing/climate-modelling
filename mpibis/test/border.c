@@ -224,12 +224,12 @@ int runtest2(int dsize, int rank, int size)
               return 1;
            }
 
-           copyOut(bufFrom, sbufNext, dsize, 2*j+1);
+           copyOut(bufFrom, sbufPrev, dsize, 2*j);
 
-           error = MPI_Isend(sbufNext, dsize, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, &sreq[1]);
+           error = MPI_Isend(sbufPrev, dsize, MPI_DOUBLE, prev, 1, MPI_COMM_WORLD, &sreq[0]);
 
            if (error != MPI_SUCCESS) {
-              fprintf(stderr, "Irecv failed (2)! %d\n", error);
+              fprintf(stderr, "Irecv failed (1)! %d\n", error);
               return 1;
            }
 
@@ -240,15 +240,17 @@ int runtest2(int dsize, int rank, int size)
               return 1;
            }
 
-           copyOut(bufFrom, sbufPrev, dsize, 2*j);
+           copyOut(bufFrom, sbufNext, dsize, 2*j+1);
 
-           error = MPI_Isend(sbufPrev, dsize, MPI_DOUBLE, prev, 1, MPI_COMM_WORLD, &sreq[0]);
+           error = MPI_Isend(sbufNext, dsize, MPI_DOUBLE, next, 0, MPI_COMM_WORLD, &sreq[1]);
 
            if (error != MPI_SUCCESS) {
-              fprintf(stderr, "Irecv failed (1)! %d\n", error);
+              fprintf(stderr, "Irecv failed (2)! %d\n", error);
               return 1;
            }
 
+
+/*
            error = MPI_Wait(&rreq[0], &rstat[0]);
 
            if (error != MPI_SUCCESS) {
@@ -265,6 +267,16 @@ int runtest2(int dsize, int rank, int size)
               return 1;
            }
 
+           copyIn(rbufNext, bufTo, dsize, 2*j+1);
+*/
+           error = MPI_Waitall(2, rreq, rstat);
+
+           if (error != MPI_SUCCESS) {
+              fprintf(stderr, "WAITAll failed (2)! %d\n", error);
+              return 1;
+           }
+
+           copyIn(rbufPrev, bufTo, dsize, 2*j);
            copyIn(rbufNext, bufTo, dsize, 2*j+1);
 
            error = MPI_Waitall(2, sreq, sstat);
