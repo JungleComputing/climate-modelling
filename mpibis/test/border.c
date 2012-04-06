@@ -149,7 +149,8 @@ int runtest0(int dsize, int rank, int size)
     free(sbufNext);
     free(rbufNext);
 
-    free(buf);
+    free(bufTo);
+    free(bufFrom);
 
     return 0;
 }
