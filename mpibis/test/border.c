@@ -5,22 +5,28 @@
 #define COUNT 100
 #define REPEAT 100
 
+//#define COPY 
+
 void copyIn(double *from, double *to, int size, int off)
 {
+#ifdef COPY 
    int i;
 
    for (i=0;i<size;i++) {
      to[REPEAT*i + off] = from[i];
    }
+#endif
 }
 
 void copyOut(double *from, double *to, int size, int off)
 {
+#ifdef COPY 
    int i;
 
    for (i=0;i<size;i++) {
      to[i] = from[REPEAT*i + off];
    }
+#endif
 }
 
 
