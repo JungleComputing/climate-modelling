@@ -10,7 +10,7 @@ void copy(double *in, double *out, int size, int off)
    int i;
 
    for (i=0;i<size;i++) {
-     out[off*size+i] = in[i];
+     out[REPEAT*i + off] = in[i];
    }
 }
 
