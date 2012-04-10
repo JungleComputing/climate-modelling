@@ -152,15 +152,19 @@ int request_completed(request *r)
    return (r->flags & REQUEST_FLAG_COMPLETED);
 }
 
-MPI_Comm request_get_mpi_comm(MPI_Request *r, MPI_Comm def)
+MPI_Comm request_get_mpi_comm(MPI_Request r, MPI_Comm def)
 {
-   request req = get_request(r);
+   MPI_Comm tmp;
+
+   request *req = get_request(r);
 
    if (req == NULL) {
+WARN(1, "req == NULL: Returning default comm!");
       return def;
    }
 
-   return req->c->comm;
+   set_communicator_ptr(&tmp, req->c);
+   return tmp;
 }
 
 #endif // IBIS_INTERCEPT

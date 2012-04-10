@@ -7,6 +7,7 @@
 
 #include "mpi.h"
 #include "types.h"
+#include "communicator.h"
 
 #define REQUEST_FLAG_ACTIVE     (1 << 0)
 #define REQUEST_FLAG_PERSISTENT (1 << 1)
@@ -56,7 +57,7 @@ int request_send(request *r);
 int request_receive(request *r);
 int request_completed(request *r);
 
-MPI_Comm request_get_mpi_comm(MPI_Request *r, MPI_Comm def);
+MPI_Comm request_get_mpi_comm(MPI_Request r, MPI_Comm def);
 
 #endif // IBIS_INTERCEPT
 
