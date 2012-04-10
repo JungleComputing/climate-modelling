@@ -1856,12 +1856,12 @@
       integer qsize
 #endif
 
-      win%nread = win%nread + 1
-      call MPI_WAIT(win%rqest(win%nread), Status, ierror)
-
 #ifdef PROFILE_JASON
       call JASON_start_timer2()
 #endif
+
+      win%nread = win%nread + 1
+      call MPI_WAIT(win%rqest(win%nread), Status, ierror)
 
       i_length   = i2-i1+1
       j_length   = j2-j1+1
@@ -2071,12 +2071,12 @@
         call exit(1)
 #endif
 
-      win%nread = win%nread + 1
-      call MPI_WAIT(win%rqest(win%nread), Status, ierror)
-
 #ifdef PROFILE_JASON
       call JASON_start_timer2()
 #endif
+
+      win%nread = win%nread + 1
+      call MPI_WAIT(win%rqest(win%nread), Status, ierror)
 
       i_length   = i2-i1+1
       j_length   = j2-j1+1
@@ -2270,12 +2270,12 @@
       integer qsize
 #endif
 
-      win%nread = win%nread + 1
-      call MPI_WAIT(win%rqest(win%nread), Status, ierror)
-
 #ifdef PROFILE_JASON
       call JASON_start_timer2()
 #endif
+
+      win%nread = win%nread + 1
+      call MPI_WAIT(win%rqest(win%nread), Status, ierror)
 
       i_length   = i2-i1+1
       j_length   = j2-j1+1
@@ -2609,6 +2609,11 @@
       call t_startf('mod_comm communication')
 #endif
 
+
+#ifdef PROFILE_JASON
+      call JASON_start_timer3()
+#endif
+
       if (present(modc)) then
          sw_local   = modc(1)
          hs_local   = (modc(2) .eq. 1)
@@ -2891,6 +2896,11 @@
       call t_stopf('mod_comm communication')
 #endif
 
+
+#ifdef PROFILE_JASON
+      call JASON_stop_timer3()
+#endif
+
       end subroutine mp_sendirr
 !------------------------------------------------------------------------------
 !
@@ -2947,6 +2957,11 @@
       logical hs_local, send_local
       logical sw_alltoall
       integer comm_size, comm_pid
+
+
+#ifdef PROFILE_JASON
+      call JASON_start_timer4()
+#endif
 
       if (present(modc)) then
          sw_local   = modc(1)
@@ -3090,6 +3105,10 @@
 
 #if defined( MODCM_TIMING )
       call t_stopf('mod_comm communication')
+#endif
+
+#ifdef PROFILE_JASON
+      call JASON_stop_timer4()
 #endif
 
 !EOC
@@ -3261,6 +3280,11 @@
 
 #if defined( MODCM_TIMING )
       call t_startf('mod_comm communication')
+#endif
+
+
+#ifdef PROFILE_JASON
+      call JASON_start_timer5()
 #endif
 
       if (present(modc)) then
@@ -3546,6 +3570,11 @@
       call t_stopf('mod_comm communication')
 #endif
 
+
+#ifdef PROFILE_JASON
+      call JASON_stop_timer5()
+#endif
+
       end subroutine mp_sendirr_i4
 !------------------------------------------------------------------------------
 !
@@ -3603,6 +3632,11 @@
       logical hs_local, send_local
       logical sw_alltoall
       integer comm_size, comm_pid
+
+
+#ifdef PROFILE_JASON
+      call JASON_start_timer6()
+#endif
 
       if (present(modc)) then
          sw_local   = modc(1)
@@ -3750,6 +3784,10 @@
       call t_stopf('mod_comm communication')
 #endif
 
+#ifdef PROFILE_JASON
+      call JASON_stop_timer6()
+#endif
+
 !EOC
       end subroutine mp_recvirr_i4
 !------------------------------------------------------------------------------
@@ -3828,6 +3866,11 @@
 
 #if defined( MODCM_TIMING )
       call t_startf('mod_comm communication')
+#endif
+
+
+#ifdef PROFILE_JASON
+      call JASON_start_timer7()
 #endif
 
       call MPI_COMM_SIZE (comm, comm_size, ierr)
@@ -4234,6 +4277,11 @@
       call t_stopf('mod_comm communication')
 #endif
 
+
+#ifdef PROFILE_JASON
+      call JASON_start_timer7()
+#endif
+
 !EOC
       end subroutine mp_swapirr
 !------------------------------------------------------------------------------
@@ -4312,6 +4360,11 @@
 
 #if defined( MODCM_TIMING )
       call t_startf('mod_comm communication')
+#endif
+
+
+#ifdef PROFILE_JASON
+      call JASON_start_timer8()
 #endif
 
       call MPI_COMM_SIZE (comm, comm_size, ierr)
@@ -4716,6 +4769,10 @@
 
 #if defined( MODCM_TIMING )
       call t_stopf('mod_comm communication')
+#endif
+
+#ifdef PROFILE_JASON
+      call JASON_start_timer8()
 #endif
 
 !EOC
