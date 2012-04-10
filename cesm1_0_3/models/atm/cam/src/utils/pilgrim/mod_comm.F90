@@ -1733,6 +1733,10 @@
 
       call MPI_COMM_RANK (comm, gidu, ierror)
 
+#ifdef PROFILE_JASON
+      call JASON_start_timer1()
+#endif
+
       i_length   = i2-i1+1
       j_length   = j2-j1+1
       k_length   = k2-k1+1
@@ -1756,6 +1760,11 @@
         enddo
 
       qsize = (i2-i1+1)*(j2-j1+1)*(k2-k1+1)*(nq2-nq1+1)
+
+#ifdef PROFILE_JASON
+      call JASON_stop_timer1(qsize, 8)
+#endif
+
       send_tag = gidu
       win%nsend = win%nsend + 1
       call MPI_ISEND(ga_s(win%offset_s+1), qsize, mp_r8, win%dest, &
@@ -1842,8 +1851,17 @@
 ! !LOCAL VARIABLES:
       integer i, j, k, iq, inc, inc1
       integer i_length, j_length, k_length, ij_length, ijk_length
+
+#ifdef PROFILE_JASON
+      integer qsize
+#endif
+
       win%nread = win%nread + 1
       call MPI_WAIT(win%rqest(win%nread), Status, ierror)
+
+#ifdef PROFILE_JASON
+      call JASON_start_timer2()
+#endif
 
       i_length   = i2-i1+1
       j_length   = j2-j1+1
@@ -1865,6 +1883,11 @@
             enddo
           enddo
         enddo
+
+#ifdef PROFILE_JASON
+      qsize = (i2-i1+1)*(j2-j1+1)*(k2-k1+1)*(nq2-nq1+1)
+      call JASON_stop_timer2(qsize, 8)
+#endif
 
 !EOC
       end subroutine Ga_Get4d_r8
@@ -1915,6 +1938,10 @@
         call exit(1)
 #endif
 
+#ifdef PROFILE_JASON
+      call JASON_start_timer1()
+#endif
+
       i_length   = i2-i1+1
       j_length   = j2-j1+1
       k_length   = k2-k1+1
@@ -1938,6 +1965,11 @@
         enddo
 
       qsize = (i2-i1+1)*(j2-j1+1)*(k2-k1+1)*(nq2-nq1+1)
+
+#ifdef PROFILE_JASON
+      call JASON_stop_timer1(qsize, 4)
+#endif
+
       send_tag = gidu
       win%nsend = win%nsend + 1
       call MPI_ISEND(ga_s(win%offset_s+1), qsize, mp_r4, win%dest, &
@@ -2030,6 +2062,10 @@
       integer i, j, k, iq, inc, inc1
       integer i_length, j_length, k_length, ij_length, ijk_length
 
+#ifdef PROFILE_JASON
+      integer qsize;
+#endif
+
 #if defined ( NOR4 )
         write(iulog,*) 'Mod_comm: Ga_Get4d_r4 - r4 windows disabled - exiting'
         call exit(1)
@@ -2037,6 +2073,10 @@
 
       win%nread = win%nread + 1
       call MPI_WAIT(win%rqest(win%nread), Status, ierror)
+
+#ifdef PROFILE_JASON
+      call JASON_start_timer2()
+#endif
 
       i_length   = i2-i1+1
       j_length   = j2-j1+1
@@ -2058,6 +2098,11 @@
             enddo
           enddo
         enddo
+
+#ifdef PROFILE_JASON
+      qsize = (i2-i1+1)*(j2-j1+1)*(k2-k1+1)*(nq2-nq1+1)
+      call JASON_stop_timer2(qsize, 4)
+#endif
 
 !EOC
       end subroutine Ga_Get4d_r4
@@ -2103,6 +2148,10 @@
 
       call MPI_COMM_RANK (comm, gidu, ierror)
 
+#ifdef PROFILE_JASON
+      call JASON_start_timer1()
+#endif
+
       i_length   = i2-i1+1
       j_length   = j2-j1+1
       k_length   = k2-k1+1
@@ -2126,6 +2175,11 @@
         enddo
 
       qsize = (i2-i1+1)*(j2-j1+1)*(k2-k1+1)*(nq2-nq1+1)
+
+#ifdef PROFILE_JASON
+      call JASON_stop_timer1(qsize, 4)
+#endif
+
       send_tag = gidu
       win%nsend = win%nsend + 1
       call MPI_ISEND(ga_s(win%offset_s+1), qsize, mp_i4, win%dest, &
@@ -2212,8 +2266,16 @@
       integer i, j, k, iq, inc, inc1
       integer i_length, j_length, k_length, ij_length, ijk_length
 
+#ifdef PROFILE_JASON
+      integer qsize
+#endif
+
       win%nread = win%nread + 1
       call MPI_WAIT(win%rqest(win%nread), Status, ierror)
+
+#ifdef PROFILE_JASON
+      call JASON_start_timer2()
+#endif
 
       i_length   = i2-i1+1
       j_length   = j2-j1+1
@@ -2234,6 +2296,11 @@
             enddo
           enddo
         enddo
+
+#ifdef PROFILE_JASON
+      qsize = (i2-i1+1)*(j2-j1+1)*(k2-k1+1)*(nq2-nq1+1)
+      call JASON_stop_timer2(qsize, 4)
+#endif
 
 !EOC
       end subroutine Ga_Get4d_i4
