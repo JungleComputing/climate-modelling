@@ -813,6 +813,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
       return MPI_SUCCESS;
    }
 
+/*
 // FIXME: for performance debugging!!!
 
    if (r->c->number == 23 || r->c->number == 24 || r->c->number == 16) {
@@ -827,6 +828,7 @@ static int probe_request(MPI_Request *req, int blocking, int *flag, MPI_Status *
    }
 
 // END FIXME: for performance debugging!!!
+*/
 
    INFO(1, "request=(index=%d, flags=%d, srcdest=%d, count=%d, tag=%d type=%s) blocking=%d",
 	r->index, r->flags, r->source_or_dest, r->count, r->tag, type_to_string(r->type), blocking);
