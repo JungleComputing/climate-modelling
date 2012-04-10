@@ -191,12 +191,12 @@ void profile_add_statistics(MPI_Comm comm, int field, uint64_t ticks)
    index = MPI_Comm_c2f(comm);
 
    if (index < 0 || index >= MAX_COMMUNICATORS) {
-      WARN(1, "Communicator index out of bounds: %d", index);
+      ERROR(1, "Communicator index out of bounds: %d", index);
       return;
    }
 
    if (field < 0 || field >= STATS_TOTAL) {
-      WARN(1, "Statistics index out of bounds: %d (comm=%d)", field, index);
+      ERROR(1, "Statistics index out of bounds: %d (comm=%d)", field, index);
       return;
    }
 
@@ -331,12 +331,12 @@ void dump_profile_info()
 static uint64_t timer1 = 0;
 static uint64_t timer2 = 0;
 
-void JASON_start_timer1_()
+void jason_start_timer1_()
 {
    timer1 = profile_start_ticks();
 }
 
-void JASON_stop_timer1_(int *count, int *size)
+void jason_stop_timer1_(int *count, int *size)
 {
    uint64_t tmp = profile_stop_ticks();
    tmp -= timer1;
@@ -344,13 +344,13 @@ void JASON_stop_timer1_(int *count, int *size)
    STACKTRACE(0, "timer1 took %ld ticks for copy of %d x %d (%d) from matrix", tmp, *count, *size, (*count)*(*size));
 }
 
-void JASON_start_timer2_()
+void jason_start_timer2_()
 {
    timer2 = profile_start_ticks();
 }
 
 
-void JASON_stop_timer2_(int *count, int *size)
+void jason_stop_timer2_(int *count, int *size)
 {
    uint64_t tmp = profile_stop_ticks();
    tmp -= timer2;

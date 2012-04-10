@@ -9458,6 +9458,7 @@ int MPI_Wait ( MPI_Request *r, MPI_Status *status )
 {
 #if PROFILE_LEVEL > 0
    uint64_t profile_start, profile_end;
+   MPI_Comm comm = MPI_COMM_SELF;
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_CALLS
@@ -9466,6 +9467,11 @@ int MPI_Wait ( MPI_Request *r, MPI_Status *status )
 
 #if PROFILE_LEVEL > 0
    profile_start = profile_start_ticks();
+
+#ifdef IBIS_INTERCEPT
+   comm = request_get_mpi_comm(*r, MPI_COMM_SELF);
+#endif
+
 #endif // PROFILE_LEVEL
 
 #ifdef IBIS_INTERCEPT
@@ -9476,13 +9482,7 @@ int MPI_Wait ( MPI_Request *r, MPI_Status *status )
 
 #if PROFILE_LEVEL > 0
    profile_end = profile_stop_ticks();
-
-#ifdef IBIS_INTERCEPT
-   profile_add_statistics(request_get_mpi_comm(r, MPI_COMM_SELF), STATS_WAIT, profile_end-profile_start);
-#else
-   profile_add_statistics(MPI_COMM_SELF, STATS_WAIT, profile_end-profile_start);
-#endif
-
+   profile_add_statistics(comm, STATS_WAIT, profile_end-profile_start);
 #endif // PROFILE_LEVEL
 
 #ifdef TRACE_ERRORS
