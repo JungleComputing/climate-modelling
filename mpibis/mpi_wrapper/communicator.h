@@ -69,7 +69,6 @@ int free_communicator(communicator * c);
 communicator *get_communicator(MPI_Comm comm);
 communicator *get_communicator_with_index(int index);
 
-
 int comm_dup(communicator *in, communicator **out);
 
 int comm_cluster_rank_to_cluster_index(communicator *c, int cluster_rank);
