@@ -902,6 +902,9 @@
 
 #if defined( MODCM_TIMING )
       call t_startf('mod_comm communication')
+
+write(*,*) 'JASON MODCM_TIMING is ON'
+
 #endif
 
       call MPI_COMM_RANK (comm, gidu, ierror)
