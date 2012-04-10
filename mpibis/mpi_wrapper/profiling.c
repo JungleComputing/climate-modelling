@@ -328,4 +328,34 @@ void dump_profile_info()
    print_and_reset_current_interval();
 }
 
+static uint64_t timer1 = 0;
+static uint64_t timer2 = 0;
+
+void JASON_start_timer1_()
+{
+   timer1 = profile_start_ticks();
+}
+
+void JASON_stop_timer1_(int *count, int *size)
+{
+   uint64_t tmp = profile_stop_ticks();
+   tmp -= timer1;
+
+   STACKTRACE(0, "timer1 took %ld ticks for copy of %d x %d (%d) from matrix", tmp, *count, *size, (*count)*(*size));
+}
+
+void JASON_start_timer2_()
+{
+   timer2 = profile_start_ticks();
+}
+
+
+void JASON_stop_timer2_(int *count, int *size)
+{
+   uint64_t tmp = profile_stop_ticks();
+   tmp -= timer2;
+
+   STACKTRACE(0, "timer2 took %ld ticks for copy of %d x %d (%d) to matrix", tmp, *count, *size, (*count)*(*size));
+}
+
 #endif
